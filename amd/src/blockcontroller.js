@@ -1,5 +1,5 @@
 define(['jquery','core/config','core/log','core/ajax','core/templates','core/modal_factory','core/str','core/modal_events',
-        'mod_cpassignment/dialogs','core/notification'],
+        'block_poodllclassroom/dialogs','core/notification'],
     function($,cfg,log,Ajax, templates, ModalFactory, str, ModalEvents,  dialogs, notification) {
     "use strict"; // jshint ;_;
 
