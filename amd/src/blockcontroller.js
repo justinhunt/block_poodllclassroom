@@ -31,6 +31,7 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
             this.controls.createcoursestartbutton = $('#' + this.modulecssclass + '_createcourse_btn');
             this.controls.createcoursestartcontainer = $('#' + this.modulecssclass +'_createcourse_cnt');
             this.controls.createcoursestartbutton.show();
+            debug.log(this.controls);
 
         },
 
@@ -47,6 +48,8 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
                 that.controls.itemsubidfield.val("0");
                 */
                 dialogs.openModal('#' + that.modulecssclass + '_createcourse_cnt');
+                log.debug('opened modal');
+                return false;
             });
 
 
