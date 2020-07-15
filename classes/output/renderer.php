@@ -32,6 +32,10 @@ class renderer extends \plugin_renderer_base {
         $createcoursebutton = $this->js_trigger_button('createcourse', true,
                 get_string('createcourse',constants::M_COMP), 'btn-primary');
 
+        //we attach an event to it. The event comes from a JS AMD module also in this plugin
+        $opts=array('modulecssclass' => 'block_poodllclassroom');
+        $this->page->requires->js_call_amd(constants::M_COMP . "/blockcontroller", 'init', array($opts));
+
          $ret = $createcoursebutton;
          $ret .= $amodalcontainer;
          return $ret;

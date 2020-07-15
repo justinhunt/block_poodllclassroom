@@ -73,7 +73,7 @@ class block_poodllclassroom extends block_base {
 
         $renderer = $this->page->get_renderer(constants::M_COMP);
         $this->content->text = $renderer->fetch_block_content($course->id);
-        return $this->content;
+        return $this->content + '<H1>hello world</H1>>'  ;
     }
 
     //This is a list of places where the block may or may not be added by the admin
