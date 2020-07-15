@@ -37,9 +37,9 @@ class block_poodllclassroom extends block_base {
         global $CFG, $OUTPUT;
 
         //we only show this to super people
-        if (!has_capability('block/poodllclassroom:managesite', $this->context)) {
-            return null;
-        }
+      //  if (!has_capability('block/poodllclassroom:managesite', $this->context)) {
+      //      return null;
+      //  }
 
         if ($this->content !== null) {
             return $this->content;
@@ -72,7 +72,7 @@ class block_poodllclassroom extends block_base {
 
 
         $renderer = $this->page->get_renderer(constants::M_COMP);
-        $this->content->text = $renderer->fetch_block_content($course->id) + '<H1>hello world</H1>>' ;
+        $this->content->text = $renderer->fetch_block_content($course->id) . '<H1>hello world</H1>>' ;
         return $this->content  ;
     }
 
