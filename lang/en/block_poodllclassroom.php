@@ -85,3 +85,6 @@ $string['addcourse_instructions'] = 'Add Course';
 $string['failedsetting'] = 'Unable to complete settings update: {$a}';
 $string['updatedsetting'] = 'Updated setting: {$a}';
 
+
+$string['createcourse'] = 'Create Course';
+$string['createcoursestart'] = 'Create Course [ + ]';

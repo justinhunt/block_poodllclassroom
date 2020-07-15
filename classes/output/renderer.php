@@ -22,8 +22,23 @@ class renderer extends \plugin_renderer_base {
         return $this->output->header();
     }
 
+    function fetch_block_content(){
+        //recorder modal
+        $title = get_string('createcourse',constants::M_COMP);
+        $content = "a whole lot of content going on";
+        $containertag = 'createcourse';
+        $amodalcontainer = $this->fetch_modalcontainer($title,$content,$containertag);
+
+        $createcoursebutton = $this->js_trigger_button('createcourse', true,
+                get_string('createcourse',constants::M_COMP), 'btn-primary');
+
+        echo $createcoursebutton;
+        echo $amodalcontainer;
+
+    }
+
     //In this function we prepare and display the content that goes in the block
-    function fetch_block_content($courseid){
+    function fetch_block_content_old($courseid){
         global $USER;
 
 
@@ -62,28 +77,45 @@ class renderer extends \plugin_renderer_base {
         $data=['settings'=>$settings];
         $content .= $this->render_from_template('block_poodllclassroom/tilescontainer', $data);
 
-        //show our link to the view page
+        //we attach an event to it. The event comes from a JS AMD module also in this plugin
+        $opts=array('modulecssclass' => 'block_poodllclassroom');
+        $this->page->requires->js_call_amd(constants::M_COMP . "/triggeralert", 'init', array($opts));
 
-        //$content .= \html_writer::link($link, get_string('gotoadminpage', constants::M_COMP));
         return $content;
     }
 
-    //In this function we prepare and display the content for the page
-    function display_view_page($blockid, $courseid){
-        global $USER;
+    /**
+     *  Show a single button.
+     */
+    public function js_trigger_button($buttontag, $visible, $buttonlabel, $bootstrapclass='btn-primary'){
 
-        $content = '';
-        $content .= '<br />' . get_string('welcomeuser', constants::M_COMP,$USER) . '<br />';
-        $content .= $this->fetch_dosomething_button($blockid,$courseid);
-        $content .= $this->fetch_triggeralert_button();
-
-        //a page must have a header
-        echo $this->output->header();
-        //and of course our page content
-        echo $content;
-        //a page must have a footer
-        echo $this->output->footer();
+        $buttonclass =constants::M_CLASS  . '_' . $buttontag . '_btn';
+        $containerclass = $buttonclass . '_cnt';
+        $button = \html_writer::link('#', $buttonlabel, array('class'=>'btn ' . $bootstrapclass . ' ' . $buttonclass,'type'=>'button','id'=>$buttonclass));
+        $visibleclass = '';
+        if(!$visible){$visibleclass = 'hide';}
+        $ret = \html_writer::div($button, $containerclass . ' ' .  $visibleclass);
+        return $ret;
     }
+
+    //fetch modal container
+    function fetch_modalcontainer($title,$content,$containertag){
+        $data=[];
+        $data['title']=$title;
+        $data['content']=$content;
+        $data['containertag']=$containertag;
+        return $this->render_from_template('block_poodllclassroom/modalcontainer', $data);
+    }
+
+
+    //fetch modal content
+    function fetch_modalcontent($title,$content){
+        $data=[];
+        $data['title']=$title;
+        $data['content']=$content;
+        return $this->render_from_template('block_poodllclassroom/modalcontent', $data);
+    }
+
 
     function fetch_dosomething_button($blockid, $courseid){
         //single button is a Moodle helper class that creates simple form with a single button for you

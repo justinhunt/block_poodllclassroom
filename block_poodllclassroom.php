@@ -54,7 +54,7 @@ class block_poodllclassroom extends block_base {
         $this->content->items = array();
         $this->content->icons = array();
         $this->content->footer = '';
-        $this->content->text = ''; 
+        $this->content->text = '';
 
         //get the course this block is on
         $course = $this->page->course;
