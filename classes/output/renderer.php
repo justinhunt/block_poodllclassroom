@@ -36,9 +36,9 @@ class renderer extends \plugin_renderer_base {
         $opts=array('modulecssclass' => 'block_poodllclassroom');
         $this->page->requires->js_call_amd(constants::M_COMP . "/blockcontroller", 'init', array($opts));
 
-         $ret = $createcoursebutton;
-         $ret .= $amodalcontainer;
-         return $ret;
+         $content = $createcoursebutton;
+         $content .= $amodalcontainer;
+         return $content;
 
     }
 
