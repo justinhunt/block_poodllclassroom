@@ -88,3 +88,4 @@ $string['updatedsetting'] = 'Updated setting: {$a}';
 
 $string['createcourse'] = 'Create Course';
 $string['createcoursestart'] = 'Create Course [ + ]';
+$string['createcoursestart'] = 'Close';

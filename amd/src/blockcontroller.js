@@ -31,7 +31,7 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
             this.controls.createcoursestartbutton = $('#' + this.modulecssclass + '_createcourse_btn');
             this.controls.createcoursestartcontainer = $('#' + this.modulecssclass +'_createcourse_cnt');
             this.controls.createcoursestartbutton.show();
-            debug.log(this.controls);
+            log.debug(this.controls);
 
         },
 
