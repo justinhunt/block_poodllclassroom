@@ -32,8 +32,9 @@ class renderer extends \plugin_renderer_base {
         $createcoursebutton = $this->js_trigger_button('createcourse', true,
                 get_string('createcourse',constants::M_COMP), 'btn-primary');
 
-        echo $createcoursebutton;
-        echo $amodalcontainer;
+         $ret = $createcoursebutton;
+         $ret .= $amodalcontainer;
+         return $ret;
 
     }
 
