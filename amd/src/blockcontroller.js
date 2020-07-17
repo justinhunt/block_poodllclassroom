@@ -39,7 +39,7 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
         register_events: function(){
             var that =this;
 
-            mfh.init('#' + this.modulecssclass + '_createcourse_btn', contextid, 'creategroup');
+            mfh.init('#' + this.modulecssclass + '_createcourse_btn', this.contextid, 'creategroup');
 
             //modal dialog show link
             /*
