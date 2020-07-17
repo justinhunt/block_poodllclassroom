@@ -60,8 +60,8 @@ function block_poodllclassroom_output_fragment_mform($args) {
             $formdata = [];
             if (!empty($args->jsonformdata)) {
                 $serialiseddata = json_decode($args->jsonformdata);
-                parse_str($serialiseddata, $formdata);
-                //$formdata = $serialiseddata;
+                //parse_str($serialiseddata, $formdata);
+                $formdata = $serialiseddata;
             }
 
             $mform = new group_form(null, array('editoroptions' => $editoroptions), 'post', '', null, true, $formdata);
