@@ -101,7 +101,7 @@ class block_poodllclassroom_external extends external_api {
                         'trusttext' => false,
                         'noclean' => true);
 
-                $mform = new course_edit_form($linkurl, $companyid, $editoroptions);
+                $mform = new \block_poodllclassroom\local\form\createcourseform($linkurl, $companyid, $editoroptions);
                 $validateddata = $mform->get_data();
 
                 if ($validateddata) {
