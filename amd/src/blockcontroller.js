@@ -8,12 +8,13 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
     return {
         controls: {},
         modulecssclass: null,
-        contextid: contextid,
+        contextid: 0,
         strings: [],
 
 
         init: function(props){
             this.modulecssclass = props.modulecssclass;
+            this.contextid = props.contextid;
             this.prepare_html();
             this.register_events();
         },
