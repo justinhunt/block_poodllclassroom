@@ -37,20 +37,14 @@ class createcourseform extends \moodleform {
     protected $selectedcompany = 0;
     protected $context = null;
 
-    public function __construct($actionurl, $companyid, $editoroptions) {
-        global $CFG;
-
-        $this->selectedcompany = $companyid;
-        $this->context = \context_coursecat::instance($CFG->defaultrequestcategory);
-        $this->editoroptions = $editoroptions;
-
-        parent::__construct($actionurl);
-    }
 
     public function definition() {
         global $CFG;
 
         $mform =& $this->_form;
+        $this->editoroptions = $this->_customdata['editoroptions'];
+        $this->selectedcompany = $this->_customdata['companyid'];
+        $this->context  = \context_coursecat::instance($CFG->defaultrequestcategory);
 
         // Then show the fields about where this block appears.
         $mform->addElement('header', 'header',
