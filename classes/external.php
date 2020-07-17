@@ -77,10 +77,10 @@ class block_poodllclassroom_external extends external_api {
 
             case 'createcourse':
                 require_once($CFG->dirroot .'/blocks/iomad_company_admin/lib.php');
-
+error_log('going into create course');
                 $systemcontext = context_system::instance();
                 iomad::require_capability('block/iomad_company_admin:createcourse', $systemcontext);
-
+error_log('got capability');
 
 
                 // Correct the navbar.
@@ -93,7 +93,7 @@ class block_poodllclassroom_external extends external_api {
 
                 // Set the companyid
                 $companyid = iomad::get_my_companyid($context);
-
+ error_log('got company id:' . $companyid );
 
                 /* next line copied from /course/edit.php */
                 $editoroptions = array('maxfiles' => EDITOR_UNLIMITED_FILES,
@@ -102,8 +102,9 @@ class block_poodllclassroom_external extends external_api {
                         'noclean' => true);
 
                 $mform = new \block_poodllclassroom\local\form\createcourseform($linkurl, $companyid, $editoroptions);
+error_log('got form:'  );
                 $validateddata = $mform->get_data();
-
+error_log('got data:'  );
                 if ($validateddata) {
                     $validateddata->userid = $USER->id;
 
@@ -119,8 +120,9 @@ class block_poodllclassroom_external extends external_api {
 
                     // Turn on restricted modules.
                     $mergeddata->restrictmodules = 1;
-
+ error_log('creating course:'  );
                     if (!$course = create_course($mergeddata, $editoroptions)) {
+error_log('failed miserably:'  );
                         return 'error';
                         /*
                         $this->verbose("Error inserting a new course in the database!");

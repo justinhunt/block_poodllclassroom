@@ -38,12 +38,18 @@ function block_poodllclassroom_output_fragment_mform($args) {
             require_once($CFG->dirroot . '/group/group_form.php');
 
             $group = new stdClass();
-            $group->courseid = $course->id;
+            if(!empty($course)) {
+                $group->courseid = $course->id;
+                $maxbytes=$course->maxbytes;
+            }else{
+                $group->courseid = 1;
+                $maxbytes=0;
+            }
 
             require_capability('moodle/course:managegroups', $context);
             $editoroptions = [
                     'maxfiles' => EDITOR_UNLIMITED_FILES,
-                    'maxbytes' => $course->maxbytes,
+                    'maxbytes' => $maxbytes,
                     'trust' => false,
                     'context' => $context,
                     'noclean' => true,
@@ -54,7 +60,8 @@ function block_poodllclassroom_output_fragment_mform($args) {
             $formdata = [];
             if (!empty($args->jsonformdata)) {
                 $serialiseddata = json_decode($args->jsonformdata);
-                parse_str($serialiseddata, $formdata);
+                //parse_str($serialiseddata, $formdata);
+                $formdata = $serialiseddata;
             }
 
             $mform = new group_form(null, array('editoroptions' => $editoroptions), 'post', '', null, true, $formdata);
