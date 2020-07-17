@@ -76,7 +76,7 @@ class block_poodllclassroom_external extends external_api {
                 break;
 
             case 'createcourse':
-
+                require_once(dirname($CFG->dirroot .'/blocks/iomad_company_admin.php');
 
                 $systemcontext = context_system::instance();
                 iomad::require_capability('block/iomad_company_admin:createcourse', $systemcontext);

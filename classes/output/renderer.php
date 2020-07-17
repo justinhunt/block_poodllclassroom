@@ -40,7 +40,7 @@ class renderer extends \plugin_renderer_base {
         $opts=array('modulecssclass' => 'block_poodllclassroom', 'contextid'=>$contextid);
         $this->page->requires->js_call_amd(constants::M_COMP . "/blockcontroller", 'init', array($opts));
 
-         $content = $createcoursebutton;
+         $content = $createcoursebutton . '<br>';
          //this is just for testing
          $content .= $creategroupbutton;
 
