@@ -1,6 +1,6 @@
 define(['jquery','core/config','core/log','core/ajax','core/templates','core/modal_factory','core/str','core/modal_events',
-        'block_poodllclassroom/dialogs','core/notification'],
-    function($,cfg,log,Ajax, templates, ModalFactory, str, ModalEvents,  dialogs, notification) {
+        'block_poodllclassroom/dialogs','block_poodllclassroom/modalformhelper','core/notification'],
+    function($,cfg,log,Ajax, templates, ModalFactory, str, ModalEvents,  dialogs, mfh,  notification) {
     "use strict"; // jshint ;_;
 
     log.debug('blockcontroller: initialising');
@@ -8,6 +8,7 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
     return {
         controls: {},
         modulecssclass: null,
+        contextid: contextid,
         strings: [],
 
 
@@ -38,20 +39,17 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
         register_events: function(){
             var that =this;
 
-            //recorder dialog show link
+            mfh.init('#' + this.modulecssclass + '_createcourse_btn', contextid, 'creategroup');
+
+            //modal dialog show link
+            /*
             this.controls.createcoursestartbutton.click(function(){
-                //clear fields
-                /*
-                that.controls.itemfilenamefield.val("");
-                that.controls.itemidfield.val("");
-                that.controls.itemnamefield.val("");
-                that.controls.itemsubidfield.val("0");
-                */
                 dialogs.openModal('#' + that.modulecssclass + '_createcourse_cnt');
                 log.debug('opened modal');
                 return false;
             });
 
+            */
 
 
             //download links

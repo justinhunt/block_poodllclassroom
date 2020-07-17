@@ -72,7 +72,7 @@ class block_poodllclassroom extends block_base {
 
 
         $renderer = $this->page->get_renderer(constants::M_COMP);
-        $this->content->text = $renderer->fetch_block_content($course->id) . '<H1>hello world</H1>' ;
+        $this->content->text = $renderer->fetch_block_content($this->context->id) . '<H1>hello world</H1>' ;
         return $this->content  ;
     }
 

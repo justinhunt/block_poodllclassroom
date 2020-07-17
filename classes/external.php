@@ -8,52 +8,85 @@
  * @author  Justin Hunt - Poodll.com
  */
 
-use \block_poodllclassroom\utils;
+use \block_poodllclassroom\common;
 use \block_poodllclassroom\constants;
 
 class block_poodllclassroom_external extends external_api {
 
 
-    public static function submit_form_parameters() {
-        return new external_function_parameters([
-                'cmid' => new external_value(PARAM_INT),
-                'subid' => new external_value(PARAM_INT),
-                'filename' => new external_value(PARAM_TEXT),
-                'itemname' => new external_value(PARAM_TEXT),
-                'itemid' => new external_value(PARAM_TEXT),
-                'accesskey' => new external_value(PARAM_TEXT)
-        ]);
+    public static function submit_mform_parameters() {
+        return new external_function_parameters(
+                array(
+                        'contextid' => new external_value(PARAM_INT, 'The context id for the course'),
+                        'jsonformdata' => new external_value(PARAM_RAW, 'The data from the create group form, encoded as a json array'),
+                        'formname' => new external_value(PARAM_TEXT, 'The formname')
+                )
+        );
     }
 
-    public static function submit_form($cmid,$subid, $filename,$itemname,$itemid, $accesskey) {
-        global $DB, $USER;
+    public static function submit_mform($contextid,$jsonformdata, $formname) {
+        global $CFG, $DB, $USER;
 
-        $params = self::validate_parameters(self::submit_form_parameters(),
-                array('cmid'=>$cmid,'subid'=>$subid,'filename'=>$filename,'itemname'=>$itemname,'itemid'=>$itemid,'accesskey'=>$accesskey));
-        extract($params);
+        // We always must pass webservice params through validate_parameters.
+        $params = self::validate_parameters(self::submit_mform_parameters(),
+                ['contextid' => $contextid, 'jsonformdata' => $jsonformdata, 'formname'=>$formname]);
 
-        $cm = get_coursemodule_from_id(constants::M_MODNAME, $cmid, 0, false, MUST_EXIST);
-        $themodule = $DB->get_record(constants::M_TABLE, array('id' => $cm->instance), '*', MUST_EXIST);
-        $modulecontext = \context_module::instance($cm->id);
+        $context = context::instance_by_id($params['contextid'], MUST_EXIST);
 
-        //make database items and adhoc tasks
-        $ret = new stdClass();
-        $ret->success = false;
-        $item = utils::save_rec_to_moodle( $themodule, $filename, $subid, $itemname,$itemid,$accesskey);
+        // We always must call validate_context in a webservice.
+        self::validate_context($context);
 
-        if($item){
-                $ret->success = true;
-                $ret->item = $item;
+        list($ignored, $course) = get_context_info_array($context->id);
+        $serialiseddata = json_decode($params['jsonformdata']);
 
-        }else{
-            $ret->message = "Unable to add update database with submission";
+        $data = array();
+        parse_str($serialiseddata, $data);
+
+        switch($formname){
+            case 'creategroup':
+                    require_capability('moodle/course:managegroups', $context);
+                    require_once($CFG->dirroot . '/group/lib.php');
+                    require_once($CFG->dirroot . '/group/group_form.php');
+                    $editoroptions = [
+                            'maxfiles' => EDITOR_UNLIMITED_FILES,
+                            'maxbytes' => $course->maxbytes,
+                            'trust' => false,
+                            'context' => $context,
+                            'noclean' => true,
+                            'subdirs' => false
+                    ];
+                    $group = new stdClass();
+                    $group->courseid = $course->id;
+                    $group = file_prepare_standard_editor($group, 'description', $editoroptions, $context, 'group', 'description', null);
+
+                    // The last param is the ajax submitted data.
+                    $mform = new group_form(null, array('editoroptions' => $editoroptions), 'post', '', null, true, $data);
+
+                    $validateddata = $mform->get_data();
+
+                    if ($validateddata) {
+                        // Do the action.
+                        $groupid = groups_create_group($validateddata, $mform, $editoroptions);
+                    } else {
+                        // Generate a warning.
+                        throw new moodle_exception('erroreditgroup', 'group');
+                    }
+
+                    return $groupid;
+                break;
+
         }
 
-        return json_encode($ret);
+
+
+
+
     }
 
-    public static function submit_form_returns() {
+
+    public static function submit_mform_returns() {
         return new external_value(PARAM_RAW);
+        //return new external_value(PARAM_INT, 'group id');
     }
 
 }

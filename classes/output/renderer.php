@@ -22,7 +22,7 @@ class renderer extends \plugin_renderer_base {
         return $this->output->header();
     }
 
-    function fetch_block_content(){
+    function fetch_block_content($contextid){
         //recorder modal
         $title = get_string('createcourse',constants::M_COMP);
         $content = "a whole lot of content going on";
@@ -33,7 +33,7 @@ class renderer extends \plugin_renderer_base {
                 get_string('createcourse',constants::M_COMP), 'btn-primary');
 
         //we attach an event to it. The event comes from a JS AMD module also in this plugin
-        $opts=array('modulecssclass' => 'block_poodllclassroom');
+        $opts=array('modulecssclass' => 'block_poodllclassroom', 'contextid'=>$contextid);
         $this->page->requires->js_call_amd(constants::M_COMP . "/blockcontroller", 'init', array($opts));
 
          $content = $createcoursebutton;

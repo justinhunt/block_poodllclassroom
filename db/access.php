@@ -44,17 +44,16 @@ $capabilities = array(
         'archetypes' => array(
             'manager' => CAP_ALLOW
         ),
-
         'clonepermissionsfrom' => 'moodle/site:manageblocks'
     ),
 
-    'block/' . constants::M_NAME. ':managesite' => array(
+    'block/' . constants::M_NAME. ':managepoodllclassroom' => array(
         'riskbitmask' => RISK_SPAM | RISK_XSS,
         'captype' => 'write',
         'contextlevel' => CONTEXT_BLOCK,
         'archetypes' => array(
-                'manager' => CAP_ALLOW
-        ),
-        'clonepermissionsfrom' => 'moodle/site:manageblocks'
+                'manager' => CAP_ALLOW,
+                'companymanager' => CAP_ALLOW
+        )
      ),
 );
