@@ -87,7 +87,7 @@ function block_poodllclassroom_output_fragment_mform($args) {
                     'trusttext' => false,
                     'noclean' => true);
 
-            $mform = new \block_poodllclassroom\local\form\createcourseform($companylist, $companyid, $editoroptions);
+            $mform = new \block_poodllclassroom\local\form\createcourseform($linkurl, $companyid, $editoroptions);
 
             break;
 

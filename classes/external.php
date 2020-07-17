@@ -76,13 +76,125 @@ class block_poodllclassroom_external extends external_api {
                 break;
 
             case 'createcourse':
-                //do create
+
+
+                $systemcontext = context_system::instance();
+                iomad::require_capability('block/iomad_company_admin:createcourse', $systemcontext);
+
+
+
+                // Correct the navbar.
+                // Set the name for the page.
+                $linktext = get_string('createcourse_title', 'block_iomad_company_admin');
+                // Set the url.
+                $linkurl = new moodle_url('/blocks/iomad_company_admin/company_course_create_form.php');
+
+
+
+                // Set the companyid
+                $companyid = iomad::get_my_companyid($context);
+
+
+                /* next line copied from /course/edit.php */
+                $editoroptions = array('maxfiles' => EDITOR_UNLIMITED_FILES,
+                        'maxbytes' => $CFG->maxbytes,
+                        'trusttext' => false,
+                        'noclean' => true);
+
+                $mform = new course_edit_form($linkurl, $companyid, $editoroptions);
+                $validateddata = $mform->get_data();
+
+                if ($validateddata) {
+                    $validateddata->userid = $USER->id;
+
+                    // Merge data with course defaults.
+                    $company = $DB->get_record('company', array('id' => $companyid));
+                    if (!empty($company->category)) {
+                        $validateddata->category = $company->category;
+                    } else {
+                        $validateddata->category = $CFG->defaultrequestcategory;
+                    }
+                    $courseconfig = get_config('moodlecourse');
+                    $mergeddata = (object) array_merge((array) $courseconfig, (array) $validateddata);
+
+                    // Turn on restricted modules.
+                    $mergeddata->restrictmodules = 1;
+
+                    if (!$course = create_course($mergeddata, $editoroptions)) {
+                        return 'error';
+                        /*
+                        $this->verbose("Error inserting a new course in the database!");
+                        if (!$this->get('ignore_errors')) {
+                            die();
+                        }
+                        */
+                    }
+
+                    // If licensed course, turn off all enrolments apart from license enrolment as
+                    // default  Moving this to a separate page.
+                    if ($validateddata->selfenrol == 0 ) {
+                        if ($instances = $DB->get_records('enrol', array('courseid' => $course->id))) {
+                            foreach ($instances as $instance) {
+                                $updateinstance = (array) $instance;
+                                if ($instance->enrol == 'self') {
+                                    $updateinstance['status'] = 0;
+                                } else if ($instance->enrol == 'license') {
+                                    $updateinstance['status'] = 1;
+                                } else if ($instance->enrol == 'manual') {
+                                    $updateinstance['status'] = 0;
+                                }
+                                $DB->update_record('enrol', $updateinstance);
+                            }
+                        }
+                    } else if ($validateddata->selfenrol == 1 ) {
+                        if ($instances = $DB->get_records('enrol', array('courseid' => $course->id))) {
+                            foreach ($instances as $instance) {
+                                $updateinstance = (array) $instance;
+                                if ($instance->enrol == 'self') {
+                                    $updateinstance['status'] = 1;
+                                } else if ($instance->enrol == 'license') {
+                                    $updateinstance['status'] = 1;
+                                } else if ($instance->enrol == 'manual') {
+                                    $updateinstance['status'] = 0;
+                                }
+                                $DB->update_record('enrol', $updateinstance);
+                            }
+                        }
+                    } else if ($validateddata->selfenrol == 2 ) {
+                        if ($instances = $DB->get_records('enrol', array('courseid' => $course->id))) {
+                            foreach ($instances as $instance) {
+                                $updateinstance = (array) $instance;
+                                if ($instance->enrol == 'self') {
+                                    $updateinstance['status'] = 1;
+                                } else if ($instance->enrol == 'license') {
+                                    $updateinstance['status'] = 0;
+                                } else if ($instance->enrol == 'manual') {
+                                    $updateinstance['status'] = 1;
+                                }
+                                $DB->update_record('enrol', $updateinstance);
+                            }
+                        }
+                    }
+
+                    // Associate the company with the course.
+                    $company = new company($companyid);
+                    // Check if we are a company manager.
+                    if ($validateddata->selfenrol != 2 && $DB->get_record('company_users', array('companyid' => $companyid,
+                                    'userid' => $USER->id,
+                                    'managertype' => 1))) {
+                        $company->add_course($course, 0, true);
+                    } else if ($validateddata->selfenrol == 2) {
+                        $company->add_course($course, 0, false, true);
+                    } else {
+                        $company->add_course($course);
+                    }
+
+                    return $course->id;
+                }
+
                 break;
 
         }
-
-
-
 
 
     }
