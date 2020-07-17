@@ -20,7 +20,7 @@ function block_poodllclassroom_output_fragment_mform($args) {
     global $CFG;
 
 
-    require_once($CFG->dirroot . '/group/group_form.php');
+
 
     $args = (object) $args;
     $context = $args->context;
@@ -28,16 +28,15 @@ function block_poodllclassroom_output_fragment_mform($args) {
     $mform= null;
     $o = '';
 
-    $formdata = [];
-    if (!empty($args->jsonformdata)) {
-        $serialiseddata = json_decode($args->jsonformdata);
-        parse_str($serialiseddata, $formdata);
-    }
+
 
     list($ignored, $course) = get_context_info_array($context->id);
 
     switch($formname){
         case 'creategroup':
+
+            require_once($CFG->dirroot . '/group/group_form.php');
+
             $group = new stdClass();
             $group->courseid = $course->id;
 
@@ -51,6 +50,12 @@ function block_poodllclassroom_output_fragment_mform($args) {
                     'subdirs' => false
             ];
             $group = file_prepare_standard_editor($group, 'description', $editoroptions, $context, 'group', 'description', null);
+
+            $formdata = [];
+            if (!empty($args->jsonformdata)) {
+                $serialiseddata = json_decode($args->jsonformdata);
+                parse_str($serialiseddata, $formdata);
+            }
 
             $mform = new group_form(null, array('editoroptions' => $editoroptions), 'post', '', null, true, $formdata);
             // Used to set the courseid.
