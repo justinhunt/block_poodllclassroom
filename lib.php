@@ -62,6 +62,35 @@ function block_poodllclassroom_output_fragment_mform($args) {
             }
             break;
 
+        case 'createcourse':
+
+            $context = context_system::instance();
+            iomad::require_capability('block/iomad_company_admin:createcourse', $context);
+
+            // Correct the navbar.
+            // Set the name for the page.
+            $linktext = get_string('createcourse_title', 'block_iomad_company_admin');
+
+            // Set the url.
+            $linkurl = new moodle_url('/blocks/iomad_company_admin/company_course_create_form.php');
+
+            // Set the companyid
+            $companyid = iomad::get_my_companyid($context);
+
+            $urlparams = array('companyid' => $companyid);
+
+            $companylist = new moodle_url('/my', $urlparams);
+
+            /* next line copied from /course/edit.php */
+            $editoroptions = array('maxfiles' => EDITOR_UNLIMITED_FILES,
+                    'maxbytes' => $CFG->maxbytes,
+                    'trusttext' => false,
+                    'noclean' => true);
+
+            $mform = new \block_poodllclassroom\local\form\createcourseform($companylist, $companyid, $editoroptions);
+
+            break;
+
         default:
     }
 

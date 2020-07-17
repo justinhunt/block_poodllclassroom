@@ -75,6 +75,10 @@ class block_poodllclassroom_external extends external_api {
                     return $groupid;
                 break;
 
+            case 'createcourse':
+                //do create
+                break;
+
         }
 
 

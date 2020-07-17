@@ -87,5 +87,10 @@ $string['updatedsetting'] = 'Updated setting: {$a}';
 
 
 $string['createcourse'] = 'Create Course';
+$string['createcourse_mform'] = 'Create Course';
 $string['createcoursestart'] = 'Create Course [ + ]';
 $string['close'] = 'Close';
+
+$string['creategroup'] = 'Create Group';
+$string['creategroup_mform'] = 'Create Group';
+$string['creategroupstart'] = 'Create Group [ + ]';
