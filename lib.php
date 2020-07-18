@@ -45,6 +45,7 @@ function block_poodllclassroom_output_fragment_mform($args) {
             // Set the companyid
             $companyid = iomad::get_my_companyid($context);
 
+            $output = $PAGE->get_renderer('block_iomad_company_admin');
             $departmentid=0;
             $licenseid=0;
             $data=null;
