@@ -94,7 +94,9 @@ class createuserform extends \moodleform {
     }
 
     public function definition() {
-        global $CFG, $DB, $output;
+        global $CFG, $DB, $PAGE;
+
+        $output = $PAGE->get_renderer('block_iomad_company_admin');
 
         // Get the system context.
         $systemcontext = \context_system::instance();
