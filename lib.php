@@ -17,7 +17,7 @@
 //require_once(dirname(__FILE__) . '/../../config.php'); // Creates $PAGE.
 
 function block_poodllclassroom_output_fragment_mform($args) {
-    global $CFG;
+    global $CFG, $PAGE;
 
 
 
