@@ -34,6 +34,7 @@ use \iomad;
 
 require_once($CFG->dirroot.'/lib/formslib.php');
 require_once($CFG->dirroot .'/blocks/iomad_company_admin/lib/course_selectors.php');
+require_once($CFG->dirroot . '/user/editlib.php');
 
 
 class createuserform extends \moodleform {
