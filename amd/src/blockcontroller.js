@@ -30,7 +30,7 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
         },
 
         prepare_html: function(){
-            this.controls.creategroupstartbutton = $('#' + this.modulecssclass + '_creategroup_btn');
+            this.controls.createuserstartbutton = $('#' + this.modulecssclass + '_createuser_btn');
             this.controls.createcoursestartbutton = $('#' + this.modulecssclass + '_createcourse_btn');
             this.controls.createcoursestartcontainer = $('#' + this.modulecssclass +'_createcourse_cnt');
             this.controls.createcoursestartbutton.show();
@@ -41,7 +41,7 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
         register_events: function(){
             var that =this;
 
-            mfh.init('#' + this.modulecssclass + '_creategroup_btn', this.contextid, 'creategroup');
+            mfh.init('#' + this.modulecssclass + '_createuser_btn', this.contextid, 'createuser');
             mfh.init('#' + this.modulecssclass + '_createcourse_btn', this.contextid, 'createcourse');
 
             //modal dialog show link

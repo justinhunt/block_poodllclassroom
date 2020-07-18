@@ -91,6 +91,6 @@ $string['createcourse_mform'] = 'Create Course';
 $string['createcoursestart'] = 'Create Course [ + ]';
 $string['close'] = 'Close';
 
-$string['creategroup'] = 'Create Group';
-$string['creategroup_mform'] = 'Create Group';
-$string['creategroupstart'] = 'Create Group [ + ]';
+$string['createuser'] = 'Create User';
+$string['createuser_mform'] = 'Create User';
+$string['createuserstart'] = 'Create User [ + ]';

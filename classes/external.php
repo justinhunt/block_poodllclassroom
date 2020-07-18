@@ -27,6 +27,8 @@ class block_poodllclassroom_external extends external_api {
     public static function submit_mform($contextid,$jsonformdata, $formname) {
         global $CFG, $DB, $USER;
 
+        require_once($CFG->dirroot .'/blocks/iomad_company_admin/lib.php');
+
         // We always must pass webservice params through validate_parameters.
         $params = self::validate_parameters(self::submit_mform_parameters(),
                 ['contextid' => $contextid, 'jsonformdata' => $jsonformdata, 'formname'=>$formname]);
@@ -43,46 +45,138 @@ class block_poodllclassroom_external extends external_api {
         parse_str($serialiseddata, $data);
 
         switch($formname){
-            case 'creategroup':
-                    require_capability('moodle/course:managegroups', $context);
-                    require_once($CFG->dirroot . '/group/lib.php');
-                    require_once($CFG->dirroot . '/group/group_form.php');
-                    $editoroptions = [
-                            'maxfiles' => EDITOR_UNLIMITED_FILES,
-                            'maxbytes' => $course->maxbytes,
-                            'trust' => false,
-                            'context' => $context,
-                            'noclean' => true,
-                            'subdirs' => false
-                    ];
-                    $group = new stdClass();
-                    $group->courseid = $course->id;
-                    $group = file_prepare_standard_editor($group, 'description', $editoroptions, $context, 'group', 'description', null);
+            case 'createuser':
 
-                    // The last param is the ajax submitted data.
-                    $mform = new group_form(null, array('editoroptions' => $editoroptions), 'post', '', null, true, $data);
+                require_once($CFG->dirroot . '/user/editlib.php');
 
-                    $validateddata = $mform->get_data();
 
-                    if ($validateddata) {
-                        // Do the action.
-                        $groupid = groups_create_group($validateddata, $mform, $editoroptions);
-                    } else {
-                        // Generate a warning.
-                        throw new moodle_exception('erroreditgroup', 'group');
+                $systemcontext = context_system::instance();
+                iomad::require_capability('block/iomad_company_admin:user_create', $systemcontext);
+                
+                //Set the companyid
+                $companyid = iomad::get_my_companyid($context);
+                $company = new company($companyid);
+                
+                // Check if the company has gone over the user quota.
+                if (!$company->check_usercount(1)) {
+                    $dashboardurl = new moodle_url('/my');
+                    $maxusers = $company->get('maxusers');
+                    print_error('maxuserswarning', 'block_iomad_company_admin', $dashboardurl, $maxusers);
+                }
+                $departmentid=0;
+                $licenseid=0;
+                $mform = new \block_poodllclassroom\local\form\createuserform($companyid, $departmentid, $licenseid, $data);
+                $validateddata = $mform->get_data();
+                if ($validateddata) {
+                    //error_log(print_r( $validateddata, true ));
+
+                    // Trim first and lastnames
+                    $validateddata->firstname = trim($validateddata->firstname);
+                    $validateddata->lastname = trim($validateddata->lastname);
+
+                    $validateddata->userid = $USER->id;
+                    if ($companyid > 0) {
+                        $validateddata->companyid = $companyid;
                     }
 
-                    return $groupid;
+                    if (!$userid = company_user::create($validateddata)) {
+                        return 'error';
+                        /*
+                        $this->verbose("Error inserting a new user in the database!");
+                        if (!$this->get('ignore_errors')) {
+                            die();
+                        }
+                        */
+                    }
+                    $user = new stdclass();
+                    $user->id = $userid;
+                    $validateddata->id = $userid;
+
+                    // Save custom profile fields data.
+                    profile_save_data($validateddata);
+
+                    $systemcontext = context_system::instance();
+
+                    // Check if we are assigning a different role to the user.
+                    if (!empty($validateddata->managertype || !empty($validateddata->educator))) {
+                        company::upsert_company_user($userid, $companyid, $validateddata->userdepartment, $validateddata->managertype,
+                                $validateddata->educator);
+                    }
+
+                    // Assign the user to the default company department.
+                    $parentnode = company::get_company_parentnode($companyid);
+                    if (iomad::has_capability('block/iomad_company_admin:edit_all_departments', $systemcontext)) {
+                        $userhierarchylevel = $parentnode->id;
+                    } else {
+                        $userlevel = $company->get_userlevel($USER);
+                        $userhierarchylevel = $userlevel->id;
+                    }
+                    company::assign_user_to_department($validateddata->userdepartment, $userid);
+
+                    // Enrol the user on the courses.
+                    if (!empty($createcourses)) {
+                        $userdata = $DB->get_record('user', array('id' => $userid));
+                        company_user::enrol($userdata, $createcourses, $companyid);
+                    }
+                    // Assign and licenses.
+                    if (!empty($licenseid)) {
+                        $licenserecord = (array) $DB->get_record('companylicense', array('id' => $licenseid));
+                        if (!empty($licenserecord['program'])) {
+                            // If so the courses are not passed automatically.
+                            $validateddata->licensecourses = $DB->get_records_sql_menu("SELECT c.id, clc.courseid FROM {companylicense_courses} clc
+                                                                   JOIN {course} c ON (clc.courseid = c.id
+                                                                   AND clc.licenseid = :licenseid)",
+                                    array('licenseid' => $licenserecord['id']));
+                        }
+
+                        if (!empty($validateddata->licensecourses)) {
+                            $userdata = $DB->get_record('user', array('id' => $userid));
+                            $count = $licenserecord['used'];
+                            $numberoflicenses = $licenserecord['allocation'];
+                            foreach ($validateddata->licensecourses as $licensecourse) {
+                                if ($count >= $numberoflicenses) {
+                                    // Set the used amount.
+                                    $licenserecord['used'] = $count;
+                                    $DB->update_record('companylicense', $licenserecord);
+                                    redirect(new moodle_url("/blocks/iomad_company_admin/company_license_users_form.php",
+                                            array('licenseid' => $licenseid, 'error' => 1)));
+                                }
+
+                                $issuedate = time();
+                                $DB->insert_record('companylicense_users',
+                                        array('userid' => $userdata->id,
+                                                'licenseid' => $licenseid,
+                                                'issuedate' => $issuedate,
+                                                'licensecourseid' => $licensecourse));
+
+                                // Create an event.
+                                $eventother = array('licenseid' => $licenseid,
+                                        'issuedate' => $issuedate,
+                                        'duedate' => $validateddata->due);
+                                $event =
+                                        \block_iomad_company_admin\event\user_license_assigned::create(array('context' => context_course::instance($licensecourse),
+                                                'objectid' => $licenseid,
+                                                'courseid' => $licensecourse,
+                                                'userid' => $userdata->id,
+                                                'other' => $eventother));
+                                $event->trigger();
+                                $count++;
+                            }
+                        }
+                    }
+
+                    return $userid;
+
+                }
+
                 break;
 
             case 'createcourse':
-                require_once($CFG->dirroot .'/blocks/iomad_company_admin/lib.php');
                 require_once($CFG->dirroot . '/course/lib.php');
 
-error_log('going into create course');
+
                 $systemcontext = context_system::instance();
                 iomad::require_capability('block/iomad_company_admin:createcourse', $systemcontext);
-error_log('got capability');
 
 
                 // Correct the navbar.
@@ -95,7 +189,7 @@ error_log('got capability');
 
                 // Set the companyid
                 $companyid = iomad::get_my_companyid($context);
- error_log('got company id:' . $companyid );
+
 
                 /* next line copied from /course/edit.php */
                 $editoroptions = array('maxfiles' => EDITOR_UNLIMITED_FILES,
@@ -110,12 +204,9 @@ error_log('got capability');
                 $mform = new \block_poodllclassroom\local\form\createcourseform(null, array('companyid'=>$companyid,'editoroptions'=>$editoroptions),
                         $method,$target,$attributes,$editable,$data);
 
-error_log('got form:'  );
                 $validateddata = $mform->get_data();
-error_log('got data:'  );
                 if ($validateddata) {
-
-error_log(print_r( $validateddata, true ));
+//error_log(print_r( $validateddata, true ));
 
                     $validateddata->userid = $USER->id;
 
@@ -131,10 +222,7 @@ error_log(print_r( $validateddata, true ));
 
                     // Turn on restricted modules.
                     $mergeddata->restrictmodules = 1;
- error_log('creating course:'  );
-error_log(print_r( $mergeddata, true ));
                     if (!$course = create_course($mergeddata, $editoroptions)) {
-error_log('failed miserably:'  );
                         return 'error';
                         /*
                         $this->verbose("Error inserting a new course in the database!");
@@ -143,7 +231,6 @@ error_log('failed miserably:'  );
                         }
                         */
                     }
-error_log('created course:'  );
 
                     // If licensed course, turn off all enrolments apart from license enrolment as
                     // default  Moving this to a separate page.

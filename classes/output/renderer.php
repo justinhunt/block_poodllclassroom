@@ -29,9 +29,8 @@ class renderer extends \plugin_renderer_base {
         $containertag = 'createcourse';
         $amodalcontainer = $this->fetch_modalcontainer($title,$content,$containertag);
 
-        //this button is just for testing
-        $creategroupbutton = $this->js_trigger_button('creategroup', true,
-                get_string('creategroup',constants::M_COMP), 'btn-primary');
+        $createuserbutton = $this->js_trigger_button('createuser', true,
+                get_string('createuser',constants::M_COMP), 'btn-primary');
 
         $createcoursebutton = $this->js_trigger_button('createcourse', true,
                 get_string('createcourse',constants::M_COMP), 'btn-primary');
@@ -41,8 +40,8 @@ class renderer extends \plugin_renderer_base {
         $this->page->requires->js_call_amd(constants::M_COMP . "/blockcontroller", 'init', array($opts));
 
          $content = $createcoursebutton . '<br>';
-         //this is just for testing
-         $content .= $creategroupbutton;
+
+         $content .= $createuserbutton;
 
          $content .= $amodalcontainer;
          return $content;
