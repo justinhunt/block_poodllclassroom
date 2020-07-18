@@ -67,8 +67,8 @@ class block_poodllclassroom_external extends external_api {
                 $licenseid=0;
                 $mform = new \block_poodllclassroom\local\form\createuserform($companyid, $departmentid, $licenseid, $data);
                 $validateddata = $mform->get_data();
+error_log("do we got data?");
                 if ($validateddata) {
-                    //error_log(print_r( $validateddata, true ));
 
                     // Trim first and lastnames
                     $validateddata->firstname = trim($validateddata->firstname);
@@ -78,7 +78,8 @@ class block_poodllclassroom_external extends external_api {
                     if ($companyid > 0) {
                         $validateddata->companyid = $companyid;
                     }
-
+error_log(print_r( $validateddata, true ));
+error_log("creating company");
                     if (!$userid = company_user::create($validateddata)) {
                         return 'error';
                         /*
@@ -88,6 +89,7 @@ class block_poodllclassroom_external extends external_api {
                         }
                         */
                     }
+error_log("created company");
                     $user = new stdclass();
                     $user->id = $userid;
                     $validateddata->id = $userid;

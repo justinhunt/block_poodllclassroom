@@ -41,10 +41,8 @@ function block_poodllclassroom_output_fragment_mform($args) {
             // Set the name for the page.
             $linktext = get_string('createuser', 'block_iomad_company_admin');
 
-
             // Set the companyid
             $companyid = iomad::get_my_companyid($context);
-
             $departmentid=0;
             $licenseid=0;
             $data=null;
