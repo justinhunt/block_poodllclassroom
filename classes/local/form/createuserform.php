@@ -33,6 +33,8 @@ use \company;
 use \iomad;
 
 require_once($CFG->dirroot.'/lib/formslib.php');
+require_once($CFG->dirroot .'/blocks/iomad_company_admin/lib/course_selectors.php');
+
 
 class createuserform extends \block_iomad_company_admin\forms\user_edit_form {
     protected $title = '';
