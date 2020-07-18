@@ -33,46 +33,25 @@ function block_poodllclassroom_output_fragment_mform($args) {
     list($ignored, $course) = get_context_info_array($context->id);
 
     switch($formname){
-        case 'creategroup':
+        case 'createuser':
+            $context = context_system::instance();
+            iomad::require_capability('block/iomad_company_admin:user_create', $context);
 
-            require_once($CFG->dirroot . '/group/group_form.php');
+            // Correct the navbar.
+            // Set the name for the page.
+            $linktext = get_string('createuser', 'block_iomad_company_admin');
 
-            $group = new stdClass();
-            if(!empty($course)) {
-                $group->courseid = $course->id;
-                $maxbytes=$course->maxbytes;
-            }else{
-                $group->courseid = 1;
-                $maxbytes=0;
-            }
 
-            require_capability('moodle/course:managegroups', $context);
-            $editoroptions = [
-                    'maxfiles' => EDITOR_UNLIMITED_FILES,
-                    'maxbytes' => $maxbytes,
-                    'trust' => false,
-                    'context' => $context,
-                    'noclean' => true,
-                    'subdirs' => false
-            ];
-            $group = file_prepare_standard_editor($group, 'description', $editoroptions, $context, 'group', 'description', null);
+            // Set the companyid
+            $companyid = iomad::get_my_companyid($context);
 
-            $formdata = [];
-            if (!empty($args->jsonformdata)) {
-                $serialiseddata = json_decode($args->jsonformdata);
-                //parse_str($serialiseddata, $formdata);
-                //$formdata = $serialiseddata;
-            }
+            $departmentid=0;
+            $licenseid=0;
+            $data=null;
+            $mform = new \block_poodllclassroom\local\form\createuserform($companyid, $departmentid, $licenseid, $data);
 
-            $mform = new group_form(null, array('editoroptions' => $editoroptions), 'post', '', null, true, $formdata);
-            // Used to set the courseid.
-            $mform->set_data($group);
-
-            if (!empty($args->jsonformdata)) {
-                // If we were passed non-empty form data we want the mform to call validation functions and show errors.
-                $mform->is_validated();
-            }
             break;
+
 
         case 'createcourse':
 
