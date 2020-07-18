@@ -130,6 +130,7 @@ error_log(print_r( $validateddata, true ));
                     // Turn on restricted modules.
                     $mergeddata->restrictmodules = 1;
  error_log('creating course:'  );
+error_log(print_r( $mergeddata, true ));
                     if (!$course = create_course($mergeddata, $editoroptions)) {
 error_log('failed miserably:'  );
                         return 'error';
