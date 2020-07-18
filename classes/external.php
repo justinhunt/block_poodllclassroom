@@ -101,7 +101,13 @@ error_log('got capability');
                         'trusttext' => false,
                         'noclean' => true);
 
-                $mform = new \block_poodllclassroom\local\form\createcourseform(null, array('companyid'=>$companyid,'editoroptions'=>$editoroptions), $data);
+                $method='post';
+                $target='';
+                $attributes=null;
+                $editable=true;
+                $mform = new \block_poodllclassroom\local\form\createcourseform(null, array('companyid'=>$companyid,'editoroptions'=>$editoroptions),
+                        $method,$target,$attributes,$editable,$data);
+
 error_log('got form:'  );
                 $validateddata = $mform->get_data();
 error_log('got data:'  );
