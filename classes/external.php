@@ -112,6 +112,9 @@ error_log('got form:'  );
                 $validateddata = $mform->get_data();
 error_log('got data:'  );
                 if ($validateddata) {
+
+error_log(print_r( $validateddata, true ));
+
                     $validateddata->userid = $USER->id;
 
                     // Merge data with course defaults.
@@ -137,6 +140,7 @@ error_log('failed miserably:'  );
                         }
                         */
                     }
+error_log('created course:'  );
 
                     // If licensed course, turn off all enrolments apart from license enrolment as
                     // default  Moving this to a separate page.
