@@ -162,14 +162,13 @@ class renderer extends \plugin_renderer_base {
         $columns[0]=null;
         $columns[1]=null;
         $columns[2]=null;
-        $columns[3]=null;
+        $columns[3]=array('orderable'=>false);
         $columns[4]=array('orderable'=>false);
-        $columns[5]=array('orderable'=>false);
         $tableprops['columns']=$columns;
 
         //default ordering
         $order = array();
-        $order[0] =array(3, "desc");
+        $order[0] =array(2, "desc");
         $tableprops['order']=$order;
 
         //here we set up any info we need to pass into javascript
