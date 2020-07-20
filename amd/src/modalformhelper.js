@@ -43,6 +43,18 @@ define(['jquery', 'core/log', 'core/str', 'core/modal_factory', 'core/modal_even
         TheForm.prototype.contextid = -1;
 
         /**
+         * @var {int} itemid
+         * @private
+         */
+        TheForm.prototype.itemid = -1;
+
+        /**
+         * @var {string} formname
+         * @private
+         */
+        TheForm.prototype.formname = '';
+
+        /**
          * Initialise the class.
          *
          * @param {String} selector used to find triggers for the new group modal.
@@ -250,7 +262,6 @@ define(['jquery', 'core/log', 'core/str', 'core/modal_factory', 'core/modal_even
              * @param {string} selector The CSS selector used to find nodes that will trigger this module.
              * @param {int} contextid The contextid for the course.
              * @param {string} formname The formname for the course.
-             * @param {item} itemid The itemid of the course/user/enrolment etc (0 for new)
              * @return {Promise}
              */
             init: function(selector, contextid, formname) {
