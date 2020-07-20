@@ -51,6 +51,7 @@ class renderer extends \plugin_renderer_base {
         $this->setup_datatables($tableid);
 
         $users = false;
+        $visible=false;
         if($users) {
             $visible = true;
         }
@@ -58,8 +59,8 @@ class renderer extends \plugin_renderer_base {
         echo $this->no_list_users(!$visible);
 
         //this inits the js for the list helper page
-        $opts=array('modulecssclass'=>constants::M_CLASS, 'cmid'=>$cm->id, 'moduleid'=>$moduleinstance->id,'authmode'=>'normal', 'max'=>$max);
-        $this->page->requires->js_call_amd("mod_cpassignment/listhelper", 'init', array($opts));
+    //    $opts=array('modulecssclass'=>constants::M_CLASS, 'cmid'=>$cm->id, 'moduleid'=>$moduleinstance->id,'authmode'=>'normal', 'max'=>$max);
+    //    $this->page->requires->js_call_amd("mod_cpassignment/listhelper", 'init', array($opts));
 
 
          $content .= $amodalcontainer;
@@ -116,7 +117,7 @@ class renderer extends \plugin_renderer_base {
         return $content;
     }
 
-    function create_user_list($items,$tableid,$visible){
+    function create_user_list($users,$tableid,$visible){
 
 
         $data = [];
@@ -126,12 +127,12 @@ class renderer extends \plugin_renderer_base {
         //loop through the items,massage data and add to table
         //itemname itemid,filename,itemdate, id
         $currentitem=0;
-        foreach ($items as $item) {
+        foreach ($users as $user) {
             $ditem=[];
-            $ditem['id']= $item->id;
-            $ditem['firstname'] = $item->firstname;
-            $ditem['lastname'] =  $item->lastname;
-            $ditem['date'] = date("Y-m-d H:i:s",$item->timecreated);
+            $ditem['id']= $user->id;
+            $ditem['firstname'] = $user->firstname;
+            $ditem['lastname'] =  $user->lastname;
+            $ditem['date'] = date("Y-m-d H:i:s",$user->timecreated);
             $data['items'][]=$ditem;
 
         }
@@ -145,7 +146,7 @@ class renderer extends \plugin_renderer_base {
     public function no_list_users($visible){
         $data=[];
         $data['display'] = $visible ? 'block' : 'none';
-        return $this->render_from_template('mod_cpassignment/nouserscontainer', $data);
+        return $this->render_from_template('block_poodllclassroom/nouserscontainer', $data);
     }
 
     function setup_datatables($tableid){

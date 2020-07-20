@@ -101,7 +101,7 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
         do_resetkey: function(that, moduleid){
 
             Ajax.call([{
-                methodname: 'mod_cpassignment_reset_key',
+                methodname: 'block_poodllclassroom_reset_key',
                 args: {
                     moduleid: moduleid,
                 },
@@ -130,7 +130,7 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
         do_delete: function(itemid){
 
             Ajax.call([{
-                methodname: 'mod_cpassignment_remove_rec',
+                methodname: 'block_poodllclassroom_remove_rec',
                 args: {
                     itemid: itemid,
                 },
@@ -160,7 +160,7 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
         insert_new_item: function(that,item){
             that.controls.noitemscontainer.hide();
             that.controls.itemscontainer.show();
-            templates.render('mod_cpassignment/itemrow',item).then(
+            templates.render('block_poodllclassroom/userlistrow',item).then(
                 function(html,js){
                     that.controls.thedatatable.row.add($(html)[0]).draw();
                 }
@@ -185,7 +185,7 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
             }
 
             Ajax.call([{
-                methodname: 'mod_cpassignment_submit_rec',
+                methodname: 'block_poodllclassroom_submit_rec',
                 args: args,
                 done: function (ajaxresult) {
                     var payloadobject = JSON.parse(ajaxresult);
