@@ -20,10 +20,9 @@ define(['jquery', 'core/log', 'core/str', 'core/modal_factory', 'core/modal_even
          *
          * Each call to init gets it's own instance of this class.
          */
-        var TheForm = function(selector, contextid, formname, itemid) {
+        var TheForm = function(selector, contextid, formname) {
             this.contextid = contextid;
             this.formname = formname;
-            this.itemid = itemid;
             //this will init on page load (good if just one or two items)
             //this.init(selector);
 
@@ -102,6 +101,8 @@ define(['jquery', 'core/log', 'core/str', 'core/modal_factory', 'core/modal_even
             triggers.on('click',function(e) {
                 //prevent it doing a real click (which will do the non ajax version of a click)
                 e.preventDefault();
+
+                dd.itemid=$(this).data('id');
 
                 ModalFactory.create({
                     type: ModalFactory.types.SAVE_CANCEL,
@@ -252,8 +253,8 @@ define(['jquery', 'core/log', 'core/str', 'core/modal_factory', 'core/modal_even
              * @param {item} itemid The itemid of the course/user/enrolment etc (0 for new)
              * @return {Promise}
              */
-            init: function(selector, contextid, formname, itemid) {
-                return new TheForm(selector, contextid, formname,itemid);
+            init: function(selector, contextid, formname) {
+                return new TheForm(selector, contextid, formname);
             }
         };
     });

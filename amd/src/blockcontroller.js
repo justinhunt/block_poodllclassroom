@@ -44,6 +44,7 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
             mfh.init('#' + this.modulecssclass + '_createuser_btn', this.contextid, 'createuser');
             mfh.init('#' + this.modulecssclass + '_createcourse_btn', this.contextid, 'createcourse');
 
+            mfh.init('.' + this.modulecssclass + '_usereditlink', this.contextid, 'edituser');
             //modal dialog show link
             /*
             this.controls.createcoursestartbutton.click(function(){

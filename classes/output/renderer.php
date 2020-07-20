@@ -186,7 +186,7 @@ class renderer extends \plugin_renderer_base {
 
         $buttonclass =constants::M_CLASS  . '_' . $buttontag . '_btn';
         $containerclass = $buttonclass . '_cnt';
-        $button = \html_writer::link('#', $buttonlabel, array('class'=>'btn ' . $bootstrapclass . ' ' . $buttonclass,'type'=>'button','id'=>$buttonclass));
+        $button = \html_writer::link('#', $buttonlabel, array('class'=>'btn ' . $bootstrapclass . ' ' . $buttonclass,'type'=>'button','id'=>$buttonclass, 'data-id'=>0));
         $visibleclass = '';
         if(!$visible){$visibleclass = 'hide';}
         $ret = \html_writer::div($button, $containerclass . ' ' .  $visibleclass);
