@@ -18,6 +18,13 @@
     min-width: 150px;
     margin-top: 10px;
 }
+.block_poodllclassroom_userlist_cont{
+
+}
+.block_poodllclassroom_nousers_cont {
+    text-align: center;
+    margin-top: 10px;
+}
 /*
 .d-row {
     display: -webkit-box;

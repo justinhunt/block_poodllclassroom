@@ -92,5 +92,15 @@ $string['createcoursestart'] = 'Create Course [ + ]';
 $string['close'] = 'Close';
 
 $string['createuser'] = 'Create User';
+$string['edituser']="Edit User";
 $string['createuser_mform'] = 'Create User';
 $string['createuserstart'] = 'Create User [ + ]';
+$string['nousersheader'] = 'No Users';
+$string['nousersinfo'] = 'You currently have no users.';
+
+$string['edit'] = 'Edit';
+$string['delete'] = 'Delete';
+$string['firstname'] = 'First name';
+$string['lastname'] = 'Last name';
+$string['date'] = 'Date';
+$string['action'] = 'Action';

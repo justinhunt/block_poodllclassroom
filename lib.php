@@ -17,7 +17,7 @@
 //require_once(dirname(__FILE__) . '/../../config.php'); // Creates $PAGE.
 
 function block_poodllclassroom_output_fragment_mform($args) {
-    global $CFG, $PAGE;
+    global $CFG, $PAGE, $DB;
 
 
 
@@ -25,6 +25,7 @@ function block_poodllclassroom_output_fragment_mform($args) {
     $args = (object) $args;
     $context = $args->context;
     $formname = $args->formname;
+    $itemid=$args->itemid;
     $mform= null;
     $o = '';
 
@@ -45,8 +46,52 @@ function block_poodllclassroom_output_fragment_mform($args) {
             $companyid = iomad::get_my_companyid($context);
             $departmentid=0;
             $licenseid=0;
+
             $data=null;
             $mform = new \block_poodllclassroom\local\form\createuserform($companyid, $departmentid, $licenseid, $data);
+
+            break;
+
+        case 'edituser':
+            $context = context_system::instance();
+            iomad::require_capability('block/iomad_company_admin:user_create', $context);
+
+            // Set the companyid
+            $companyid = iomad::get_my_companyid($context);
+            $departmentid=0;
+            $licenseid=0;
+            $userid=$itemid;
+
+            // Check the userid is valid.
+            if (!empty($userid) && !company::check_valid_user($companyid, $userid, $departmentid)) {
+                print_error('invaliduserdepartment', 'block_iomad_company_management');
+                return;
+            }
+
+            $user = $DB->get_record('user',array('id'=>$userid));
+
+            $usercontext = context_user::instance($user->id);
+            $editoroptions = array(
+                    'maxfiles'   => EDITOR_UNLIMITED_FILES,
+                    'maxbytes'   => $CFG->maxbytes,
+                    'trusttext'  => false,
+                    'forcehttps' => false,
+                    'context'    => $usercontext
+            );
+
+            $draftitemid = 0;
+            $filemanagercontext = $editoroptions['context'];
+            $filemanageroptions = array('maxbytes'       => $CFG->maxbytes,
+                    'subdirs'        => 0,
+                    'maxfiles'       => 1,
+                    'accepted_types' => 'web_image');
+
+            $user = file_prepare_standard_editor($user, 'description', $editoroptions, $usercontext, 'user', 'profile', 0);
+            file_prepare_draft_area($draftitemid, $filemanagercontext->id, 'user', 'newicon', 0, $filemanageroptions);
+            $user->imagefile = $draftitemid;
+            $mform = new \block_poodllclassroom\local\form\edituserform(null, array('filemanageroptions'=>$filemanageroptions,'editoroptions'=> $editoroptions, 'user'=>$user));
+
+            $mform->set_data($user);
 
             break;
 

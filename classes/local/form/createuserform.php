@@ -339,7 +339,7 @@ class createuserform extends \moodleform {
                 $data->description = $this->description;
             }
 
-            if ($this->courseselector) {
+            if (isset($this->courseselector) && $this->courseselector) {
                 $data->selectedcourses = $this->courseselector->get_selected_courses();
             }
         }

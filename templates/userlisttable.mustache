@@ -1,0 +1,18 @@
+<div id="block_poodllclassroom_userlist_cont" class="block_poodllclassroom_userlist_cont" style="display: {{display}};">
+<table class="generaltable" id="{{tableid}}">
+    <thead>
+    <tr>
+        <th class="header c0 firstname" style="" scope="col">{{#str}}firstname, block_poodllclassroom{{/str}}</th>
+        <th class="header c1 lastname" style="" scope="col">{{#str}}lastname, block_poodllclassroom{{/str}}</th>
+        <th class="header c2 date" style="" scope="col">{{#str}}date, block_poodllclassroom{{/str}}</th>
+        <th class="header c4 edit" style="" scope="col">{{#str}}action, block_poodllclassroom{{/str}}</th>
+        <th class="header c5 lastcol delete" style="" scope="col"></th>
+    </tr>
+    </thead>
+    <tbody>
+    {{#items}}
+    {{> block_poodllclassroom/itemrow}}
+    {{/items}}
+    </tbody>
+</table>
+</div>

@@ -43,10 +43,31 @@ class renderer extends \plugin_renderer_base {
 
          $content .= $createuserbutton;
 
+
+         //userlist
+        //if we have items, show em. Data tables will make it pretty
+        //Prepare datatable(before header printed)
+        $tableid = '' . constants::M_CLASS_USERLIST . '_' . '_opts_9999';
+        $this->setup_datatables($tableid);
+
+        $users = false;
+        if($users) {
+            $visible = true;
+        }
+        echo $this->create_user_list($users,$tableid,$visible );
+        echo $this->no_list_users(!$visible);
+
+        //this inits the js for the list helper page
+        $opts=array('modulecssclass'=>constants::M_CLASS, 'cmid'=>$cm->id, 'moduleid'=>$moduleinstance->id,'authmode'=>'normal', 'max'=>$max);
+        $this->page->requires->js_call_amd("mod_cpassignment/listhelper", 'init', array($opts));
+
+
          $content .= $amodalcontainer;
          return $content;
 
     }
+
+
 
     //In this function we prepare and display the content that goes in the block
     function fetch_block_content_old($courseid){
@@ -93,6 +114,65 @@ class renderer extends \plugin_renderer_base {
         $this->page->requires->js_call_amd(constants::M_COMP . "/triggeralert", 'init', array($opts));
 
         return $content;
+    }
+
+    function create_user_list($items,$tableid,$visible){
+
+
+        $data = [];
+        $data['display'] = $visible ? 'block' : 'none';
+        $data['tableid']=$tableid;
+        $data['items']=[];
+        //loop through the items,massage data and add to table
+        //itemname itemid,filename,itemdate, id
+        $currentitem=0;
+        foreach ($items as $item) {
+            $ditem=[];
+            $ditem['id']= $item->id;
+            $ditem['firstname'] = $item->firstname;
+            $ditem['lastname'] =  $item->lastname;
+            $ditem['date'] = date("Y-m-d H:i:s",$item->timecreated);
+            $data['items'][]=$ditem;
+
+        }
+        return $this->render_from_template('block_poodllclassroom/userlisttable', $data);
+
+    }
+
+    /**
+     * No items, thats too bad
+     */
+    public function no_list_users($visible){
+        $data=[];
+        $data['display'] = $visible ? 'block' : 'none';
+        return $this->render_from_template('mod_cpassignment/nouserscontainer', $data);
+    }
+
+    function setup_datatables($tableid){
+        global $USER;
+
+        $tableprops = array();
+        $columns = array();
+        //for cols .. .'itemname', 'itemtype', 'itemtags','timemodified', 'edit','delete'
+        $columns[0]=null;
+        $columns[1]=null;
+        $columns[2]=null;
+        $columns[3]=null;
+        $columns[4]=array('orderable'=>false);
+        $columns[5]=array('orderable'=>false);
+        $tableprops['columns']=$columns;
+
+        //default ordering
+        $order = array();
+        $order[0] =array(3, "desc");
+        $tableprops['order']=$order;
+
+        //here we set up any info we need to pass into javascript
+        $opts =Array();
+        $opts['tableid']=$tableid;
+        $opts['tableprops']=$tableprops;
+        $this->page->requires->js_call_amd("block_poodllclassroom/datatables", 'init', array($opts));
+        $this->page->requires->css( new \moodle_url('https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css'));
     }
 
     /**

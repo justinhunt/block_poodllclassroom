@@ -7,8 +7,8 @@
  * @copyright  2020 Justin Hunt <poodllsupport@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events', 'core/fragment', 'core/ajax', 'core/yui'],
-    function($, Str, ModalFactory, ModalEvents, Fragment, Ajax, Y) {
+define(['jquery', 'core/log', 'core/str', 'core/modal_factory', 'core/modal_events','core/fragment', 'core/ajax', 'core/yui'],
+    function($, log, Str, ModalFactory, ModalEvents, Fragment, Ajax, Y) {
 
         /**
          * Constructor
@@ -16,13 +16,19 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events', 'core/f
          * @param {String} selector used to find triggers for the new group modal.
          * @param {int} contextid
          * @param {String} formname The key/name of the form for this instance
+         * @param {Integer} itemid or 0.
          *
          * Each call to init gets it's own instance of this class.
          */
-        var TheForm = function(selector, contextid, formname) {
+        var TheForm = function(selector, contextid, formname, itemid) {
             this.contextid = contextid;
             this.formname = formname;
-            this.init(selector);
+            this.itemid = itemid;
+            //this will init on page load (good if just one or two items)
+            //this.init(selector);
+
+            //this will init on item click (better for lots of items)
+            this.preinit(selector);
         };
 
         /**
@@ -47,12 +53,12 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events', 'core/f
         TheForm.prototype.init = function(selector) {
             var triggers = $(selector);
             // Fetch the title string.
-            return Str.get_string(this.formname + "_mform", 'block_poodllclassroom').then(function(title) {
+            return Str.get_string(this.formname , 'block_poodllclassroom').then(function(title) {
                 // Create the modal.
                 return ModalFactory.create({
                     type: ModalFactory.types.SAVE_CANCEL,
                     title: title,
-                    body: this.getBody()
+                    body: this.getBody({})
                 }, triggers);
             }.bind(this)).then(function(modal) {
                 // Keep a reference to the modal.
@@ -63,7 +69,7 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events', 'core/f
 
                 // We want to reset the form every time it is opened.
                 this.modal.getRoot().on(ModalEvents.hidden, function() {
-                    this.modal.setBody(this.getBody());
+                    this.modal.setBody(this.getBody({}));
                 }.bind(this));
 
                 // We want to hide the submit buttons every time it is opened.
@@ -83,6 +89,56 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events', 'core/f
         };
 
         /**
+         * Initialise the class.
+         *
+         * @param {String} selector used to find triggers for the new group modal.
+         * @private
+         * @return {Promise}
+         */
+        TheForm.prototype.preinit = function(selector) {
+            var triggers = $(selector);
+            var dd=this;
+            Str.get_string(this.formname , 'block_poodllclassroom').then(function(title){dd.formtitle=title;});
+            triggers.on('click',function(e) {
+                //prevent it doing a real click (which will do the non ajax version of a click)
+                e.preventDefault();
+
+                ModalFactory.create({
+                    type: ModalFactory.types.SAVE_CANCEL,
+                    title: dd.formtitle,
+                    body: dd.getBody({})
+                }).then(function (modal) {
+                    // Keep a reference to the modal.
+                    dd.modal = modal;
+
+                    // Forms are big, we want a big modal.
+                    dd.modal.setLarge();
+
+                    // We want to reset the form every time it is opened.
+                    dd.modal.getRoot().on(ModalEvents.hidden, function() {
+                        dd.modal.setBody(dd.getBody({}));
+                    }.bind(dd));
+
+                    // We want to hide the submit buttons every time it is opened.
+                    dd.modal.getRoot().on(ModalEvents.shown, function () {
+                        dd.modal.getRoot().append('<style>[data-fieldtype=submit] { display: none ! important; }</style>');
+                    });
+
+
+                    // We catch the modal save event, and use it to submit the form inside the modal.
+                    // Triggering a form submission will give JS validation scripts a chance to check for errors.
+                    dd.modal.getRoot().on(ModalEvents.save, dd.submitForm.bind(dd));
+                    // We also catch the form submit event and use it to submit the form with ajax.
+                    dd.modal.getRoot().on('submit', 'form', dd.submitFormAjax.bind(dd));
+                    dd.modal.show();
+                    return dd.modal;
+                });
+
+            });//end of on click
+
+        };
+
+        /**
          * @method getBody
          * @private
          * @return {Promise}
@@ -91,8 +147,9 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events', 'core/f
             if (typeof formdata === "undefined") {
                 formdata = {};
             }
+
             // Get the content of the modal.
-            var params = {jsonformdata: JSON.stringify(formdata), formname: this.formname};
+            var params = {jsonformdata: JSON.stringify(formdata), formname: this.formname, itemid: this.itemid};
             return Fragment.loadFragment('block_poodllclassroom', 'mform', this.contextid, params);
         };
 
@@ -101,13 +158,17 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events', 'core/f
          * @private
          * @return {Promise}
          */
-        TheForm.prototype.handleFormSubmissionResponse = function() {
+        TheForm.prototype.handleFormSubmissionResponse = function(formData,response) {
             this.modal.hide();
             // We could trigger an event instead.
             // Yuk.
             Y.use('moodle-core-formchangechecker', function() {
                 M.core_formchangechecker.reset_form_dirty_state();
             });
+            log.debug(response); //this contains what the server returns (eg new item->id etc)
+            log.debug(formData); //this contains the original form data
+
+            //because we are lazy we reload here. But we could fix up the page ajax style
             document.location.reload();
         };
 
@@ -117,8 +178,7 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events', 'core/f
          * @return {Promise}
          */
         TheForm.prototype.handleFormSubmissionFailure = function(data) {
-            // Oh noes! Epic fail :(
-            // Ah wait - this is normal. We need to re-display the form with errors!
+            //  We need to re-display the form with errors!
             this.modal.setBody(this.getBody(data));
         };
 
@@ -189,10 +249,11 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events', 'core/f
              * @param {string} selector The CSS selector used to find nodes that will trigger this module.
              * @param {int} contextid The contextid for the course.
              * @param {string} formname The formname for the course.
+             * @param {item} itemid The itemid of the course/user/enrolment etc (0 for new)
              * @return {Promise}
              */
-            init: function(selector, contextid, formname) {
-                return new TheForm(selector, contextid, formname);
+            init: function(selector, contextid, formname, itemid) {
+                return new TheForm(selector, contextid, formname,itemid);
             }
         };
     });

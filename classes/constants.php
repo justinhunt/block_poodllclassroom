@@ -18,6 +18,7 @@ const M_NAME='poodllclassroom';
 const M_URL='/blocks/poodllclassroom';
 const M_CLASS='block_poodllclassroom';
 const M_HOOKCOUNT =5;
+const M_CLASS_USERLIST ='block_poodllclassroom_userlist_cont';
 
 const SETTING_NONE ='none';
 const SETTING_MICROSOFTAUTH ='microsoftauth';
