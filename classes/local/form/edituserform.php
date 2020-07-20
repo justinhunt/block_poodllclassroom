@@ -33,6 +33,7 @@ use block_poodllclassroom\constants;
 use block_poodllclassroom\common;
 
 require_once($CFG->dirroot.'/lib/formslib.php');
+require_once($CFG->dirroot.'/user/editlib.php');
 
 class edituserform extends \moodleform {
     protected $title = '';
