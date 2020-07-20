@@ -54,9 +54,12 @@ class renderer extends \plugin_renderer_base {
         $visible=false;
         if($users) {
             $visible = true;
+        }else{
+            $users=[];
         }
-        echo $this->create_user_list($users,$tableid,$visible );
-        echo $this->no_list_users(!$visible);
+
+        $content .= $this->create_user_list($users,$tableid,$visible );
+        $content .= $this->no_list_users(!$visible);
 
         //this inits the js for the list helper page
     //    $opts=array('modulecssclass'=>constants::M_CLASS, 'cmid'=>$cm->id, 'moduleid'=>$moduleinstance->id,'authmode'=>'normal', 'max'=>$max);
