@@ -23,6 +23,13 @@ class renderer extends \plugin_renderer_base {
     }
 
     function fetch_block_content($context, $company,$users){
+
+        //userlist
+        //if we have items, show em. Data tables will make it pretty
+        //Prepare datatable(before header printed)
+        $tableid = '' . constants::M_CLASS_USERLIST . '_' . '_opts_9999';
+        $this->setup_datatables($tableid);
+
         $contextid = $context->id;
         $title = get_string('createcourse',constants::M_COMP);
         $content = "a whole lot of content going on";
@@ -44,11 +51,6 @@ class renderer extends \plugin_renderer_base {
          $content .= $createuserbutton;
 
 
-         //userlist
-        //if we have items, show em. Data tables will make it pretty
-        //Prepare datatable(before header printed)
-        $tableid = '' . constants::M_CLASS_USERLIST . '_' . '_opts_9999';
-        $this->setup_datatables($tableid);
 
         $visible=false;
         if($users) {

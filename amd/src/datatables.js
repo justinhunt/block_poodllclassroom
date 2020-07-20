@@ -5,7 +5,7 @@ define(['jquery', 'core/log', 'https://cdn.datatables.net/1.10.19/js/jquery.data
     This file contains class and ID definitions.
      */
 
-    log.debug('Voice Studio Datatables helper: initialising');
+    log.debug('Poodll Classroom Datatables helper: initialising');
 
     return {
         //pass in config, the jquery video/audio object, and a function to be called when conversion has finshed
