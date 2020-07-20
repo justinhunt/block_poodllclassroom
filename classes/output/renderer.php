@@ -43,7 +43,7 @@ class renderer extends \plugin_renderer_base {
                 get_string('createcourse',constants::M_COMP), 'btn-primary');
 
         //we attach an event to it. The event comes from a JS AMD module also in this plugin
-        $opts=array('modulecssclass' => 'block_poodllclassroom', 'contextid'=>$contextid);
+        $opts=array('modulecssclass' => 'block_poodllclassroom', 'contextid'=>$contextid,'tableid'=>$tableid);
         $this->page->requires->js_call_amd(constants::M_COMP . "/blockcontroller", 'init', array($opts));
 
          $content = $createcoursebutton . '<br>';
@@ -176,7 +176,7 @@ class renderer extends \plugin_renderer_base {
         $opts =Array();
         $opts['tableid']=$tableid;
         $opts['tableprops']=$tableprops;
-        $this->page->requires->js_call_amd("block_poodllclassroom/datatables", 'init', array($opts));
+        $this->page->requires->js_call_amd(constants::M_COMP . "/datatables", 'init', array($opts));
         $this->page->requires->css( new \moodle_url('https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css'));
     }
 

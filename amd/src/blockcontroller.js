@@ -1,5 +1,5 @@
 define(['jquery','core/config','core/log','core/ajax','core/templates','core/modal_factory','core/str','core/modal_events',
-        'block_poodllclassroom/dialogs','block_poodllclassroom/modalformhelper','core/notification'],
+    'block_poodllclassroom/dialogs','block_poodllclassroom/dialogs','block_poodllclassroom/modalformhelper','core/notification'],
     function($,cfg,log,Ajax, templates, ModalFactory, str, ModalEvents,  dialogs, mfh,  notification) {
     "use strict"; // jshint ;_;
 
