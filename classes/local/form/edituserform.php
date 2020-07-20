@@ -49,7 +49,7 @@ class edituserform extends \moodleform {
         $filemanageroptions = null;
 
         if (!is_array($this->_customdata)) {
-            throw new coding_exception('invalid custom data for user_edit_form');
+            throw new \coding_exception('invalid custom data for user_edit_form');
         }
         $editoroptions = $this->_customdata['editoroptions'];
         $filemanageroptions = $this->_customdata['filemanageroptions'];
@@ -65,7 +65,7 @@ class edituserform extends \moodleform {
                             get_string('edituser', constants::M_COMP));
 
         // Shared fields.
-        useredit_shared_definition($mform, $editoroptions, $filemanageroptions, $user);
+        \useredit_shared_definition($mform, $editoroptions, $filemanageroptions, $user);
 
 
         // Add action buttons.
