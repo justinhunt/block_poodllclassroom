@@ -138,8 +138,6 @@ class renderer extends \plugin_renderer_base {
             $data['items'][]=$ditem;
 
         }
-        print_r($data);
-        print_r($users);
         return $this->render_from_template('block_poodllclassroom/userlisttable', $data);
 
     }

@@ -275,7 +275,7 @@ class common
     public static function fetch_company_users($companyid){
         global $CFG,$DB;
 
-        $users = $DB->get_records_sql('SELECT u.* FROM {user} u INNER JOIN {company_users} cu ON cu.userid = u.id WHERE cu.id=:companyid', array('companyid' => $companyid)) ;
+        $users = $DB->get_records_sql('SELECT u.* FROM {user} u INNER JOIN {company_users} cu ON cu.userid = u.id WHERE cu.companyid=:companyid', array('companyid' => $companyid)) ;
         return $users;
     }
 
