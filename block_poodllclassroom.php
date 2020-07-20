@@ -70,9 +70,14 @@ class block_poodllclassroom extends block_base {
         //get best config. our helper class to merge local and admin configs
         $bestconfig = common::fetch_best_config($instancesettings->id);
 
+        //Set the companyid
+        $companyid = iomad::get_my_companyid($this->context);
+        $company = new company($companyid);
+        $companyusers = common::fetch_company_users($companyid);
+
 
         $renderer = $this->page->get_renderer(constants::M_COMP);
-        $this->content->text = $renderer->fetch_block_content($this->context->id) . '<H1>hello world</H1>' ;
+        $this->content->text = $renderer->fetch_block_content($this->context, $company,$companyusers) ;
         return $this->content  ;
     }
 
