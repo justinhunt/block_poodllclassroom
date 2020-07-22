@@ -293,9 +293,9 @@ class common
 
 
         // Set up the SQL for the table.
-        $selectsql = "ic.id, c.id AS courseid, c.fullname AS coursename, ic.licensed, ic.shared, ic.validlength, ic.warnexpire, ic.warncompletion, ic.notifyperiod, ic.expireafter, ic.warnnotstarted, ic.hasgrade, '$companyid' AS companyid";
-        $fromsql = "{iomad_courses} ic JOIN {course} c ON (ic.courseid = c.id)";
-        $wheresql = "$companysql ";
+        $selectsql = " ic.id, c.id AS courseid, c.fullname AS coursename, ic.licensed, ic.shared, ic.validlength, ic.warnexpire, ic.warncompletion, ic.notifyperiod, ic.expireafter, ic.warnnotstarted, ic.hasgrade, '$companyid' AS companyid";
+        $fromsql = " {iomad_courses} ic JOIN {course} c ON (ic.courseid = c.id)";
+        $wheresql = " $companysql ";
         $sqlparams = $params;
 
 
