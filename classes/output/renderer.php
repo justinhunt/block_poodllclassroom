@@ -176,7 +176,7 @@ class renderer extends \plugin_renderer_base {
             $ditem['coursename'] = $course->coursename;
             $data['courses'][]=$ditem;
         }
-        return $this->render_from_template('block_poodllclassroom/userlisttable', $data);
+        return $this->render_from_template('block_poodllclassroom/courselist', $data);
 
     }
 
