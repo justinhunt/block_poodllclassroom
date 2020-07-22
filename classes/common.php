@@ -279,4 +279,28 @@ class common
         return $users;
     }
 
+    public static function fetch_company_courses($companyid){
+        global $CFG,$DB;
+
+
+        $params = array();
+        $params['companyid'] = $companyid;
+        $companysql = " (c.id IN (
+                          SELECT courseid FROM {company_course}
+                          WHERE companyid = :companyid)
+                         OR ic.shared = 1) ";
+
+
+
+        // Set up the SQL for the table.
+        $selectsql = "ic.id, c.id AS courseid, c.fullname AS coursename, ic.licensed, ic.shared, ic.validlength, ic.warnexpire, ic.warncompletion, ic.notifyperiod, ic.expireafter, ic.warnnotstarted, ic.hasgrade, '$companyid' AS companyid";
+        $fromsql = "{iomad_courses} ic JOIN {course} c ON (ic.courseid = c.id)";
+        $wheresql = "$companysql ";
+        $sqlparams = $params;
+
+
+        $companies = $DB->get_records_sql('SELECT '. $selectsql . $fromsql . $wheresql, $sqlparams) ;
+        return $companies;
+    }
+
 }//end of class

@@ -22,7 +22,7 @@ class renderer extends \plugin_renderer_base {
         return $this->output->header();
     }
 
-    function fetch_block_content($context, $company,$users){
+    function fetch_block_content($context, $company,$users, $courses){
 
         //userlist
         //if we have items, show em. Data tables will make it pretty
@@ -51,6 +51,16 @@ class renderer extends \plugin_renderer_base {
          $content .= $createuserbutton;
 
 
+        $visible=false;
+        if($courses) {
+            $visible = true;
+        }else{
+            $courses=[];
+        }
+        $content .= $this->create_course_list($courses,$visible );
+        $content .= $this->no_courses(!$visible);
+
+
 
         $visible=false;
         if($users) {
@@ -60,7 +70,7 @@ class renderer extends \plugin_renderer_base {
         }
 
         $content .= $this->create_user_list($users,$tableid,$visible );
-        $content .= $this->no_list_users(!$visible);
+        $content .= $this->no_users(!$visible);
 
         //this inits the js for the list helper page
     //    $opts=array('modulecssclass'=>constants::M_CLASS, 'cmid'=>$cm->id, 'moduleid'=>$moduleinstance->id,'authmode'=>'normal', 'max'=>$max);
@@ -147,10 +157,36 @@ class renderer extends \plugin_renderer_base {
     /**
      * No items, thats too bad
      */
-    public function no_list_users($visible){
+    public function no_users($visible){
         $data=[];
         $data['display'] = $visible ? 'block' : 'none';
         return $this->render_from_template('block_poodllclassroom/nouserscontainer', $data);
+    }
+
+    function create_course_list($courses,$visible){
+        $data = [];
+        $data['display'] = $visible ? 'block' : 'none';
+        $data['courses']=[];
+        //loop through the items,massage data and add to table
+        //itemname itemid,filename,itemdate, id
+        $currentitem=0;
+        foreach ($courses as $course) {
+            $ditem=[];
+            $ditem['id']= $course->id;
+            $ditem['coursename'] = $course->coursename;
+            $data['courses'][]=$ditem;
+        }
+        return $this->render_from_template('block_poodllclassroom/userlisttable', $data);
+
+    }
+
+    /**
+     * No items, thats too bad
+     */
+    public function no_courses($visible){
+        $data=[];
+        $data['display'] = $visible ? 'block' : 'none';
+        return $this->render_from_template('block_poodllclassroom/nocoursescontainer', $data);
     }
 
     function setup_datatables($tableid){

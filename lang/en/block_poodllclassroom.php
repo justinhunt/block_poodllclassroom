@@ -97,6 +97,9 @@ $string['createuser_mform'] = 'Create User';
 $string['createuserstart'] = 'Create User [ + ]';
 $string['nousersheader'] = 'No Users';
 $string['nousersinfo'] = 'You currently have no users.';
+$string['nocoursesheader'] = 'No Courses';
+$string['nocoursesinfo'] = 'You currently have no courses.';
+
 
 $string['edit'] = 'Edit';
 $string['delete'] = 'Delete';

@@ -74,10 +74,11 @@ class block_poodllclassroom extends block_base {
         $companyid = iomad::get_my_companyid($this->context);
         $company = new company($companyid);
         $companyusers = common::fetch_company_users($companyid);
+        $companycourses = common::fetch_company_courses($companyid);
 
 
         $renderer = $this->page->get_renderer(constants::M_COMP);
-        $this->content->text = $renderer->fetch_block_content($this->context, $company,$companyusers) ;
+        $this->content->text = $renderer->fetch_block_content($this->context, $company,$companyusers,$companycourses) ;
         return $this->content  ;
     }
 
