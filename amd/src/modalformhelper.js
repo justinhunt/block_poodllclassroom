@@ -112,7 +112,7 @@ define(['jquery', 'core/log', 'core/str', 'core/modal_factory', 'core/modal_even
             var triggers = $(selector);
             var dd=this;
             Str.get_string(this.formname , 'block_poodllclassroom').then(function(title){dd.formtitle=title;});
-            triggers.on('click',function(e) {
+            $('body').on('click',selector,function(e) {
                 //prevent it doing a real click (which will do the non ajax version of a click)
                 e.preventDefault();
 

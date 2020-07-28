@@ -114,3 +114,4 @@ $string['firstname'] = 'First name';
 $string['lastname'] = 'Last name';
 $string['date'] = 'Date';
 $string['action'] = 'Action';
+$string['lastaccess'] = 'Last Access';

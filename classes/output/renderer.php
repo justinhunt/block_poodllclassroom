@@ -141,12 +141,18 @@ class renderer extends \plugin_renderer_base {
         //loop through the items,massage data and add to table
         //itemname itemid,filename,itemdate, id
         $currentitem=0;
+
         foreach ($users as $user) {
+            if($user->lastaccess) {
+                $lastaccess = date("Y-m-d H:i:s", $user->lastaccess);
+            }else{
+                $lastaccess = '--:--';
+            }
             $ditem=[];
             $ditem['id']= $user->id;
             $ditem['firstname'] = $user->firstname;
             $ditem['lastname'] =  $user->lastname;
-            $ditem['date'] = date("Y-m-d H:i:s",$user->timecreated);
+            $ditem['lastaccess'] = $lastaccess;
             $data['items'][]=$ditem;
 
         }

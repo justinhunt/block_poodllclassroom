@@ -412,9 +412,10 @@ class common
 
 
         $sqlparams = array();
-        $sqlparams['companyid'] = $companyid;
+        //$sqlparams['companyid'] = $companyid;
         $sqlparams['courseid'] = $courseid;
-        $sqlwhere = " ic.id = :companyid AND c.id= :courseid";
+        $sqlwhere = " c.id= :courseid";
+       // $sqlwhere = " ic.id = :companyid AND c.id= :courseid";
 
 
 

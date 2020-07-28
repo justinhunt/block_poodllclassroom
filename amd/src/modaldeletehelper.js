@@ -78,11 +78,9 @@ define(['jquery', 'core/log', 'core/str', 'core/modal_factory', 'core/modal_even
             Str.get_string(this.formname , 'block_poodllclassroom').then(function(title){dd.formtitle=title;});
             Str.get_string(this.formname + '_message' , 'block_poodllclassroom').then(function(message){dd.formmessage=message;});
             Str.get_string('deletebuttonlabel' , 'block_poodllclassroom').then(function(deletebuttonlabel){dd.deletebuttonlabel=deletebuttonlabel;});
-            triggers.on('click',function(e) {
+            $('body').on('click',selector,function(e) {
                 //prevent it doing a real click (which will do the non ajax version of a click)
                 e.preventDefault();
-
-
 
                 var clickedLink = $(e.currentTarget);
                 var itemid = clickedLink.data('id');

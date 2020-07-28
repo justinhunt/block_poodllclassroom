@@ -51,6 +51,7 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
                 log.debug('after user add');
                 log.debug(item);
                 item.id=itemid;
+                item.lastaccess = '--:--';
                 templates.render('block_poodllclassroom/userlistrow',item).then(
                     function(html,js){
                         that.controls.theusertable.row.add($(html)[0]).draw();
@@ -76,7 +77,12 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
                 //can we now add users where before we could not?
                 // that.check_user_count(that);
             };
-            var after_useredit= function(item, itemid) {};
+            var after_useredit= function(item, itemid) {
+                var row = '#' + this.modulecssclass + '_user_row_' + itemid;
+                //c0 = firstname c1= lastname c2=lastaccess
+                that.controls.theusertable.cell(row + ' c0').data(item.firstname);
+                that.controls.theusertable.cell(row + ' c1').data(item.lastname);
+            };
             var after_courseedit= function(item, itemid) {};
 
             //modal delete helper
@@ -164,6 +170,20 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
             });
             */
         }, //en of reg events
+
+        format_date: function(timestamp) {
+                var d = new Date(timestamp * 1000);
+               var month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
+
+            return [year, month, day].join('-');
+        },
 
         do_resetkey: function(that, moduleid){
 
