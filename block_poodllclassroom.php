@@ -37,9 +37,9 @@ class block_poodllclassroom extends block_base {
         global $CFG, $OUTPUT;
 
         //we only show this to super people
-      //  if (!has_capability('block/poodllclassroom:managesite', $this->context)) {
-      //      return null;
-      //  }
+        if (!has_capability('block/poodllclassroom:managepoodllclassroom', $this->context)) {
+            return null;
+        }
 
         if ($this->content !== null) {
             return $this->content;
@@ -71,7 +71,7 @@ class block_poodllclassroom extends block_base {
         $bestconfig = common::fetch_best_config($instancesettings->id);
 
         //Set the companyid
-        $companyid = iomad::get_my_companyid($this->context);
+        $companyid = common::get_my_companyid($this->context);
         $company = new company($companyid);
         $companyusers = common::fetch_company_users($companyid);
         $companycourses = common::fetch_company_courses($companyid);

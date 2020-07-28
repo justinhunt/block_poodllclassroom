@@ -13,6 +13,41 @@ use \block_poodllclassroom\constants;
 
 class block_poodllclassroom_external extends external_api {
 
+    public static function delete_item_parameters() {
+        return new external_function_parameters(
+            array(
+                'contextid' => new external_value(PARAM_INT, 'The context id for the course'),
+                'itemid' => new external_value(PARAM_INT, 'The itemid to delete'),
+                'formname' => new external_value(PARAM_TEXT, 'The formname')
+            )
+        );
+    }
+
+    public static function delete_item($contextid,$itemid, $formname)
+    {
+        global $CFG, $DB, $USER;
+
+        require_once($CFG->dirroot . '/blocks/iomad_company_admin/lib.php');
+
+        // We always must pass webservice params through validate_parameters.
+        $params = self::validate_parameters(self::delete_item_parameters(),
+            ['contextid' => $contextid, 'itemid' => $itemid, 'formname' => $formname]);
+
+        $context = context::instance_by_id($params['contextid'], MUST_EXIST);
+
+        // We always must call validate_context in a webservice.
+        self::validate_context($context);
+
+        $ret = new \stdClass();
+        $ret->itemid=$itemid;
+        $ret->error=false;
+        return json_encode($ret);
+    }
+
+    public static function delete_item_returns() {
+        return new external_value(PARAM_RAW);
+        //return new external_value(PARAM_INT, 'group id');
+    }
 
     public static function submit_mform_parameters() {
         return new external_function_parameters(

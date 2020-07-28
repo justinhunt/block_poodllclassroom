@@ -16,4 +16,13 @@ $functions = array(
             'type'        => 'write',
             'ajax'        => true,
     ),
+
+    'block_poodllclassroom_delete_item' => array(
+        'classname'   => 'block_poodllclassroom_external',
+        'methodname'  => 'delete_item',
+        'description' => 'delete item.',
+        'capabilities'=> 'mod/poodllclassroom:managepoodllclassroom',
+        'type'        => 'write',
+        'ajax'        => true,
+    ),
 );

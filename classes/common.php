@@ -303,4 +303,38 @@ class common
         return $companies;
     }
 
+    public static function get_my_companyid($context){
+        //iomad expects admins to have a selected companyid from admin block
+        //so if this is called too soon from poodll_classroom will too-many-redirects you (race condition)
+        //$required = false avoids this, but life will be hard till you have a company selected
+        //so we return 1
+        $required = false;
+        $companyid = \iomad::get_my_companyid($context, $required);
+        if(!$companyid && \iomad::has_capability('block/iomad_company_admin:edit_departments', $context)){
+            $companyid = 1;
+        }
+        return $companyid;
+    }
+
+    public static function fetch_company_course($companyid,$courseid){
+        global $CFG,$DB;
+
+
+        $sqlparams = array();
+        $sqlparams['companyid'] = $companyid;
+        $sqlparams['courseid'] = $courseid;
+        $sqlwhere = " ic.id = :companyid AND c.id= :courseid";
+
+
+
+        // Set up the SQL for the table.
+        $selectsql = "c.*";
+        $fromsql = " FROM {iomad_courses} ic INNER JOIN {course} c ON (ic.courseid = c.id)";
+        $wheresql = " WHERE $sqlwhere ";
+
+        $thesql = 'SELECT '. $selectsql . $fromsql . $wheresql;
+        $thecourse = $DB->get_record_sql($thesql, $sqlparams) ;
+        return $thecourse;
+    }
+
 }//end of class

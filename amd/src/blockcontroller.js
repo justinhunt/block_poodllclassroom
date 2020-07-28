@@ -1,6 +1,6 @@
 define(['jquery','core/config','core/log','core/ajax','core/templates','core/modal_factory','core/str','core/modal_events',
-    'block_poodllclassroom/dialogs','block_poodllclassroom/modalformhelper','core/notification'],
-    function($,cfg,log,Ajax, templates, ModalFactory, str, ModalEvents,  dialogs, mfh,  notification) {
+    'block_poodllclassroom/dialogs','block_poodllclassroom/modalformhelper','block_poodllclassroom/modaldeletehelper','core/notification'],
+    function($,cfg,log,Ajax, templates, ModalFactory, str, ModalEvents,  dialogs, mfh, mdh, notification) {
     "use strict"; // jshint ;_;
 
     log.debug('blockcontroller: initialising');
@@ -33,6 +33,7 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
             this.controls.createuserstartbutton = $('#' + this.modulecssclass + '_createuser_btn');
             this.controls.createcoursestartbutton = $('#' + this.modulecssclass + '_createcourse_btn');
             this.controls.createcoursestartcontainer = $('#' + this.modulecssclass +'_createcourse_cnt');
+
             this.controls.createcoursestartbutton.show();
             log.debug(this.controls);
 
@@ -40,11 +41,17 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
 
         register_events: function(){
             var that =this;
-
+            //modal form helper
             mfh.init('#' + this.modulecssclass + '_createuser_btn', this.contextid, 'createuser');
             mfh.init('#' + this.modulecssclass + '_createcourse_btn', this.contextid, 'createcourse');
-
             mfh.init('.' + this.modulecssclass + '_usereditlink', this.contextid, 'edituser');
+            mfh.init('.' + this.modulecssclass + '_courseeditlink', this.contextid, 'editcourse');
+
+            //modal delete helper
+            var tempcallback = function(itemid){log.debug('all done:' + itemid)};
+            mdh.init('.' + this.modulecssclass + '_coursedeletelink', this.contextid, 'deletecourse',tempcallback);
+            mdh.init('.' + this.modulecssclass + '_userdeletelink', this.contextid, 'deleteuser',tempcallback);
+
             //modal dialog show link
             /*
             this.controls.createcoursestartbutton.click(function(){

@@ -172,7 +172,7 @@ class renderer extends \plugin_renderer_base {
         $currentitem=0;
         foreach ($courses as $course) {
             $ditem=[];
-            $ditem['id']= $course->id;
+            $ditem['id']= $course->courseid;
             $ditem['coursename'] = $course->coursename;
             $data['courses'][]=$ditem;
         }

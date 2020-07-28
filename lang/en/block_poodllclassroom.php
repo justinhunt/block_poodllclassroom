@@ -89,6 +89,8 @@ $string['updatedsetting'] = 'Updated setting: {$a}';
 $string['createcourse'] = 'Create Course';
 $string['createcourse_mform'] = 'Create Course';
 $string['createcoursestart'] = 'Create Course [ + ]';
+$string['editcourse'] = 'Edit Course';
+$string['editcourse_mform'] = 'Edit Course';
 $string['close'] = 'Close';
 
 $string['createuser'] = 'Create User';
@@ -100,6 +102,11 @@ $string['nousersinfo'] = 'You currently have no users.';
 $string['nocoursesheader'] = 'No Courses';
 $string['nocoursesinfo'] = 'You currently have no courses.';
 
+$string['deleteuser'] = 'Delete User';
+$string['deleteuser_message'] = 'Really delete user: ';
+$string['deletecourse'] = 'Delete Course';
+$string['deletecourse_message'] = 'Really delete course: ';
+$string['deletebuttonlabel'] = 'DELETE';
 
 $string['edit'] = 'Edit';
 $string['delete'] = 'Delete';

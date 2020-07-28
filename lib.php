@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-//require_once(dirname(__FILE__) . '/../../config.php'); // Creates $PAGE.
+use block_poodllclassroom\common;
 
 function block_poodllclassroom_output_fragment_mform($args) {
     global $CFG, $PAGE, $DB;
@@ -36,7 +36,9 @@ function block_poodllclassroom_output_fragment_mform($args) {
     switch($formname){
         case 'createuser':
             $context = context_system::instance();
-            iomad::require_capability('block/iomad_company_admin:user_create', $context);
+            if(!iomad::has_capability('block/iomad_company_admin:user_create', $context)){
+                return false;
+            }
 
             // Correct the navbar.
             // Set the name for the page.
@@ -54,7 +56,9 @@ function block_poodllclassroom_output_fragment_mform($args) {
 
         case 'edituser':
             $context = context_system::instance();
-            iomad::require_capability('block/iomad_company_admin:user_create', $context);
+            if(!iomad::has_capability('block/iomad_company_admin:user_create', $context)){
+                return false;
+            }
 
             // Set the companyid
             $companyid = iomad::get_my_companyid($context);
@@ -99,7 +103,9 @@ function block_poodllclassroom_output_fragment_mform($args) {
         case 'createcourse':
 
             $context = context_system::instance();
-            iomad::require_capability('block/iomad_company_admin:createcourse', $context);
+           if(! iomad::has_capability('block/iomad_company_admin:createcourse', $context)){
+               return false;
+           }
 
             // Correct the navbar.
             // Set the name for the page.
@@ -122,6 +128,44 @@ function block_poodllclassroom_output_fragment_mform($args) {
                     'noclean' => true);
 
             $mform = new \block_poodllclassroom\local\form\createcourseform(null, array('companyid'=>$companyid,'editoroptions'=> $editoroptions));
+
+            break;
+
+        case 'editcourse':
+
+            $systemcontext = context_system::instance();
+           if(!iomad::has_capability('block/iomad_company_admin:createcourse', $context)){
+               return false;
+           }
+
+            // Correct the navbar.
+            // Set the name for the page.
+            $linktext = get_string('createcourse_title', 'block_iomad_company_admin');
+
+            // Set the url.
+            $linkurl = new moodle_url('/blocks/iomad_company_admin/company_course_create_form.php');
+
+            // Set the companyid
+            $companyid = iomad::get_my_companyid($systemcontext);
+            $courseid = $itemid;
+            // Check the courseid is valid.
+            if (!empty($courseid) && !empty($companyid)) {
+                $thecourse= common::fetch_company_course($companyid,$courseid);
+                if(!$thecourse) {
+                    print_error('invalidcourse', 'block_poodllclassroom');
+                    return false;
+                }
+            }
+
+            $coursecontext = context_course::instance($courseid, MUST_EXIST);
+            $editoroptions = array('maxfiles' => EDITOR_UNLIMITED_FILES,
+                'maxbytes' => $CFG->maxbytes,
+                'trusttext' => false,
+                'noclean' => true);
+            $thecourse = file_prepare_standard_editor($thecourse, 'summary', $editoroptions, $coursecontext, 'course', 'summary',0);
+            $mform = new \block_poodllclassroom\local\form\createcourseform(null, array('companyid'=>$companyid,'editoroptions'=> $editoroptions));
+
+            $mform->set_data($thecourse);
 
             break;
 
