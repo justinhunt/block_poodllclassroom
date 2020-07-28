@@ -214,7 +214,10 @@ class block_poodllclassroom_external extends external_api {
                         }
                     }
 
-                    return $userid;
+                    $ret = new \stdClass();
+                    $ret->itemid=$userid;
+                    $ret->error=false;
+                    return json_encode($ret);
 
                 }
 
@@ -340,7 +343,10 @@ class block_poodllclassroom_external extends external_api {
                         $company->add_course($course);
                     }
 
-                    return $course->id;
+                    $ret = new \stdClass();
+                    $ret->itemid=$course->id;
+                    $ret->error=false;
+                    return json_encode($ret);
                 }
 
                 break;

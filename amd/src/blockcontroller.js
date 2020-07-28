@@ -47,9 +47,10 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
         register_events: function(){
             var that =this;
             //modal form helper
-            var after_useradd= function(item) {
+            var after_useradd= function(item, itemid) {
                 log.debug('after user add');
                 log.debug(item);
+                item.id=itemid;
                 templates.render('block_poodllclassroom/userlistrow',item).then(
                     function(html,js){
                         that.controls.theusertable.row.add($(html)[0]).draw();
@@ -60,9 +61,11 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
                 //can we now add users where before we could not?
                 // that.check_user_count(that);
             };
-            var after_courseadd= function(item) {
+            var after_courseadd= function(item, itemid) {
                 log.debug('after course add');
                 log.debug(item);
+                item.id = itemid;
+                item.coursename = item.fullname;
                 templates.render('block_poodllclassroom/courseitem',item).then(
                     function(html,js){
                         that.controls.coursescontainer.append($(html)[0]);
@@ -73,8 +76,8 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
                 //can we now add users where before we could not?
                 // that.check_user_count(that);
             };
-            var after_useredit= function(item) {};
-            var after_courseedit= function(item) {};
+            var after_useredit= function(item, itemid) {};
+            var after_courseedit= function(item, itemid) {};
 
             //modal delete helper
             var after_coursedelete= function(itemid) {

@@ -173,19 +173,36 @@ define(['jquery', 'core/log', 'core/str', 'core/modal_factory', 'core/modal_even
          * @private
          * @return {Promise}
          */
-        TheForm.prototype.handleFormSubmissionResponse = function(formData,response) {
+        TheForm.prototype.handleFormSubmissionResponse = function(formData,ajaxresult) {
             this.modal.hide();
             // We could trigger an event instead.
             // Yuk.
             Y.use('moodle-core-formchangechecker', function() {
                 M.core_formchangechecker.reset_form_dirty_state();
             });
-            log.debug(response); //this contains what the server returns (eg new item->id etc)
+            log.debug(ajaxresult); //this contains what the server returns (eg new item->id etc)
             log.debug(formData); //this contains the original form data
 
-            //we could just reload here. But we wont
-            //document.location.reload();
-            this.callback(formData);
+            var payloadobject = JSON.parse(ajaxresult);
+
+            if (payloadobject) {
+                log.debug(payloadobject);
+                switch(payloadobject.error) {
+                    case false:
+                        //we could just reload here. But we wont
+                        //document.location.reload();
+                        //process formData
+                        var dataobject = JSON.parse('{"' + decodeURI(formData).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}');
+                        this.callback(dataobject,payloadobject.itemid);
+                        break;
+
+                    case true:
+                    default:
+                        log.debug('that was an error: ');
+                }
+            }
+
+
 
         };
 
