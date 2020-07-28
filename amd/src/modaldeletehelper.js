@@ -100,18 +100,6 @@ define(['jquery', 'core/log', 'core/str', 'core/modal_factory', 'core/modal_even
                         root.on(ModalEvents.save, dd.submitForm.bind(dd));
                         dd.modal.show();
                         return dd.modal;
-
-                        var oldsave = function() {
-                            that.do_delete(itemid);
-                            that.controls.thedatatable.row( clickedLink.parents('tr')).remove().draw();
-                            var itemcount = that.controls.thedatatable.rows().count();
-                            if(!itemcount){
-                                that.controls.noitemscontainer.show();
-                                that.controls.itemscontainer.hide();
-                            }
-                            that.check_item_count(that);
-                        };
-
                     });
 
             });//end of on click

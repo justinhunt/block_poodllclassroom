@@ -38,6 +38,20 @@ class block_poodllclassroom_external extends external_api {
         // We always must call validate_context in a webservice.
         self::validate_context($context);
 
+        //Set the companyid
+        $companyid = iomad::get_my_companyid($context);
+        $company = new company($companyid);
+
+        switch($formname){
+            case constants::FORM_DELETEUSER:
+                $result =  common::remove_user_from_company($context,$company,$itemid);
+                break;
+
+            case constants::FORM_DELETECOURSE:
+              $result =  common::remove_course_from_company($context,$companyid,$itemid);
+              break;
+        }
+
         $ret = new \stdClass();
         $ret->itemid=$itemid;
         $ret->error=false;
@@ -80,7 +94,7 @@ class block_poodllclassroom_external extends external_api {
         parse_str($serialiseddata, $data);
 
         switch($formname){
-            case 'createuser':
+            case constants::FORM_CREATEUSER:
 
                 require_once($CFG->dirroot . '/user/editlib.php');
 
@@ -206,7 +220,7 @@ class block_poodllclassroom_external extends external_api {
 
                 break;
 
-            case 'createcourse':
+            case constants::FORM_CREATECOURSE:
                 require_once($CFG->dirroot . '/course/lib.php');
 
 

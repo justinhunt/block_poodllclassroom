@@ -316,6 +316,97 @@ class common
         return $companyid;
     }
 
+
+    public static function remove_course_from_company($context,$companyid,$courseid){
+        global $DB;
+
+        $company = new \company($companyid);
+        $oktounenroll=true;
+        $removecourse = self::fetch_company_course($companyid,$courseid);
+
+            // Check if its a shared course.
+            if ($DB->get_record_sql("SELECT id FROM {iomad_courses}
+                                             WHERE courseid=:removecourse
+                                             AND shared != 0",
+                array('removecourse' => $removecourse->id))) {
+                $DB->delete_records('company_shared_courses',
+                    array('companyid' => $company->id,
+                        'courseid' => $removecourse->id));
+                $DB->delete_records('company_course',
+                    array('companyid' => $company->id,
+                        'courseid' => $removecourse->id));
+                \company::delete_company_course_group($company->id,
+                    $removecourse,
+                    $oktounenroll);
+            } else {
+                // If company has enrollment then we must have BOTH
+                // oktounenroll true and the company_course_unenrol capability.
+                if (!empty($removecourse->has_enrollments)) {
+                    if (\iomad::has_capability('block/iomad_company_admin:company_course_unenrol',
+                            $context) and $oktounenroll) {
+                        self::unenroll_all($removecourse->id);
+
+                            // Remove it from the company.
+                            $company->remove_course($removecourse, $company->id);
+                    }
+                } else {
+                        $company->remove_course($removecourse, $company->id);
+                }
+            }
+            return true;
+    }
+
+    public static function remove_user_from_company($context, $company,$userid){
+        global $DB, $USER;
+        $companyid=$company->id;
+        $systemcontext = \context_system::instance();
+        if (!\iomad::has_capability('block/iomad_company_admin:editusers', $systemcontext)) {
+            print_error('nopermissions', 'error', '', 'delete a user');
+        }
+
+        if (!$user = $DB->get_record('user', array('id' => $userid))) {
+            print_error('nousers', 'error');
+        }
+
+        if (!\company::check_canedit_user($companyid, $user->id)) {
+            print_error('invaliduserid');
+        }
+
+        if (is_primary_admin($user->id)) {
+            print_error('nopermissions', 'error', '', 'delete the primary admin user');
+        }
+
+         // Actually delete the user.
+         \company_user::delete($user->id);
+
+        // Create an event for this.
+        $eventother = array('userid' => $user->id, 'companyname' => $company->get_name(), 'companyid' => $companyid);
+        $event = \block_iomad_company_admin\event\company_user_deleted::create(array('context' => \context_system::instance(),
+            'objectid' => $user->id,
+            'userid' => $USER->id,
+            'other' => $eventother));
+        $event->trigger();
+       return true;
+
+
+    }
+
+    public static function unenroll_all($id) {
+        global $DB, $PAGE;
+        // Unenroll everybody from given course.
+        // Get list of enrollments.
+        $course = $DB->get_record('course', array('id' => $id));
+        $courseenrolment = new \course_enrolment_manager($PAGE, $course);
+        $userlist = $courseenrolment->get_users('', 'ASC', 0, 0);
+        foreach ($userlist as $user) {
+            $ues = $courseenrolment->get_user_enrolments($user->id);
+            foreach ($ues as $ue) {
+                $courseenrolment->unenrol_user($ue);
+            }
+        }
+    }
+
+
     public static function fetch_company_course($companyid,$courseid){
         global $CFG,$DB;
 

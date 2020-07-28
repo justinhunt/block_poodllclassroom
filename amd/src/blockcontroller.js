@@ -1,6 +1,6 @@
 define(['jquery','core/config','core/log','core/ajax','core/templates','core/modal_factory','core/str','core/modal_events',
-    'block_poodllclassroom/dialogs','block_poodllclassroom/modalformhelper','block_poodllclassroom/modaldeletehelper','core/notification'],
-    function($,cfg,log,Ajax, templates, ModalFactory, str, ModalEvents,  dialogs, mfh, mdh, notification) {
+    'block_poodllclassroom/dialogs','block_poodllclassroom/datatables','block_poodllclassroom/modalformhelper','block_poodllclassroom/modaldeletehelper','core/notification'],
+    function($,cfg,log,Ajax, templates, ModalFactory, str, ModalEvents,  dialogs, datatables, mfh, mdh, notification) {
     "use strict"; // jshint ;_;
 
     log.debug('blockcontroller: initialising');
@@ -15,6 +15,7 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
         init: function(props){
             this.modulecssclass = props.modulecssclass;
             this.contextid = props.contextid;
+            this.tableid = props.tableid;
             this.prepare_html();
             this.register_events();
         },
@@ -33,7 +34,11 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
             this.controls.createuserstartbutton = $('#' + this.modulecssclass + '_createuser_btn');
             this.controls.createcoursestartbutton = $('#' + this.modulecssclass + '_createcourse_btn');
             this.controls.createcoursestartcontainer = $('#' + this.modulecssclass +'_createcourse_cnt');
-
+            this.controls.nocoursescontainer = $('.' + this.modulecssclass + '_nocourses_cont');
+            this.controls.coursescontainer = $('.' + this.modulecssclass + '_courselist_cont');
+            this.controls.nouserscontainer = $('.' + this.modulecssclass + '_nousers_cont');
+            this.controls.userscontainer = $('.' + this.modulecssclass + '_userlist_cont');
+            this.controls.theusertable = datatables.getDataTable(this.tableid);
             this.controls.createcoursestartbutton.show();
             log.debug(this.controls);
 
@@ -48,9 +53,30 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
             mfh.init('.' + this.modulecssclass + '_courseeditlink', this.contextid, 'editcourse');
 
             //modal delete helper
-            var tempcallback = function(itemid){log.debug('all done:' + itemid)};
-            mdh.init('.' + this.modulecssclass + '_coursedeletelink', this.contextid, 'deletecourse',tempcallback);
-            mdh.init('.' + this.modulecssclass + '_userdeletelink', this.contextid, 'deleteuser',tempcallback);
+            var after_coursedelete= function(itemid) {
+                log.debug('after course delete');
+                $('#' + that.modulecssclass + '_courseitem_' + itemid).remove();
+                var itemcount = $('div.' + that.modulecssclass + '_courseitem').length;
+                if(!itemcount){
+                    that.controls.nocoursescontainer.show();
+                    that.controls.coursescontainer.hide();
+                }
+                //can we now add courses where before we could not?
+                //that.check_course_count(that);
+            };
+            var after_userdelete= function(itemid) {
+                log.debug('after user delete');
+                that.controls.theusertable.row('#' + that.modulecssclass + '_user_row_' + itemid).remove().draw();
+                var itemcount = that.controls.theusertable.rows().count();
+                if(!itemcount){
+                    that.controls.nouserscontainer.show();
+                    that.controls.userscontainer.hide();
+                }
+                //can we now add users where before we could not?
+               // that.check_user_count(that);
+            };
+            mdh.init('.' + this.modulecssclass + '_coursedeletelink', this.contextid, 'deletecourse',after_coursedelete);
+            mdh.init('.' + this.modulecssclass + '_userdeletelink', this.contextid, 'deleteuser',after_userdelete);
 
             //modal dialog show link
             /*
@@ -103,8 +129,6 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
             });
             */
         }, //en of reg events
-
-
 
         do_resetkey: function(that, moduleid){
 
