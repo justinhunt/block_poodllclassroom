@@ -16,13 +16,15 @@ define(['jquery', 'core/log', 'core/str', 'core/modal_factory', 'core/modal_even
          * @param {String} selector used to find triggers for the new group modal.
          * @param {int} contextid
          * @param {String} formname The key/name of the form for this instance
-         * @param {Integer} itemid or 0.
+         * @param {Object} callback The function to call after successful deletion (for UI updates)
          *
          * Each call to init gets it's own instance of this class.
          */
-        var TheForm = function(selector, contextid, formname) {
+        var TheForm = function(selector, contextid, formname,callback) {
             this.contextid = contextid;
             this.formname = formname;
+            this.callback = callback;
+
             //this will init on page load (good if just one or two items)
             //this.init(selector);
 
@@ -181,8 +183,10 @@ define(['jquery', 'core/log', 'core/str', 'core/modal_factory', 'core/modal_even
             log.debug(response); //this contains what the server returns (eg new item->id etc)
             log.debug(formData); //this contains the original form data
 
-            //because we are lazy we reload here. But we could fix up the page ajax style
-            document.location.reload();
+            //we could just reload here. But we wont
+            //document.location.reload();
+            this.callback(formData);
+
         };
 
         /**
@@ -262,10 +266,11 @@ define(['jquery', 'core/log', 'core/str', 'core/modal_factory', 'core/modal_even
              * @param {string} selector The CSS selector used to find nodes that will trigger this module.
              * @param {int} contextid The contextid for the course.
              * @param {string} formname The formname for the course.
+             * @param {Object} callback The function to call after successful deletion (for UI updates)
              * @return {Promise}
              */
-            init: function(selector, contextid, formname) {
-                return new TheForm(selector, contextid, formname);
+            init: function(selector, contextid, formname, callback) {
+                return new TheForm(selector, contextid, formname, callback);
             }
         };
     });

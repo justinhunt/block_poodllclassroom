@@ -47,10 +47,34 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
         register_events: function(){
             var that =this;
             //modal form helper
-            mfh.init('#' + this.modulecssclass + '_createuser_btn', this.contextid, 'createuser');
-            mfh.init('#' + this.modulecssclass + '_createcourse_btn', this.contextid, 'createcourse');
-            mfh.init('.' + this.modulecssclass + '_usereditlink', this.contextid, 'edituser');
-            mfh.init('.' + this.modulecssclass + '_courseeditlink', this.contextid, 'editcourse');
+            var after_useradd= function(item) {
+                log.debug('after user add');
+                log.debug(item);
+                templates.render('block_poodllclassroom/userlistrow',item).then(
+                    function(html,js){
+                        that.controls.theusertable.row.add($(html)[0]).draw();
+                    }
+                );
+                that.controls.nouserscontainer.hide();
+                that.controls.userscontainer.show();
+                //can we now add users where before we could not?
+                // that.check_user_count(that);
+            };
+            var after_courseadd= function(item) {
+                log.debug('after course add');
+                log.debug(item);
+                templates.render('block_poodllclassroom/courseitem',item).then(
+                    function(html,js){
+                        that.controls.coursescontainer.append($(html)[0]);
+                    }
+                );
+                that.controls.nouserscontainer.hide();
+                that.controls.userscontainer.show();
+                //can we now add users where before we could not?
+                // that.check_user_count(that);
+            };
+            var after_useredit= function(item) {};
+            var after_courseedit= function(item) {};
 
             //modal delete helper
             var after_coursedelete= function(itemid) {
@@ -73,8 +97,16 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
                     that.controls.userscontainer.hide();
                 }
                 //can we now add users where before we could not?
-               // that.check_user_count(that);
+                // that.check_user_count(that);
             };
+
+            //form helper
+            mfh.init('#' + this.modulecssclass + '_createuser_btn', this.contextid, 'createuser',after_useradd);
+            mfh.init('#' + this.modulecssclass + '_createcourse_btn', this.contextid, 'createcourse', after_courseadd);
+            mfh.init('.' + this.modulecssclass + '_usereditlink', this.contextid, 'edituser', after_useredit);
+            mfh.init('.' + this.modulecssclass + '_courseeditlink', this.contextid, 'editcourse', after_courseedit);
+
+            //delete helper
             mdh.init('.' + this.modulecssclass + '_coursedeletelink', this.contextid, 'deletecourse',after_coursedelete);
             mdh.init('.' + this.modulecssclass + '_userdeletelink', this.contextid, 'deleteuser',after_userdelete);
 
