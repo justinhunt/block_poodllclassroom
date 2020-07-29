@@ -44,7 +44,7 @@ class createuserform extends \moodleform {
     protected $context = null;
 
     //only the constructor is really different to \block_iomad_company_admin\forms\user_edit_form
-    // But we could not override the constuctor because it did not pass data to ajax in its own call to parent::contruct
+    // But we could not override the constuctor because it did not pass data to ajax in its own call to parent::construct
     ////but we needed that
     public function __construct($companyid, $departmentid, $licenseid=0, $ajaxdata) {
         global $CFG, $USER;

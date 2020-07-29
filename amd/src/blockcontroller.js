@@ -78,12 +78,17 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
                 // that.check_user_count(that);
             };
             var after_useredit= function(item, itemid) {
-                var row = '#' + this.modulecssclass + '_user_row_' + itemid;
+                var therow = '#' + that.modulecssclass + '_user_row_' + itemid;
                 //c0 = firstname c1= lastname c2=lastaccess
-                that.controls.theusertable.cell(row + ' c0').data(item.firstname);
-                that.controls.theusertable.cell(row + ' c1').data(item.lastname);
+                that.controls.theusertable.cell($(therow + ' .c0')).data(item.firstname);
+                that.controls.theusertable.cell($(therow + ' .c1')).data(item.lastname);
             };
-            var after_courseedit= function(item, itemid) {};
+            var after_courseedit= function(item, itemid) {
+                var tileselector = '#' + that.modulecssclass + '_courseitem_' + itemid;
+                var coursenameselector = '.' + that.modulecssclass + '_coursename';
+                $(tileselector + ' ' + coursenameselector).text(item.fullname);
+                debugger;
+            };
 
             //modal delete helper
             var after_coursedelete= function(itemid) {

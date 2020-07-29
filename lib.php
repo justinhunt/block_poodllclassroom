@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 use block_poodllclassroom\common;
+use block_poodllclassroom\constants;
 
 function block_poodllclassroom_output_fragment_mform($args) {
     global $CFG, $PAGE, $DB;
@@ -34,7 +35,7 @@ function block_poodllclassroom_output_fragment_mform($args) {
     list($ignored, $course) = get_context_info_array($context->id);
 
     switch($formname){
-        case 'createuser':
+        case constants::FORM_CREATEUSER:
             $context = context_system::instance();
             if(!iomad::has_capability('block/iomad_company_admin:user_create', $context)){
                 return false;
@@ -54,7 +55,7 @@ function block_poodllclassroom_output_fragment_mform($args) {
 
             break;
 
-        case 'edituser':
+        case constants::FORM_EDITUSER:
             $context = context_system::instance();
             if(!iomad::has_capability('block/iomad_company_admin:user_create', $context)){
                 return false;
@@ -100,7 +101,7 @@ function block_poodllclassroom_output_fragment_mform($args) {
             break;
 
 
-        case 'createcourse':
+        case constants::FORM_CREATECOURSE:
 
             $context = context_system::instance();
            if(! iomad::has_capability('block/iomad_company_admin:createcourse', $context)){
@@ -131,19 +132,12 @@ function block_poodllclassroom_output_fragment_mform($args) {
 
             break;
 
-        case 'editcourse':
+        case constants::FORM_EDITCOURSE:
 
             $systemcontext = context_system::instance();
            if(!iomad::has_capability('block/iomad_company_admin:createcourse', $context)){
                return false;
            }
-
-            // Correct the navbar.
-            // Set the name for the page.
-            $linktext = get_string('createcourse_title', 'block_iomad_company_admin');
-
-            // Set the url.
-            $linkurl = new moodle_url('/blocks/iomad_company_admin/company_course_create_form.php');
 
             // Set the companyid
             $companyid = iomad::get_my_companyid($systemcontext);

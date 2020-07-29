@@ -94,6 +94,140 @@ class block_poodllclassroom_external extends external_api {
         parse_str($serialiseddata, $data);
 
         switch($formname){
+
+            case constants::FORM_EDITUSER:
+                require_once($CFG->dirroot . '/user/editlib.php');
+                $systemcontext = context_system::instance();
+                iomad::require_capability('block/iomad_company_admin:user_create', $systemcontext);
+
+                //Set the companyid
+                $companyid = iomad::get_my_companyid($context);
+                $company = new company($companyid);
+                $departmentid=0;
+
+                //not sure about this
+                $userid = $data['id'];
+
+                // Editing existing user.
+                iomad::require_capability('block/iomad_company_admin:editusers', $systemcontext);
+                if (!$user = $DB->get_record('user', array('id' => $userid))) {
+                    print_error('invaliduserid',constants::M_COMP);
+                }
+                if (!company::check_canedit_user($companyid, $userid)) {
+                    print_error('invaliduserid', constants::M_COMP);
+                }
+
+                if (!empty($userid) && !company::check_valid_user($companyid, $userid, $departmentid)) {
+                    print_error('invaliduserdepartment', constants::M_COMP);
+                }
+
+                // Remote users cannot be edited.
+                if ($user->id != -1 and is_mnet_remote_user($user)) {
+                    print_error('canteditremoteusers');
+                }
+
+                if (isguestuser($user->id)) { // The real guest user can not be edited.
+                    print_error('guestnoeditprofileother');
+                }
+
+
+                $usercontext = context_user::instance($user->id);
+                $editoroptions = array(
+                    'maxfiles'   => EDITOR_UNLIMITED_FILES,
+                    'maxbytes'   => $CFG->maxbytes,
+                    'trusttext'  => false,
+                    'forcehttps' => false,
+                    'context'    => $usercontext
+                );
+
+                $filemanagercontext = $editoroptions['context'];
+                $filemanageroptions = array('maxbytes'       => $CFG->maxbytes,
+                    'subdirs'        => 0,
+                    'maxfiles'       => 1,
+                    'accepted_types' => 'web_image',
+                    'context'=>$filemanagercontext);
+                $method='post';
+                $target='';
+                $attributes=null;
+                $editable=true;
+                $mform = new \block_poodllclassroom\local\form\edituserform(null, array('editoroptions'=>$editoroptions,'filenamanageroptions'=>$filemanageroptions),
+                    $method,$target,$attributes,$editable,$data);
+                $usernew = $mform->get_data();
+                $usernew = file_postupdate_standard_editor($usernew,
+                    'description',
+                    $editoroptions,
+                    $usercontext,
+                    'user_profile',
+                    $usernew->id);
+                // Trim first and lastnames
+                $usernew->firstname = trim($usernew->firstname);
+                $usernew->lastname = trim($usernew->lastname);
+                $usernew->username = clean_param($usernew->username, PARAM_USERNAME);
+                $usernew->timemodified = time();
+
+                $DB->update_record('user', $usernew);
+                // Pass a true $userold here.
+            /*
+                $authplugin = get_auth_plugin($usernew->auth);
+                if (! $authplugin->user_update($user, $mform->get_data())) {
+                    // Auth update failed, rollback for moodle.
+                    $DB->update_record('user', $user);
+                    print_error('cannotupdateuseronexauth', '', '', $user->auth);
+                }
+
+                // Set new password if specified.
+                if (!empty($usernew->newpassword)) {
+                    if ($authplugin->can_change_password()) {
+                        if (!$authplugin->user_update_password($usernew, $usernew->newpassword)) {
+                            print_error('cannotupdatepasswordonextauth', '', '', $usernew->auth);
+                        } else {
+                            EmailTemplate::send('password_update', array('user' => $usernew));
+                        }
+                    }
+                }
+                $usercreated = false;
+*/
+
+                $usercontext = context_user::instance($usernew->id);
+/*
+                // Update preferences.
+                useredit_update_user_preference($usernew);
+                if (empty($usernew->preference_auth_forcepasswordchange)) {
+                    $usernew->preference_auth_forcepasswordchange = 0;
+                }
+                set_user_preference('auth_forcepasswordchange', $usernew->preference_auth_forcepasswordchange, $usernew->id);
+
+                // Update tags.
+                if (!empty($CFG->usetags)) {
+                    useredit_update_interests($usernew, $usernew->interests);
+                }
+
+                // Update user picture.
+                if (!empty($CFG->gdversion)) {
+                    core_user::update_picture($usernew, array());
+                }
+
+                // Update mail bounces.
+                useredit_update_bounces($user, $usernew);
+
+                // Update forum track preference.
+                useredit_update_trackforums($user, $usernew);
+
+                // Save custom profile fields data.
+                profile_save_data($usernew);
+
+                // Reload from db.
+                $usernew = $DB->get_record('user', array('id' => $usernew->id));
+*/
+                // Trigger events.
+                \core\event\user_updated::create_from_userid($usernew->id)->trigger();
+
+                $ret = new \stdClass();
+                $ret->itemid=$userid;
+                $ret->error=false;
+                return json_encode($ret);
+                break;
+
             case constants::FORM_CREATEUSER:
 
                 require_once($CFG->dirroot . '/user/editlib.php');
@@ -118,126 +252,19 @@ class block_poodllclassroom_external extends external_api {
                 $validateddata = $mform->get_data();
                 if ($validateddata) {
 
-                    // Trim first and lastnames
-                    $validateddata->firstname = trim($validateddata->firstname);
-                    $validateddata->lastname = trim($validateddata->lastname);
-
-                    $validateddata->userid = $USER->id;
-                    if ($companyid > 0) {
-                        $validateddata->companyid = $companyid;
-                    }
-//error_log(print_r( $validateddata, true ));
-
-                    if (!$userid = company_user::create($validateddata)) {
-                        return 'error';
-                        /*
-                        $this->verbose("Error inserting a new user in the database!");
-                        if (!$this->get('ignore_errors')) {
-                            die();
-                        }
-                        */
-                    }
-                    $user = new stdclass();
-                    $user->id = $userid;
-                    $validateddata->id = $userid;
-
-                    // Save custom profile fields data.
-                    profile_save_data($validateddata);
-
-                    $systemcontext = context_system::instance();
-
-                    // Check if we are assigning a different role to the user.
-                    if (!empty($validateddata->managertype || !empty($validateddata->educator))) {
-                        company::upsert_company_user($userid, $companyid, $validateddata->userdepartment, $validateddata->managertype,
-                                $validateddata->educator);
-                    }
-
-                    // Assign the user to the default company department.
-                    $parentnode = company::get_company_parentnode($companyid);
-                    if (iomad::has_capability('block/iomad_company_admin:edit_all_departments', $systemcontext)) {
-                        $userhierarchylevel = $parentnode->id;
-                    } else {
-                        $userlevel = $company->get_userlevel($USER);
-                        $userhierarchylevel = $userlevel->id;
-                    }
-                    company::assign_user_to_department($validateddata->userdepartment, $userid);
-
-                    // Enrol the user on the courses.
-                    if (!empty($createcourses)) {
-                        $userdata = $DB->get_record('user', array('id' => $userid));
-                        company_user::enrol($userdata, $createcourses, $companyid);
-                    }
-                    // Assign and licenses.
-                    if (!empty($licenseid)) {
-                        $licenserecord = (array) $DB->get_record('companylicense', array('id' => $licenseid));
-                        if (!empty($licenserecord['program'])) {
-                            // If so the courses are not passed automatically.
-                            $validateddata->licensecourses = $DB->get_records_sql_menu("SELECT c.id, clc.courseid FROM {companylicense_courses} clc
-                                                                   JOIN {course} c ON (clc.courseid = c.id
-                                                                   AND clc.licenseid = :licenseid)",
-                                    array('licenseid' => $licenserecord['id']));
-                        }
-
-                        if (!empty($validateddata->licensecourses)) {
-                            $userdata = $DB->get_record('user', array('id' => $userid));
-                            $count = $licenserecord['used'];
-                            $numberoflicenses = $licenserecord['allocation'];
-                            foreach ($validateddata->licensecourses as $licensecourse) {
-                                if ($count >= $numberoflicenses) {
-                                    // Set the used amount.
-                                    $licenserecord['used'] = $count;
-                                    $DB->update_record('companylicense', $licenserecord);
-                                    redirect(new moodle_url("/blocks/iomad_company_admin/company_license_users_form.php",
-                                            array('licenseid' => $licenseid, 'error' => 1)));
-                                }
-
-                                $issuedate = time();
-                                $DB->insert_record('companylicense_users',
-                                        array('userid' => $userdata->id,
-                                                'licenseid' => $licenseid,
-                                                'issuedate' => $issuedate,
-                                                'licensecourseid' => $licensecourse));
-
-                                // Create an event.
-                                $eventother = array('licenseid' => $licenseid,
-                                        'issuedate' => $issuedate,
-                                        'duedate' => $validateddata->due);
-                                $event =
-                                        \block_iomad_company_admin\event\user_license_assigned::create(array('context' => context_course::instance($licensecourse),
-                                                'objectid' => $licenseid,
-                                                'courseid' => $licensecourse,
-                                                'userid' => $userdata->id,
-                                                'other' => $eventother));
-                                $event->trigger();
-                                $count++;
-                            }
-                        }
-                    }
-
-                    $ret = new \stdClass();
-                    $ret->itemid=$userid;
-                    $ret->error=false;
+                    $ret = common::upsert_company_user($companyid,$validateddata,$formname);
                     return json_encode($ret);
-
                 }
 
                 break;
 
             case constants::FORM_CREATECOURSE:
+            case constants::FORM_EDITCOURSE:
                 require_once($CFG->dirroot . '/course/lib.php');
 
 
                 $systemcontext = context_system::instance();
                 iomad::require_capability('block/iomad_company_admin:createcourse', $systemcontext);
-
-
-                // Correct the navbar.
-                // Set the name for the page.
-                $linktext = get_string('createcourse_title', 'block_iomad_company_admin');
-                // Set the url.
-                $linkurl = new moodle_url('/blocks/iomad_company_admin/company_course_create_form.php');
-
-
 
                 // Set the companyid
                 $companyid = iomad::get_my_companyid($context);
@@ -258,97 +285,10 @@ class block_poodllclassroom_external extends external_api {
 
                 $validateddata = $mform->get_data();
                 if ($validateddata) {
-//error_log(print_r( $validateddata, true ));
-
-                    $validateddata->userid = $USER->id;
-
-                    // Merge data with course defaults.
-                    $company = $DB->get_record('company', array('id' => $companyid));
-                    if (!empty($company->category)) {
-                        $validateddata->category = $company->category;
-                    } else {
-                        $validateddata->category = $CFG->defaultrequestcategory;
-                    }
-                    $courseconfig = get_config('moodlecourse');
-                    $mergeddata = (object) array_merge((array) $courseconfig, (array) $validateddata);
-
-                    // Turn on restricted modules.
-                    $mergeddata->restrictmodules = 1;
-                    if (!$course = create_course($mergeddata, $editoroptions)) {
-                        return 'error';
-                        /*
-                        $this->verbose("Error inserting a new course in the database!");
-                        if (!$this->get('ignore_errors')) {
-                            die();
-                        }
-                        */
-                    }
-
-                    // If licensed course, turn off all enrolments apart from license enrolment as
-                    // default  Moving this to a separate page.
-                    if ($validateddata->selfenrol == 0 ) {
-                        if ($instances = $DB->get_records('enrol', array('courseid' => $course->id))) {
-                            foreach ($instances as $instance) {
-                                $updateinstance = (array) $instance;
-                                if ($instance->enrol == 'self') {
-                                    $updateinstance['status'] = 0;
-                                } else if ($instance->enrol == 'license') {
-                                    $updateinstance['status'] = 1;
-                                } else if ($instance->enrol == 'manual') {
-                                    $updateinstance['status'] = 0;
-                                }
-                                $DB->update_record('enrol', $updateinstance);
-                            }
-                        }
-                    } else if ($validateddata->selfenrol == 1 ) {
-                        if ($instances = $DB->get_records('enrol', array('courseid' => $course->id))) {
-                            foreach ($instances as $instance) {
-                                $updateinstance = (array) $instance;
-                                if ($instance->enrol == 'self') {
-                                    $updateinstance['status'] = 1;
-                                } else if ($instance->enrol == 'license') {
-                                    $updateinstance['status'] = 1;
-                                } else if ($instance->enrol == 'manual') {
-                                    $updateinstance['status'] = 0;
-                                }
-                                $DB->update_record('enrol', $updateinstance);
-                            }
-                        }
-                    } else if ($validateddata->selfenrol == 2 ) {
-                        if ($instances = $DB->get_records('enrol', array('courseid' => $course->id))) {
-                            foreach ($instances as $instance) {
-                                $updateinstance = (array) $instance;
-                                if ($instance->enrol == 'self') {
-                                    $updateinstance['status'] = 1;
-                                } else if ($instance->enrol == 'license') {
-                                    $updateinstance['status'] = 0;
-                                } else if ($instance->enrol == 'manual') {
-                                    $updateinstance['status'] = 1;
-                                }
-                                $DB->update_record('enrol', $updateinstance);
-                            }
-                        }
-                    }
-
-                    // Associate the company with the course.
-                    $company = new company($companyid);
-                    // Check if we are a company manager.
-                    if ($validateddata->selfenrol != 2 && $DB->get_record('company_users', array('companyid' => $companyid,
-                                    'userid' => $USER->id,
-                                    'managertype' => 1))) {
-                        $company->add_course($course, 0, true);
-                    } else if ($validateddata->selfenrol == 2) {
-                        $company->add_course($course, 0, false, true);
-                    } else {
-                        $company->add_course($course);
-                    }
-
-                    $ret = new \stdClass();
-                    $ret->itemid=$course->id;
-                    $ret->error=false;
+                    //error_log(print_r( $validateddata, true ));
+                    $ret = common::upsert_company_course($companyid,$validateddata,$editoroptions, $formname);
                     return json_encode($ret);
                 }
-
                 break;
 
         }

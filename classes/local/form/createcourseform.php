@@ -46,6 +46,8 @@ class createcourseform extends \moodleform {
         $this->selectedcompany = $this->_customdata['companyid'];
         $this->context  = \context_coursecat::instance($CFG->defaultrequestcategory);
 
+        $mform->addElement('hidden','id');
+
         // Then show the fields about where this block appears.
         $mform->addElement('header', 'header',
                             get_string('companycourse', 'block_iomad_company_admin'));
