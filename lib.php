@@ -137,51 +137,6 @@ function block_poodllclassroom_output_fragment_mform($args) {
             $mform->set_data($user);
             break;
 
-        case constants::FORM_EDITUSER . 'x':
-            $context = context_system::instance();
-            if(!iomad::has_capability('block/iomad_company_admin:user_create', $context)){
-                return false;
-            }
-
-            // Set the companyid
-            $companyid = iomad::get_my_companyid($context);
-            $departmentid=0;
-            $licenseid=0;
-            $userid=$itemid;
-
-            // Check the userid is valid.
-            if (!empty($userid) && !company::check_valid_user($companyid, $userid, $departmentid)) {
-                print_error('invaliduserdepartment', 'block_iomad_company_management');
-                return;
-            }
-
-            $user = $DB->get_record('user',array('id'=>$userid));
-
-            $usercontext = context_user::instance($user->id);
-            $editoroptions = array(
-                    'maxfiles'   => EDITOR_UNLIMITED_FILES,
-                    'maxbytes'   => $CFG->maxbytes,
-                    'trusttext'  => false,
-                    'forcehttps' => false,
-                    'context'    => $usercontext
-            );
-
-            $draftitemid = 0;
-            $filemanagercontext = $editoroptions['context'];
-            $filemanageroptions = array('maxbytes'       => $CFG->maxbytes,
-                    'subdirs'        => 0,
-                    'maxfiles'       => 1,
-                    'accepted_types' => 'web_image');
-
-            $user = file_prepare_standard_editor($user, 'description', $editoroptions, $usercontext, 'user', 'profile', 0);
-            file_prepare_draft_area($draftitemid, $filemanagercontext->id, 'user', 'newicon', 0, $filemanageroptions);
-            $user->imagefile = $draftitemid;
-            $mform = new \block_poodllclassroom\local\form\edituserform(null, array('filemanageroptions'=>$filemanageroptions,'editoroptions'=> $editoroptions, 'user'=>$user));
-
-            $mform->set_data($user);
-
-            break;
-
 
         case constants::FORM_CREATECOURSE:
 

@@ -48,7 +48,7 @@ class renderer extends \plugin_renderer_base {
 
          $content = $createcoursebutton . '<br>';
 
-         $content .= $createuserbutton;
+
 
 
         $visible=false;
@@ -60,7 +60,7 @@ class renderer extends \plugin_renderer_base {
         $content .= $this->create_course_list($courses,$visible );
         $content .= $this->no_courses(!$visible);
 
-
+        $content .=  '<br>' . $createuserbutton . '<br>';
 
         $visible=false;
         if($users) {

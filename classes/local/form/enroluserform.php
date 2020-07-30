@@ -40,10 +40,9 @@ require_once($CFG->dirroot.'/local/email/lib.php');
 class enroluserform extends \moodleform {
     protected $context = null;
     protected $selectedcompany = 0;
-    protected $selectedcourses = 0;
+    protected $courseid = 0;
     protected $potentialusers = null;
     protected $currentusers = null;
-    protected $coursea = null;
     protected $departmentid = 0;
     protected $companydepartment = 0;
     protected $subhierarchieslist = null;
@@ -51,10 +50,10 @@ class enroluserform extends \moodleform {
     protected $groups = null;
     protected $company = null;
 
-    public function __construct($actionurl, $context, $companyid, $departmentid, $courses, $ajaxdata) {
+    public function __construct($actionurl, $context, $companyid, $departmentid, $courses) {
         global $USER, $DB;
         $this->selectedcompany = $companyid;
-        $this->selectedcourses = $courses;
+        $this->courseid = $courses[0];
         $this->context = $context;
         $company = new company($this->selectedcompany);
         $this->company = $company;
@@ -80,30 +79,30 @@ class enroluserform extends \moodleform {
         $target='';
         $attributes=null;
         $editable=true;
-        \moodleform::__construct(null, array(), $method,$target,$attributes,$editable,$ajaxdata);
+        \moodleform::__construct(null, array(), $method,$target,$attributes,$editable);
 
     }
 
     public function set_course($courses) {
         global $DB;
-
-        if (!in_array(0, $this->selectedcourses) && count($this->selectedcourses) == 1 && !$this->groups = $DB->get_records_sql_menu("SELECT g.id, g.description
+        $this->courseid=$courses[0];
+        if ($this->courseid && !$this->groups = $DB->get_records_sql_menu("SELECT g.id, g.description
                                                    FROM {groups} g
                                                    JOIN {company_course_groups} ccg
                                                    ON (g.id = ccg.groupid)
                                                    WHERE ccg.companyid = :companyid
-                                                   AND ccg.courseid in (:courseids)",
+                                                   AND ccg.courseid = :courseid",
                 array('companyid' => $this->selectedcompany,
-                    'courseids' => join(',', array_values($this->selectedcourses))))) {
+                    'courseid' => ($this->courseid)))) {
             $this->groups = array($this->company->get_name());
         }
     }
 
     public function create_user_selectors() {
-        if (!empty ($this->selectedcourses)) {
+        if ($this->courseid) {
             $options = array('context' => $this->context,
                 'companyid' => $this->selectedcompany,
-                'selectedcourses' => $this->selectedcourses,
+                'selectedcourses' => [$this->courseid],
                 'departmentid' => $this->departmentid,
                 'subdepartments' => $this->subhierarchieslist,
                 'parentdepartmentid' => $this->parentlevel,
@@ -124,11 +123,9 @@ class enroluserform extends \moodleform {
     public function definition() {
         $this->_form->addElement('hidden', 'companyid', $this->selectedcompany);
         $this->_form->addElement('hidden', 'deptid', $this->departmentid);
-        // Deal with the selected courses array.
-        foreach ($this->selectedcourses as $a => $b) {
-            $this->_form->addElement('hidden', "selectedcourses[$a]", $b);
-            $this->_form->setType("selectedcourses[$a]", PARAM_INT);
-        }
+        $this->_form->addElement('hidden', "courseid", $this->courseid);
+         $this->_form->setType("courseid", PARAM_INT);
+
         $this->_form->setType('companyid', PARAM_INT);
         $this->_form->setType('deptid', PARAM_INT);
     }
@@ -138,11 +135,9 @@ class enroluserform extends \moodleform {
 
         $mform =& $this->_form;
 
-        if (!empty($this->selectedcourses)) {
-            foreach ($this->selectedcourses as $a => $b) {
-                $this->_form->addElement('hidden', "courses[$a]", $b);
-                $this->_form->setType("courses[$a]", PARAM_INT);
-            }
+        if (!empty($this->courseid)) {
+                $this->_form->addElement('hidden', "courseid", $this->courseid);
+                $this->_form->setType("courseid", PARAM_INT);
         }
         $this->create_user_selectors();
 
@@ -151,22 +146,13 @@ class enroluserform extends \moodleform {
         // changed in the process function, the changes get displayed, rather than the
         // lists as they are before processing.
 
-        if (empty($this->selectedcourses)) {
+        if (!($this->courseid)) {
             die('No course selected.');
         }
 
         $company = new company($this->selectedcompany);
+        $course = $DB->get_record('course', array('id' => $this->courseid));
 
-        if (count($this->selectedcourses) == 1 && !in_array(0, $this->selectedcourses)) {
-            foreach ($this->selectedcourses as $courseid) {
-                $course = $DB->get_record('course', array('id' => $courseid));
-            }
-        } else {
-            $course = new stdclass();
-            $namestring = $company->get('name');
-            $course->fullname = $namestring;
-            $course->id = 0;
-        }
         $mform->addElement('header', 'header',
             get_string('company_users_for', 'block_iomad_company_admin',
                 format_string($course->fullname, true, 1) ));
@@ -174,20 +160,16 @@ class enroluserform extends \moodleform {
         $mform->addElement('date_time_selector', 'due', get_string('senddate', 'block_iomad_company_admin'));
         $mform->addHelpButton('due', 'senddate', 'block_iomad_company_admin');
 
-        if (in_array(0, $this->selectedcourses) || count($this->selectedcourses) != 1) {
+        if ($DB->get_record('iomad_courses', array('courseid' => $course->id, 'shared' => 0))) {
             $mform->addElement('hidden', 'groupid', 0);
             $mform->setType('groupid', PARAM_INT);
         } else {
-            if ($DB->get_record('iomad_courses', array('courseid' => $course->id, 'shared' => 0))) {
-                $mform->addElement('hidden', 'groupid', 0);
-                $mform->setType('groupid', PARAM_INT);
-            } else {
-                $mform->addElement('autocomplete', 'groupid', get_string('group'),
-                    $this->groups,
-                    array('setmultiple' => false,
-                        'onchange' => 'this.form.submit()'));
-            }
+            $mform->addElement('autocomplete', 'groupid', get_string('group'),
+                $this->groups,
+                array('setmultiple' => false,
+                    'onchange' => 'this.form.submit()'));
         }
+
 
         $mform->addElement('html', '<table summary="" class="companycourseuserstable'.
             ' addremovetable generaltable generalbox'.
@@ -209,7 +191,7 @@ class enroluserform extends \moodleform {
             '>>&nbsp;'. get_string('unenrol', 'block_iomad_company_admin') .
             '&nbsp;" title="Unenrol" /></br>
                       <input name="removeall" id="removeall" type="submit" value="&nbsp;' .
-            '<<&nbsp;'. get_string('unenrolall', 'block_iomad_company_admin') .
+            '>>&nbsp;'. get_string('unenrolall', 'block_iomad_company_admin') .
             '" title="Enrolall" /></br>
               </td>
               <td id="potentialcell">');
@@ -246,12 +228,8 @@ class enroluserform extends \moodleform {
         }
 
         // Sort out which courses it's going to be for.
-        if (in_array(0, $this->selectedcourses)) {
-            $courses = array_keys($this->company->get_menu_courses(true, true));
-            unset($courses[0]);
-        } else {
-            $courses = array_values($this->selectedcourses);
-        }
+        $courses = [$this->courseid];
+
 
         if ($add || $addall) {
             // Process incoming enrolments.
@@ -275,12 +253,12 @@ class enroluserform extends \moodleform {
                         // Enrol the user on the courses.
                         foreach ($courses as $courseid) {
                             $course = $DB->get_record('course', array('id' => $courseid));
-                            company_user::enrol($adduser,
+                            \company_user::enrol($adduser,
                                 array($courseid),
                                 $this->selectedcompany,
                                 0,
                                 $data->groupid);
-                            EmailTemplate::send('user_added_to_course',
+                            \EmailTemplate::send('user_added_to_course',
                                 array('course' => $course,
                                     'user' => $adduser,
                                     'due' => $duedate));
@@ -322,7 +300,7 @@ class enroluserform extends \moodleform {
 
                     // Unenrol the user on the courses.
                     foreach ($courses as $courseid) {
-                        company_user::unenrol($removeuser, array($courseid),
+                        \company_user::unenrol($removeuser, array($courseid),
                             $this->selectedcompany);
                     }
                 }
