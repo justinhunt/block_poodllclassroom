@@ -92,6 +92,9 @@ $string['createcoursestart'] = 'Create Course [ + ]';
 $string['editcourse'] = 'Edit Course';
 $string['editcourse_mform'] = 'Edit Course';
 $string['close'] = 'Close';
+$string['enrol'] = 'Enrol';
+$string['enroluser'] = 'Enrol User';
+$string['enroluser_mform'] = 'Enrol User';
 
 $string['createuser'] = 'Create User';
 $string['edituser']="Edit User";
@@ -115,3 +118,4 @@ $string['lastname'] = 'Last name';
 $string['date'] = 'Date';
 $string['action'] = 'Action';
 $string['lastaccess'] = 'Last Access';
+$string['currentpicture'] = 'Custom data';

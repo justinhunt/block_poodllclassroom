@@ -406,7 +406,99 @@ class common
         }
     }
 
-    public static function upsert_company_user($companyid,$validateddata, $formtype)
+    public static function update_company_user($companyid,$usernew,$user, $editoroptions)
+    {
+        global $CFG,$DB;
+
+        $company = new \company($companyid);
+        $systemcontext = \context_system::instance();
+
+        // Trim first and lastnames
+        $usernew->firstname = trim($usernew->firstname);
+        $usernew->lastname = trim($usernew->lastname);
+        $usercontext = \context_user::instance($usernew->id);
+
+        if (empty($usernew->auth)) {
+            // User editing self.
+            $authplugin = get_auth_plugin($user->auth);
+            unset($usernew->auth); // Can not change/remove.
+        } else {
+            $authplugin = get_auth_plugin($usernew->auth);
+        }
+
+        $usernew->username = clean_param($usernew->username, PARAM_USERNAME);
+        $usernew->timemodified = time();
+/* not actually showing any description or profile pic areas
+        $usernew = file_postupdate_standard_editor($usernew,
+            'description',
+            $editoroptions,
+            $usercontext,
+            'user_profile',
+            $usernew->id);
+*/
+        $DB->update_record('user', $usernew);
+        // Pass a true $userold here.
+        if (! $authplugin->user_update($user, $usernew)) {
+            // Auth update failed, rollback for moodle.
+            $DB->update_record('user', $user);
+            print_error('cannotupdateuseronexauth', '', '', $user->auth);
+        }
+
+        // Set new password if specified.
+        if (!empty($usernew->newpassword)) {
+            if ($authplugin->can_change_password()) {
+                if (!$authplugin->user_update_password($usernew, $usernew->newpassword)) {
+                    print_error('cannotupdatepasswordonextauth', '', '', $usernew->auth);
+                } else {
+                    \EmailTemplate::send('password_update', array('user' => $usernew));
+                }
+            }
+        }
+        $usercreated = false;
+
+        // Update preferences.
+        useredit_update_user_preference($usernew);
+        if (empty($usernew->preference_auth_forcepasswordchange)) {
+            $usernew->preference_auth_forcepasswordchange = 0;
+        }
+        set_user_preference('auth_forcepasswordchange', $usernew->preference_auth_forcepasswordchange, $usernew->id);
+
+        // Update tags.
+        if (!empty($CFG->usetags)) {
+            useredit_update_interests($usernew, $usernew->interests);
+        }
+
+        // Update user picture.
+        // we do not do that from here
+        /*
+        if (!empty($CFG->gdversion)) {
+            \core_user::update_picture($usernew, array());
+        }
+         */
+        // Update mail bounces.
+        useredit_update_bounces($user, $usernew);
+
+        // Update forum track preference.
+        //useredit_update_trackforums($user, $usernew);
+
+        // Save custom profile fields data.
+        profile_save_data($usernew);
+
+        // Reload from db.
+        $usernew = $DB->get_record('user', array('id' => $usernew->id));
+
+        // Trigger events.
+        \core\event\user_updated::create_from_userid($usernew->id)->trigger();
+
+        $ret = new \stdClass();
+        $ret->itemid=$usernew->id;
+        $ret->message='';
+        $ret->error=false;
+        return $ret;
+
+    }
+
+    public static function create_company_user($companyid,$validateddata)
     {
         global $CFG, $DB, $USER;
         // Trim first and lastnames

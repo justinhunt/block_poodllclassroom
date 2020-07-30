@@ -72,64 +72,12 @@ class renderer extends \plugin_renderer_base {
         $content .= $this->create_user_list($users,$tableid,$visible );
         $content .= $this->no_users(!$visible);
 
-        //this inits the js for the list helper page
-    //    $opts=array('modulecssclass'=>constants::M_CLASS, 'cmid'=>$cm->id, 'moduleid'=>$moduleinstance->id,'authmode'=>'normal', 'max'=>$max);
-    //    $this->page->requires->js_call_amd("mod_cpassignment/listhelper", 'init', array($opts));
-
-
          $content .= $amodalcontainer;
          return $content;
 
     }
 
 
-
-    //In this function we prepare and display the content that goes in the block
-    function fetch_block_content_old($courseid){
-        global $USER;
-
-
-        //show our intro text
-        $content = '';
-        $content .= '<br />' . get_string('welcomeuser', constants::M_COMP,$USER) . '<br />';
-
-        $items = [];
-
-        //oauth 2 menu
-        if(get_config(constants::M_COMP,'allowoauth2')){
-            $items[]=constants::SETTING_FACEBOOKAUTH;
-            $items[]=constants::SETTING_GOOGLEAUTH;
-            $items[]=constants::SETTING_MICROSOFTAUTH;
-        }
-        //webhooks
-        if(get_config(constants::M_COMP,'allowwebhooks')){
-            $items[]= constants::SETTING_WEBHOOKSFORM;
-        }
-
-        //enrol keys and manage users
-        $items[]= constants::SETTING_SITEDETAILSFORM;
-        $items[]= constants::SETTING_ENROLKEYFORM;
-        $items[]= constants::SETTING_MANAGEUSERS;
-        $items[]= constants::SETTING_MANAGECOURSES;
-        $items[]= constants::SETTING_ADDCOURSE;
-
-        $settings = [];
-        foreach ($items as $item){
-            $link =common::fetch_settings_url($item,$courseid);
-            $displayname =common::fetch_settings_title($item);
-            $setting=['url'=>$link->out(false),'displayname'=>$displayname];
-            $settings[]=$setting;
-        }
-
-        $data=['settings'=>$settings];
-        $content .= $this->render_from_template('block_poodllclassroom/tilescontainer', $data);
-
-        //we attach an event to it. The event comes from a JS AMD module also in this plugin
-        $opts=array('modulecssclass' => 'block_poodllclassroom');
-        $this->page->requires->js_call_amd(constants::M_COMP . "/triggeralert", 'init', array($opts));
-
-        return $content;
-    }
 
     function create_user_list($users,$tableid,$visible){
 
@@ -170,6 +118,8 @@ class renderer extends \plugin_renderer_base {
     }
 
     function create_course_list($courses,$visible){
+        global $CFG;
+
         $data = [];
         $data['display'] = $visible ? 'block' : 'none';
         $data['courses']=[];
@@ -180,6 +130,7 @@ class renderer extends \plugin_renderer_base {
             $ditem=[];
             $ditem['id']= $course->courseid;
             $ditem['coursename'] = $course->coursename;
+            $ditem['wwwroot'] = $CFG->wwwroot;
             $data['courses'][]=$ditem;
         }
         return $this->render_from_template('block_poodllclassroom/courselist', $data);

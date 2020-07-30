@@ -66,6 +66,7 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
                 log.debug('after course add');
                 log.debug(item);
                 item.id = itemid;
+                item.wwwroot = cfg.wwwroot;
                 item.coursename = item.fullname;
                 templates.render('block_poodllclassroom/courseitem',item).then(
                     function(html,js){
@@ -87,8 +88,8 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
                 var tileselector = '#' + that.modulecssclass + '_courseitem_' + itemid;
                 var coursenameselector = '.' + that.modulecssclass + '_coursename';
                 $(tileselector + ' ' + coursenameselector).text(item.fullname);
-                debugger;
             };
+
 
             //modal delete helper
             var after_coursedelete= function(itemid) {
@@ -124,56 +125,6 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
             mdh.init('.' + this.modulecssclass + '_coursedeletelink', this.contextid, 'deletecourse',after_coursedelete);
             mdh.init('.' + this.modulecssclass + '_userdeletelink', this.contextid, 'deleteuser',after_userdelete);
 
-            //modal dialog show link
-            /*
-            this.controls.createcoursestartbutton.click(function(){
-                dialogs.openModal('#' + that.modulecssclass + '_createcourse_cnt');
-                log.debug('opened modal');
-                return false;
-            });
-
-            */
-
-
-            //download links
-            /*
-            this.controls.rectable.on('click','a[data-type="download"]',function(e){
-                    var clickedLink = $(e.currentTarget);
-                    var elementid = clickedLink.data('id');
-                    that.show_download(that, elementid);
-                    return false;
-            });
-            */
-
-            //delete linkc
-            /*
-            this.controls.rectable.on('click','a[data-type="delete"]',function(e){
-                        var clickedLink = $(e.currentTarget);
-                        var elementid = clickedLink.data('id');
-                        var audiotitle = $('td.itemname span[data-itemid="'+ elementid+ '"]').data('value');
-                        ModalFactory.create({
-                            type: ModalFactory.types.SAVE_CANCEL,
-                            title: 'Delete Media',
-                            body: 'Do you really want to delete audio? <i>' + audiotitle + '</i>',
-                        })
-                            .then(function(modal) {
-                                modal.setSaveButtonText('DELETE');
-                                var root = modal.getRoot();
-                                root.on(ModalEvents.save, function() {
-                                    that.controls.thedatatable.row( clickedLink.parents('tr')).remove().draw();
-                                    var itemcount = that.controls.thedatatable.rows().count();
-                                    if(!itemcount){
-                                        that.controls.noitemscontainer.show();
-                                        that.controls.itemscontainer.hide();
-                                    }
-                                    that.do_delete(elementid);
-                                    that.check_item_count(that);
-                                });
-                                modal.show();
-                            });
-                        return false;
-            });
-            */
         }, //en of reg events
 
         format_date: function(timestamp) {
@@ -188,130 +139,7 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
                 day = '0' + day;
 
             return [year, month, day].join('-');
-        },
-
-        do_resetkey: function(that, moduleid){
-
-            Ajax.call([{
-                methodname: 'block_poodllclassroom_reset_key',
-                args: {
-                    moduleid: moduleid,
-                },
-                done: function (ajaxresult) {
-                    var payloadobject = JSON.parse(ajaxresult);
-                    if (payloadobject) {
-                        switch(payloadobject.success) {
-                            case true:
-                                var accesskey = payloadobject.message;
-                                that.controls.sharebox.val(cfg.wwwroot + '/mod/cpassignment/k.php?k=' + accesskey);
-                                break;
-
-                            case false:
-                            default:
-                                if (payloadobject.message) {
-                                    log.debug('message: ' + payloadobject.message);
-                                }
-                        }
-                    }
-                },
-                fail: notification.exception
-            }]);
-
-        },
-
-        do_delete: function(itemid){
-
-            Ajax.call([{
-                methodname: 'block_poodllclassroom_remove_rec',
-                args: {
-                    itemid: itemid,
-                },
-                done: function (ajaxresult) {
-                    var payloadobject = JSON.parse(ajaxresult);
-                    if (payloadobject) {
-                        switch(payloadobject.success) {
-                            case true:
-                                //all good do nothing
-                                break;
-
-                            case false:
-                            default:
-                                if (payloadobject.message) {
-                                    log.debug('message: ' + payloadobject.message);
-                                }
-                        }
-                    }
-                },
-                fail: notification.exception
-            }]);
-
-        },
-
-
-
-        insert_new_item: function(that,item){
-            that.controls.noitemscontainer.hide();
-            that.controls.itemscontainer.show();
-            templates.render('block_poodllclassroom/userlistrow',item).then(
-                function(html,js){
-                    that.controls.thedatatable.row.add($(html)[0]).draw();
-                }
-            );
-        },
-
-
-
-        send_submission: function(subid,filename, itemid, itemname ){
-            var that=this;
-            var args = {
-                    subid: subid,
-                    filename: filename,
-                    itemname: itemname,
-                    itemid: itemid,
-                    cmid: that.cmid
-                };
-            if(this.authmode==='guest'){
-                args.accesskey=that.accesskey;
-            }else{
-                args.accesskey='none';
-            }
-
-            Ajax.call([{
-                methodname: 'block_poodllclassroom_submit_rec',
-                args: args,
-                done: function (ajaxresult) {
-                    var payloadobject = JSON.parse(ajaxresult);
-                    if (payloadobject) {
-                        switch(payloadobject.success) {
-                            case true:
-                                var item = payloadobject.item;
-                                if(that.authmode==='guest'){
-                                    that.acknowledge_receipt(that,item);
-                                }else{
-                                    that.insert_new_item(that,item);
-                                    that.check_item_count(that);
-                                }
-
-                                dialogs.closeModal('#' + that.modulecssclass + '_arec_container');
-                                that.re_init_recorder(that,that.audiorecid);
-                                break;
-
-                            case false:
-                            default:
-                                if (payloadobject.message) {
-                                    log.debug('message: ' + payloadobject.message);
-                                }
-                                dialogs.closeModal('#' + that.modulecssclass + '_arec_container');
-                                that.clear_recorder();
-                                that.re_init_recorder(that.audiorecid);
-
-                        }
-                    }
-                },
-                fail: notification.exception
-            }]);
-
-        },
+        }
     };//end of return object
 
 });

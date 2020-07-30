@@ -153,79 +153,11 @@ class block_poodllclassroom_external extends external_api {
                 $mform = new \block_poodllclassroom\local\form\edituserform(null, array('editoroptions'=>$editoroptions,'filenamanageroptions'=>$filemanageroptions),
                     $method,$target,$attributes,$editable,$data);
                 $usernew = $mform->get_data();
-                $usernew = file_postupdate_standard_editor($usernew,
-                    'description',
-                    $editoroptions,
-                    $usercontext,
-                    'user_profile',
-                    $usernew->id);
-                // Trim first and lastnames
-                $usernew->firstname = trim($usernew->firstname);
-                $usernew->lastname = trim($usernew->lastname);
-                $usernew->username = clean_param($usernew->username, PARAM_USERNAME);
-                $usernew->timemodified = time();
+                if ($usernew) {
 
-                $DB->update_record('user', $usernew);
-                // Pass a true $userold here.
-            /*
-                $authplugin = get_auth_plugin($usernew->auth);
-                if (! $authplugin->user_update($user, $mform->get_data())) {
-                    // Auth update failed, rollback for moodle.
-                    $DB->update_record('user', $user);
-                    print_error('cannotupdateuseronexauth', '', '', $user->auth);
+                    $ret = common::update_company_user($companyid,$usernew,$user,$editoroptions);
+                    return json_encode($ret);
                 }
-
-                // Set new password if specified.
-                if (!empty($usernew->newpassword)) {
-                    if ($authplugin->can_change_password()) {
-                        if (!$authplugin->user_update_password($usernew, $usernew->newpassword)) {
-                            print_error('cannotupdatepasswordonextauth', '', '', $usernew->auth);
-                        } else {
-                            EmailTemplate::send('password_update', array('user' => $usernew));
-                        }
-                    }
-                }
-                $usercreated = false;
-*/
-
-                $usercontext = context_user::instance($usernew->id);
-/*
-                // Update preferences.
-                useredit_update_user_preference($usernew);
-                if (empty($usernew->preference_auth_forcepasswordchange)) {
-                    $usernew->preference_auth_forcepasswordchange = 0;
-                }
-                set_user_preference('auth_forcepasswordchange', $usernew->preference_auth_forcepasswordchange, $usernew->id);
-
-                // Update tags.
-                if (!empty($CFG->usetags)) {
-                    useredit_update_interests($usernew, $usernew->interests);
-                }
-
-                // Update user picture.
-                if (!empty($CFG->gdversion)) {
-                    core_user::update_picture($usernew, array());
-                }
-
-                // Update mail bounces.
-                useredit_update_bounces($user, $usernew);
-
-                // Update forum track preference.
-                useredit_update_trackforums($user, $usernew);
-
-                // Save custom profile fields data.
-                profile_save_data($usernew);
-
-                // Reload from db.
-                $usernew = $DB->get_record('user', array('id' => $usernew->id));
-*/
-                // Trigger events.
-                \core\event\user_updated::create_from_userid($usernew->id)->trigger();
-
-                $ret = new \stdClass();
-                $ret->itemid=$userid;
-                $ret->error=false;
-                return json_encode($ret);
                 break;
 
             case constants::FORM_CREATEUSER:
@@ -252,7 +184,7 @@ class block_poodllclassroom_external extends external_api {
                 $validateddata = $mform->get_data();
                 if ($validateddata) {
 
-                    $ret = common::upsert_company_user($companyid,$validateddata,$formname);
+                    $ret = common::create_company_user($companyid,$validateddata);
                     return json_encode($ret);
                 }
 

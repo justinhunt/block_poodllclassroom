@@ -31,6 +31,7 @@ const SETTING_SITEDETAILSFORM='sitedetailsform';
 const SETTING_MANAGECOURSES ='managecourses';
 const SETTING_ADDCOURSE ='addcourse';
 
+const FORM_ENROLUSER = 'enroluser';
 const FORM_CREATEUSER = 'createuser';
 const FORM_EDITUSER = 'edituser';
 const FORM_DELETEUSER = 'deleteuser';

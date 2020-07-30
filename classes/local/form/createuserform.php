@@ -171,84 +171,92 @@ class createuserform extends \moodleform {
         $mform->addHelpButton('due', 'senddate', 'block_iomad_company_admin');
 
 
-        // Deal with company optional fields.
-        $mform->addElement('header', 'category_id', get_string('advanced'));
-
-        $departmentslist = company::get_all_subdepartments($this->userdepartment);
-        $departmenttree = company::get_all_subdepartments_raw($this->userdepartment);
-        $treehtml = $output->department_tree($departmenttree, optional_param('userdepartment', 0, PARAM_INT));
-
-        $mform->addElement('html', $treehtml);
+        //POODLL dont show advanced at all
         $mform->addElement('html', "<div style='display: none;'>");
-        // Department drop down.
-        $mform->addElement('select', 'userdepartment', get_string('department', 'block_iomad_company_admin'),
-                $this->subhierarchieslist, $this->userdepartment);
 
-        $mform->addElement('html', "</div>");
+                // Deal with company optional fields.
+               /////// $mform->addElement('header', 'category_id', get_string('advanced'));
 
-        // Add in company/department manager checkboxes.
-        $managerarray = array();
-        if (iomad::has_capability('block/iomad_company_admin:assign_department_manager', $systemcontext)) {
-            $managerarray['0'] = get_string('user', 'block_iomad_company_admin');
-            $managerarray['2'] = get_string('departmentmanager', 'block_iomad_company_admin');
-        }
-        if (iomad::has_capability('block/iomad_company_admin:assign_company_manager', $systemcontext)) {
-            if (empty($managearray)) {
-                $managerarray['0'] = get_string('user', 'block_iomad_company_admin');
-            }
-            $managerarray['1'] = get_string('companymanager', 'block_iomad_company_admin');
-        }
-        if (iomad::has_capability('block/iomad_company_admin:assign_company_reporter', $systemcontext)) {
-            if (empty($managearray)) {
-                $managerarray['0'] = get_string('user', 'block_iomad_company_admin');
-            }
-            $managerarray['4'] = get_string('companyreporter', 'block_iomad_company_admin');
-        }
-        if (!empty($managerarray)) {
-            $mform->addElement('select', 'managertype', get_string('managertype', 'block_iomad_company_admin'), $managerarray, 0);
-        } else {
-            $mform->addElement('hidden', 'managertype', 0);
-        }
-        // Deal with the educator role.
-        if (!$CFG->iomad_autoenrol_managers) {
-            $mform->addElement('selectyesno', 'educator', get_string('assigneducator', 'block_iomad_company_admin'));
-            $mform->addHelpButton('educator', 'educator', 'block_iomad_company_admin');
-        } else {
-            $mform->addElement('hidden', 'educator', 0);
-            $mform->setType('educator', PARAM_BOOL);
-        }
 
-        // Get global fields.
-        if ($fields = $DB->get_records_sql("SELECT * FROM {user_info_field}
-                                            WHERE categoryid NOT IN (
-                                             SELECT profileid FROM {company})")) {
-            // Display the header and the fields.
-            foreach ($fields as $field) {
-                require_once($CFG->dirroot.'/user/profile/field/'.$field->datatype.'/field.class.php');
-                $newfield = 'profile_field_'.$field->datatype;
-                $formfield = new $newfield($field->id);
-                $formfield->edit_field($mform);
-                $mform->setDefault($formfield->inputname, $formfield->field->defaultdata);
-            }
-        }
-        // Get company category.
-        if ($companyinfo = $DB->get_record('company', array('id' => $this->selectedcompany))) {
+                $departmentslist = company::get_all_subdepartments($this->userdepartment);
+                $departmenttree = company::get_all_subdepartments_raw($this->userdepartment);
+                $treehtml = $output->department_tree($departmenttree, optional_param('userdepartment', 0, PARAM_INT));
 
-            // Get fields from company category.
-            if ($fields = $DB->get_records('user_info_field', array('categoryid' => $companyinfo->profileid))) {
-                // Display the header and the fields.
-                foreach ($fields as $field) {
-                    require_once($CFG->dirroot.'/user/profile/field/'.$field->datatype.'/field.class.php');
-                    $newfield = 'profile_field_'.$field->datatype;
-                    $formfield = new $newfield($field->id);
-                    $formfield->edit_field($mform);
-                    $mform->setDefault($formfield->inputname, $formfield->field->defaultdata);
+                $mform->addElement('html', $treehtml);
+                $mform->addElement('html', "<div style='display: none;'>");
+                // Department drop down.
+                $mform->addElement('select', 'userdepartment', get_string('department', 'block_iomad_company_admin'),
+                        $this->subhierarchieslist, $this->userdepartment);
+
+                $mform->addElement('html', "</div>");
+
+                // Add in company/department manager checkboxes.
+                $managerarray = array();
+                if (iomad::has_capability('block/iomad_company_admin:assign_department_manager', $systemcontext)) {
+                    $managerarray['0'] = get_string('user', 'block_iomad_company_admin');
+                    $managerarray['2'] = get_string('departmentmanager', 'block_iomad_company_admin');
                 }
-            }
-        }
+                if (iomad::has_capability('block/iomad_company_admin:assign_company_manager', $systemcontext)) {
+                    if (empty($managearray)) {
+                        $managerarray['0'] = get_string('user', 'block_iomad_company_admin');
+                    }
+                    $managerarray['1'] = get_string('companymanager', 'block_iomad_company_admin');
+                }
+                if (iomad::has_capability('block/iomad_company_admin:assign_company_reporter', $systemcontext)) {
+                    if (empty($managearray)) {
+                        $managerarray['0'] = get_string('user', 'block_iomad_company_admin');
+                    }
+                    $managerarray['4'] = get_string('companyreporter', 'block_iomad_company_admin');
+                }
+                if (!empty($managerarray)) {
+                    $mform->addElement('select', 'managertype', get_string('managertype', 'block_iomad_company_admin'), $managerarray, 0);
+                } else {
+                    $mform->addElement('hidden', 'managertype', 0);
+                }
+                // Deal with the educator role.
+                if (!$CFG->iomad_autoenrol_managers) {
+                    $mform->addElement('selectyesno', 'educator', get_string('assigneducator', 'block_iomad_company_admin'));
+                    $mform->addHelpButton('educator', 'educator', 'block_iomad_company_admin');
+                } else {
+                    $mform->addElement('hidden', 'educator', 0);
+                    $mform->setType('educator', PARAM_BOOL);
+                }
+
+                // Get global fields.
+                if ($fields = $DB->get_records_sql("SELECT * FROM {user_info_field}
+                                                    WHERE categoryid NOT IN (
+                                                     SELECT profileid FROM {company})")) {
+                    // Display the header and the fields.
+                    foreach ($fields as $field) {
+                        require_once($CFG->dirroot.'/user/profile/field/'.$field->datatype.'/field.class.php');
+                        $newfield = 'profile_field_'.$field->datatype;
+                        $formfield = new $newfield($field->id);
+                        $formfield->edit_field($mform);
+                        $mform->setDefault($formfield->inputname, $formfield->field->defaultdata);
+                    }
+                }
+                // Get company category.
+                if ($companyinfo = $DB->get_record('company', array('id' => $this->selectedcompany))) {
+
+                    // Get fields from company category.
+                    if ($fields = $DB->get_records('user_info_field', array('categoryid' => $companyinfo->profileid))) {
+                        // Display the header and the fields.
+                        foreach ($fields as $field) {
+                            require_once($CFG->dirroot.'/user/profile/field/'.$field->datatype.'/field.class.php');
+                            $newfield = 'profile_field_'.$field->datatype;
+                            $formfield = new $newfield($field->id);
+                            $formfield->edit_field($mform);
+                            $mform->setDefault($formfield->inputname, $formfield->field->defaultdata);
+                        }
+                    }
+                }
+
+           $mform->addElement('html', "</div>");
+          //POODLL end of do not show advanced fields at all
 
         // Deal with licenses.
-        if (\iomad::has_capability('block/iomad_company_admin:allocate_licenses', $systemcontext)) {
+        //DONT do this ... Poodll Classroom is not up for licenses yet
+        if (false &&\iomad::has_capability('block/iomad_company_admin:allocate_licenses', $systemcontext)) {
             $mform->addElement('header', 'licenses', get_string('assignlicenses', 'block_iomad_company_admin'));
             $foundlicenses = $DB->get_records_sql_menu("SELECT id, name FROM {companylicense}
                                                    WHERE expirydate >= :timestamp

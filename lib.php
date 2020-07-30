@@ -35,15 +35,31 @@ function block_poodllclassroom_output_fragment_mform($args) {
     list($ignored, $course) = get_context_info_array($context->id);
 
     switch($formname){
-        case constants::FORM_CREATEUSER:
+
+        case constants::FORM_ENROLUSER:
             $context = context_system::instance();
             if(!iomad::has_capability('block/iomad_company_admin:user_create', $context)){
                 return false;
             }
 
-            // Correct the navbar.
-            // Set the name for the page.
-            $linktext = get_string('createuser', 'block_iomad_company_admin');
+            // Set the companyid
+            $companyid = iomad::get_my_companyid($context);
+            $departmentid=0;
+            $licenseid=0;
+            $courseid=$itemid;
+            $courses=[$courseid];
+            $actionurl="unused";
+
+            $data=null;
+            $mform = new \block_poodllclassroom\local\form\enroluserform($actionurl,$context,$companyid, $departmentid, $courses, $ajaxdata);
+
+            break;
+
+        case constants::FORM_CREATEUSER:
+            $context = context_system::instance();
+            if(!iomad::has_capability('block/iomad_company_admin:user_create', $context)){
+                return false;
+            }
 
             // Set the companyid
             $companyid = iomad::get_my_companyid($context);
@@ -55,7 +71,73 @@ function block_poodllclassroom_output_fragment_mform($args) {
 
             break;
 
-        case constants::FORM_EDITUSER:
+        case constants::FORM_EDITUSER :
+            $context = context_system::instance();
+            if(!iomad::has_capability('block/iomad_company_admin:user_create', $context)){
+                return false;
+            }
+            require_once($CFG->dirroot . '/blocks/iomad_company_admin/editadvanced_form.php');
+            require_once($CFG->dirroot . '/user/editlib.php');
+            require_once($CFG->dirroot . '/user/profile/lib.php');
+
+            // Set the companyid
+            $companyid = iomad::get_my_companyid($context);
+            $departmentid=0;
+            $licenseid=0;
+            $userid=$itemid;
+
+            // Check the userid is valid.
+            if (!empty($userid) && !company::check_valid_user($companyid, $userid, $departmentid)) {
+                print_error('invaliduserdepartment', 'block_iomad_company_management');
+                return;
+            }
+
+            $user = $DB->get_record('user',array('id'=>$userid));
+
+            $usercontext = context_user::instance($user->id);
+            $editoroptions = array(
+                'maxfiles'   => EDITOR_UNLIMITED_FILES,
+                'maxbytes'   => $CFG->maxbytes,
+                'trusttext'  => false,
+                'forcehttps' => false,
+                'context'    => $usercontext
+            );
+
+            $draftitemid = 0;
+            $filemanagercontext = $editoroptions['context'];
+            $filemanageroptions = array('maxbytes'       => $CFG->maxbytes,
+                'subdirs'        => 0,
+                'maxfiles'       => 1,
+                'accepted_types' => 'web_image');
+
+            $user = file_prepare_standard_editor($user, 'description', $editoroptions, $usercontext, 'user', 'profile', 0);
+            file_prepare_draft_area($draftitemid, $filemanagercontext->id, 'user', 'newicon', 0, $filemanageroptions);
+            $user->imagefile = $draftitemid;
+
+            // Process email change cancellation.
+            $cancelemailchange =false;
+            if ($cancelemailchange) {
+                cancel_email_update($user->id);
+            }
+
+            // Load user preferences.
+            useredit_load_preferences($user);
+
+            // Load custom profile fields data.
+            profile_load_data($user);
+
+
+            // Create form.
+            $mform =new \block_poodllclassroom\local\form\edituserform(null, array('editoroptions' => $editoroptions,
+                'companyid' => $companyid,
+                'user' => $user,
+                'filemanageroptions' => $filemanageroptions));
+            //$mform = new \block_poodllclassroom\local\form\edituserform(null, array('filemanageroptions'=>$filemanageroptions,'editoroptions'=> $editoroptions, 'user'=>$user));
+
+            $mform->set_data($user);
+            break;
+
+        case constants::FORM_EDITUSER . 'x':
             $context = context_system::instance();
             if(!iomad::has_capability('block/iomad_company_admin:user_create', $context)){
                 return false;

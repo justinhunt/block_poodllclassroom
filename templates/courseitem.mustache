@@ -1,4 +1,6 @@
 <div id="block_poodllclassroom_courseitem_{{id}}" class="block_poodllclassroom_courseitem" style="border: 1px solid black; width: 200px; padding: 15px;">
   <div class="block_poodllclassroom_coursename">{{coursename}}</div> <a href="#" class="block_poodllclassroom_courseeditlink" data-id="{{id}}" data-type="edit">{{#str}}edit, block_poodllclassroom{{/str}}</a>
-     <a href="#" class="block_poodllclassroom_coursedeletelink" data-id="{{id}}" data-name="{{coursename}}" data-type="delete">{{#str}}delete, block_poodllclassroom{{/str}}</a>
+   <!-- a href="#" class="block_poodllclassroom_courseenrollink" data-id="{{id}}" data-type="enrol">{{#str}}enrol, block_poodllclassroom{{/str}}</a -->
+   <a href="{{wwwroot}}/user/index.php?id={{id}}" class="block_poodllclassroom_courseenrollink" data-id="{{id}}" data-type="enrol">{{#str}}enrol, block_poodllclassroom{{/str}}</a>
+   <a href="#" class="block_poodllclassroom_coursedeletelink" data-id="{{id}}" data-name="{{coursename}}" data-type="delete">{{#str}}delete, block_poodllclassroom{{/str}}</a>
 </div>
