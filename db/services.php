@@ -25,4 +25,13 @@ $functions = array(
         'type'        => 'write',
         'ajax'        => true,
     ),
+
+    'block_poodllclassroom_create_school' => array(
+        'classname'   => 'block_poodllclassroom_external',
+        'methodname'  => 'create_school',
+        'description' => 'create school.',
+        'capabilities'=> 'mod/poodllclassroom:manageintegration',
+        'type'        => 'write',
+        'ajax'        => true,
+    ),
 );

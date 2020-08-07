@@ -272,6 +272,88 @@ class common
         }
     }
 
+    //expects an array of data with some fields like name /city/country
+    public static function create_company($company){
+        global $DB;
+
+        // Array to return newly created records
+        $companyinfo = new \stdClass();
+
+        // does this company already exist, if so suffix our way to an optimal name
+        $newname=$company['name'];
+        if ($DB->get_record('company', array('name' =>  $newname))) {
+            for($suffixcount=1;$suffixcount<21;$suffixcount++) {
+                $newname .= $company['name'] . '_' . $suffixcount;
+                if (!$DB->get_record('company', array('name' => $newname))) {
+                    $company['name'] = $newname;
+                    $company['shortname']=$newname;
+                    break;
+                }
+                //give up at 20
+                if($suffixcount==20) {
+                    throw new \invalid_parameter_exception('Company name is already being used');
+                }
+            }
+        }
+        $newshortname=$company['shortname'];
+        if ($DB->get_record('company', array('shortname' =>  $newshortname))) {
+            for($suffixcount=1;$suffixcount<21;$suffixcount++) {
+                $newshortname .= $company['shortname'] . '_' . $suffixcount;
+                if (!$DB->get_record('company', array('shortname' => $newshortname))) {
+                    $company['shortname']=$newshortname;
+                    break;
+                }
+                //give up at 20
+                if($suffixcount==20) {
+                    throw new \invalid_parameter_exception('Company short name is already being used');
+                }
+            }
+        }
+
+        // Create the company record
+        $companyid = $DB->insert_record('company', $company);
+
+        // Deal with certificate info.
+        $certificateinforec = array('companyid' => $companyid,
+            'uselogo' => 1,
+            'usesignature' => 1,
+            'useborder' => 1,
+            'usewatermark' => 1,
+            'showgrade' => 1);
+        $DB->insert_record('companycertificate', $certificateinforec);
+
+        // Fire an event for this.
+        $eventother = array('companyid' => $companyid);
+        $event = \block_iomad_company_admin\event\company_created::create(array('context' =>\context_system::instance(),
+            'userid' => '-1',
+            'objectid' => $companyid,
+            'other' => $eventother));
+        $event->trigger();
+
+        // Set up default department.
+        \company::initialise_departments($companyid);
+
+        $newcompany = $DB->get_record('company', array('id' => $companyid));
+        $companyinfo[] = (array)$newcompany;
+
+        // Set up course category for company.
+        $coursecat = new \stdclass();
+        $coursecat->name = $company['name'];
+        $coursecat->sortorder = 999;
+        $coursecat->id = $DB->insert_record('course_categories', $coursecat);
+        $coursecat->context = \context_coursecat::instance($coursecat->id);
+        $categorycontext = $coursecat->context;
+        $categorycontext->mark_dirty();
+        $DB->update_record('course_categories', $coursecat);
+        fix_course_sortorder();
+        $companydetails = $DB->get_record('company', array('id' => $companyid));
+        $companydetails->category = $coursecat->id;
+        $DB->update_record('company', $companydetails);
+
+        return $companyinfo;
+
+    }
+
     public static function fetch_company_users($companyid){
         global $CFG,$DB;
 

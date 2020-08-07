@@ -13,6 +13,79 @@ use \block_poodllclassroom\constants;
 
 class block_poodllclassroom_external extends external_api {
 
+    public static function create_school_parameters() {
+        return new external_function_parameters(
+            array(
+                'username' => new external_value(PARAM_TEXT, 'User name'),
+                'firstname' => new external_value(PARAM_TEXT, 'User first name'),
+                'lastname' => new external_value(PARAM_TEXT, 'User last name'),
+                'email' => new external_value(PARAM_EMAIL, 'Email'),
+                'schoolname' => new external_value(PARAM_TEXT, 'School name'),
+                //the rest of this is to keep iomad happy
+                'city' => new external_value(PARAM_TEXT, 'Company location city', VALUE_DEFAULT, 'Tokyo'),
+                'country' => new external_value(PARAM_TEXT, 'Company location country', VALUE_DEFAULT, 'JP'),
+                'maildisplay' => new external_value(PARAM_INT, 'User default email display', VALUE_DEFAULT, 2),
+                'mailformat' => new external_value(PARAM_INT, 'User default email format', VALUE_DEFAULT, 1),
+                'maildigest' => new external_value(PARAM_INT, 'User default digest type', VALUE_DEFAULT, 0),
+                'autosubscribe' => new external_value(PARAM_INT, 'User default forum auto-subscribe', VALUE_DEFAULT, 1),
+                'trackforums' => new external_value(PARAM_INT, 'User default forum tracking', VALUE_DEFAULT, 0),
+                'htmleditor' => new external_value(PARAM_INT, 'User default text editor', VALUE_DEFAULT, 1),
+                'screenreader' => new external_value(PARAM_INT, 'User default screen reader', VALUE_DEFAULT, 0),
+                'timezone' => new external_value(PARAM_TEXT, 'User default timezone', VALUE_DEFAULT, '99'),
+                'lang' => new external_value(PARAM_TEXT, 'User default language', VALUE_DEFAULT, 'en'),
+                'suspended' => new external_value(PARAM_INT, 'Company is suspended when <> 0', VALUE_DEFAULT, 0),
+                'ecommerce' => new external_value(PARAM_INT, 'Ecommerce is disabled when = 0', VALUE_DEFAULT, 0),
+                'parentid' => new external_value(PARAM_INT, 'ID of parent company', VALUE_DEFAULT, 0),
+                'customcss' => new external_value(PARAM_TEXT, 'Company custom css'),
+                'validto' => new external_value(PARAM_INT, 'Contract termination date in unix timestamp', VALUE_DEFAULT, null),
+                'suspendafter' => new external_value(PARAM_INT, 'Number of seconds after termination date to suspend the company', VALUE_DEFAULT, 0),
+            )
+        );
+    }
+
+    public static function create_school($contextid,$itemid, $formname)
+    {
+        global $CFG, $DB, $USER;
+
+        require_once($CFG->dirroot . '/blocks/iomad_company_admin/lib.php');
+
+        // We always must pass webservice params through validate_parameters.
+        $params = self::validate_parameters(self::create_school_parameters(),
+            ['contextid' => $contextid, 'itemid' => $itemid, 'formname' => $formname]);
+
+        //need to massage data a bit
+        $userdata= [];
+        $userdata['username']=$params['username'];
+        $userdata['firstname']=$params['firstname'];
+        $userdata['lastname']=$params['lastname'];
+        $userdata['email']=$params['email'];
+
+        $companydata = $params;
+        $companydata['name']=$params['schoolname'];
+        $companydata['shortname']=$params['schoolname'];
+
+        // Get/check context/capability
+        $context = context_system::instance();
+        self::validate_context($context);
+        require_capability('block/poodllclassroom:manageintegration', $context);
+
+        $thecompany = common::create_company($companydata);
+        $ret = new \stdClass();
+        if($thecompany) {
+            $ret->itemid = $thecompany->id;
+            $ret->error = false;
+        }else{
+            $ret->itemid = 0;
+            $ret->error = true;
+        }
+        return json_encode($ret);
+    }
+
+    public static function create_school_returns() {
+        return new external_value(PARAM_RAW);
+        //return new external_value(PARAM_INT, 'group id');
+    }
+
     public static function delete_item_parameters() {
         return new external_function_parameters(
             array(
@@ -22,6 +95,7 @@ class block_poodllclassroom_external extends external_api {
             )
         );
     }
+
 
     public static function delete_item($contextid,$itemid, $formname)
     {

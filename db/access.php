@@ -18,7 +18,7 @@
  * Newblock block caps.
  *
  * @package   block_poodllclassroom
- * @copyright Daniel Neis <danielneis@gmail.com>
+ * @copyright Justin Hunt <poodllsupport@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -56,4 +56,14 @@ $capabilities = array(
                 'companymanager' => CAP_ALLOW
         )
      ),
+
+    'block/' . constants::M_NAME. ':manageintegration' => array(
+        'riskbitmask' => RISK_SPAM | RISK_XSS,
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_BLOCK,
+        'archetypes' => array(
+            'manager' => CAP_ALLOW,
+            'companymanager' => CAP_ALLOW
+        )
+    ),
 );
