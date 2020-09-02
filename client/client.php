@@ -44,21 +44,16 @@ $token = '73573cf1d0bad1e512e0a861cc35ddef';
 //$token = '1eebe7406f85ca3ea64ea9c11f4cc1c5';
 
 
-//CLOUDPOODLL USER TOKEN
+//POODLLONE USER TOKEN
 //$cloudtoken = '643eba92a1447ac0c6a882c85051461a';
 
 
 //FUNCTIONS
 //$functionname='local_cpapi_fetch_upload_details';
-$functionname='local_cpapi_fetch_presignedupload_url';
-//$functionname='local_cpapi_does_file_exist';
-//$functionname='local_cpapi_stage_remoteprocess_job';
-//$functionname='local_cpapi_fetch_convfile_details';
-
-
-
+$functionname='block_poodllclassroom_create_school';
 
 switch($functionname){
+
 case 'block_poodllclassroom_create_school':
     //REGISTER A USER / UPDATE / Add a subscription
     $params = array();
@@ -68,6 +63,7 @@ case 'block_poodllclassroom_create_school':
     $params['firstname'] = 'Russelliusx';
     $params['lastname'] = 'Crowie';
     $params['email'] = 'russelius@poodll.com';
+
     $params['schoolname'] = 'Gladiator School';
     break;
 
