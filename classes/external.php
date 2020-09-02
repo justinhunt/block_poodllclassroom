@@ -36,14 +36,14 @@ class block_poodllclassroom_external extends external_api {
                 'suspended' => new external_value(PARAM_INT, 'Company is suspended when <> 0', VALUE_DEFAULT, 0),
                 'ecommerce' => new external_value(PARAM_INT, 'Ecommerce is disabled when = 0', VALUE_DEFAULT, 0),
                 'parentid' => new external_value(PARAM_INT, 'ID of parent company', VALUE_DEFAULT, 0),
-                'customcss' => new external_value(PARAM_TEXT, 'Company custom css'),
+                'customcss' => new external_value(PARAM_TEXT, 'Company custom css',VALUE_DEFAULT, ''),
                 'validto' => new external_value(PARAM_INT, 'Contract termination date in unix timestamp', VALUE_DEFAULT, null),
                 'suspendafter' => new external_value(PARAM_INT, 'Number of seconds after termination date to suspend the company', VALUE_DEFAULT, 0),
             )
         );
     }
 
-    public static function create_school($contextid,$itemid, $formname)
+    public static function create_school($username,$firstname, $lastname,$email,$schoolname)
     {
         global $CFG, $DB, $USER;
 
@@ -51,7 +51,7 @@ class block_poodllclassroom_external extends external_api {
 
         // We always must pass webservice params through validate_parameters.
         $params = self::validate_parameters(self::create_school_parameters(),
-            ['contextid' => $contextid, 'itemid' => $itemid, 'formname' => $formname]);
+            ['username' => $username, 'firstname' => $firstname, 'lastname' => $lastname, 'email' => $email, 'schoolname'=>$schoolname]);
 
         //need to massage data a bit
         $userdata= [];
@@ -59,6 +59,8 @@ class block_poodllclassroom_external extends external_api {
         $userdata['firstname']=$params['firstname'];
         $userdata['lastname']=$params['lastname'];
         $userdata['email']=$params['email'];
+        $userdata['managertype']=1;//company manager
+        $userdata['educator']=1;//is an educator
 
         $companydata = $params;
         $companydata['name']=$params['schoolname'];
@@ -70,9 +72,42 @@ class block_poodllclassroom_external extends external_api {
         require_capability('block/poodllclassroom:manageintegration', $context);
 
         $thecompany = common::create_company($companydata);
+         if(!$thecompany){
+             $ret = new \stdClass();
+                 $ret->itemid = 0;
+                 $ret->error = true;
+                 $ret->message = "failed to create company";
+                 return json_encode($ret);
+         }
+
+        $theuser = common::get_user($userdata['username'],$userdata['email']);
+        $parentlevel = company::get_company_parentnode($thecompany->id);
+        $departmentid=$parentlevel->id;
+        $newuserid=0;
+        if(!$theuser) {
+            $validateddata = (object)$userdata;
+            // Trim first and lastnames
+            $validateddata->firstname = trim($validateddata->firstname);
+            $validateddata->lastname = trim($validateddata->lastname);
+            $validateddata->sendnewpasswordemails =1;
+            $validateddata->due =time();
+            $validateddata-> preference_auth_forcepasswordchange =1;
+            $validateddata->use_email_as_username =0;
+            $validateddata->userdepartment=$departmentid;
+
+            $ret = common::create_company_user($thecompany->id, $validateddata);
+            if($ret && $ret->error==false){
+                $newuserid=$ret->itemid;
+            }
+        }else{
+            company::upsert_company_user($theuser->id, $thecompany->id, $departmentid,  $userdata['managertype'], $userdata['educator']);
+            $newuserid=$theuser->id;
+        }
+
         $ret = new \stdClass();
-        if($thecompany) {
-            $ret->itemid = $thecompany->id;
+        if($thecompany && $newuserid) {
+            $ret->companyid = $thecompany->id;
+            $ret->userid = $newuserid;
             $ret->error = false;
         }else{
             $ret->itemid = 0;

@@ -276,9 +276,6 @@ class common
     public static function create_company($company){
         global $DB;
 
-        // Array to return newly created records
-        $companyinfo = new \stdClass();
-
         // does this company already exist, if so suffix our way to an optimal name
         $newname=$company['name'];
         if ($DB->get_record('company', array('name' =>  $newname))) {
@@ -333,8 +330,6 @@ class common
         // Set up default department.
         \company::initialise_departments($companyid);
 
-        $newcompany = $DB->get_record('company', array('id' => $companyid));
-        $companyinfo[] = (array)$newcompany;
 
         // Set up course category for company.
         $coursecat = new \stdclass();
@@ -350,7 +345,7 @@ class common
         $companydetails->category = $coursecat->id;
         $DB->update_record('company', $companydetails);
 
-        return $companyinfo;
+        return $companydetails;
 
     }
 
@@ -580,12 +575,24 @@ class common
 
     }
 
+    public static function get_user($username,$email)
+    {
+        global $DB;
+       $theuser = $DB->get_record('user', array('username' => $username));
+       if(!$theuser){
+           $theuser = $DB->get_record('user', array('email' => $email));
+       }
+       if(!$theuser){
+           return false;
+       }else{
+           return $theuser;
+       }
+
+
+    }
     public static function create_company_user($companyid,$validateddata)
     {
         global $CFG, $DB, $USER;
-        // Trim first and lastnames
-        $validateddata->firstname = trim($validateddata->firstname);
-        $validateddata->lastname = trim($validateddata->lastname);
 
         $validateddata->userid = $USER->id;
         if ($companyid > 0) {
@@ -594,6 +601,12 @@ class common
         $company = new \company($companyid);
 //error_log(print_r( $validateddata, true ));
 
+       /* sendnewpasswordemails
+       due
+       preference_auth_forcepasswordchange
+       newpassword
+       use_email_as_username
+       */
         if (!$userid = \company_user::create($validateddata)) {
             $ret = new \stdClass();
             $ret->itemid=0;

@@ -19,10 +19,7 @@ use block_poodllclassroom\constants;
 
 function block_poodllclassroom_output_fragment_mform($args) {
     global $CFG, $PAGE, $DB;
-
-
-
-
+    
     $args = (object) $args;
     $context = $args->context;
     $formname = $args->formname;
