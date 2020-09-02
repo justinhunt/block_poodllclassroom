@@ -27,8 +27,7 @@
 //return;
 
 //use these to get a token
-//localhost 'http://localhost/moodle/login/token.php?username=russell&password=Password-123&service=cloud_poodll'
-//cloudpoodll 'https://cloud.poodll.com/local/cpapi/poodlltoken.php?username=localhostuser&password=w3gMcbQC0MDyPhCT&service=cloud_poodll'
+//ubuntubox 'http://ubuntubox/iomad/login/token.php?username=webservicedog&password=ubuntubox-K9&service=poodllclassroom'
 
 
 /// SETUP - NEED TO BE CHANGED
@@ -37,15 +36,14 @@
 $domainname = 'http://ubuntubox/iomad';
 //$domainname = 'https://misc.poodll.com/iomad';
 
-//LOCALHOST USERTOKEN
-$token = '73573cf1d0bad1e512e0a861cc35ddef';
 
-//LOCALHOST ADMIN TOKEN
-//$token = '1eebe7406f85ca3ea64ea9c11f4cc1c5';
+
+//ubuntubox TOKEN
+$token = '87de4df535e2aabae308e26f456508f4';
 
 
 //POODLLONE USER TOKEN
-//$cloudtoken = '643eba92a1447ac0c6a882c85051461a';
+//$token = '';
 
 
 //FUNCTIONS
