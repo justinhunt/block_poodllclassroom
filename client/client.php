@@ -34,8 +34,8 @@
 /// SETUP - NEED TO BE CHANGED
 
 /// DOMAIN NAME
-$domainname = 'http://localhost/moodle';
-//$domainname = 'https://cloud.poodll.com';
+$domainname = 'http://ubuntubox/iomad';
+//$domainname = 'https://misc.poodll.com/iomad';
 
 //LOCALHOST USERTOKEN
 $token = '73573cf1d0bad1e512e0a861cc35ddef';
@@ -59,7 +59,7 @@ $functionname='local_cpapi_fetch_presignedupload_url';
 
 
 switch($functionname){
-case 'local_cpapi_update_cpapi_user':
+case 'block_poodllclassroom_create_school':
     //REGISTER A USER / UPDATE / Add a subscription
     $params = array();
     $params['wstoken'] = $token;
@@ -68,153 +68,34 @@ case 'local_cpapi_update_cpapi_user':
     $params['firstname'] = 'Russelliusx';
     $params['lastname'] = 'Crowie';
     $params['email'] = 'russelius@poodll.com';
-    $params['expiredate'] = '1526971366';
-    $params['subscriptionid'] = '2511';
-    $params['transactionid'] = '991972';
-    $params['awsaccessid'] = 'AWS123';
-    $params['awsaccesssecret'] = 'AWSxxx';
+    $params['schoolname'] = 'Gladiator School';
     break;
-case  'local_cpapi_reset_cpapi_secret':
+
+case  'core_user_create_users':
     $params = array();
     $params['wstoken'] = $token;
     $params['wsfunction'] = $functionname;
-    $params['username'] = 'russell';
-    $params['currentsecret'] = 'WRy0PbL7XUB1nj9x';//'Password-123';
+    //users[0][firstname] = firstname (actually arrays)
+    $params['firstname'] = 'Elmer';
+    $params['lastname'] = 'Fudd';
+    $params['email'] = 'elmerfudd@poodll.com';
+    $params['password'] = 'Password-123';
     break;
-    case 'local_cpapi_fetch_streamingtranscriber':
+
+
+case  'enrol_manual_enrol_users':
     $params = array();
     $params['wstoken'] = $token;
     $params['wsfunction'] = $functionname;
-    $params['parent'] = 'http://localhost/moodle';
-    $params['appid'] = 'filter_poodll';
-    $params['owner'] = 'poodll';
-    $params['region'] = 'useast1';
-    $params['expiretime'] = '300';
-    $params['languagecode'] = 'en-US';
-    $params['samplerate'] = '16000';
+    //enrolments[0][roleid]= roleid
+    $params['roleid'] = 2;
+    $params['userid'] = 2;
+    $params['courseid'] = 2;
+    $params['suspend'] = false;
     break;
- case 'local_cpapi_update_cpapi_sites':
-            $params = array();
-            $params['wstoken'] = $token;
-            $params['wsfunction'] = $functionname;
-            $params['username'] = 'russell';
-            $params['url1'] = 'http://localhost';
-            $params['url2'] = 'https://russell.poodll.com';
-            $params['url3'] = '';
-            $params['url4'] = '';
-            $params['url5'] = '';
-            break;
-case 'local_cpapi_hello_world';
-    $params = array();
-    $params['wstoken'] = $token;
-    $params['wsfunction'] = $functionname;
-    break;
-
-case 'local_cpapi_fetch_polly_url';
-    $params = array();
-    $params['wstoken'] = $token;
-    $params['wsfunction'] = $functionname;
-    $params['text'] = 'incredulous';
-    $params['texttype'] = 'text';
-    $params['voice'] = 'Joey';
-    $params['owner'] = 'russel';
-    $params['appid'] = 'testclient';
-    $params['region'] = 'tokyo';
-    break;
- case  'local_cpapi_fetch_upload_details':
-
-/// PARAMETERS
-    $params = array();
-    $params['wstoken'] = $token;
-    $params['wsfunction'] = $functionname;
-    $params['mediatype'] = 'audio';
-   // $params['parent'] = 'https://russell.poodll.com';
-     $params['parent'] = 'http://localhost';
-    $params['appid'] = 'filter_poodll';
-    $params['owner'] = 'poodll';
-    $params['region'] = 'useast1';
-    $params['expiredays'] = '365';
-    $params['transcode'] = '1';
-    $params['transcoder'] = 'default';
-    $params['transcribe'] = '1';
-    $params['subtitle'] = '0';
-    $params['transcribelanguage'] = 'en-US';
-    $params['transcribevocab'] = 'none';
-    $params['notificationurl'] = 'none';
-    $params['sourcemimetype'] = 'audio/mp3'; //this can not be empry
-    break;
-
-case 'local_cpapi_fetch_convfile_details':
-
-    /// PARAMETERS
-    $params = array();
-    $params['wstoken'] = $token;
-    $params['wsfunction'] = $functionname;
-    $params['mediatype'] = 'audio';
-    $params['region'] = 'tokyo';
-    $params['infilename'] = 'Y_https_elearning.anytimeesl.ca_443__99999_audio_poodllfile5edf01867c10518.mp3';
-    $params['outfilename'] = 'poodllfile5edf01867c10518.mp3';
-    $params['convfolder'] = 'transcoded/elearning.anytimeesl.ca/';
-    break;
-
-case 'local_cpapi_fetch_presignedupload_url';
-        $params = array();
-        $params['wstoken'] = $token;
-        $params['wsfunction'] = $functionname;
-        $params['mediatype'] = 'audio';
-        $params['minutes'] = 7;
-        $params['key'] = 'transcript5.txt';
-        $params['iosvideo'] = false;
-        $params['region'] = 'tokyo';
-        break;
-
-
-case 'xlocal_cpapi_fetch_presignedupload_url';
-        $params = array();
-        $params['wstoken'] = $token;
-        $params['wsfunction'] = $functionname;
-        $params['mediatype'] = 'audio';
-        $params['minutes'] = 25;
-        $params['key'] = 'somegreataudio.mp3';
-        $params['iosvideo'] = false;
-        $params['region'] = 'tokyo';
-        break;
-
-case 'local_cpapi_does_file_exist';
-        $params = array();
-        $params['wstoken'] = $token;
-        $params['wsfunction'] = $functionname;
-        $params['mediatype'] = 'audio';
-        $params['inout'] = 'in';
-        $params['filename'] = 'Y_https_amideastonline.org_443__99999_audio_poodllfile5edf49a49052f19.mp3'; //'somegreataudio.mp3';
-        $params['region'] = 'tokyo';
-        break;
-
-case  'local_cpapi_stage_remoteprocess_job':
-
-        /// PARAMETERS
-        $params = array();
-        $params['wstoken'] = $token;
-        $params['wsfunction'] = $functionname;
-        $params['host'] = 'localhost';
-        $params['mediatype'] = 'audio';
-        $params['appid'] = 'filter_poodll';
-        $params['owner'] = 'poodll';
-        $params['region'] = 'tokyo';
-        $params['s3path'] = 'transcoded/elearning.anytimeesl.ca/';
-        $params['s3outfilename'] = 'somegreataudio.mp3';
-        $params['transcode'] = '1';
-        $params['transcoder'] = 'default';
-        $params['transcribe'] = '1';
-        $params['subtitle'] = '0';
-        $params['language'] = 'en-US';
-        $params['vocab'] = 'none';
-        $params['notificationurl'] = 'none';
-        $params['sourcemimetype'] = 'audio/mp3'; //this can not be empry
-        break;
 
  default:
-    echo "at least ONE (and only one) API call in client needs to be marked 'true' ...don't you know";
+    echo "at least ONE (and only one) API call in client needs to be marked 'true'";
     return;
 }
 
