@@ -82,7 +82,7 @@ class block_poodllclassroom_external extends external_api {
         $thecompany = common::create_company($companydata);
          if(!$thecompany){
                  $ret['error'] = true;
-                 $ret->message = "failed to create company";
+                 $ret['message'] = "failed to create company";
                  return $ret;
          }
 
@@ -101,10 +101,14 @@ class block_poodllclassroom_external extends external_api {
             $validateddata->use_email_as_username =0;
             $validateddata->userdepartment=$departmentid;
 
-            $ret = common::create_company_user($thecompany->id, $validateddata);
-            if($ret && $ret->error==false){
+            $result = common::create_company_user($thecompany->id, $validateddata);
+            if($result && $result->error==false){
                 $newuserid=$ret->itemid;
                 $newusername=$ret->username;
+            }else{
+                $ret['error'] = true;
+                $ret['message'] = "failed to create user";
+                return $ret;
             }
         }else{
             company::upsert_company_user($theuser->id, $thecompany->id, $departmentid,  $userdata['managertype'], $userdata['educator']);
@@ -112,14 +116,13 @@ class block_poodllclassroom_external extends external_api {
             $newusername=$theuser->username;
         }
 
-        $ret = new \stdClass();
         if($thecompany && $newuserid) {
             $ret['schoolid'] = $thecompany->id;
             $ret['userid'] = $newuserid;
             $ret['username'] = $newusername;
         }else{
             $ret['error'] = true;
-            $ret->message = "failed to create company AND user";
+            $ret['message'] = "failed to create company AND user";
         }
         return $ret;
     }
@@ -128,11 +131,11 @@ class block_poodllclassroom_external extends external_api {
         //return new external_value(PARAM_RAW);
         //return new external_value(PARAM_INT, 'group id');
         return new external_single_structure([
-                'schoolid' => new external_value(PARAM_INT, 'school id', VALUE_DEFAULT, 0),
-                'userid' => new external_value(PARAM_INT, 'user id', VALUE_DEFAULT, 0),
-                'username' => new external_value(PARAM_TEXT, 'user name', VALUE_DEFAULT, ''),
-                'message' => new external_value(PARAM_TEXT, 'error message', VALUE_DEFAULT, ''),
-                'error' => new external_value(PARAM_BOOL, 'error', VALUE_DEFAULT, false),
+                'schoolid' => new external_value(PARAM_INT, 'school id'),
+                'userid' => new external_value(PARAM_INT, 'user id' ),
+                'username' => new external_value(PARAM_TEXT, 'user name'),
+                'message' => new external_value(PARAM_TEXT, 'error message'),
+                'error' => new external_value(PARAM_BOOL, 'error'),
         ]);
     }
 
