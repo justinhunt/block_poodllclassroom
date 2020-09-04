@@ -119,3 +119,6 @@ $string['date'] = 'Date';
 $string['action'] = 'Action';
 $string['lastaccess'] = 'Last Access';
 $string['currentpicture'] = 'Custom data';
+
+$string['poodllclassroom:managepoodllclassroom']='Manage PoodllClassroom';
+$string['poodllclassroom:manageintegration']='Manage PoodllClassroom integration';
