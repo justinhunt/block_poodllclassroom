@@ -103,8 +103,8 @@ class block_poodllclassroom_external extends external_api {
 
             $result = common::create_company_user($thecompany->id, $validateddata);
             if($result && $result->error==false){
-                $newuserid=$ret->itemid;
-                $newusername=$ret->username;
+                $newuserid=$result->itemid;
+                $newusername=$result->username;
             }else{
                 $ret['error'] = true;
                 $ret['message'] = "failed to create user";
