@@ -77,23 +77,17 @@ class block_poodllclassroom_external extends external_api {
         // Get/check context/capability
         $context = context_system::instance();
         self::validate_context($context);
-        //require_capability('block/poodllclassroom:manageintegration', $context);
+        require_capability('block/poodllclassroom:manageintegration', $context);
 
-        ob_start();
         $thecompany = common::create_company($companydata);
-        ob_end_clean();
-
          if(!$thecompany){
                  $ret['error'] = true;
                  $ret['message'] = "failed to create company";
                  return $ret;
          }
 
-        ob_start();
         $theuser = common::get_user($userdata['username'],$userdata['email']);
         $parentlevel = company::get_company_parentnode($thecompany->id);
-        ob_end_clean();
-
         $departmentid=$parentlevel->id;
         $newuserid=0;
         if(!$theuser) {
@@ -107,10 +101,7 @@ class block_poodllclassroom_external extends external_api {
             $validateddata->use_email_as_username =0;
             $validateddata->userdepartment=$departmentid;
 
-            ob_start();
             $result = common::create_company_user($thecompany->id, $validateddata);
-            ob_end_clean();
-
             if($result && $result->error==false){
                 $newuserid=$result->itemid;
                 $newusername=$result->username;
@@ -120,10 +111,7 @@ class block_poodllclassroom_external extends external_api {
                 return $ret;
             }
         }else{
-            ob_start();
             company::upsert_company_user($theuser->id, $thecompany->id, $departmentid,  $userdata['managertype'], $userdata['educator']);
-            ob_end_clean();
-
             $newuserid=$theuser->id;
             $newusername=$theuser->username;
         }
