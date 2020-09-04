@@ -25,5 +25,5 @@
 
 require('../../config.php');
 require_once($CFG->libdir . '/externallib.php');
-$ret = \block_poodllclassroom_external::create_school('doctorzhivago','dr','zhivago','drzhivago@poodll.com','Zhivago Academy');
+$ret = \block_poodllclassroom_external::create_school('meatloaf','meat','loaf','meatloaf@poodll.com','meatloaf Academy');
 var_dump($ret);
