@@ -642,7 +642,7 @@ class common
             $userlevel = $company->get_userlevel($USER);
             $userhierarchylevel = $userlevel->id;
         }
-     //   \company::assign_user_to_department($validateddata->userdepartment, $userid);
+        \company::assign_user_to_department($validateddata->userdepartment, $userid);
 
         //get user data
         $userdata = $DB->get_record('user', array('id' => $userid));
@@ -664,7 +664,7 @@ class common
                     array('licenseid' => $licenserecord['id']));
             }
 
-            if (!empty($validateddata->licensecourses)) {
+            if (false && !empty($validateddata->licensecourses)) {
                 $userdata = $DB->get_record('user', array('id' => $userid));
                 $count = $licenserecord['used'];
                 $numberoflicenses = $licenserecord['allocation'];
