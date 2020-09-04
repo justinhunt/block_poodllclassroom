@@ -272,6 +272,11 @@ class common
         }
     }
 
+    //truncate long names that go over db limit
+    public static function truncate_string($string, $length, $dots = "...") {
+        return (strlen($string) > $length) ? substr($string, 0, $length - strlen($dots)) . $dots : $string;
+    }
+
     //expects an array of data with some fields like name /city/country
     public static function create_company($company){
         global $DB;
@@ -280,10 +285,10 @@ class common
         $newname=$company['name'];
         if ($DB->get_record('company', array('name' =>  $newname))) {
             for($suffixcount=1;$suffixcount<21;$suffixcount++) {
-                $newname .= $company['name'] . '_' . $suffixcount;
+                $newname = $company['name'] . '_' . $suffixcount;
                 if (!$DB->get_record('company', array('name' => $newname))) {
                     $company['name'] = $newname;
-                    $company['shortname']=$newname;
+                    $company['shortname']= \self::truncate_string($newname,25);
                     break;
                 }
                 //give up at 20
@@ -295,7 +300,7 @@ class common
         $newshortname=$company['shortname'];
         if ($DB->get_record('company', array('shortname' =>  $newshortname))) {
             for($suffixcount=1;$suffixcount<21;$suffixcount++) {
-                $newshortname .= $company['shortname'] . '_' . $suffixcount;
+                $newshortname =\self::truncate_string($company['shortname'],22)  . '_' . $suffixcount;
                 if (!$DB->get_record('company', array('shortname' => $newshortname))) {
                     $company['shortname']=$newshortname;
                     break;
