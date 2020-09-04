@@ -49,6 +49,14 @@ class block_poodllclassroom_external extends external_api {
 
         require_once($CFG->dirroot . '/blocks/iomad_company_admin/lib.php');
 
+        //initialise return value
+        $ret=[];
+        $ret['error']=false;
+        $ret['message']='';
+        $ret['schoolid']=0;
+        $ret['userid']=0;
+        $ret['username']='';
+
         // We always must pass webservice params through validate_parameters.
         $params = self::validate_parameters(self::create_school_parameters(),
             ['username' => $username, 'firstname' => $firstname, 'lastname' => $lastname, 'email' => $email, 'schoolname'=>$schoolname]);
@@ -73,11 +81,9 @@ class block_poodllclassroom_external extends external_api {
 
         $thecompany = common::create_company($companydata);
          if(!$thecompany){
-             $ret = new \stdClass();
-                 $ret->itemid = 0;
-                 $ret->error = true;
+                 $ret['error'] = true;
                  $ret->message = "failed to create company";
-                 return json_encode($ret);
+                 return $ret;
          }
 
         $theuser = common::get_user($userdata['username'],$userdata['email']);
@@ -98,27 +104,36 @@ class block_poodllclassroom_external extends external_api {
             $ret = common::create_company_user($thecompany->id, $validateddata);
             if($ret && $ret->error==false){
                 $newuserid=$ret->itemid;
+                $newusername=$ret->username;
             }
         }else{
             company::upsert_company_user($theuser->id, $thecompany->id, $departmentid,  $userdata['managertype'], $userdata['educator']);
             $newuserid=$theuser->id;
+            $newusername=$theuser->username;
         }
 
         $ret = new \stdClass();
         if($thecompany && $newuserid) {
-            $ret->companyid = $thecompany->id;
-            $ret->userid = $newuserid;
-            $ret->error = false;
+            $ret['schoolid'] = $thecompany->id;
+            $ret['userid'] = $newuserid;
+            $ret['username'] = $newusername;
         }else{
-            $ret->itemid = 0;
-            $ret->error = true;
+            $ret['error'] = true;
+            $ret->message = "failed to create company AND user";
         }
-        return json_encode($ret);
+        return $ret;
     }
 
     public static function create_school_returns() {
-        return new external_value(PARAM_RAW);
+        //return new external_value(PARAM_RAW);
         //return new external_value(PARAM_INT, 'group id');
+        return new external_single_structure([
+                'schoolid' => new external_value(PARAM_INT, 'school id', VALUE_DEFAULT, 0),
+                'userid' => new external_value(PARAM_INT, 'user id', VALUE_DEFAULT, 0),
+                'username' => new external_value(PARAM_TEXT, 'user name', VALUE_DEFAULT, ''),
+                'message' => new external_value(PARAM_TEXT, 'error message', VALUE_DEFAULT, ''),
+                'error' => new external_value(PARAM_BOOL, 'error', VALUE_DEFAULT, false),
+        ]);
     }
 
     public static function delete_item_parameters() {

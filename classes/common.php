@@ -639,9 +639,11 @@ class common
         }
         \company::assign_user_to_department($validateddata->userdepartment, $userid);
 
+        //get user data
+        $userdata = $DB->get_record('user', array('id' => $userid));
+
         // Enrol the user on the courses.
         if (!empty($createcourses)) {
-            $userdata = $DB->get_record('user', array('id' => $userid));
             \company_user::enrol($userdata, $createcourses, $companyid);
         }
         // Assign and licenses.
@@ -693,6 +695,7 @@ class common
 
         $ret = new \stdClass();
         $ret->itemid=$userid;
+        $ret->username=$userdata->username;
         $ret->message='';
         $ret->error=false;
         return $ret;
