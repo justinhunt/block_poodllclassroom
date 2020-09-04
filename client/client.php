@@ -28,13 +28,14 @@
 
 //use these to get a token
 //ubuntubox 'http://ubuntubox/iomad/login/token.php?username=webservicedog&password=ubuntubox-K9&service=poodllclassroom'
+//misc 'http://misc.poodll.com/iomad/login/token.php?username=webservicedog&password=poodllnet-K9&service=poodllclassroom'
 
 
 /// SETUP - NEED TO BE CHANGED
 
 /// DOMAIN NAME
-$domainname = 'http://ubuntubox/iomad';
-//$domainname = 'https://misc.poodll.com/iomad';
+//$domainname = 'http://ubuntubox/iomad';
+$domainname = 'https://misc.poodll.com/iomad';
 
 
 
@@ -42,8 +43,8 @@ $domainname = 'http://ubuntubox/iomad';
 $token = '87de4df535e2aabae308e26f456508f4';
 
 
-//POODLLONE USER TOKEN
-//$token = '';
+//MISC USER TOKEN
+$token = '0b4de3426a2b0c2af7a45dc6f4e0774a';
 
 
 //FUNCTIONS
