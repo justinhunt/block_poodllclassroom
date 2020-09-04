@@ -288,7 +288,7 @@ class common
                 $newname = $company['name'] . '_' . $suffixcount;
                 if (!$DB->get_record('company', array('name' => $newname))) {
                     $company['name'] = $newname;
-                    $company['shortname']= \self::truncate_string($newname,25);
+                    $company['shortname']= self::truncate_string($newname,25);
                     break;
                 }
                 //give up at 20
