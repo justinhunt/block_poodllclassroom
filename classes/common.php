@@ -300,7 +300,7 @@ class common
         $newshortname=$company['shortname'];
         if ($DB->get_record('company', array('shortname' =>  $newshortname))) {
             for($suffixcount=1;$suffixcount<21;$suffixcount++) {
-                $newshortname =\self::truncate_string($company['shortname'],22)  . '_' . $suffixcount;
+                $newshortname =self::truncate_string($company['shortname'],22)  . '_' . $suffixcount;
                 if (!$DB->get_record('company', array('shortname' => $newshortname))) {
                     $company['shortname']=$newshortname;
                     break;
