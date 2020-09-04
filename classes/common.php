@@ -648,10 +648,12 @@ class common
         $userdata = $DB->get_record('user', array('id' => $userid));
 
         // Enrol the user on the courses.
+        $createcourses=[];//we might want to poppulate this ...
         if (!empty($createcourses)) {
             \company_user::enrol($userdata, $createcourses, $companyid);
         }
         // Assign and licenses.
+        $licenseid='';
         if (!empty($licenseid)) {
             $licenserecord = (array) $DB->get_record('companylicense', array('id' => $licenseid));
             if (!empty($licenserecord['program'])) {
