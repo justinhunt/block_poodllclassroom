@@ -77,7 +77,7 @@ class block_poodllclassroom_external extends external_api {
         // Get/check context/capability
         $context = context_system::instance();
         self::validate_context($context);
-        require_capability('block/poodllclassroom:manageintegration', $context);
+        //require_capability('block/poodllclassroom:manageintegration', $context);
 
         ob_start();
         $thecompany = common::create_company($companydata);
@@ -123,7 +123,7 @@ class block_poodllclassroom_external extends external_api {
             ob_start();
             company::upsert_company_user($theuser->id, $thecompany->id, $departmentid,  $userdata['managertype'], $userdata['educator']);
             ob_end_clean();
-            
+
             $newuserid=$theuser->id;
             $newusername=$theuser->username;
         }
