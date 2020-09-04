@@ -57,12 +57,11 @@ case 'block_poodllclassroom_create_school':
     $params = array();
     $params['wstoken'] = $token;
     $params['wsfunction'] = $functionname;
-    $params['username'] = 'russell';
-    $params['firstname'] = 'Russelliusx';
-    $params['lastname'] = 'Crowie';
-    $params['email'] = 'russelius@poodll.com';
-
-    $params['schoolname'] = 'Gladiator School';
+    $params['username'] = 'tinyeddie';
+    $params['firstname'] = 'Tiny';
+    $params['lastname'] = 'eddie';
+    $params['email'] = 'tineddie@poodll.com';
+    $params['schoolname'] = 'TonyEddie';
     break;
 
 case  'core_user_create_users':
