@@ -95,7 +95,7 @@ class block_poodllclassroom_external extends external_api {
             // Trim first and lastnames
             $validateddata->firstname = trim($validateddata->firstname);
             $validateddata->lastname = trim($validateddata->lastname);
-            $validateddata->sendnewpasswordemails =1;
+            $validateddata->sendnewpasswordemails =0;
             $validateddata->due =time();
             $validateddata-> preference_auth_forcepasswordchange =0;
             $validateddata->use_email_as_username =0;
