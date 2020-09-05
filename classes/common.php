@@ -623,8 +623,7 @@ class common
 
         // Check if we are assigning a different role to the user.
         if (!empty($validateddata->managertype || !empty($validateddata->educator))) {
-            \company::upsert_company_user($userid, $companyid, $validateddata->userdepartment, $validateddata->managertype,
-                $validateddata->educator);
+      //      \company::upsert_company_user($userid, $companyid, $validateddata->userdepartment, $validateddata->managertype, $validateddata->educator);
         }
 
         // Assign the user to the default company department.
