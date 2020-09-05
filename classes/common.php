@@ -643,6 +643,7 @@ class common
         //get user data
         $userdata = $DB->get_record('user', array('id' => $userid));
 
+/*
         // Enrol the user on the courses.
         $createcourses=[];//we might want to poppulate this ...
         if (!empty($createcourses)) {
@@ -695,6 +696,7 @@ class common
                 }
             }
         }
+*/
 
         $ret = new \stdClass();
         $ret->itemid=$userid;
