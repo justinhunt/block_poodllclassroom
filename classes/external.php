@@ -109,7 +109,7 @@ class block_poodllclassroom_external extends external_api {
          }
 
          //mailout api needs this - or it does a redirect ...urg
-        $SESSION->currenteditingcompany=$thecompany;
+        $SESSION->currenteditingcompany=(array) $thecompany;
 
         $theuser = common::get_user($userdata['username'],$userdata['email']);
         $parentlevel = company::get_company_parentnode($thecompany->id);
