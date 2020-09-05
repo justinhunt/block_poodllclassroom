@@ -599,7 +599,7 @@ class common
     {
         global $CFG, $DB, $USER;
 
-        $validateddata->userid = $USER->id;
+//        $validateddata->userid = $USER->id;
         if ($companyid > 0) {
             $validateddata->companyid = $companyid;
         }
