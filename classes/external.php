@@ -70,6 +70,27 @@ class block_poodllclassroom_external extends external_api {
         $userdata['managertype']=1;//company manager
         $userdata['educator']=1;//is an educator
 
+        //lets add all this stuff
+        $userdata['city']='Tokyo';
+                $userdata['country']='JP';
+                $userdata['maildisplay']=2;
+               $userdata[ 'mailformat']= 1;
+                $userdata['maildigest']= 0;
+                $userdata['autosubscribe']=1;
+                $userdata['trackforums']=0;
+                $userdata['htmleditor']=1;
+                $userdata['screenreader']=0;
+               $userdata[ 'timezone']= '99';
+                $userdata['lang']='en';
+                $userdata['suspended']= 0;
+                $userdata['ecommerce']= 0;
+                $userdata['parentid' ]=0;
+               $userdata[ 'customcss' ]='';
+                $userdata['validto']=null;
+               $userdata['suspendafter']=0;
+
+
+
         $companydata = $params;
         $companydata['name']=$params['schoolname'];
         $companydata['shortname']=$params['schoolname'];
@@ -95,9 +116,9 @@ class block_poodllclassroom_external extends external_api {
             // Trim first and lastnames
             $validateddata->firstname = trim($validateddata->firstname);
             $validateddata->lastname = trim($validateddata->lastname);
-            $validateddata->sendnewpasswordemails =0;
+            $validateddata->sendnewpasswordemails =1;
             $validateddata->due =time();
-            $validateddata-> preference_auth_forcepasswordchange =0;
+            $validateddata-> preference_auth_forcepasswordchange =1;
             $validateddata->use_email_as_username =0;
             $validateddata->userdepartment=$departmentid;
 
