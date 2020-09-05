@@ -604,14 +604,7 @@ class common
             $validateddata->companyid = $companyid;
         }
         $company = new \company($companyid);
-//error_log(print_r( $validateddata, true ));
 
-       /* sendnewpasswordemails
-       due
-       preference_auth_forcepasswordchange
-       newpassword
-       use_email_as_username
-       */
         if (!$userid = \company_user::create($validateddata)) {
             $ret = new \stdClass();
             $ret->itemid=0;
@@ -642,7 +635,7 @@ class common
             $userlevel = $company->get_userlevel($USER);
             $userhierarchylevel = $userlevel->id;
         }
-        \company::assign_user_to_department($validateddata->userdepartment, $userid);
+     //   \company::assign_user_to_department($validateddata->userdepartment, $userid);
 
         //get user data
         $userdata = $DB->get_record('user', array('id' => $userid));
@@ -664,7 +657,7 @@ class common
                     array('licenseid' => $licenserecord['id']));
             }
 
-            if (false && !empty($validateddata->licensecourses)) {
+            if (!empty($validateddata->licensecourses)) {
                 $userdata = $DB->get_record('user', array('id' => $userid));
                 $count = $licenserecord['used'];
                 $numberoflicenses = $licenserecord['allocation'];
