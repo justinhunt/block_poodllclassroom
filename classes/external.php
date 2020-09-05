@@ -45,7 +45,7 @@ class block_poodllclassroom_external extends external_api {
 
     public static function create_school($username,$firstname, $lastname,$email,$schoolname)
     {
-        global $CFG, $DB, $USER;
+        global $CFG,$SESSION, $DB, $USER;
 
         require_once($CFG->dirroot . '/blocks/iomad_company_admin/lib.php');
 
@@ -71,23 +71,24 @@ class block_poodllclassroom_external extends external_api {
         $userdata['educator']=1;//is an educator
 
         //lets add all this stuff
+        //though I do not think we do
         $userdata['city']='Tokyo';
-                $userdata['country']='JP';
-                $userdata['maildisplay']=2;
-               $userdata[ 'mailformat']= 1;
-                $userdata['maildigest']= 0;
-                $userdata['autosubscribe']=1;
-                $userdata['trackforums']=0;
-                $userdata['htmleditor']=1;
-                $userdata['screenreader']=0;
-               $userdata[ 'timezone']= '99';
-                $userdata['lang']='en';
-                $userdata['suspended']= 0;
-                $userdata['ecommerce']= 0;
-                $userdata['parentid' ]=0;
-               $userdata[ 'customcss' ]='';
-                $userdata['validto']=null;
-               $userdata['suspendafter']=0;
+        $userdata['country']='JP';
+        $userdata['maildisplay']=2;
+        $userdata['mailformat']= 1;
+        $userdata['maildigest']= 0;
+        $userdata['autosubscribe']=1;
+        $userdata['trackforums']=0;
+        $userdata['htmleditor']=1;
+        $userdata['screenreader']=0;
+        $userdata['timezone']= '99';
+        $userdata['lang']='en';
+        $userdata['suspended']= 0;
+        $userdata['ecommerce']= 0;
+        $userdata['parentid' ]=0;
+        $userdata['customcss' ]='';
+        $userdata['validto']=null;
+        $userdata['suspendafter']=0;
 
 
 
@@ -106,6 +107,9 @@ class block_poodllclassroom_external extends external_api {
                  $ret['message'] = "failed to create company";
                  return $ret;
          }
+
+         //mailout api needs this - or it does a redirect ...urg
+        $SESSION->currenteditingcompany=$thecompany;
 
         $theuser = common::get_user($userdata['username'],$userdata['email']);
         $parentlevel = company::get_company_parentnode($thecompany->id);
