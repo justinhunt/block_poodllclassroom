@@ -615,7 +615,7 @@ class common
         $user = new \stdclass();
         $user->id = $userid;
         $validateddata->id = $userid;
-/*
+
         // Save custom profile fields data.
         profile_save_data($validateddata);
 
@@ -626,10 +626,10 @@ class common
         if (!empty($validateddata->managertype || !empty($validateddata->educator))) {
          \company::upsert_company_user($userid, $companyid, $validateddata->userdepartment, $validateddata->managertype, $validateddata->educator);
         }
-*/
+
 
         // Assign the user to the default company department.
- /*
+
         $parentnode = \company::get_company_parentnode($companyid);
         if (\iomad::has_capability('block/iomad_company_admin:edit_all_departments', $systemcontext)) {
             $userhierarchylevel = $parentnode->id;
@@ -638,12 +638,12 @@ class common
             $userhierarchylevel = $userlevel->id;
         }
        \company::assign_user_to_department($validateddata->userdepartment, $userid);
-*/
+
 
         //get user data
         $userdata = $DB->get_record('user', array('id' => $userid));
 
-/*
+
         // Enrol the user on the courses.
         $createcourses=[];//we might want to poppulate this ...
         if (!empty($createcourses)) {
@@ -696,7 +696,7 @@ class common
                 }
             }
         }
-*/
+
 
         $ret = new \stdClass();
         $ret->itemid=$userid;
