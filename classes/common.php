@@ -617,7 +617,7 @@ class common
         $validateddata->id = $userid;
 
         // Save custom profile fields data.
-        profile_save_data($validateddata);
+//        profile_save_data($validateddata);
 
         $systemcontext = \context_system::instance();
 
