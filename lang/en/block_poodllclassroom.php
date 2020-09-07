@@ -122,3 +122,16 @@ $string['currentpicture'] = 'Custom data';
 
 $string['poodllclassroom:managepoodllclassroom']='Manage PoodllClassroom';
 $string['poodllclassroom:manageintegration']='Manage PoodllClassroom integration';
+
+$string['sub'] = 'Subscription';
+$string['addsub'] = 'Add Sub';
+$string['addeditsub'] = 'Add/Edit Sub';
+$string['maxusers'] = 'Max Users';
+$string['maxcourses'] = 'Max Courses';
+$string['editschoolsub'] = 'Edit School Subscription';
+$string['maxcourses'] = 'Max Courses';
+$string['subname'] = 'Sub Name';
+$string['action'] = 'Action';
+$string['nopermission'] = 'You do not have adequate permission to do that';
+
+

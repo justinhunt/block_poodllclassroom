@@ -21,6 +21,7 @@ class block_poodllclassroom_external extends external_api {
                 'lastname' => new external_value(PARAM_TEXT, 'User last name'),
                 'email' => new external_value(PARAM_EMAIL, 'Email'),
                 'schoolname' => new external_value(PARAM_TEXT, 'School name'),
+                'planname' => new external_value(PARAM_TEXT, 'Plan name'),
                 //the rest of this is to keep iomad happy
                 'city' => new external_value(PARAM_TEXT, 'Company location city', VALUE_DEFAULT, 'Tokyo'),
                 'country' => new external_value(PARAM_TEXT, 'Company location country', VALUE_DEFAULT, 'JP'),
@@ -43,7 +44,7 @@ class block_poodllclassroom_external extends external_api {
         );
     }
 
-    public static function create_school($username,$firstname, $lastname,$email,$schoolname)
+    public static function create_school($username,$firstname, $lastname,$email,$schoolname,$planname)
     {
         global $CFG,$SESSION, $DB, $USER;
 
@@ -59,7 +60,7 @@ class block_poodllclassroom_external extends external_api {
 
         // We always must pass webservice params through validate_parameters.
         $params = self::validate_parameters(self::create_school_parameters(),
-            ['username' => $username, 'firstname' => $firstname, 'lastname' => $lastname, 'email' => $email, 'schoolname'=>$schoolname]);
+            ['username' => $username, 'firstname' => $firstname, 'lastname' => $lastname, 'email' => $email, 'schoolname'=>$schoolname,'planname'=>$planname]);
 
         //need to massage data a bit
         $userdata= [];
@@ -71,7 +72,7 @@ class block_poodllclassroom_external extends external_api {
         $userdata['educator']=1;//is an educator
 
         //lets add all this stuff
-        //though I do not think we do
+        //though I do not think we need to
         $userdata['city']='Tokyo';
         $userdata['country']='JP';
         $userdata['maildisplay']=2;

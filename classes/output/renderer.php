@@ -235,4 +235,120 @@ class renderer extends \plugin_renderer_base {
         //finally return our button for display
         return $button;
     }
+
+
+    //return a button that will allow user to add a new sub
+    function fetch_addsub_button(){
+        $thebutton = new \single_button(
+                new \moodle_url(constants::M_URL . '/subs/edit.php',array()),
+                get_string('addsub', constants::M_COMP), 'get');
+        return $thebutton;
+    }
+
+    //Fetch subs table
+    function fetch_subs_table($subs){
+        global $DB;
+
+        $params=[];
+        $baseurl = new \moodle_url(constants::M_URL . '/subs/subs.php', $params);
+
+
+        //add sub button
+        $addbutton = $this->fetch_addsub_button();
+
+        $data = array();
+        foreach($subs as $sub) {
+            $fields = array();
+            $fields[] = $sub->id;
+            $fields[] = $sub->name;
+            $fields[] = $sub->maxusers;
+            $fields[] = $sub->maxcourses;
+
+            $buttons = array();
+
+            $urlparams = array('id' => $sub->id,'type'=>'sub','returnurl' => $baseurl->out_as_local_url());
+
+
+            $buttons[] = \html_writer::link(new \moodle_url(constants::M_URL . '/subs/edit.php', $urlparams),
+                    $this->output->pix_icon('t/edit', get_string('edit')),
+                    array('title' => get_string('edit')));
+
+            $buttons[] = \html_writer::link(new \moodle_url(constants::M_URL . '/subs/edit.php',
+                        $urlparams + array('delete' => 1)),
+                        $this->output->pix_icon('t/delete', get_string('delete')),
+                        array('title' => get_string('delete')));
+
+            $fields[] = implode(' ', $buttons);
+
+            $data[] = $row = new \html_table_row($fields);
+        }
+
+        $table = new \html_table();
+        $table->head  = array(get_string('id', constants::M_COMP),
+                get_string('subname', constants::M_COMP),
+                get_string('maxusers', constants::M_COMP),
+                get_string('maxcourses', constants::M_COMP),
+                get_string('action'));
+        $table->colclasses = array('leftalign name', 'leftalign size','centeralign action');
+
+        $table->id = 'subs';
+        $table->attributes['class'] = 'admintable generaltable';
+        $table->data  = $data;
+
+        //return add button and table
+       return  $this->render($addbutton) .  \html_writer::table($table);
+
+    }
+
+    //Fetch schools table
+    function fetch_schools_table($schools){
+        global $DB;
+
+        $params=[];
+        $baseurl = new \moodle_url(constants::M_URL . '/subs/subs.php', $params);
+        $subs = common::fetch_subs();
+
+        $data = array();
+        foreach($schools as $school) {
+            $fields = array();
+            $fields[] = $school->id;
+            $fields[] = $school->name;
+            $fields[] = $school->sub;
+            $fields[] = $subs[$school->subname];
+
+            $buttons = array();
+
+            $urlparams = array('id' => $school->id,'type'=>'school','returnurl' => $baseurl->out_as_local_url());
+
+
+            $buttons[] = \html_writer::link(new \moodle_url(constants::M_URL . '/subs/edit.php', $urlparams),
+                    $this->output->pix_icon('t/edit', get_string('edit')),
+                    array('title' => get_string('edit')));
+
+            $buttons[] = \html_writer::link(new \moodle_url(constants::M_URL . '/subs/edit.php',
+                    $urlparams + array('delete' => 1)),
+                    $this->output->pix_icon('t/delete', get_string('delete')),
+                    array('title' => get_string('delete')));
+
+            $fields[] = implode(' ', $buttons);
+
+            $data[] = $row = new \html_table_row($fields);
+        }
+
+        $table = new \html_table();
+        $table->head  = array(get_string('id', constants::M_COMP),
+                get_string('name', constants::M_COMP),
+                get_string('sub', constants::M_COMP),
+                '',
+                get_string('action'));
+        $table->colclasses = array('leftalign name', 'leftalign size','centeralign action');
+
+        $table->id = 'subs';
+        $table->attributes['class'] = 'admintable generaltable';
+        $table->data  = $data;
+
+        //return add button and table
+        return   \html_writer::table($table);
+
+    }
 }

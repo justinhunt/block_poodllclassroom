@@ -835,4 +835,25 @@ class common
         return $thecourse;
     }
 
+    public static function fetch_subs(){
+        global $DB;
+
+        $subs = $DB->get_records(constants::M_TABLE_SUBS,array()) ;
+        if($subs) {
+            return $subs;
+        }else{
+            return [];
+        }
+    }
+    public static function fetch_schools(){
+        global $DB;
+
+        $schools = $DB->get_records(constants::M_TABLE_SCHOOLS,array()) ;
+        if($schools) {
+            return $schools;
+        }else{
+            return false;
+        }
+    }
+
 }//end of class
