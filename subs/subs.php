@@ -43,7 +43,7 @@ $PAGE->navbar->add(get_string('pluginname', constants::M_COMP));
 
 
 $ok = has_capability('block/poodllclassroom:manageintegration', $context);
-$subs=common::fetch_subs();
+$plans=common::fetch_plans();
 $schools=common::fetch_schools();
 
 //get our renderer
@@ -55,8 +55,8 @@ echo $renderer->heading($SITE->fullname);
 if($ok) {
 
     //display the content of this page from our nice renderer
-    $substable = $renderer->fetch_subs_table($subs);
-    echo $substable;
+    $planstable = $renderer->fetch_plans_table($plans);
+    echo $planstable;
     //display the content of this page from our nice renderer
     $schoolstable = $renderer->fetch_schools_table($schools);
     echo $schoolstable;

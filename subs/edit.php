@@ -61,7 +61,7 @@ $renderer = $PAGE->get_renderer(constants::M_COMP);
 if ($delete && $id) {
     $PAGE->url->param('delete', 1);
     if ($confirm and confirm_sesskey()) {
-        $result=$DB->delete_records(constants::M_TABLE_SUBS,array('id'=>$id));
+        $result=$DB->delete_records(constants::M_TABLE_PLANS,array('id'=>$id));
         redirect($returnurl);
     }
     $strheading = get_string('deletesub', constants::M_COMP);
@@ -94,18 +94,18 @@ if ($editform->is_cancelled()){
     switch($type){
         case 'sub':
             if (!$data->id) {
-                $result=$DB->insert_record(constants::M_TABLE_SUBS,$data);
+                $result=$DB->insert_record(constants::M_TABLE_PLANS,$data);
             } else {
                 $updatedata = array('id'=>$data->id,'name'=>$data->name,
                         'maxusers'=>$data->maxusers,
                         'maxcourses'=>$data->maxcourses,
                         'features'=>$data->features,
                         'upstreamplan'=>$data->upstreamplan);
-                $result=$DB->update_record(constants::M_TABLE_SUBS,$updatedata);
+                $result=$DB->update_record(constants::M_TABLE_PLANS,$updatedata);
             }
             break;
         case 'school':
-            $updatedata = array('id'=>$data->id,'subid'=>$data->subid);
+            $updatedata = array('id'=>$data->id,'planid'=>$data->planid);
             $result=$DB->update_record(constants::M_TABLE_SCHOOLS,$updatedata);
     }
 
@@ -118,7 +118,7 @@ if ($editform->is_cancelled()){
 switch($type){
     case 'sub':
         if ($id) {
-            $usedata = $DB->get_record(constants::M_TABLE_SUBS,array('id'=>$id));
+            $usedata = $DB->get_record(constants::M_TABLE_PLANS,array('id'=>$id));
             $editform->set_data($usedata);
         }
         break;

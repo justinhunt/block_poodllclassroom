@@ -21,8 +21,11 @@ class block_poodllclassroom_external extends external_api {
                 'lastname' => new external_value(PARAM_TEXT, 'User last name'),
                 'email' => new external_value(PARAM_EMAIL, 'Email'),
                 'schoolname' => new external_value(PARAM_TEXT, 'School name'),
-                'planname' => new external_value(PARAM_TEXT, 'Plan name'),
+                'upstreamplanid' => new external_value(PARAM_TEXT, 'upstreamplanid'),
+                'upstreamownerid' => new external_value(PARAM_TEXT, 'upstreamownerid'),
+                'upstreamsubid' => new external_value(PARAM_TEXT, 'upstreamsubid')
                 //the rest of this is to keep iomad happy
+                /*
                 'city' => new external_value(PARAM_TEXT, 'Company location city', VALUE_DEFAULT, 'Tokyo'),
                 'country' => new external_value(PARAM_TEXT, 'Company location country', VALUE_DEFAULT, 'JP'),
                 'maildisplay' => new external_value(PARAM_INT, 'User default email display', VALUE_DEFAULT, 2),
@@ -40,11 +43,13 @@ class block_poodllclassroom_external extends external_api {
                 'customcss' => new external_value(PARAM_TEXT, 'Company custom css',VALUE_DEFAULT, ''),
                 'validto' => new external_value(PARAM_INT, 'Contract termination date in unix timestamp', VALUE_DEFAULT, null),
                 'suspendafter' => new external_value(PARAM_INT, 'Number of seconds after termination date to suspend the company', VALUE_DEFAULT, 0),
+                */
             )
         );
     }
 
-    public static function create_school($username,$firstname, $lastname,$email,$schoolname,$planname)
+    public static function create_school($username,$firstname, $lastname,$email,$schoolname,
+            $upstreamplanid, $upstreamownerid,$upstreamsubid)
     {
         global $CFG,$SESSION, $DB, $USER;
 
@@ -60,7 +65,8 @@ class block_poodllclassroom_external extends external_api {
 
         // We always must pass webservice params through validate_parameters.
         $params = self::validate_parameters(self::create_school_parameters(),
-            ['username' => $username, 'firstname' => $firstname, 'lastname' => $lastname, 'email' => $email, 'schoolname'=>$schoolname,'planname'=>$planname]);
+            ['username' => $username, 'firstname' => $firstname, 'lastname' => $lastname, 'email' => $email, 'schoolname'=>$schoolname,
+                    '$upstreamplanid'=>$upstreamplanid,'$upstreamownerid'=>$upstreamownerid,'$upstreamsubid'=>$upstreamsubid]);
 
         //need to massage data a bit
         $userdata= [];
@@ -91,8 +97,6 @@ class block_poodllclassroom_external extends external_api {
         $userdata['validto']=null;
         $userdata['suspendafter']=0;
 
-
-
         $companydata = $params;
         $companydata['name']=$params['schoolname'];
         $companydata['shortname']=$params['schoolname'];
@@ -101,6 +105,22 @@ class block_poodllclassroom_external extends external_api {
         $context = context_system::instance();
         self::validate_context($context);
         require_capability('block/poodllclassroom:manageintegration', $context);
+
+
+        //if we have this company/user combo then we just need to update to the new plan
+        //Its unclear yet if that will happen here in this call, or another one
+        $poodllschool =common::get_poodllschool_by_upstreamsubid($upstreamsubid);
+        if($poodllschool){
+            common::update_poodllschool_from_upstream($poodllschool->id, $upstreamplanid);
+            $ret['schoolid'] = $poodllschool->companyid;
+            $ret['userid'] = $poodllschool->userid;
+            $theuser = $DB->get_record('user',array('id'=>$poodllschool->userid));
+            if($theuser) {
+                $ret['username'] = $theuser->username;
+            }
+            return $ret;
+        }
+
 
         $thecompany = common::create_company($companydata);
          if(!$thecompany){
@@ -141,6 +161,10 @@ class block_poodllclassroom_external extends external_api {
             $newuserid=$theuser->id;
             $newusername=$theuser->username;
         }
+
+        //at this point we should update the poodllclassroom tables also
+        $plan = common::fetch_plan_from_upstreamplan();
+        common::create_poodllschool($thecompany->id, $newuserid, $plan->id, $upstreamownerid,$upstreamsubid);
 
         if($thecompany && $newuserid) {
             $ret['schoolid'] = $thecompany->id;

@@ -19,7 +19,7 @@
  * Strings for component 'block_poodllclassroom', language 'en'
  *
  * @package   block_poodllclassroom
- * @copyright Daniel Neis <danielneis@gmail.com>
+ * @copyright Justin Hunt <poodllsupport@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

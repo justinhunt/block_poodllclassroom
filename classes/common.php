@@ -835,12 +835,12 @@ class common
         return $thecourse;
     }
 
-    public static function fetch_subs(){
+    public static function fetch_plans(){
         global $DB;
 
-        $subs = $DB->get_records(constants::M_TABLE_SUBS,array()) ;
-        if($subs) {
-            return $subs;
+        $plans = $DB->get_records(constants::M_TABLE_PLANS,array()) ;
+        if($plans) {
+            return $plans;
         }else{
             return [];
         }
@@ -855,5 +855,54 @@ class common
             return [];
         }
     }
+
+    public static function get_poodllschool_by_upstreamsubid($upstreamsubid){
+        global $DB;
+        return $DB->get_record(constants::M_TABLE_SCHOOLS,array('upstreamsubid'=>$upstreamsubid));
+    }
+
+    public static function update_poodllschool_from_upstream($schoolid, $upstreamplanid){
+        global $DB;
+        $plan = self::fetch_plan_from_upstreamplan($upstreamplanid);
+        if($plan) {
+            return $DB->update_record(constants::M_TABLE_SCHOOLS, array('id' => $schoolid, 'planid' => $plan->id));
+        }
+    }
+
+    //if we have a sale we need to keep the data and deal with any fallout if the plan had no matching pclassroom equiv.
+    public static function fetch_plan_from_upstreamplan($upstreamplanid){
+        global $DB;
+        $plan = $DB->get_record(constants::M_TABLE_PLANS, array('upstreamplan'=>$upstreamplanid));
+        if(!$plan){
+           $plan = self::create_blankplan($upstreamplanid);
+        }
+        return $plan;
+    }
+
+    public static function create_poodllschool($companyid, $ownerid, $planid, $upstreamownerid,$upstreamsubid){
+        global $DB;
+        $newschool= new \stdClass();
+        $newschool->companyid=$companyid;
+        $newschool->ownerid=$ownerid;
+        $newschool->planid=$planid;
+        $newschool->upstreamownerid=$upstreamownerid;
+        $newschool->upstreamsubid=$upstreamsubid;
+        $newschool->timecreated=time();
+        $newschool->timemodified=time();
+
+        return $DB->insert_record(constants::M_TABLE_SCHOOLS,$newschool);
+    }
+
+    public static function create_blankplan($upstreamplanid){
+        global $DB;
+        $newplan= new \stdClass();
+        $newplan->name=$upstreamplanid;
+        $newplan->maxusers=10;
+        $newplan->maxcourses=10;
+        $newplan->timemodified=time();
+        $newplan->id= $DB->insert_record(constants::M_TABLE_PLANS,$newplan);
+        return $newplan;
+    }
+
 
 }//end of class

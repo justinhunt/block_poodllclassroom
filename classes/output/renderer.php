@@ -311,15 +311,15 @@ class renderer extends \plugin_renderer_base {
 
         $params=[];
         $baseurl = new \moodle_url(constants::M_URL . '/subs/subs.php', $params);
-        $subs = common::fetch_subs();
+        $plans = common::fetch_plans();
 
         $data = array();
         foreach($schools as $school) {
             $fields = array();
             $fields[] = $school->id;
             $fields[] = $school->name;
-            $fields[] = $school->sub;
-            $fields[] = $subs[$school->subname];
+            $fields[] = $school->planid;
+            $fields[] = $plans[$school->planid];
             $fields[] = $school->upstreamsubid;
             $fields[] = $school->upstreamownerid;
 
