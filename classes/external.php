@@ -107,7 +107,7 @@ class block_poodllclassroom_external extends external_api {
         require_capability('block/poodllclassroom:manageintegration', $context);
 
 
-        //if we have this company/user combo then we just need to update to the new plan
+        //if we alredy have this poodllschol then we just need to update to the new plan
         //Its unclear yet if that will happen here in this call, or another one
         $poodllschool =common::get_poodllschool_by_upstreamsubid($upstreamsubid);
         if($poodllschool){
@@ -162,8 +162,9 @@ class block_poodllclassroom_external extends external_api {
             $newusername=$theuser->username;
         }
 
+        //we have created a company and possibly a user also
         //at this point we should update the poodllclassroom tables also
-        $plan = common::fetch_plan_from_upstreamplan();
+        $plan = common::fetch_poodllplan_from_upstreamplan($upstreamplanid);
         common::create_poodllschool($thecompany->id, $newuserid, $plan->id, $upstreamownerid,$upstreamsubid);
 
         if($thecompany && $newuserid) {

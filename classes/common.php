@@ -863,14 +863,14 @@ class common
 
     public static function update_poodllschool_from_upstream($schoolid, $upstreamplanid){
         global $DB;
-        $plan = self::fetch_plan_from_upstreamplan($upstreamplanid);
+        $plan = self::fetch_poodllplan_from_upstreamplan($upstreamplanid);
         if($plan) {
             return $DB->update_record(constants::M_TABLE_SCHOOLS, array('id' => $schoolid, 'planid' => $plan->id));
         }
     }
 
     //if we have a sale we need to keep the data and deal with any fallout if the plan had no matching pclassroom equiv.
-    public static function fetch_plan_from_upstreamplan($upstreamplanid){
+    public static function fetch_poodllplan_from_upstreamplan($upstreamplanid){
         global $DB;
         $plan = $DB->get_record(constants::M_TABLE_PLANS, array('upstreamplan'=>$upstreamplanid));
         if(!$plan){
