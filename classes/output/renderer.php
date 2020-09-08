@@ -317,7 +317,8 @@ class renderer extends \plugin_renderer_base {
         foreach($schools as $school) {
             $fields = array();
             $fields[] = $school->id;
-            $fields[] = $school->name;
+            $fields[] = $school->companyid;
+            $fields[] = $school->ownerid;
             $fields[] = $school->planid;
             $fields[] = $plans[$school->planid];
             $fields[] = $school->upstreamsubid;
@@ -344,7 +345,8 @@ class renderer extends \plugin_renderer_base {
 
         $table = new \html_table();
         $table->head  = array(get_string('id', constants::M_COMP),
-                get_string('name', constants::M_COMP),
+                get_string('company', constants::M_COMP),
+                get_string('owner', constants::M_COMP),
                 get_string('plan', constants::M_COMP),
                 '',
                 get_string('upstreamsubid', constants::M_COMP),

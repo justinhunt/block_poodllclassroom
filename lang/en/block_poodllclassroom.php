@@ -144,3 +144,5 @@ $string['subsschoolsplans'] ='Poodll Classroom Subs, Schools and Plans';
 $string['name'] = 'Name';
 $string['deleteplanconfirm'] = 'Truly delete subscription plan?';
 $string['deleteplan'] = 'Delete Subscription Plan';
+$string['company'] = 'Company';
+$string['owner'] = 'Owner';
