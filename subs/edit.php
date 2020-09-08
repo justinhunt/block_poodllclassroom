@@ -92,7 +92,7 @@ if ($editform->is_cancelled()){
     redirect($returnurl);
 }else if($data = $editform->get_data()) {
     switch($type){
-        case 'sub':
+        case 'plan':
             if (!$data->id) {
                 $result=$DB->insert_record(constants::M_TABLE_PLANS,$data);
             } else {
@@ -116,7 +116,7 @@ if ($editform->is_cancelled()){
 }
 
 switch($type){
-    case 'sub':
+    case 'plan':
         if ($id) {
             $usedata = $DB->get_record(constants::M_TABLE_PLANS,array('id'=>$id));
             $editform->set_data($usedata);
