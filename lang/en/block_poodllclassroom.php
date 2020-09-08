@@ -137,5 +137,6 @@ $string['features'] = 'Features';
 $string['upstreamkey'] = 'Upstream Key';
 $string['upstreamsubid'] = 'Upstream Sub';
 $string['upstreamownerid'] = 'Upstream Owner';
+$string['save'] = 'save';
 $string['id'] = 'ID';
 $string['subsschoolsplans'] ='Poodll Classroom Subs, Schools and Plans';
