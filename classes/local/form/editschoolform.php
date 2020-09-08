@@ -49,7 +49,7 @@ class editschoolform extends \moodleform {
         $mform->addElement('hidden', 'type','school');
         $mform->setType('type', PARAM_TEXT);
 
-        $options = common::fetch_plans();
+        $options = common::fetch_plans_array();
         $mform->addElement('select', 'planid', get_string('plan', constants::M_COMP), $options);
 
 

@@ -835,6 +835,18 @@ class common
         return $thecourse;
     }
 
+    public static function fetch_plans_array(){
+        global $DB;
+
+        $plans = self::fetch_plans();
+        $ret = [];
+        foreach($plans as $plan){
+            $ret[$plan->id]=$plan->name;
+        }
+        return $ret;
+
+    }
+
     public static function fetch_plans(){
         global $DB;
 
