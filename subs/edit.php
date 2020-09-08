@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Klass related management functions
+ * poodll classroomrelated management functions
  *
- * @package    block_readseedteacher
+ * @package    block_poodllclassroom
  * @copyright  2019 Justin Hunt  {@link http://poodll.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -72,7 +72,7 @@ if ($editform->is_cancelled()){
 }else if($data = $editform->get_data()) {
     switch($type){
         case 'sub':
-            if ($data->id) {
+            if (!$data->id) {
                 $result=$DB->insert_record(constants::M_TABLE_SUBS,$data);
             } else {
                 $updatedata = array('id'=>$data->id,'name'=>$data->name,
