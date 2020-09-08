@@ -268,7 +268,7 @@ class renderer extends \plugin_renderer_base {
 
             $buttons = array();
 
-            $urlparams = array('id' => $plan->id,'type'=>'sub','returnurl' => $baseurl->out_as_local_url());
+            $urlparams = array('id' => $plan->id,'type'=>'plan','returnurl' => $baseurl->out_as_local_url());
 
 
             $buttons[] = \html_writer::link(new \moodle_url(constants::M_URL . '/subs/edit.php', $urlparams),
