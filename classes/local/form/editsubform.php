@@ -46,6 +46,7 @@ class editsubform extends \moodleform {
         $mform->setType('id', PARAM_INT);
 
         $mform->addElement('hidden', 'type','sub');
+        $mform->setType('type', PARAM_TEXT);
 
 
         $mform->addElement('text', 'name', get_string('subname', constants::M_COMP), array('size'=>70));
@@ -68,7 +69,7 @@ class editsubform extends \moodleform {
 
 
         //add the action buttons
-        $this->add_action_buttons(get_string('cancel'), get_string('save', 'poodlltime'));
+        $this->add_action_buttons(get_string('cancel'), get_string('save', constants::M_COMP));
 
     }
 }

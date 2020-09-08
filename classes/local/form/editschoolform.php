@@ -45,14 +45,16 @@ class editschoolform extends \moodleform {
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
+
         $mform->addElement('hidden', 'type','school');
+        $mform->setType('type', PARAM_TEXT);
 
         $options = common::fetch_subs();
         $mform->addElement('select', 'subid', get_string('editschoolsub', constants::M_COMP), $options);
 
 
         //add the action buttons
-        $this->add_action_buttons(get_string('cancel'), get_string('save', 'poodlltime'));
+        $this->add_action_buttons(get_string('cancel'), get_string('save', constants::M_COMP));
 
     }
 }
