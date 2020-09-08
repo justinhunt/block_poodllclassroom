@@ -40,6 +40,6 @@ const FORM_EDITCOURSE = 'editcourse';
 const FORM_DELETECOURSE = 'deletecourse';
 
 const M_TABLE_SUBS = 'block_poodllclassroom_sub';
-const M_TABLE_SCHOOLS = 'block_poodllclassroom_schools';
+const M_TABLE_SCHOOLS = 'block_poodllclassroom_school';
 
 }
