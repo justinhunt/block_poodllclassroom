@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="mod/poodlltime/db" VERSION="20101203" COMMENT="XMLDB file for Moodle mod/poodlltime"
+<XMLDB PATH="blocks/poodllclassroom/db" VERSION="20101203" COMMENT="XMLDB file for poodll classroom"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -10,7 +10,10 @@
         <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="name field for subs" />
         <FIELD NAME="maxusers" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="max users in sub"/>
         <FIELD NAME="maxcourses" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="max courses in sub"/>
+        <FIELD NAME="features" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Sub features. Stored as text but can be interpreted by the plugin however it likes."/>
+        <FIELD NAME="upstreamplan" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="the subscription key that keys with gateway"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false"/>
+
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -22,6 +25,8 @@
         <FIELD NAME="companyid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="The company id" />
 		<FIELD NAME="ownerid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="The company owner user" />
 		<FIELD NAME="subid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="The sub id" />
+        <FIELD NAME="upstreamsubid" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="the chargebee ID for this sub"/>
+        <FIELD NAME="upstreamownerid" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="the chargebee ID for this sub"/>
 		<FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" />
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false"/>
       </FIELDS>
