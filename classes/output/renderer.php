@@ -300,7 +300,8 @@ class renderer extends \plugin_renderer_base {
         $table->data  = $data;
 
         //return add button and table
-       return  $this->render($addbutton) .  \html_writer::table($table);
+        $heading = $this->output->heading('Plans',3);
+       return  $heading . $this->render($addbutton) .  \html_writer::table($table);
 
     }
 
@@ -356,7 +357,8 @@ class renderer extends \plugin_renderer_base {
         $table->data  = $data;
 
         //return add button and table
-        return   \html_writer::table($table);
+        $heading = $this->output->heading('Schools',3);
+        return   $heading . \html_writer::table($table);
 
     }
 }
