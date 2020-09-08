@@ -47,7 +47,7 @@ $subs=common::fetch_subs();
 $schools=common::fetch_schools();
 
 //get our renderer
-$renderer = $PAGE->get_renderer();
+$renderer = $PAGE->get_renderer($context);
 echo $renderer->header();
 echo $renderer->heading($SITE->fullname);
 
