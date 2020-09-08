@@ -79,7 +79,7 @@ if ($editform->is_cancelled()){
                         'maxusers'=>$data->maxusers,
                         'maxcourses'=>$data->maxcourses,
                         'features'=>$data->features,
-                        'upstreamkey'=>$data->upstreamkey);
+                        'upstreamplan'=>$data->upstreamplan);
                 $result=$DB->update_record(constants::M_TABLE_SUBS,$updatedata);
             }
             break;

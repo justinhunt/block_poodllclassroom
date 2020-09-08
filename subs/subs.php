@@ -58,7 +58,7 @@ if($ok) {
     $substable = $renderer->fetch_subs_table($subs);
     echo $substable;
     //display the content of this page from our nice renderer
-    $schoolstable = $renderer->fetch_schools_table($subs);
+    $schoolstable = $renderer->fetch_schools_table($schools);
     echo $schoolstable;
 
 }else{

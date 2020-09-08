@@ -64,8 +64,8 @@ class editsubform extends \moodleform {
         $mform->addElement('text', 'features', get_string('features', constants::M_COMP), array());
         $mform->setType('features', PARAM_INT);
 
-        $mform->addElement('text', 'upstreamkey', get_string('upstreamkey', constants::M_COMP), array());
-        $mform->setType('upstreamkey', PARAM_TEXT);
+        $mform->addElement('text', 'upstreamplan', get_string('upstreamplan', constants::M_COMP), array());
+        $mform->setType('upstreamplan', PARAM_TEXT);
 
 
         //add the action buttons
