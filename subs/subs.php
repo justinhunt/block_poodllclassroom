@@ -57,6 +57,9 @@ if($ok) {
     //display the content of this page from our nice renderer
     $substable = $renderer->fetch_subs_table($subs);
     echo $substable;
+    //display the content of this page from our nice renderer
+    $schoolstable = $renderer->fetch_schools_table($subs);
+    echo $schoolstable;
 
 }else{
     echo  get_string('nopermission', constants::M_COMP);
