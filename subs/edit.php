@@ -31,7 +31,7 @@ use block_poodllclassroom\common;
 $id        = optional_param('id', 0, PARAM_INT);
 $delete    = optional_param('delete', 0, PARAM_BOOL);
 $confirm    = optional_param('confirm', 0, PARAM_BOOL);
-$type    = optional_param('type', 'sub', PARAM_TEXT);
+$type    = optional_param('type', 'plan', PARAM_TEXT);
 $returnurl = optional_param('returnurl', '', PARAM_LOCALURL);
 
 require_login();
@@ -80,8 +80,8 @@ if ($delete && $id) {
 
 
 switch($type){
-    case 'sub':
-        $editform = new \block_poodllclassroom\local\form\editsubform();
+    case 'plan':
+        $editform = new \block_poodllclassroom\local\form\editplanform();
         break;
     case 'school':
         $editform = new \block_poodllclassroom\local\form\editschoolform();
