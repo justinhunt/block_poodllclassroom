@@ -45,6 +45,7 @@ class editschoolform extends \moodleform {
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
+        $mform->addElement('hidden', 'type','school');
 
         $options = common::fetch_subs();
         $mform->addElement('select', 'subid', get_string('editschoolsub', constants::M_COMP), $options);

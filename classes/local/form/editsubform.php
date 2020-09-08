@@ -45,6 +45,8 @@ class editsubform extends \moodleform {
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
 
+        $mform->addElement('hidden', 'type','sub');
+
 
         $mform->addElement('text', 'name', get_string('subname', constants::M_COMP), array('size'=>70));
         $mform->setType('name', PARAM_TEXT);
