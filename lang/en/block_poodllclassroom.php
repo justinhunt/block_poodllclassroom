@@ -124,6 +124,7 @@ $string['poodllclassroom:managepoodllclassroom']='Manage PoodllClassroom';
 $string['poodllclassroom:manageintegration']='Manage PoodllClassroom integration';
 
 $string['sub'] = 'Subscription';
+$string['plan'] = 'Plan';
 $string['addsub'] = 'Add Sub';
 $string['addeditsub'] = 'Add/Edit Sub';
 $string['maxusers'] = 'Max Users';
@@ -141,3 +142,5 @@ $string['save'] = 'Save';
 $string['id'] = 'ID';
 $string['subsschoolsplans'] ='Poodll Classroom Subs, Schools and Plans';
 $string['name'] = 'Name';
+$string['deletesubconfirm'] = 'Truly delete subscription plan?';
+$string['deletesub'] = 'Delete Subscription Plan';

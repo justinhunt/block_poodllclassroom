@@ -345,7 +345,7 @@ class renderer extends \plugin_renderer_base {
         $table = new \html_table();
         $table->head  = array(get_string('id', constants::M_COMP),
                 get_string('name', constants::M_COMP),
-                get_string('sub', constants::M_COMP),
+                get_string('plan', constants::M_COMP),
                 '',
                 get_string('upstreamsubid', constants::M_COMP),
                 get_string('upstreamownerid', constants::M_COMP),

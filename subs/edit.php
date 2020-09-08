@@ -30,6 +30,7 @@ use block_poodllclassroom\common;
 
 $id        = optional_param('id', 0, PARAM_INT);
 $delete    = optional_param('delete', 0, PARAM_BOOL);
+$confirm    = optional_param('confirm', 0, PARAM_BOOL);
 $type    = optional_param('type', 'sub', PARAM_TEXT);
 $returnurl = optional_param('returnurl', '', PARAM_LOCALURL);
 
@@ -56,6 +57,26 @@ $PAGE->set_url($baseurl);
 $PAGE->set_context($context);
 $PAGE->set_pagelayout('course');
 $renderer = $PAGE->get_renderer(constants::M_COMP);
+
+if ($delete && $id) {
+    $PAGE->url->param('delete', 1);
+    if ($confirm and confirm_sesskey()) {
+        $result=$DB->delete_record(constants::M_TABLE_SUBS,array('id'=>$id));
+        redirect($returnurl);
+    }
+    $strheading = get_string('deletesub', constants::M_COMP);
+    $PAGE->navbar->add($strheading);
+    $PAGE->set_title($strheading);
+    $PAGE->set_heading($SITE->fullname);
+    echo $renderer->header();
+    echo $renderer->heading($strheading);
+    $yesurl = new moodle_url($baseurl . '/subs/edit.php', array('id' => $id, 'delete' => 1,
+            'confirm' => 1, 'sesskey' => sesskey(), 'returnurl' => $returnurl->out_as_local_url()));
+    $message = get_string('deletesubconfirm', constants::M_COMP);
+    echo $renderer->confirm($message, $yesurl, $returnurl);
+    echo $renderer->footer();
+    die;
+}
 
 
 switch($type){
@@ -97,7 +118,7 @@ if ($editform->is_cancelled()){
 switch($type){
     case 'sub':
         if ($id) {
-            $usedata = $DB->get_record(constants::M_TABLE_SCHOOLS,array('id'=>$id));
+            $usedata = $DB->get_record(constants::M_TABLE_SUBS,array('id'=>$id));
             $editform->set_data($usedata);
         }
         break;
