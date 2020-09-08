@@ -333,10 +333,12 @@ class renderer extends \plugin_renderer_base {
                     $this->output->pix_icon('t/edit', get_string('edit')),
                     array('title' => get_string('edit')));
 
+            /* remove delete option for now */
             $buttons[] = \html_writer::link(new \moodle_url(constants::M_URL . '/subs/edit.php',
                     $urlparams + array('delete' => 1)),
                     $this->output->pix_icon('t/delete', get_string('delete')),
                     array('title' => get_string('delete')));
+
 
             $fields[] = implode(' ', $buttons);
 
