@@ -61,7 +61,7 @@ $renderer = $PAGE->get_renderer(constants::M_COMP);
 if ($delete && $id) {
     $PAGE->url->param('delete', 1);
     if ($confirm and confirm_sesskey()) {
-        $result=$DB->delete_record(constants::M_TABLE_SUBS,array('id'=>$id));
+        $result=$DB->delete_records(constants::M_TABLE_SUBS,array('id'=>$id));
         redirect($returnurl);
     }
     $strheading = get_string('deletesub', constants::M_COMP);
