@@ -320,7 +320,7 @@ class renderer extends \plugin_renderer_base {
             $fields[] = $school->companyid;
             $fields[] = $school->ownerid;
             $fields[] = $school->planid;
-            $fields[] = $plans[$school->planid];
+            $fields[] = $plans[$school->planid]->name;
             $fields[] = $school->upstreamsubid;
             $fields[] = $school->upstreamownerid;
 
