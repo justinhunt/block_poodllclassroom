@@ -852,7 +852,7 @@ class common
         if($schools) {
             return $schools;
         }else{
-            return false;
+            return [];
         }
     }
 
