@@ -106,6 +106,7 @@ switch($type){
         $editform->set_data($usedata);
 }
 
+$strheading = get_string('subsschoolsplans', constants::M_COMP);
 $PAGE->set_title($strheading);
 $PAGE->set_heading($SITE->fullname);
 $PAGE->navbar->add($strheading);
