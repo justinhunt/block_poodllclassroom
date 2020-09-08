@@ -133,5 +133,8 @@ $string['maxcourses'] = 'Max Courses';
 $string['subname'] = 'Sub Name';
 $string['action'] = 'Action';
 $string['nopermission'] = 'You do not have adequate permission to do that';
-
+$string['features'] = 'Features';
+$string['upstreamkey'] = 'Upstream Key';
+$string['upstreamsubid'] = 'Upstream Sub';
+$string['upstreamownerid'] = 'Upstream Owner';
 

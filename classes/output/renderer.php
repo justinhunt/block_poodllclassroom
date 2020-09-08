@@ -263,6 +263,8 @@ class renderer extends \plugin_renderer_base {
             $fields[] = $sub->name;
             $fields[] = $sub->maxusers;
             $fields[] = $sub->maxcourses;
+            $fields[] = $sub->features;
+            $fields[] = $sub->upstreamkey;
 
             $buttons = array();
 
@@ -288,6 +290,8 @@ class renderer extends \plugin_renderer_base {
                 get_string('subname', constants::M_COMP),
                 get_string('maxusers', constants::M_COMP),
                 get_string('maxcourses', constants::M_COMP),
+                get_string('features', constants::M_COMP),
+                get_string('upstreamkey', constants::M_COMP),
                 get_string('action'));
         $table->colclasses = array('leftalign name', 'leftalign size','centeralign action');
 
@@ -315,6 +319,8 @@ class renderer extends \plugin_renderer_base {
             $fields[] = $school->name;
             $fields[] = $school->sub;
             $fields[] = $subs[$school->subname];
+            $fields[] = $school->upstreamsubid;
+            $fields[] = $school->upstreamownerid;
 
             $buttons = array();
 
@@ -340,6 +346,8 @@ class renderer extends \plugin_renderer_base {
                 get_string('name', constants::M_COMP),
                 get_string('sub', constants::M_COMP),
                 '',
+                get_string('upstreamsubid', constants::M_COMP),
+                get_string('upstreamownerid', constants::M_COMP),
                 get_string('action'));
         $table->colclasses = array('leftalign name', 'leftalign size','centeralign action');
 

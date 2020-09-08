@@ -75,7 +75,11 @@ if ($editform->is_cancelled()){
             if ($data->id) {
                 $result=$DB->insert_record(constants::M_TABLE_SUBS,$data);
             } else {
-                $updatedata = array('id'=>$data->id,'name'=>$data->name, 'maxusers'=>$data->maxusers,'maxcourses'=>$data->maxcourses );
+                $updatedata = array('id'=>$data->id,'name'=>$data->name,
+                        'maxusers'=>$data->maxusers,
+                        'maxcourses'=>$data->maxcourses,
+                        'features'=>$data->features,
+                        'upstreamkey'=>$data->upstreamkey);
                 $result=$DB->update_record(constants::M_TABLE_SUBS,$updatedata);
             }
             break;

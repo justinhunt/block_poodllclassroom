@@ -58,6 +58,12 @@ class editsubform extends \moodleform {
         $mform->setType('maxcourses', PARAM_INT);
         $mform->addRule('maxcourses', get_string('required'), 'required', null, 'client');
 
+        $mform->addElement('text', 'features', get_string('features', constants::M_COMP), array());
+        $mform->setType('features', PARAM_INT);
+
+        $mform->addElement('text', 'features', get_string('upstreamkey', constants::M_COMP), array());
+        $mform->setType('upstreamkey', PARAM_TEXT);
+
 
         //add the action buttons
         $this->add_action_buttons(get_string('cancel'), get_string('save', 'poodlltime'));
