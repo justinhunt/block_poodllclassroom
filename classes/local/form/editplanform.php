@@ -62,7 +62,7 @@ class editplanform extends \moodleform {
         $mform->addRule('maxcourses', get_string('required'), 'required', null, 'client');
 
         $mform->addElement('text', 'features', get_string('features', constants::M_COMP), array());
-        $mform->setType('features', PARAM_INT);
+        $mform->setType('features', PARAM_TEXT);
 
         $mform->addElement('text', 'upstreamplan', get_string('upstreamplan', constants::M_COMP), array());
         $mform->setType('upstreamplan', PARAM_TEXT);
