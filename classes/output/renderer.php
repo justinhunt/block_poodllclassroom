@@ -287,7 +287,7 @@ class renderer extends \plugin_renderer_base {
 
         $table = new \html_table();
         $table->head  = array(get_string('id', constants::M_COMP),
-                get_string('subname', constants::M_COMP),
+                get_string('planname', constants::M_COMP),
                 get_string('maxusers', constants::M_COMP),
                 get_string('maxcourses', constants::M_COMP),
                 get_string('features', constants::M_COMP),
