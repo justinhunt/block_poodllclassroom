@@ -238,15 +238,15 @@ class renderer extends \plugin_renderer_base {
 
 
     //return a button that will allow user to add a new sub
-    function fetch_addsub_button(){
+    function fetch_addplan_button(){
         $thebutton = new \single_button(
                 new \moodle_url(constants::M_URL . '/subs/edit.php',array()),
-                get_string('addsub', constants::M_COMP), 'get');
+                get_string('addplan', constants::M_COMP), 'get');
         return $thebutton;
     }
 
     //Fetch subs table
-    function fetch_subs_table($subs){
+    function fetch_plans_table($plans){
         global $DB;
 
         $params=[];
@@ -254,21 +254,21 @@ class renderer extends \plugin_renderer_base {
 
 
         //add sub button
-        $addbutton = $this->fetch_addsub_button();
+        $addbutton = $this->fetch_addplan_button();
 
         $data = array();
-        foreach($subs as $sub) {
+        foreach($plans as $plan) {
             $fields = array();
-            $fields[] = $sub->id;
-            $fields[] = $sub->name;
-            $fields[] = $sub->maxusers;
-            $fields[] = $sub->maxcourses;
-            $fields[] = $sub->features;
-            $fields[] = $sub->upstreamplan;
+            $fields[] = $plan->id;
+            $fields[] = $plan->name;
+            $fields[] = $plan->maxusers;
+            $fields[] = $plan->maxcourses;
+            $fields[] = $plan->features;
+            $fields[] = $plan->upstreamplan;
 
             $buttons = array();
 
-            $urlparams = array('id' => $sub->id,'type'=>'sub','returnurl' => $baseurl->out_as_local_url());
+            $urlparams = array('id' => $plan->id,'type'=>'sub','returnurl' => $baseurl->out_as_local_url());
 
 
             $buttons[] = \html_writer::link(new \moodle_url(constants::M_URL . '/subs/edit.php', $urlparams),

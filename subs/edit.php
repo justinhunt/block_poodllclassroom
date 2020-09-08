@@ -64,7 +64,7 @@ if ($delete && $id) {
         $result=$DB->delete_records(constants::M_TABLE_PLANS,array('id'=>$id));
         redirect($returnurl);
     }
-    $strheading = get_string('deletesub', constants::M_COMP);
+    $strheading = get_string('deleteplan', constants::M_COMP);
     $PAGE->navbar->add($strheading);
     $PAGE->set_title($strheading);
     $PAGE->set_heading($SITE->fullname);
@@ -72,7 +72,7 @@ if ($delete && $id) {
     echo $renderer->heading($strheading);
     $yesurl = new moodle_url($baseurl . '/subs/edit.php', array('id' => $id, 'delete' => 1,
             'confirm' => 1, 'sesskey' => sesskey(), 'returnurl' => $returnurl->out_as_local_url()));
-    $message = get_string('deletesubconfirm', constants::M_COMP);
+    $message = get_string('deleteplanconfirm', constants::M_COMP);
     echo $renderer->confirm($message, $yesurl, $returnurl);
     echo $renderer->footer();
     die;
