@@ -66,7 +66,7 @@ class block_poodllclassroom_external extends external_api {
         // We always must pass webservice params through validate_parameters.
         $params = self::validate_parameters(self::create_school_parameters(),
             ['username' => $username, 'firstname' => $firstname, 'lastname' => $lastname, 'email' => $email, 'schoolname'=>$schoolname,
-                    '$upstreamplanid'=>$upstreamplanid,'$upstreamownerid'=>$upstreamownerid,'$upstreamsubid'=>$upstreamsubid]);
+                    'upstreamplanid'=>$upstreamplanid,'upstreamownerid'=>$upstreamownerid,'upstreamsubid'=>$upstreamsubid]);
 
         //need to massage data a bit
         $userdata= [];
