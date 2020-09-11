@@ -883,7 +883,7 @@ class common
             $url = "https://$siteprefix.chargebee.com/api/v2/portal_sessions";
             $postdata=[];
             $postdata['redirect_url'] = $CFG->wwwroot . '/my';
-            $postdata['customer']= (array("id" => "$customerid"));
+            $postdata['customer']= array("id" => $customerid);
             $postdatastring = http_build_query($postdata);
             $curlresult = self::curl_fetch($url,$postdatastring,$apikey);
             $jsonresult = self::make_object_from_json($curlresult);
