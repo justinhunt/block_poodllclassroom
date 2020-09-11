@@ -44,7 +44,7 @@ $PAGE->navbar->add(get_string('pluginname', constants::M_COMP));
 $renderer = $PAGE->get_renderer(constants::M_COMP);
 
 
-$ok = has_capability('block/poodllclassroom:manageclassroom', $context);
+$ok = has_capability('block/poodllclassroom:managepoodllclassroom', $context);
 if(!$ok){
     echo $renderer->header();
     echo $renderer->heading($SITE->fullname);
