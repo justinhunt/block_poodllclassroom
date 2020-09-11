@@ -954,12 +954,11 @@ class common
                 'Authorization: Basic '. base64_encode($username.':'),
         );
         if(!empty($username)) {
-            echo 'YES USERNAME';
+         //   echo 'YES USERNAME';
             //$curl->setopt('CURLOPT_HTTPAUTH', CURLAUTH_BASIC);
             //$curl->setopt('CURLOPT_HTTPHEADER', $headers);
             $curl->setopt(array('CURLOPT_USERPWD'=> $username . ":"));
         }
-        echo 'USERNAME???';
         $result = $curl->post($url, $postdata);
         return $result;
     }
