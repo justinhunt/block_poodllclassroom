@@ -32,7 +32,7 @@ class renderer extends \plugin_renderer_base {
 
         $contextid = $context->id;
         $title = get_string('createcourse',constants::M_COMP);
-        $content = "a whole lot of content going on";
+        $content = "";
         $containertag = 'createcourse';
         $amodalcontainer = $this->fetch_modalcontainer($title,$content,$containertag);
 
@@ -46,8 +46,10 @@ class renderer extends \plugin_renderer_base {
         $opts=array('modulecssclass' => 'block_poodllclassroom', 'contextid'=>$contextid,'tableid'=>$tableid);
         $this->page->requires->js_call_amd(constants::M_COMP . "/blockcontroller", 'init', array($opts));
 
-         $content = $createcoursebutton . '<br>';
-
+        //mysublink
+        $mysublink = $this->create_editmysub_button();
+        //mysublink + createcoursebutton
+        $content =   $mysublink  . $createcoursebutton . '<br>';
 
 
 
@@ -77,10 +79,17 @@ class renderer extends \plugin_renderer_base {
 
     }
 
+    function create_editmysub_button(){
+        $urlparams =array();
+        $link = \html_writer::link(new \moodle_url(constants::M_URL . '/subs/accessportal.php', $urlparams),
+                $this->output->pix_icon('t/edit', get_string('editmysub',constants::M_COMP)),
+                array('title' => get_string('editmysub',constants::M_COMP)));
+        return \html_writer::div($link,constants::M_COMP . '_editmysub');
+
+    }
 
 
     function create_user_list($users,$tableid,$visible){
-
 
         $data = [];
         $data['display'] = $visible ? 'block' : 'none';

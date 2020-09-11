@@ -868,6 +868,32 @@ class common
         }
     }
 
+    public static function get_poodllschool_by_currentuser(){
+        global $DB,$USER;
+        return $DB->get_record(constants::M_TABLE_SCHOOLS,array('ownerid'=>$USER->id));
+    }
+
+    public static function get_portalurl_by_school($school){
+        global $CFG;
+        $customerid = $school->upstreamownerid;
+        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
+        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
+
+        if($customerid && !empty($apikey) && !empty($siteprefix)){
+            $url = "https://$siteprefix.chargebee.com/api/v2/portal_sessions";
+            $postdata=[];
+            $postdata['redirect_url'] = $CFG->wwwroot . '/my';
+            $postdata['customer']= array("id" => "$customerid");
+            $curlresult = self::curl_fetch($url,$postdata,$apikey);
+            $jsonresult = self::make_object_from_json($curlresult);
+            if($jsonresult){
+                $portalurl = $jsonresult->portal_session->access_url;
+                if($portalurl && !empty($portalurl)){return $portalurl;}
+            }
+        }
+        return false;
+    }
+
     public static function get_poodllschool_by_upstreamsubid($upstreamsubid){
         global $DB;
         return $DB->get_record(constants::M_TABLE_SCHOOLS,array('upstreamsubid'=>$upstreamsubid));
@@ -914,6 +940,35 @@ class common
         $newplan->timemodified=time();
         $newplan->id= $DB->insert_record(constants::M_TABLE_PLANS,$newplan);
         return $newplan;
+    }
+
+    public static function curl_fetch($url, $postdata = false, $username='') {
+        global $CFG;
+
+        require_once($CFG->libdir . '/filelib.php');
+        $curl = new \curl();
+        // $curl->setopt(array('CURLOPT_ENCODING' => ""));
+        if(!empty($username)) {
+            $curl->setopt('CURLOPT_USERPWD', $username . ":");
+        }
+        $result = $curl->post($url, $postdata);
+        return $result;
+    }
+
+    //see if this is truly json or some error
+    public static function make_object_from_json($string) {
+        if (!$string) {
+            return false;
+        }
+        if (empty($string)) {
+            return false;
+        }
+        $object = json_decode($string);
+        if(json_last_error() == JSON_ERROR_NONE){
+            return $object;
+        }else{
+            return false;
+        }
     }
 
 

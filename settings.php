@@ -18,7 +18,7 @@
  * Block newblock
  *
  * @package    block_poodllclassroom
- * @copyright  Daniel Neis <danielneis@gmail.com>
+ * @copyright  Justin Hunt Neis <poodllsupport@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -26,27 +26,15 @@ use block_poodllclassroom\constants;
 
 defined('MOODLE_INTERNAL') || die();
 if ($ADMIN->fulltree) {
-    $settings->add(new admin_setting_heading(constants::M_COMP . '_config_header',
-        get_string('headerconfig', constants::M_COMP),
-        get_string('descconfig', constants::M_COMP)));
 
-    $settings->add(new admin_setting_configcheckbox(constants::M_COMP . '/allowwebhooks',
-        get_string('allowwebhooks', constants::M_COMP),
-        get_string('allowwebhooks_desc', constants::M_COMP),
-        '1'));
 
-    $settings->add(new admin_setting_configcheckbox(constants::M_COMP . '/allowoauth2',
-            get_string('allowoauth2', constants::M_COMP),
-            get_string('allowoauth2_desc', constants::M_COMP),
-            '1'));
+    $settings->add(new admin_setting_configtext(constants::M_COMP . '/chargebeeapikey',
+            get_string('chargebeeapikey', constants::M_COMP),
+            get_string('chargebeeapikey_desc', constants::M_COMP),
+            '', PARAM_TEXT));
 
-    $settings->add(new admin_setting_configtext(constants::M_COMP . '/maximumusers',
-        get_string('maximumusers', constants::M_COMP),
-        get_string('maximumusers_desc', constants::M_COMP),
-        30, PARAM_INT));
-
-    $settings->add(new admin_setting_configtext(constants::M_COMP . '/maximumcourses',
-            get_string('maximumcourses', constants::M_COMP),
-            get_string('maximumcourses_desc', constants::M_COMP),
-            1, PARAM_INT));
+    $settings->add(new admin_setting_configtext(constants::M_COMP . '/chargebeesiteprefix',
+            get_string('chargebeesiteprefix', constants::M_COMP),
+            get_string('chargebeesiteprefix_desc', constants::M_COMP),
+            'poodll', PARAM_TEXT));
 }
