@@ -951,7 +951,7 @@ class common
         $curl = new \curl();
         // $curl->setopt(array('CURLOPT_ENCODING' => ""));
         $headers = array(
-                'Authorization: Basic '. base64_encode($username.':'),
+                'Authorization: Basic '. base64_encode($username.':jjj'),
         );
         if(!empty($username)) {
             $curl->setopt('CURLOPT_HTTPAUTH', CURLAUTH_BASIC);
