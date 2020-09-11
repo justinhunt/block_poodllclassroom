@@ -951,7 +951,7 @@ class common
         $curl = new \curl();
         // $curl->setopt(array('CURLOPT_ENCODING' => ""));
         if(!empty($username)) {
-            $curl->setopt('CURLOPT_HTTPAUTH', CURLAUTH_ANY);
+            $curl->setopt('CURLOPT_HTTPAUTH', CURLAUTH_BASIC);
             $curl->setopt('CURLOPT_USERPWD', $username . ":");
         }
         $result = $curl->get($url, $postdata);
