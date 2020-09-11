@@ -887,6 +887,8 @@ class common
             $curlresult = self::curl_fetch($url,$postdata,$apikey);
             $jsonresult = self::make_object_from_json($curlresult);
             if($jsonresult){
+                print_r($jsonresult);
+                die;
                 $portalurl = $jsonresult->portal_session->access_url;
                 if($portalurl && !empty($portalurl)){return $portalurl;}
             }
