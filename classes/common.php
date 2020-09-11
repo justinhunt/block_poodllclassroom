@@ -954,7 +954,7 @@ class common
             $curl->setopt('CURLOPT_HTTPAUTH', CURLAUTH_ANY);
             $curl->setopt('CURLOPT_USERPWD', $username . ":");
         }
-        $result = $curl->post($url, $postdata);
+        $result = $curl->get($url, $postdata);
         return $result;
     }
 
