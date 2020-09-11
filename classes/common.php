@@ -951,14 +951,14 @@ class common
         $curl = new \curl();
         // $curl->setopt(array('CURLOPT_ENCODING' => ""));
         $headers = array(
-                'Authorization: Basic '. base64_encode($username.':jjj'),
+                'Authorization: Basic '. base64_encode($username.':'),
         );
         if(!empty($username)) {
-            $curl->setopt('CURLOPT_HTTPAUTH', CURLAUTH_BASIC);
-            $curl->setopt('CURLOPT_HTTPHEADER', $headers);
-            //$curl->setopt('CURLOPT_USERPWD', $username . ":");
+            //$curl->setopt('CURLOPT_HTTPAUTH', CURLAUTH_BASIC);
+            //$curl->setopt('CURLOPT_HTTPHEADER', $headers);
+            $curl->setopt(array('CURLOPT_USERPWD'=> $username . ":"));
         }
-        $result = $curl->get($url, $postdata);
+        $result = $curl->post($url, $postdata);
         return $result;
     }
 
