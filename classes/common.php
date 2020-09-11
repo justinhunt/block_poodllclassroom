@@ -885,13 +885,10 @@ class common
             $postdata['redirect_url'] = $CFG->wwwroot . '/my';
             $postdata['customer']= array("id" => $customerid);
             $postdatastring = http_build_query($postdata,'', '&');
-           // echo $postdatastring;
-           // die;
+         
             $curlresult = self::curl_fetch($url,$postdatastring,$apikey);
             $jsonresult = self::make_object_from_json($curlresult);
             if($jsonresult){
-                print_r($jsonresult);
-                die;
                 $portalurl = $jsonresult->portal_session->access_url;
                 if($portalurl && !empty($portalurl)){return $portalurl;}
             }
