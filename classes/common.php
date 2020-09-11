@@ -960,6 +960,7 @@ class common
             //$curl->setopt(array('CURLOPT_USERPWD'=> $username . ":"));
         }
         echo "username ???";
+        die;
         $result = $curl->post($url, $postdata);
         return $result;
     }
