@@ -950,17 +950,13 @@ class common
         require_once($CFG->libdir . '/filelib.php');
         $curl = new \curl();
         // $curl->setopt(array('CURLOPT_ENCODING' => ""));
-        $headers = array(
-                'Authorization: Basic '. base64_encode($username.':'),
-        );
+       // $headers = array('Authorization: Basic '. base64_encode($username.':'),);
         if(!empty($username)) {
-            echo 'YES USERNAME';
-            $curl->setopt('CURLOPT_HTTPAUTH', CURLAUTH_BASIC);
-            $curl->setopt('CURLOPT_HTTPHEADER', $headers);
-            //$curl->setopt(array('CURLOPT_USERPWD'=> $username . ":"));
+            $curl->setopt(array('CURLOPT_HTTPAUTH'=>CURLAUTH_BASIC));
+//            $curl->setopt('CURLOPT_HTTPHEADER', $headers);
+            $curl->setopt(array('CURLOPT_USERPWD'=> $username . ":"));
         }
-        echo "username ???";
-        die;
+
         $result = $curl->post($url, $postdata);
         return $result;
     }
