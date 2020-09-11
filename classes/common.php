@@ -884,9 +884,7 @@ class common
             $postdata=[];
             $postdata['redirect_url'] = $CFG->wwwroot . '/my';
             $postdata['customer']= array("id" => $customerid);
-            $postdatastring = http_build_query($postdata,'', '&');
-         
-            $curlresult = self::curl_fetch($url,$postdatastring,$apikey);
+            $curlresult = self::curl_fetch($url,$postdata,$apikey);
             $jsonresult = self::make_object_from_json($curlresult);
             if($jsonresult){
                 $portalurl = $jsonresult->portal_session->access_url;
@@ -950,12 +948,13 @@ class common
         require_once($CFG->libdir . '/filelib.php');
         $curl = new \curl();
 
+        $postdatastring = http_build_query($postdata,'', '&');
         if(!empty($username)) {
             $curl->setopt(array('CURLOPT_HTTPAUTH'=>CURLAUTH_BASIC));
             $curl->setopt(array('CURLOPT_USERPWD'=> $username . ":"));
         }
 
-        $result = $curl->post($url, $postdata);
+        $result = $curl->post($url, $postdatastring);
         return $result;
     }
 
