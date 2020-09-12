@@ -13,7 +13,201 @@ use \block_poodllclassroom\constants;
 
 class block_poodllclassroom_external extends external_api {
 
-    public static function create_school_parameters() {
+    //------------ CANCEL SUB ---------------//
+    public static function cancel_sub_parameters() {
+        return new external_function_parameters(
+                array(
+                        'upstreamplanid' => new external_value(PARAM_TEXT, 'upstreamplanid'),
+                        'upstreamownerid' => new external_value(PARAM_TEXT, 'upstreamownerid'),
+                        'upstreamsubid' => new external_value(PARAM_TEXT, 'upstreamsubid')
+
+                )
+        );
+    }
+
+    public static function cancel_sub( $upstreamplanid, $upstreamownerid,$upstreamsubid) {
+        global $CFG, $SESSION, $DB, $USER;
+
+        //initialise return value
+        $ret = [];
+        $ret['error'] = false;
+        $ret['message'] = '';
+
+
+        // We always must pass webservice params through validate_parameters.
+        $params = self::validate_parameters(self::cancel_sub_parameters(),
+                ['upstreamplanid' => $upstreamplanid,
+                        'upstreamownerid' => $upstreamownerid,
+                        'upstreamsubid' => $upstreamsubid]);
+
+        //Get Poodll School and once its got, cancel it
+        $poodllschool =common::get_poodllschool_by_upstreamsubid($params['upstreamsubid']);
+        if($poodllschool){
+            common::cancel_poodllschool($poodllschool);
+            $ret['message'] = 'School cancelled ok';
+        }else{
+            $ret['error'] = true;
+            $ret['message'] = 'No such school was found';
+        }
+        return $ret;
+    }
+
+    public static function cancel_sub_returns() {
+        return new external_single_structure([
+                'message' => new external_value(PARAM_TEXT, 'error message'),
+                'error' => new external_value(PARAM_BOOL, 'error'),
+        ]);
+    }
+
+
+    //------------ RESUME SUB ---------------//
+    public static function resume_sub_parameters() {
+        return new external_function_parameters(
+                array(
+                        'upstreamplanid' => new external_value(PARAM_TEXT, 'upstreamplanid'),
+                        'upstreamownerid' => new external_value(PARAM_TEXT, 'upstreamownerid'),
+                        'upstreamsubid' => new external_value(PARAM_TEXT, 'upstreamsubid')
+
+                )
+        );
+    }
+
+    public static function resume_sub( $upstreamplanid, $upstreamownerid,$upstreamsubid) {
+        global $CFG, $SESSION, $DB, $USER;
+
+
+        //initialise return value
+        $ret = [];
+        $ret['error'] = false;
+        $ret['message'] = '';
+
+
+        // We always must pass webservice params through validate_parameters.
+        $params = self::validate_parameters(self::resume_sub_parameters(),
+                ['upstreamplanid' => $upstreamplanid,
+                        'upstreamownerid' => $upstreamownerid,
+                        'upstreamsubid' => $upstreamsubid]);
+
+        //Get Poodll School and once its got, resume it
+        $poodllschool =common::get_poodllschool_by_upstreamsubid($params['upstreamsubid']);
+        if($poodllschool){
+            common::resume_poodllschool($poodllschool);
+            $ret['message'] = 'School resumed ok';
+        }else{
+            $ret['error'] = true;
+            $ret['message'] = 'No such school was found';
+        }
+        return $ret;
+    }
+
+    public static function resume_sub_returns() {
+        return new external_single_structure([
+                'message' => new external_value(PARAM_TEXT, 'error message'),
+                'error' => new external_value(PARAM_BOOL, 'error'),
+        ]);
+    }
+
+
+    //------------ PAUSE SUB ---------------//
+    public static function pause_sub_parameters() {
+        return new external_function_parameters(
+                array(
+                        'upstreamplanid' => new external_value(PARAM_TEXT, 'upstreamplanid'),
+                        'upstreamownerid' => new external_value(PARAM_TEXT, 'upstreamownerid'),
+                        'upstreamsubid' => new external_value(PARAM_TEXT, 'upstreamsubid')
+
+                )
+        );
+    }
+
+    public static function pause_sub( $upstreamplanid, $upstreamownerid,$upstreamsubid) {
+        global $CFG, $SESSION, $DB, $USER;
+
+
+        //initialise return value
+        $ret = [];
+        $ret['error'] = false;
+        $ret['message'] = '';
+
+
+        // We always must pass webservice params through validate_parameters.
+        $params = self::validate_parameters(self::pause_sub_parameters(),
+                ['upstreamplanid' => $upstreamplanid,
+                        'upstreamownerid' => $upstreamownerid,
+                        'upstreamsubid' => $upstreamsubid]);
+
+        //Get Poodll School and once its got, pause it
+        $poodllschool =common::get_poodllschool_by_upstreamsubid($params['upstreamsubid']);
+        if($poodllschool){
+           common::pause_poodllschool($poodllschool);
+            $ret['message'] = 'School paused ok';
+        }else{
+            $ret['error'] = true;
+            $ret['message'] = 'No such school was found';
+        }
+        return $ret;
+
+    }
+
+    public static function pause_sub_returns() {
+        return new external_single_structure([
+                'message' => new external_value(PARAM_TEXT, 'error message'),
+                'error' => new external_value(PARAM_BOOL, 'error'),
+        ]);
+    }
+
+    //------------ UPDATE SUB ---------------//
+    public static function update_sub_parameters() {
+        return new external_function_parameters(
+                array(
+                        'upstreamplanid' => new external_value(PARAM_TEXT, 'upstreamplanid'),
+                        'upstreamownerid' => new external_value(PARAM_TEXT, 'upstreamownerid'),
+                        'upstreamsubid' => new external_value(PARAM_TEXT, 'upstreamsubid')
+
+                )
+        );
+    }
+
+    public static function update_sub( $upstreamplanid, $upstreamownerid,$upstreamsubid) {
+        global $CFG, $SESSION, $DB, $USER;
+
+        //initialise return value
+        $ret = [];
+        $ret['error'] = false;
+        $ret['message'] = '';
+
+
+        // We always must pass webservice params through validate_parameters.
+        $params = self::validate_parameters(self::update_sub_parameters(),
+                ['upstreamplanid' => $upstreamplanid,
+                 'upstreamownerid' => $upstreamownerid,
+                 'upstreamsubid' => $upstreamsubid]);
+
+        //Get Poodll School and once its got, update it
+        $poodllschool =common::get_poodllschool_by_upstreamsubid($params['upstreamsubid']);
+        if($poodllschool){
+            if($poodllschool->upstreamplanid != $params['upstreamplanid']) {
+                common::update_poodllschool_from_upstream($poodllschool->id, $params['upstreamplanid']);
+                $ret['message'] = 'updated successfully';
+            }else{
+                $ret['message']= 'nothing to update. all good.';
+            }
+        }else{
+            $ret['error'] = true;
+            $ret['message'] = '';
+        }
+        return $ret;
+    }
+
+    public static function update_sub_returns() {
+        return new external_single_structure([
+                'message' => new external_value(PARAM_TEXT, 'error message'),
+                'error' => new external_value(PARAM_BOOL, 'error'),
+        ]);
+    }
+
+    //------------ CREATE SUB ---------------//
+    public static function create_sub_parameters() {
         return new external_function_parameters(
             array(
                 'username' => new external_value(PARAM_TEXT, 'User name'),
@@ -24,31 +218,12 @@ class block_poodllclassroom_external extends external_api {
                 'upstreamplanid' => new external_value(PARAM_TEXT, 'upstreamplanid'),
                 'upstreamownerid' => new external_value(PARAM_TEXT, 'upstreamownerid'),
                 'upstreamsubid' => new external_value(PARAM_TEXT, 'upstreamsubid')
-                //the rest of this is to keep iomad happy
-                /*
-                'city' => new external_value(PARAM_TEXT, 'Company location city', VALUE_DEFAULT, 'Tokyo'),
-                'country' => new external_value(PARAM_TEXT, 'Company location country', VALUE_DEFAULT, 'JP'),
-                'maildisplay' => new external_value(PARAM_INT, 'User default email display', VALUE_DEFAULT, 2),
-                'mailformat' => new external_value(PARAM_INT, 'User default email format', VALUE_DEFAULT, 1),
-                'maildigest' => new external_value(PARAM_INT, 'User default digest type', VALUE_DEFAULT, 0),
-                'autosubscribe' => new external_value(PARAM_INT, 'User default forum auto-subscribe', VALUE_DEFAULT, 1),
-                'trackforums' => new external_value(PARAM_INT, 'User default forum tracking', VALUE_DEFAULT, 0),
-                'htmleditor' => new external_value(PARAM_INT, 'User default text editor', VALUE_DEFAULT, 1),
-                'screenreader' => new external_value(PARAM_INT, 'User default screen reader', VALUE_DEFAULT, 0),
-                'timezone' => new external_value(PARAM_TEXT, 'User default timezone', VALUE_DEFAULT, '99'),
-                'lang' => new external_value(PARAM_TEXT, 'User default language', VALUE_DEFAULT, 'en'),
-                'suspended' => new external_value(PARAM_INT, 'Company is suspended when <> 0', VALUE_DEFAULT, 0),
-                'ecommerce' => new external_value(PARAM_INT, 'Ecommerce is disabled when = 0', VALUE_DEFAULT, 0),
-                'parentid' => new external_value(PARAM_INT, 'ID of parent company', VALUE_DEFAULT, 0),
-                'customcss' => new external_value(PARAM_TEXT, 'Company custom css',VALUE_DEFAULT, ''),
-                'validto' => new external_value(PARAM_INT, 'Contract termination date in unix timestamp', VALUE_DEFAULT, null),
-                'suspendafter' => new external_value(PARAM_INT, 'Number of seconds after termination date to suspend the company', VALUE_DEFAULT, 0),
-                */
+
             )
         );
     }
 
-    public static function create_school($username,$firstname, $lastname,$email,$schoolname,
+    public static function create_sub($username,$firstname, $lastname,$email,$schoolname,
             $upstreamplanid, $upstreamownerid,$upstreamsubid)
     {
         global $CFG,$SESSION, $DB, $USER;
@@ -64,7 +239,7 @@ class block_poodllclassroom_external extends external_api {
         $ret['username']='';
 
         // We always must pass webservice params through validate_parameters.
-        $params = self::validate_parameters(self::create_school_parameters(),
+        $params = self::validate_parameters(self::create_sub_parameters(),
             ['username' => $username, 'firstname' => $firstname, 'lastname' => $lastname, 'email' => $email, 'schoolname'=>$schoolname,
                     'upstreamplanid'=>$upstreamplanid,'upstreamownerid'=>$upstreamownerid,'upstreamsubid'=>$upstreamsubid]);
 
@@ -178,7 +353,7 @@ class block_poodllclassroom_external extends external_api {
         return $ret;
     }
 
-    public static function create_school_returns() {
+    public static function create_sub_returns() {
         //return new external_value(PARAM_RAW);
         //return new external_value(PARAM_INT, 'group id');
         return new external_single_structure([
@@ -190,6 +365,7 @@ class block_poodllclassroom_external extends external_api {
         ]);
     }
 
+    //------------ DELETE ITEM ---------------//
     public static function delete_item_parameters() {
         return new external_function_parameters(
             array(
@@ -199,7 +375,6 @@ class block_poodllclassroom_external extends external_api {
             )
         );
     }
-
 
     public static function delete_item($contextid,$itemid, $formname)
     {
@@ -241,6 +416,8 @@ class block_poodllclassroom_external extends external_api {
         //return new external_value(PARAM_INT, 'group id');
     }
 
+
+    //------------ SUBMIT MFORM ---------------//
     public static function submit_mform_parameters() {
         return new external_function_parameters(
                 array(

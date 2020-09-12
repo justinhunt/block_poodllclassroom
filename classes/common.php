@@ -907,6 +907,30 @@ class common
         }
     }
 
+    public static function pause_poodllschool($school){
+        global $DB;
+        $owner = $DB->get_record('user',array('id'=>$school->ownerid));
+        if($owner) {
+            return $DB->update_record('user', array('id' => $owner->id, 'suspended' => 1));
+        }
+    }
+
+    public static function resume_poodllschool($school){
+        global $DB;
+        $owner = $DB->get_record('user',array('id'=>$school->ownerid));
+        if($owner) {
+            return $DB->update_record('user', array('id' => $owner->id, 'suspended' => 0));
+        }
+    }
+
+    public static function cancel_poodllschool($school){
+        global $DB;
+        $owner = $DB->get_record('user',array('id'=>$school->ownerid));
+        if($owner) {
+            return $DB->update_record('user', array('id' => $owner->id, 'suspended' => 1));
+        }
+    }
+
     //if we have a sale we need to keep the data and deal with any fallout if the plan had no matching pclassroom equiv.
     public static function fetch_poodllplan_from_upstreamplan($upstreamplanid){
         global $DB;

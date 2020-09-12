@@ -28,10 +28,46 @@ $functions = array(
 
     'block_poodllclassroom_create_school' => array(
         'classname'   => 'block_poodllclassroom_external',
-        'methodname'  => 'create_school',
-        'description' => 'create school.',
+        'methodname'  => 'create_sub',
+        'description' => 'create sub.',
         'capabilities'=> 'block/poodllclassroom:manageintegration',
         'type'        => 'write',
         'ajax'        => true,
     ),
+
+    'block_poodllclassroom_update_sub' => array(
+            'classname'   => 'block_poodllclassroom_external',
+            'methodname'  => 'update_sub',
+            'description' => 'update sub',
+            'capabilities'=> 'block/poodllclassroom:manageintegration',
+            'type'        => 'write',
+            'ajax'        => true,
+    ),
+
+    'block_poodllclassroom_pause_sub' => array(
+            'classname'   => 'block_poodllclassroom_external',
+            'methodname'  => 'pause_sub',
+            'description' => 'pause sub',
+            'capabilities'=> 'block/poodllclassroom:manageintegration',
+            'type'        => 'write',
+            'ajax'        => true,
+    ),
+
+    'block_poodllclassroom_resume_sub' => array(
+            'classname'   => 'block_poodllclassroom_external',
+            'methodname'  => 'resume_sub',
+            'description' => 'resume sub',
+            'capabilities'=> 'block/poodllclassroom:manageintegration',
+            'type'        => 'write',
+            'ajax'        => true,
+    ),
+
+    'block_poodllclassroom_cancel_sub' => array(
+            'classname'   => 'block_poodllclassroom_external',
+            'methodname'  => 'cancel_sub',
+            'description' => 'cancel sub',
+            'capabilities'=> 'block/poodllclassroom:manageintegration',
+            'type'        => 'write',
+            'ajax'        => true,
+    )
 );
