@@ -866,7 +866,7 @@ class common
         $sql .= 'INNER JOIN {company} c ON c.id = sch.companyid';
         $schools=$DB->get_records_sql($sql);
 
-        $schools = $DB->get_records(constants::M_TABLE_SCHOOLS,array()) ;
+        
         if($schools) {
             return $schools;
         }else{
