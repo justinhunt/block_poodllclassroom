@@ -866,7 +866,7 @@ class common
         $sql .= 'INNER JOIN {company} c ON c.id = sch.companyid';
         $schools=$DB->get_records_sql($sql);
 
-        //$schools = $DB->get_records(constants::M_TABLE_SCHOOLS,array()) ;
+        $schools = $DB->get_records(constants::M_TABLE_SCHOOLS,array()) ;
         if($schools) {
             return $schools;
         }else{
@@ -1032,7 +1032,7 @@ class common
 
     public static function fetch_integration_options(){
         return array(constants::M_INTEGRATION_POODLLNET=>'Poodll NET',
-                constants::M_INTEGRATION_CLOUDPOODLL=>'Poodll Classroom');
+                constants::M_INTEGRATION_CLOUDPOODLL=>'Poodll CLOUD');
     }
 
 
