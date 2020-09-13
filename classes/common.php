@@ -860,7 +860,13 @@ class common
     public static function fetch_schools(){
         global $DB;
 
-        $schools = $DB->get_records(constants::M_TABLE_SCHOOLS,array()) ;
+        $sql = 'SELECT sch.*, u.firstname as ownerfirstname, u.firstname as ownerlastname, c.name as schoolname ';
+        $sql .= 'from {'. constants::M_TABLE_SCHOOLS .'} sch ';
+        $sql .= 'INNER JOIN {user} u ON u.id = sch.ownerid ';
+        $sql .= 'INNER JOIN {company} c ON c.id = sch.companyid';
+        $schools=$DB->get_records_sql($sql);
+
+        //$schools = $DB->get_records(constants::M_TABLE_SCHOOLS,array()) ;
         if($schools) {
             return $schools;
         }else{
@@ -899,36 +905,60 @@ class common
         return $DB->get_record(constants::M_TABLE_SCHOOLS,array('upstreamsubid'=>$upstreamsubid));
     }
 
-    public static function update_poodllschool_from_upstream($schoolid, $upstreamplanid){
+    public static function update_poodllschool_from_upstream($school, $upstreamplanid){
         global $DB;
+        $ret = false;
         $plan = self::fetch_poodllplan_from_upstreamplan($upstreamplanid);
         if($plan) {
-            return $DB->update_record(constants::M_TABLE_SCHOOLS, array('id' => $schoolid, 'planid' => $plan->id));
+            $ret= $DB->update_record(constants::M_TABLE_SCHOOLS, array('id' => $school->id, 'planid' => $plan->id, 'status'=>'active'));
+            $owner = $DB->get_record('user',array('id'=>$school->ownerid));
+            if($ret && $owner && $owner->suspended){
+               $ret= $DB->update_record('user', array('id' => $owner->id, 'suspended' => 0));
+            }
         }
+        return $ret;
     }
 
     public static function pause_poodllschool($school){
         global $DB;
+        $ret =false;
         $owner = $DB->get_record('user',array('id'=>$school->ownerid));
         if($owner) {
-            return $DB->update_record('user', array('id' => $owner->id, 'suspended' => 1));
+            $ret = $DB->update_record('user', array('id' => $owner->id, 'suspended' => 1));
+            if($ret){
+                $ret = $DB->update_record(constants::M_TABLE_SCHOOLS,
+                        array('id' => $school->id, 'status' => 'paused','timemodified'=>time()));
+            }
         }
+        return $ret;
     }
 
     public static function resume_poodllschool($school){
         global $DB;
+        $ret =false;
         $owner = $DB->get_record('user',array('id'=>$school->ownerid));
         if($owner) {
-            return $DB->update_record('user', array('id' => $owner->id, 'suspended' => 0));
+            $ret = $DB->update_record('user', array('id' => $owner->id, 'suspended' => 0));
+            if($ret){
+                $ret = $DB->update_record(constants::M_TABLE_SCHOOLS,
+                        array('id' => $school->id, 'status' => 'active','timemodified'=>time()));
+            }
         }
+        return $ret;
     }
 
     public static function cancel_poodllschool($school){
         global $DB;
+        $ret =false;
         $owner = $DB->get_record('user',array('id'=>$school->ownerid));
         if($owner) {
-            return $DB->update_record('user', array('id' => $owner->id, 'suspended' => 1));
+            $ret = $DB->update_record('user', array('id' => $owner->id, 'suspended' => 1));
+            if($ret){
+                $ret = $DB->update_record(constants::M_TABLE_SCHOOLS,
+                        array('id' => $school->id, 'status' => 'cancelled','timemodified'=>time()));
+            }
         }
+        return $ret;
     }
 
     //if we have a sale we need to keep the data and deal with any fallout if the plan had no matching pclassroom equiv.
@@ -949,10 +979,12 @@ class common
         $newschool->planid=$planid;
         $newschool->upstreamownerid=$upstreamownerid;
         $newschool->upstreamsubid=$upstreamsubid;
+        $newschool->status='active';
         $newschool->timecreated=time();
         $newschool->timemodified=time();
 
-        return $DB->insert_record(constants::M_TABLE_SCHOOLS,$newschool);
+        $schoolid = $DB->insert_record(constants::M_TABLE_SCHOOLS,$newschool);
+        return $schoolid;
     }
 
     public static function create_blankplan($upstreamplanid){
@@ -996,6 +1028,11 @@ class common
         }else{
             return false;
         }
+    }
+
+    public static function fetch_integration_options(){
+        return array(constants::M_INTEGRATION_POODLLNET=>'Poodll NET',
+                constants::M_INTEGRATION_CLOUDPOODLL=>'Poodll Classroom');
     }
 
 

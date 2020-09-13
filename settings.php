@@ -23,6 +23,7 @@
  */
 
 use block_poodllclassroom\constants;
+use block_poodllclassroom\common;
 
 defined('MOODLE_INTERNAL') || die();
 if ($ADMIN->fulltree) {
@@ -37,4 +38,16 @@ if ($ADMIN->fulltree) {
             get_string('chargebeesiteprefix', constants::M_COMP),
             get_string('chargebeesiteprefix_desc', constants::M_COMP),
             'poodll', PARAM_TEXT));
+
+    $settings->add(new admin_setting_configtext(constants::M_COMP . '/chargebeesiteprefix',
+            get_string('chargebeesiteprefix', constants::M_COMP),
+            get_string('chargebeesiteprefix_desc', constants::M_COMP),
+            'poodll', PARAM_TEXT));
+
+    $integrationoptions =common::fetch_integration_options();
+    $settings->add(new admin_setting_configselect(constants::M_COMP . '/integration',
+            get_string('integrationtype', constants::M_COMP ),
+            get_string('integrationtype_desc', constants::M_COMP ),
+            constants::M_INTEGRATION_POODLLNET, $integrationoptions));
+
 }

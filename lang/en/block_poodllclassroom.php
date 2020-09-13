@@ -155,3 +155,7 @@ $string['chargebeesiteprefix_desc'] = 'The part before chargebee,com, e.g poodll
 $string['sendingtoportal'] = 'Sending you to subscription portal. Hang on...';
 $string['couldnotsendtoportal'] = 'Unable to send to subscription portal';
 $string['editmysub'] = 'Edit my subscription';
+$string['integrationtype']='Integration type';
+$string['integrationtype_desc']='Which Poodll site type is this integration on?';
+$string['status'] = 'Status';
+$string['lastchange'] = 'Last Change';

@@ -326,12 +326,13 @@ class renderer extends \plugin_renderer_base {
         foreach($schools as $school) {
             $fields = array();
             $fields[] = $school->id;
-            $fields[] = $school->companyid;
-            $fields[] = $school->ownerid;
-            $fields[] = $school->planid;
-            $fields[] = $plans[$school->planid]->name;
+            $fields[] = $school->schoolname . "($school->companyid)";
+            $fields[] = $school->ownerfirstname . ' ' . $school->ownerlastname . "($school->ownerid)";
+            $fields[] = $plans[$school->planid]->name  . "($school->planid)";
+            $fields[] = $school->status;
             $fields[] = $school->upstreamsubid;
             $fields[] = $school->upstreamownerid;
+            $fields[] = $school->timemodified;
 
             $buttons = array();
 
@@ -359,9 +360,10 @@ class renderer extends \plugin_renderer_base {
                 get_string('company', constants::M_COMP),
                 get_string('owner', constants::M_COMP),
                 get_string('plan', constants::M_COMP),
-                '',
+                get_string('status', constants::M_COMP),
                 get_string('upstreamsubid', constants::M_COMP),
                 get_string('upstreamownerid', constants::M_COMP),
+                get_string('lastchange', constants::M_COMP),
                 get_string('action'));
         $table->colclasses = array('leftalign name', 'leftalign size','centeralign action');
 

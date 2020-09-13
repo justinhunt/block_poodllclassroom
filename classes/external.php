@@ -10,6 +10,7 @@
 
 use \block_poodllclassroom\common;
 use \block_poodllclassroom\constants;
+use \block_poodllclassroom\iomadadaptor;
 
 class block_poodllclassroom_external extends external_api {
 
@@ -28,11 +29,10 @@ class block_poodllclassroom_external extends external_api {
     public static function cancel_sub( $upstreamplanid, $upstreamownerid,$upstreamsubid) {
         global $CFG, $SESSION, $DB, $USER;
 
-        //initialise return value
-        $ret = [];
-        $ret['error'] = false;
-        $ret['message'] = '';
-
+        // Get/check context/capability
+        $context = \context_system::instance();
+        self::validate_context($context);
+        require_capability('block/poodllclassroom:manageintegration', $context);
 
         // We always must pass webservice params through validate_parameters.
         $params = self::validate_parameters(self::cancel_sub_parameters(),
@@ -40,15 +40,7 @@ class block_poodllclassroom_external extends external_api {
                         'upstreamownerid' => $upstreamownerid,
                         'upstreamsubid' => $upstreamsubid]);
 
-        //Get Poodll School and once its got, cancel it
-        $poodllschool =common::get_poodllschool_by_upstreamsubid($params['upstreamsubid']);
-        if($poodllschool){
-            common::cancel_poodllschool($poodllschool);
-            $ret['message'] = 'School cancelled ok';
-        }else{
-            $ret['error'] = true;
-            $ret['message'] = 'No such school was found';
-        }
+        $ret = iomadadaptor::update_sub($params);
         return $ret;
     }
 
@@ -73,14 +65,13 @@ class block_poodllclassroom_external extends external_api {
     }
 
     public static function resume_sub( $upstreamplanid, $upstreamownerid,$upstreamsubid) {
+
         global $CFG, $SESSION, $DB, $USER;
 
-
-        //initialise return value
-        $ret = [];
-        $ret['error'] = false;
-        $ret['message'] = '';
-
+        // Get/check context/capability
+        $context = \context_system::instance();
+        self::validate_context($context);
+        require_capability('block/poodllclassroom:manageintegration', $context);
 
         // We always must pass webservice params through validate_parameters.
         $params = self::validate_parameters(self::resume_sub_parameters(),
@@ -88,15 +79,7 @@ class block_poodllclassroom_external extends external_api {
                         'upstreamownerid' => $upstreamownerid,
                         'upstreamsubid' => $upstreamsubid]);
 
-        //Get Poodll School and once its got, resume it
-        $poodllschool =common::get_poodllschool_by_upstreamsubid($params['upstreamsubid']);
-        if($poodllschool){
-            common::resume_poodllschool($poodllschool);
-            $ret['message'] = 'School resumed ok';
-        }else{
-            $ret['error'] = true;
-            $ret['message'] = 'No such school was found';
-        }
+        $ret = iomadadaptor::resume_sub($params);
         return $ret;
     }
 
@@ -123,12 +106,10 @@ class block_poodllclassroom_external extends external_api {
     public static function pause_sub( $upstreamplanid, $upstreamownerid,$upstreamsubid) {
         global $CFG, $SESSION, $DB, $USER;
 
-
-        //initialise return value
-        $ret = [];
-        $ret['error'] = false;
-        $ret['message'] = '';
-
+        // Get/check context/capability
+        $context = \context_system::instance();
+        self::validate_context($context);
+        require_capability('block/poodllclassroom:manageintegration', $context);
 
         // We always must pass webservice params through validate_parameters.
         $params = self::validate_parameters(self::pause_sub_parameters(),
@@ -136,16 +117,7 @@ class block_poodllclassroom_external extends external_api {
                         'upstreamownerid' => $upstreamownerid,
                         'upstreamsubid' => $upstreamsubid]);
 
-        //Get Poodll School and once its got, pause it
-        $poodllschool =common::get_poodllschool_by_upstreamsubid($params['upstreamsubid']);
-        if($poodllschool){
-           common::pause_poodllschool($poodllschool);
-            $ret['message'] = 'School paused ok';
-        }else{
-            $ret['error'] = true;
-            $ret['message'] = 'No such school was found';
-        }
-        return $ret;
+        $ret = iomadadaptor::pause_sub($params);
 
     }
 
@@ -171,11 +143,10 @@ class block_poodllclassroom_external extends external_api {
     public static function update_sub( $upstreamplanid, $upstreamownerid,$upstreamsubid) {
         global $CFG, $SESSION, $DB, $USER;
 
-        //initialise return value
-        $ret = [];
-        $ret['error'] = false;
-        $ret['message'] = '';
-
+        // Get/check context/capability
+        $context = \context_system::instance();
+        self::validate_context($context);
+        require_capability('block/poodllclassroom:manageintegration', $context);
 
         // We always must pass webservice params through validate_parameters.
         $params = self::validate_parameters(self::update_sub_parameters(),
@@ -183,19 +154,7 @@ class block_poodllclassroom_external extends external_api {
                  'upstreamownerid' => $upstreamownerid,
                  'upstreamsubid' => $upstreamsubid]);
 
-        //Get Poodll School and once its got, update it
-        $poodllschool =common::get_poodllschool_by_upstreamsubid($params['upstreamsubid']);
-        if($poodllschool){
-            if($poodllschool->upstreamplanid != $params['upstreamplanid']) {
-                common::update_poodllschool_from_upstream($poodllschool->id, $params['upstreamplanid']);
-                $ret['message'] = 'updated successfully';
-            }else{
-                $ret['message']= 'nothing to update. all good.';
-            }
-        }else{
-            $ret['error'] = true;
-            $ret['message'] = '';
-        }
+        $ret = iomadadaptor::update_sub($params);
         return $ret;
     }
 
@@ -228,128 +187,19 @@ class block_poodllclassroom_external extends external_api {
     {
         global $CFG,$SESSION, $DB, $USER;
 
-        require_once($CFG->dirroot . '/blocks/iomad_company_admin/lib.php');
 
-        //initialise return value
-        $ret=[];
-        $ret['error']=false;
-        $ret['message']='';
-        $ret['schoolid']=0;
-        $ret['userid']=0;
-        $ret['username']='';
+        // Get/check context/capability
+        $context = \context_system::instance();
+        self::validate_context($context);
+        require_capability('block/poodllclassroom:manageintegration', $context);
 
         // We always must pass webservice params through validate_parameters.
         $params = self::validate_parameters(self::create_sub_parameters(),
             ['username' => $username, 'firstname' => $firstname, 'lastname' => $lastname, 'email' => $email, 'schoolname'=>$schoolname,
                     'upstreamplanid'=>$upstreamplanid,'upstreamownerid'=>$upstreamownerid,'upstreamsubid'=>$upstreamsubid]);
 
-        //need to massage data a bit
-        $userdata= [];
-        $userdata['username']=$params['username'];
-        $userdata['firstname']=$params['firstname'];
-        $userdata['lastname']=$params['lastname'];
-        $userdata['email']=$params['email'];
-        $userdata['managertype']=1;//company manager
-        $userdata['educator']=1;//is an educator
+        $ret = iomadadaptor::create_sub($params);
 
-        //lets add all this stuff
-        //though I do not think we need to
-        $userdata['city']='Tokyo';
-        $userdata['country']='JP';
-        $userdata['maildisplay']=2;
-        $userdata['mailformat']= 1;
-        $userdata['maildigest']= 0;
-        $userdata['autosubscribe']=1;
-        $userdata['trackforums']=0;
-        $userdata['htmleditor']=1;
-        $userdata['screenreader']=0;
-        $userdata['timezone']= '99';
-        $userdata['lang']='en';
-        $userdata['suspended']= 0;
-        $userdata['ecommerce']= 0;
-        $userdata['parentid' ]=0;
-        $userdata['customcss' ]='';
-        $userdata['validto']=null;
-        $userdata['suspendafter']=0;
-
-        $companydata = $params;
-        $companydata['name']=$params['schoolname'];
-        $companydata['shortname']=$params['schoolname'];
-
-        // Get/check context/capability
-        $context = context_system::instance();
-        self::validate_context($context);
-        require_capability('block/poodllclassroom:manageintegration', $context);
-
-
-        //if we alredy have this poodllschol then we just need to update to the new plan
-        //Its unclear yet if that will happen here in this call, or another one
-        $poodllschool =common::get_poodllschool_by_upstreamsubid($upstreamsubid);
-        if($poodllschool){
-            common::update_poodllschool_from_upstream($poodllschool->id, $upstreamplanid);
-            $ret['schoolid'] = $poodllschool->companyid;
-            $ret['userid'] = $poodllschool->userid;
-            $theuser = $DB->get_record('user',array('id'=>$poodllschool->userid));
-            if($theuser) {
-                $ret['username'] = $theuser->username;
-            }
-            return $ret;
-        }
-
-
-        $thecompany = common::create_company($companydata);
-         if(!$thecompany){
-                 $ret['error'] = true;
-                 $ret['message'] = "failed to create company";
-                 return $ret;
-         }
-
-         //mailout api needs this - or it does a redirect ...urg
-        $SESSION->currenteditingcompany= $thecompany->id;
-
-        $theuser = common::get_user($userdata['username'],$userdata['email']);
-        $parentlevel = company::get_company_parentnode($thecompany->id);
-        $departmentid=$parentlevel->id;
-        $newuserid=0;
-        if(!$theuser) {
-            $validateddata = (object)$userdata;
-            // Trim first and lastnames
-            $validateddata->firstname = trim($validateddata->firstname);
-            $validateddata->lastname = trim($validateddata->lastname);
-            $validateddata->sendnewpasswordemails =1;
-            $validateddata->due =time();
-            $validateddata-> preference_auth_forcepasswordchange =1;
-            $validateddata->use_email_as_username =0;
-            $validateddata->userdepartment=$departmentid;
-
-            $result = common::create_company_user($thecompany->id, $validateddata);
-            if($result && $result->error==false){
-                $newuserid=$result->itemid;
-                $newusername=$result->username;
-            }else{
-                $ret['error'] = true;
-                $ret['message'] = "failed to create user";
-                return $ret;
-            }
-        }else{
-            company::upsert_company_user($theuser->id, $thecompany->id, $departmentid,  $userdata['managertype'], $userdata['educator']);
-            $newuserid=$theuser->id;
-            $newusername=$theuser->username;
-        }
-
-        //we have created a company and possibly a user also
-        //at this point we should update the poodllclassroom tables also
-        $plan = common::fetch_poodllplan_from_upstreamplan($upstreamplanid);
-        common::create_poodllschool($thecompany->id, $newuserid, $plan->id, $upstreamownerid,$upstreamsubid);
-
-        if($thecompany && $newuserid) {
-            $ret['schoolid'] = $thecompany->id;
-            $ret['userid'] = $newuserid;
-            $ret['username'] = $newusername;
-        }else{
-            $ret['error'] = true;
-            $ret['message'] = "failed to create company AND user";
-        }
         return $ret;
     }
 
