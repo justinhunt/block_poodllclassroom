@@ -49,7 +49,7 @@ function xmldb_block_poodllclassroom_upgrade($oldversion) {
 
     $dbman = $DB->get_manager(); // Loads ddl manager and xmldb classes.
 
-    if ($oldversion < 2020090301) {
+    if ($oldversion < 2020090302) {
 
         $table = new xmldb_table(constants::M_TABLE_SCHOOLS);
         $field = new xmldb_field('status', XMLDB_TYPE_CHAR, '255', null, null, null, '-');
@@ -59,7 +59,7 @@ function xmldb_block_poodllclassroom_upgrade($oldversion) {
         }
 
         // savepoint reached.
-        upgrade_mod_savepoint(true, 2020090301, constants::M_COMP);
+        upgrade_plugin_savepoint(true, 2020090302, 'block',constants::M_NAME);
 
     }
 
