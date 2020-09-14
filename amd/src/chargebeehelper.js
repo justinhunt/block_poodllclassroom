@@ -21,7 +21,7 @@ define(['jquery','core/log','core/ajax'], function($, log, ajax) {
         register_events: function() {
 
             $.getScript('https://js.chargebee.com/v2/chargebee.js', function(){
-                var chargebee = Chargebee.getInstance();
+                var chargebee = Chargebee.init({'site': 'poodll-test'});
                 $("." + this.changeplanclass).on("click", function() {
                     event.preventDefault();
                     chargebee.openCheckout({
