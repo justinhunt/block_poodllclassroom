@@ -454,16 +454,27 @@ class block_poodllclassroom_external extends external_api {
 
         $hosted_page = common::get_checkout_existing();
         if($hosted_page){
-            $ret =json_encode($hosted_page->data->hosted_page);
+            $ret =$hosted_page->hosted_page;
         }else{
             $ret ='{}';
-            $ret=$hosted_page;
         }
         return $ret;
     }
 
     public static function get_checkout_existing_returns() {
 
-        return new external_value(PARAM_RAW);
+       // return new external_value(PARAM_RAW);
+        return new external_single_structure([
+                'created_at' => new external_value(PARAM_INT, 'school id'),
+                'embed' => new external_value(PARAM_BOOL, 'user id' ),
+                'expires_at' => new external_value(PARAM_INT, 'school id'),
+                'id' => new external_value(PARAM_TEXT, 'user name'),
+                'object' => new external_value(PARAM_TEXT, 'error message'),
+                'resource_version' => new external_value(PARAM_INT, 'school id'),
+                'state' => new external_value(PARAM_TEXT, 'user name'),
+                'type' => new external_value(PARAM_TEXT, 'user name'),
+                'update_at' => new external_value(PARAM_INT, 'school id'),
+                'url' => new external_value(PARAM_TEXT, 'user name'),
+        ]);
     }
 }
