@@ -1043,7 +1043,7 @@ class common
         $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
 
         if($customerid && !empty($apikey) && !empty($siteprefix)){
-            $url = "https://$siteprefix.chargebee.com/api/v2/hostedpages/checkout_existing";
+            $url = "https://$siteprefix.chargebee.com/api/v2/hosted_pages/checkout_existing";
             $postdata=[];
             $postdata['subscription']= array("id" => $school->upstreamsubscriptionid);
             $curlresult = self::curl_fetch($url,$postdata,$apikey);
