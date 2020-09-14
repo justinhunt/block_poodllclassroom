@@ -10,8 +10,8 @@ $functions = array(
 
     'block_poodllclassroom_get_checkout_existing' => array(
                 'classname'   => 'block_poodllclassroom_external',
-                'methodname'  => '_get_checkout_existing',
-                'description' => '_get_checkout_existing',
+                'methodname'  => 'get_checkout_existing',
+                'description' => 'get_checkout_existing',
                 'capabilities'=> 'block/poodllclassroom:managepoodllclassroom',
                 'type'        => 'write',
                 'ajax'        => true,
