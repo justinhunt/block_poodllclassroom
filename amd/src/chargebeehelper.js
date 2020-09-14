@@ -1,5 +1,5 @@
 /* jshint ignore:start */
-define(['jquery','core/log','core/ajax',], function($, log, ajax, chargebee) {
+define(['jquery','core/log','core/ajax'], function($, log, ajax) {
 
     "use strict";
     log.debug('cbhelper: initialising');
