@@ -473,7 +473,7 @@ class block_poodllclassroom_external extends external_api {
                 'resource_version' => new external_value(PARAM_INT, 'school id'),
                 'state' => new external_value(PARAM_TEXT, 'user name'),
                 'type' => new external_value(PARAM_TEXT, 'user name'),
-                'update_at' => new external_value(PARAM_INT, 'school id'),
+                'updated_at' => new external_value(PARAM_INT, 'school id'),
                 'url' => new external_value(PARAM_TEXT, 'user name'),
         ]);
     }
