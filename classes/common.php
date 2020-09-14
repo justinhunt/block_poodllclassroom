@@ -1051,6 +1051,7 @@ class common
             if($jsonresult && isset($jsonresult->hosted_page)){
                 return $jsonresult->hosted_page;
             }
+            return $jsonresult;
         }
         return false;
     }
