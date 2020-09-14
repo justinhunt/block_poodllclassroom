@@ -454,7 +454,7 @@ class block_poodllclassroom_external extends external_api {
 
         $hosted_page = common::get_checkout_existing();
         if($hosted_page){
-            $ret =json_encode($hosted_page);
+            $ret =json_encode($hosted_page->data->hosted_page);
         }else{
             $ret ='{}';
             $ret=$hosted_page;
@@ -463,6 +463,7 @@ class block_poodllclassroom_external extends external_api {
     }
 
     public static function get_checkout_existing_returns() {
+
         return new external_value(PARAM_RAW);
     }
 }
