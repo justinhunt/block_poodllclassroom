@@ -1035,5 +1035,25 @@ class common
                 constants::M_INTEGRATION_CLOUDPOODLL=>'Poodll CLOUD');
     }
 
+    public static function get_checkout_existing(){
+        global $USER, $CFG;
+        $school = self::get_poodllschool_by_currentuser();
+        $customerid = $school->upstreamownerid;
+        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
+        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
+
+        if($customerid && !empty($apikey) && !empty($siteprefix)){
+            $url = "https://$siteprefix.chargebee.com/api/v2/hostedpages/checkout_existing";
+            $postdata=[];
+            $postdata['subscription']= array("id" => $school->upstreamsubscriptionid);
+            $curlresult = self::curl_fetch($url,$postdata,$apikey);
+            $jsonresult = self::make_object_from_json($curlresult);
+            if($jsonresult && isset($jsonresult->hosted_page)){
+                return $jsonresult->hosted_page;
+            }
+        }
+        return false;
+    }
+
 
 }//end of class

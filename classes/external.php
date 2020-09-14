@@ -439,4 +439,31 @@ class block_poodllclassroom_external extends external_api {
         //return new external_value(PARAM_INT, 'group id');
     }
 
+
+    //------------ get_checkout_existing ---------------//
+    public static function get_checkout_existing_parameters() {
+        return new external_function_parameters(
+                array()
+        );
+    }
+
+    public static function get_checkout_existing() {
+
+        // Get/check context/capability
+        $context = \context_system::instance();
+        self::validate_context($context);
+        require_capability('block/poodllclassroom:manageclassroom', $context);
+
+        $hosted_page = common::get_checkout_existing();
+        if($hosted_page){
+            $ret =json_encode($hosted_page);
+        }else{
+            $ret ='{}';
+        }
+        return $ret;
+    }
+
+    public static function get_checkout_existing_returns() {
+        return new external_value(PARAM_RAW);
+    }
 }

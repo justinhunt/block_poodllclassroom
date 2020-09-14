@@ -159,3 +159,4 @@ $string['integrationtype']='Integration type';
 $string['integrationtype_desc']='Which Poodll site type is this integration on?';
 $string['status'] = 'Status';
 $string['lastchange'] = 'Last Change';
+$string['changeplan'] = 'Change Plan';

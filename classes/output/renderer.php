@@ -48,8 +48,13 @@ class renderer extends \plugin_renderer_base {
 
         //mysublink
         $mysublink = $this->create_editmysub_button();
+
+        //changeplan link
+        $changeplanlink = $this->create_changeplan_button();
         //mysublink + createcoursebutton
-        $content =   $mysublink  . $createcoursebutton . '<br>';
+
+        //mysublink + createcoursebutton
+        $content =  $changeplanlink .  $mysublink  . $createcoursebutton . '<br>';
 
 
 
@@ -76,6 +81,19 @@ class renderer extends \plugin_renderer_base {
 
          $content .= $amodalcontainer;
          return $content;
+
+    }
+
+    function create_changeplan_button(){
+
+        //here we set up any info we need to pass into javascript
+        $opts =Array();
+        $opts['changeplanclass']=constants::M_COMP . '_changeplan';
+        $this->page->requires->js_call_amd(constants::M_COMP . "/chargebeehelper", 'init', array($opts));
+
+        $link = \html_writer::link('#',get_string('changeplan',constants::M_COMP),
+                array('class' => 'button button-secondary ' .  $opts['changeplanclass']));
+        return \html_writer::div($link,constants::M_COMP . '_changeplandiv');
 
     }
 
