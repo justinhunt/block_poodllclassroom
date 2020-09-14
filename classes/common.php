@@ -1048,10 +1048,9 @@ class common
             $postdata['subscription']= array("id" => $school->upstreamsubid);
             $curlresult = self::curl_fetch($url,$postdata,$apikey);
             $jsonresult = self::make_object_from_json($curlresult);
-            if($jsonresult && isset($jsonresult->hosted_page)){
-                return $jsonresult->hosted_page;
+            if($jsonresult){
+                return $jsonresult;
             }
-            return $jsonresult;
         }
         return false;
     }
