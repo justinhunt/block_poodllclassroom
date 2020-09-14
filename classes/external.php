@@ -429,8 +429,6 @@ class block_poodllclassroom_external extends external_api {
                 break;
 
         }
-
-
     }
 
 
@@ -452,7 +450,7 @@ class block_poodllclassroom_external extends external_api {
         // Get/check context/capability
         $context = \context_system::instance();
         self::validate_context($context);
-        require_capability('block/poodllclassroom:manageclassroom', $context);
+        require_capability('block/poodllclassroom:managepoodllclassroom', $context);
 
         $hosted_page = common::get_checkout_existing();
         if($hosted_page){
