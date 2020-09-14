@@ -88,6 +88,7 @@ class renderer extends \plugin_renderer_base {
 
         //here we set up any info we need to pass into javascript
         $opts =Array();
+        $opts['siteprefix']= get_config(constants::M_COMP,'chargebeesiteprefix');
         $opts['changeplanclass']=constants::M_COMP . '_changeplan';
         $this->page->requires->js_call_amd(constants::M_COMP . "/chargebeehelper", 'init', array($opts));
 

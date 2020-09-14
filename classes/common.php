@@ -1045,7 +1045,7 @@ class common
         if($customerid && !empty($apikey) && !empty($siteprefix)){
             $url = "https://$siteprefix.chargebee.com/api/v2/hosted_pages/checkout_existing";
             $postdata=[];
-            $postdata['subscription']= array("id" => $school->upstreamsubscriptionid);
+            $postdata['subscription']= array("id" => $school->upstreamsubid);
             $curlresult = self::curl_fetch($url,$postdata,$apikey);
             $jsonresult = self::make_object_from_json($curlresult);
             if($jsonresult && isset($jsonresult->hosted_page)){

@@ -8,12 +8,14 @@ define(['jquery','core/log','core/ajax'], function($, log, ajax) {
 
         instanceprops: null,
         changeplanclass: '',
+        siteprefix: '',
 
         //pass in config, and register any events
         init: function(props){
             log.debug(props);
             this.instanceprops=props;
             this.changeplanclass=props.changeplanclass;
+            this.siteprefix=props.siteprefix;
             this.register_events();
 
         },
@@ -22,7 +24,7 @@ define(['jquery','core/log','core/ajax'], function($, log, ajax) {
             var that = this;
 
             $.getScript('https://js.chargebee.com/v2/chargebee.js', function(){
-                var chargebee = Chargebee.init({'site': 'poodll-test'});
+                var chargebee = Chargebee.init({'site': that.siteprefix});
                 $("." + that.changeplanclass).on("click", function() {
                     log.debug('hello');
                     event.preventDefault();
