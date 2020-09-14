@@ -92,7 +92,7 @@ class renderer extends \plugin_renderer_base {
         $this->page->requires->js_call_amd(constants::M_COMP . "/chargebeehelper", 'init', array($opts));
 
         $link = \html_writer::link('#',get_string('changeplan',constants::M_COMP),
-                array('class' => 'button button-secondary ' .  $opts['changeplanclass']));
+                array('class' => 'btn btn-secondary ' .  $opts['changeplanclass']));
         return \html_writer::div($link,constants::M_COMP . '_changeplandiv');
 
     }
