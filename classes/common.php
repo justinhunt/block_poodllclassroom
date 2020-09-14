@@ -860,13 +860,13 @@ class common
     public static function fetch_schools(){
         global $DB;
 
-        $sql = 'SELECT sch.*, u.firstname as ownerfirstname, u.firstname as ownerlastname, c.name as schoolname ';
+        $sql = 'SELECT sch.*, u.firstname as ownerfirstname, u.lastname as ownerlastname, c.name as schoolname ';
         $sql .= 'from {'. constants::M_TABLE_SCHOOLS .'} sch ';
         $sql .= 'INNER JOIN {user} u ON u.id = sch.ownerid ';
         $sql .= 'INNER JOIN {company} c ON c.id = sch.companyid';
         $schools=$DB->get_records_sql($sql);
 
-        
+
         if($schools) {
             return $schools;
         }else{

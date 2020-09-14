@@ -49,17 +49,17 @@ function xmldb_block_poodllclassroom_upgrade($oldversion) {
 
     $dbman = $DB->get_manager(); // Loads ddl manager and xmldb classes.
 
-    if ($oldversion < 2020090302) {
+    if ($oldversion < 2020090303) {
 
         $table = new xmldb_table(constants::M_TABLE_SCHOOLS);
         $field = new xmldb_field('status', XMLDB_TYPE_CHAR, '255', null, null, null, '-');
 
-        if ($dbman->field_exists($table, $field)) {
+        if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
 
         // savepoint reached.
-        upgrade_plugin_savepoint(true, 2020090302, 'block',constants::M_NAME);
+        upgrade_plugin_savepoint(true, 2020090303, 'block',constants::M_NAME);
 
     }
 
