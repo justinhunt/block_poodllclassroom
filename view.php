@@ -25,7 +25,11 @@
 
 require('../../config.php');
 require_once($CFG->libdir . '/externallib.php');
+/*
 $ret = \block_poodllclassroom_external::create_school('goldenearring','Golden','Earring',
         'goldenearring@poodll.com','Radar Love Academy',
         'starter-monthly','abcd-1234','xyz-123');
+var_dump($ret);
+*/
+$ret = \block_poodllclassroom_external::get_checkout_existing();
 var_dump($ret);

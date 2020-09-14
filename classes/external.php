@@ -457,6 +457,7 @@ class block_poodllclassroom_external extends external_api {
             $ret =json_encode($hosted_page);
         }else{
             $ret ='{}';
+            $ret=$hosted_page;
         }
         return $ret;
     }
