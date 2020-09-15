@@ -7,25 +7,21 @@ define(['jquery','core/log','core/ajax'], function($, log, ajax) {
     return {
 
         instanceprops: null,
-        changeplanclass: '',
         siteprefix: '',
 
         //pass in config, and register any events
         init: function(props){
             log.debug(props);
             this.instanceprops=props;
-            this.changeplanclass=props.changeplanclass;
             this.siteprefix=props.siteprefix;
-            this.register_events();
-
         },
 
-        register_events: function() {
+        setupdatelink: function(elementselector, planid) {
             var that = this;
 
             $.getScript('https://js.chargebee.com/v2/chargebee.js', function(){
                 var chargebee = Chargebee.init({'site': that.siteprefix});
-                $("." + that.changeplanclass).on("click", function() {
+                $("." + elementselector).on("click", function() {
                     log.debug('hello');
                     event.preventDefault();
                     chargebee.openCheckout({
@@ -37,15 +33,9 @@ define(['jquery','core/log','core/ajax'], function($, log, ajax) {
                             // Now we can continue...
                             var promises = ajax.call([{
                                 methodname: 'block_poodllclassroom_get_checkout_existing',
-                                args: {}
+                                args: {planid: planid}
                             }]);
                             return promises[0];
-                            /*
-                             return $.ajax({
-                                 method: "post",
-                                 url: "http://localhost:8000/api/generate_checkout_existing_url"
-                             });
-                             */
                         },
                         loaded: function() {
                             console.log("checkout opened");
@@ -70,9 +60,6 @@ define(['jquery','core/log','core/ajax'], function($, log, ajax) {
                 });//on click
 
             });//end of get script
-
-
-
         }//end of reg events
     };//end of returned object
 });//total end

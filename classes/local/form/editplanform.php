@@ -30,6 +30,7 @@
 namespace block_poodllclassroom\local\form;
 
 use \block_poodllclassroom\constants;
+use \block_poodllclassroom\common;
 
 require_once($CFG->dirroot.'/lib/formslib.php');
 
@@ -66,6 +67,16 @@ class editplanform extends \moodleform {
 
         $mform->addElement('text', 'upstreamplan', get_string('upstreamplan', constants::M_COMP), array());
         $mform->setType('upstreamplan', PARAM_TEXT);
+
+        $options = common::fetch_billingintervals();
+        $mform->addElement('select', 'billinginterval', get_string('billinginterval', constants::M_COMP), $options);
+        $mform->setType('billinginterval', PARAM_INT);
+
+        $mform->addElement('text', 'price', get_string('price', constants::M_COMP), array());
+        $mform->setType('price', PARAM_INT);
+
+        $mform->addElement('text', 'description', get_string('description', constants::M_COMP), array());
+        $mform->setType('description', PARAM_TEXT);
 
 
         //add the action buttons

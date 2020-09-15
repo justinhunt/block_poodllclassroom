@@ -115,13 +115,18 @@ if ($editform->is_cancelled()){
     switch($type){
         case 'plan':
             if (!$data->id) {
+                $data->timemodified=time();
                 $result=$DB->insert_record(constants::M_TABLE_PLANS,$data);
             } else {
                 $updatedata = array('id'=>$data->id,'name'=>$data->name,
                         'maxusers'=>$data->maxusers,
                         'maxcourses'=>$data->maxcourses,
                         'features'=>$data->features,
-                        'upstreamplan'=>$data->upstreamplan);
+                        'billinginterval'=>$data->billinginterval,
+                        'price'=>$data->price,
+                        'description'=>$data->description,
+                        'upstreamplan'=>$data->upstreamplan,
+                        'timemodified'=>time());
                 $result=$DB->update_record(constants::M_TABLE_PLANS,$updatedata);
             }
             break;

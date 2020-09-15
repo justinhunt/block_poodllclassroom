@@ -63,6 +63,28 @@ function xmldb_block_poodllclassroom_upgrade($oldversion) {
 
     }
 
+    if ($oldversion < 2020091500) {
+
+        $table = new xmldb_table(constants::M_TABLE_PLANS);
+        $fields=[];
+        $fields[] = new xmldb_field('billinginterval',
+                XMLDB_TYPE_INTEGER, '4', null, null, null, 0);
+        $fields[] = new xmldb_field('price',
+                XMLDB_TYPE_INTEGER, '4', null, null, null, 0);
+        $fields[] = new xmldb_field('description',
+                XMLDB_TYPE_TEXT, null, null, null, null, '');
+
+        foreach($fields as $field) {
+            if (!$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
+        }
+
+        // savepoint reached.
+        upgrade_plugin_savepoint(true, 2020091500, 'block',constants::M_NAME);
+
+    }
+
 
 
     return true;

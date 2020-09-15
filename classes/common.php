@@ -812,6 +812,11 @@ class common
         return $ret;
     }
 
+    public static function fetch_billingintervals(){
+        return array(constants::M_BILLING_YEARLY=>get_string('yearly',constants::M_COMP),
+                constants::M_BILLING_MONTHLY=>get_string('monthly',constants::M_COMP));
+    }
+
 
     public static function fetch_company_course($companyid,$courseid){
         global $CFG,$DB;
@@ -877,27 +882,6 @@ class common
     public static function get_poodllschool_by_currentuser(){
         global $DB,$USER;
         return $DB->get_record(constants::M_TABLE_SCHOOLS,array('ownerid'=>$USER->id));
-    }
-
-    public static function get_portalurl_by_school($school){
-        global $CFG;
-        $customerid = $school->upstreamownerid;
-        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
-        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
-
-        if($customerid && !empty($apikey) && !empty($siteprefix)){
-            $url = "https://$siteprefix.chargebee.com/api/v2/portal_sessions";
-            $postdata=[];
-            $postdata['redirect_url'] = $CFG->wwwroot . '/my';
-            $postdata['customer']= array("id" => $customerid);
-            $curlresult = self::curl_fetch($url,$postdata,$apikey);
-            $jsonresult = self::make_object_from_json($curlresult);
-            if($jsonresult){
-                $portalurl = $jsonresult->portal_session->access_url;
-                if($portalurl && !empty($portalurl)){return $portalurl;}
-            }
-        }
-        return false;
     }
 
     public static function get_poodllschool_by_upstreamsubid($upstreamsubid){
@@ -998,6 +982,13 @@ class common
         return $newplan;
     }
 
+    public static function get_schoolname_by_school($school){
+        global $DB;
+        $name = $DB->get_field('company','name',array('id'=>$school->companyid));
+        return $name;
+
+    }
+
     public static function curl_fetch($url, $postdata = false, $username='') {
         global $CFG;
 
@@ -1035,9 +1026,31 @@ class common
                 constants::M_INTEGRATION_CLOUDPOODLL=>'Poodll CLOUD');
     }
 
-    public static function get_checkout_existing(){
+    public static function get_portalurl_by_school($school){
+        global $CFG;
+        $customerid = $school->upstreamownerid;
+        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
+        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
+
+        if($customerid && !empty($apikey) && !empty($siteprefix)){
+            $url = "https://$siteprefix.chargebee.com/api/v2/portal_sessions";
+            $postdata=[];
+            $postdata['redirect_url'] = $CFG->wwwroot . '/my';
+            $postdata['customer']= array("id" => $customerid);
+            $curlresult = self::curl_fetch($url,$postdata,$apikey);
+            $jsonresult = self::make_object_from_json($curlresult);
+            if($jsonresult){
+                $portalurl = $jsonresult->portal_session->access_url;
+                if($portalurl && !empty($portalurl)){return $portalurl;}
+            }
+        }
+        return false;
+    }
+
+    public static function get_checkout_existing($planid){
         global $USER, $CFG;
         $school = self::get_poodllschool_by_currentuser();
+        $schoolname=self::get_schoolname_by_school($school);
         $customerid = $school->upstreamownerid;
         $apikey = get_config(constants::M_COMP,'chargebeeapikey');
         $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
@@ -1045,7 +1058,13 @@ class common
         if($customerid && !empty($apikey) && !empty($siteprefix)){
             $url = "https://$siteprefix.chargebee.com/api/v2/hosted_pages/checkout_existing";
             $postdata=[];
-            $postdata['subscription']= array("id" => $school->upstreamsubid);
+            $postdata['redirect_url'] = $CFG->wwwroot . '/my';
+            $postdata['cancel_url'] = $CFG->wwwroot . '/my';
+            $postdata['subscription']= array(
+                    "id" => $school->upstreamsubid,
+                    "plan_id" => $planid,
+                    "cf_school_name"=>$school->$schoolname,
+                    );
             $curlresult = self::curl_fetch($url,$postdata,$apikey);
             $jsonresult = self::make_object_from_json($curlresult);
             if($jsonresult){

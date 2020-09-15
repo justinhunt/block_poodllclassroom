@@ -441,18 +441,24 @@ class block_poodllclassroom_external extends external_api {
     //------------ get_checkout_existing ---------------//
     public static function get_checkout_existing_parameters() {
         return new external_function_parameters(
-                array()
+                array(
+                  'planid' => new external_value(PARAM_INT, 'The change-to plan id for this subscripton')
+                )
         );
     }
 
-    public static function get_checkout_existing() {
+    public static function get_checkout_existing($planid) {
 
         // Get/check context/capability
         $context = \context_system::instance();
         self::validate_context($context);
         require_capability('block/poodllclassroom:managepoodllclassroom', $context);
 
-        $hosted_page = common::get_checkout_existing();
+        // We always must pass webservice params through validate_parameters.
+        $params = self::validate_parameters(self::get_checkout_existing_parameters(),
+                ['planid' => $planid]);
+
+        $hosted_page = common::get_checkout_existing($params['planid']);
         if($hosted_page){
             $ret =$hosted_page->hosted_page;
         }else{
@@ -465,16 +471,16 @@ class block_poodllclassroom_external extends external_api {
 
        // return new external_value(PARAM_RAW);
         return new external_single_structure([
-                'created_at' => new external_value(PARAM_INT, 'school id'),
-                'embed' => new external_value(PARAM_BOOL, 'user id' ),
-                'expires_at' => new external_value(PARAM_INT, 'school id'),
-                'id' => new external_value(PARAM_TEXT, 'user name'),
-                'object' => new external_value(PARAM_TEXT, 'error message'),
-                'resource_version' => new external_value(PARAM_INT, 'school id'),
-                'state' => new external_value(PARAM_TEXT, 'user name'),
-                'type' => new external_value(PARAM_TEXT, 'user name'),
-                'updated_at' => new external_value(PARAM_INT, 'school id'),
-                'url' => new external_value(PARAM_TEXT, 'user name'),
+                'created_at' => new external_value(PARAM_INT, 'created at'),
+                'embed' => new external_value(PARAM_BOOL, 'embed' ),
+                'expires_at' => new external_value(PARAM_INT, 'expires at'),
+                'id' => new external_value(PARAM_TEXT, 'id'),
+                'object' => new external_value(PARAM_TEXT, 'object'),
+                'resource_version' => new external_value(PARAM_INT, 'resource version'),
+                'state' => new external_value(PARAM_TEXT, 'state'),
+                'type' => new external_value(PARAM_TEXT, 'type'),
+                'updated_at' => new external_value(PARAM_INT, 'updated at'),
+                'url' => new external_value(PARAM_TEXT, 'url'),
         ]);
     }
 }

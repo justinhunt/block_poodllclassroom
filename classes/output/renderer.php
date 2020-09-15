@@ -86,6 +86,13 @@ class renderer extends \plugin_renderer_base {
 
     function create_changeplan_button(){
 
+        // we need to call amd setupdatelink for each upgrade button with classname and planid
+
+
+
+
+
+
         //here we set up any info we need to pass into javascript
         $opts =Array();
         $opts['siteprefix']= get_config(constants::M_COMP,'chargebeesiteprefix');
@@ -284,6 +291,7 @@ class renderer extends \plugin_renderer_base {
         //add sub button
         $addbutton = $this->fetch_addplan_button();
 
+        $billingintervals = common::fetch_billingintervals();
         $data = array();
         foreach($plans as $plan) {
             $fields = array();
@@ -292,6 +300,9 @@ class renderer extends \plugin_renderer_base {
             $fields[] = $plan->maxusers;
             $fields[] = $plan->maxcourses;
             $fields[] = $plan->features;
+            $fields[] = $billingintervals[$plan->billinginterval];
+            $fields[] = $plan->price;
+            $fields[] = $plan->description;
             $fields[] = $plan->upstreamplan;
 
             $buttons = array();
@@ -320,6 +331,9 @@ class renderer extends \plugin_renderer_base {
                 get_string('maxcourses', constants::M_COMP),
                 get_string('features', constants::M_COMP),
                 get_string('upstreamplan', constants::M_COMP),
+                get_string('billinginterval', constants::M_COMP),
+                get_string('price', constants::M_COMP),
+                get_string('description', constants::M_COMP),
                 get_string('action'));
         $table->colclasses = array('leftalign name', 'leftalign size','centeralign action');
 

@@ -45,4 +45,7 @@ const M_TABLE_SCHOOLS = 'block_poodllclassroom_school';
 const M_INTEGRATION_POODLLNET = 'poodllnet';
 const M_INTEGRATION_CLOUDPOODLL = 'cloudpoodll';
 
+const M_BILLING_YEARLY = 0;
+const M_BILLING_MONTHLY = 1;
+
 }
