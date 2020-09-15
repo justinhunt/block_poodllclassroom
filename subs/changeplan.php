@@ -55,17 +55,9 @@ if(!$ok){
 }
 
 
-//get subscription details
-$school = common::get_poodllschool_by_currentuser();
-if($school) {
-    $portalurl = common::get_portalurl_by_school($school);
-    if($portalurl){
-        redirect($portalurl,get_string('sendingtoportal',constants::M_COMP));
-    }
-}
 
 //if we get to here there was an issue and user could not be sent to portal
 echo $renderer->header();
 echo $renderer->heading($SITE->fullname);
-echo  get_string('couldnotsendtoportal', constants::M_COMP);
+echo $renderer->fetch_changeplan_buttons();
 echo $renderer->footer();

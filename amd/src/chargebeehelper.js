@@ -7,21 +7,24 @@ define(['jquery','core/log','core/ajax'], function($, log, ajax) {
     return {
 
         instanceprops: null,
+        changeplanclass: '',
         siteprefix: '',
 
         //pass in config, and register any events
         init: function(props){
             log.debug(props);
             this.instanceprops=props;
+            this.changeplanclass=props.changeplanclass;
             this.siteprefix=props.siteprefix;
+            this.setuplinks();
         },
 
-        setupdatelink: function(elementselector, planid) {
+        setuplinks: function() {
             var that = this;
 
             $.getScript('https://js.chargebee.com/v2/chargebee.js', function(){
                 var chargebee = Chargebee.init({'site': that.siteprefix});
-                $("." + elementselector).on("click", function() {
+                $("." + that.changeplanclass).on("click", function() {
                     event.preventDefault();
                     chargebee.openCheckout({
                         hostedPage: function() {
@@ -32,7 +35,7 @@ define(['jquery','core/log','core/ajax'], function($, log, ajax) {
                             // Now we can continue...
                             var promises = ajax.call([{
                                 methodname: 'block_poodllclassroom_get_checkout_existing',
-                                args: {planid: planid}
+                                args: {planid: $(this).data('planid')}
                             }]);
                             return promises[0];
                         },
@@ -59,6 +62,9 @@ define(['jquery','core/log','core/ajax'], function($, log, ajax) {
                 });//on click
 
             });//end of get script
+
+
+
         }//end of reg events
     };//end of returned object
 });//total end

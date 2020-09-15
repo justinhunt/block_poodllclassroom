@@ -54,6 +54,10 @@ class editplanform extends \moodleform {
         $mform->setType('name', PARAM_TEXT);
         $mform->addRule('name', get_string('required'), 'required', null, 'client');
 
+        $options = common::fetch_billingintervals();
+        $mform->addElement('select', 'billinginterval', get_string('billinginterval', constants::M_COMP), $options);
+        $mform->setType('billinginterval', PARAM_INT);
+
         $mform->addElement('text', 'maxusers', get_string('maxusers', constants::M_COMP), array());
         $mform->setType('maxusers', PARAM_INT);
         $mform->addRule('maxusers', get_string('required'), 'required', null, 'client');
@@ -67,10 +71,6 @@ class editplanform extends \moodleform {
 
         $mform->addElement('text', 'upstreamplan', get_string('upstreamplan', constants::M_COMP), array());
         $mform->setType('upstreamplan', PARAM_TEXT);
-
-        $options = common::fetch_billingintervals();
-        $mform->addElement('select', 'billinginterval', get_string('billinginterval', constants::M_COMP), $options);
-        $mform->setType('billinginterval', PARAM_INT);
 
         $mform->addElement('text', 'price', get_string('price', constants::M_COMP), array());
         $mform->setType('price', PARAM_TEXT);

@@ -84,14 +84,30 @@ class renderer extends \plugin_renderer_base {
 
     }
 
+
+    function fetch_changeplan_buttons(){
+
+        //get plans
+        $billingintervals = common::fetch_billingintervals();
+        $plans=common::fetch_plans();
+        foreach($plans as $plan) {
+            $plan->billingintervalname=$billingintervals[$plan->billinginterval];
+        }
+
+        //here we set up any info we need to pass into javascript
+        $opts =Array();
+        $opts['siteprefix']= get_config(constants::M_COMP,'chargebeesiteprefix');
+        $opts['changeplanclass']=constants::M_COMP . '_changeplan';
+        $this->page->requires->js_call_amd(constants::M_COMP . "/chargebeehelper", 'init', array($opts));
+
+        $data =array();
+        $data['plans']=(array)$plans;
+        return $this->render_from_template('block_poodllclassroom/upgradecontainer', $data);
+
+    }
+
+
     function create_changeplan_button(){
-
-        // we need to call amd setupdatelink for each upgrade button with classname and planid
-
-
-
-
-
 
         //here we set up any info we need to pass into javascript
         $opts =Array();
@@ -297,11 +313,11 @@ class renderer extends \plugin_renderer_base {
             $fields = array();
             $fields[] = $plan->id;
             $fields[] = $plan->name;
+            $fields[] = $billingintervals[$plan->billinginterval];
             $fields[] = $plan->maxusers;
             $fields[] = $plan->maxcourses;
             $fields[] = $plan->features;
             $fields[] = $plan->upstreamplan;
-            $fields[] = $billingintervals[$plan->billinginterval];
             $fields[] = $plan->price;
             $fields[] = $plan->description;
 
@@ -327,11 +343,11 @@ class renderer extends \plugin_renderer_base {
         $table = new \html_table();
         $table->head  = array(get_string('id', constants::M_COMP),
                 get_string('planname', constants::M_COMP),
+                get_string('billinginterval', constants::M_COMP),
                 get_string('maxusers', constants::M_COMP),
                 get_string('maxcourses', constants::M_COMP),
                 get_string('features', constants::M_COMP),
                 get_string('upstreamplan', constants::M_COMP),
-                get_string('billinginterval', constants::M_COMP),
                 get_string('price', constants::M_COMP),
                 get_string('description', constants::M_COMP),
                 get_string('action'));
@@ -354,6 +370,7 @@ class renderer extends \plugin_renderer_base {
         $params=[];
         $baseurl = new \moodle_url(constants::M_URL . '/subs/subs.php', $params);
         $plans = common::fetch_plans();
+        $billingintervals = common::fetch_billingintervals();
 
         $data = array();
         foreach($schools as $school) {
@@ -361,7 +378,7 @@ class renderer extends \plugin_renderer_base {
             $fields[] = $school->id;
             $fields[] = $school->schoolname . "($school->companyid)";
             $fields[] = $school->ownerfirstname . ' ' . $school->ownerlastname . "($school->ownerid)";
-            $fields[] = $plans[$school->planid]->name  . "($school->planid)";
+            $fields[] = $plans[$school->planid]->name  . "($school->planid) " . $billingintervals[$plans[$school->planid]->billinginterval];
             $fields[] = $school->status;
             $fields[] = $school->upstreamsubid;
             $fields[] = $school->upstreamownerid;
