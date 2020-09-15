@@ -90,7 +90,7 @@ class renderer extends \plugin_renderer_base {
         //get plans
         $billingintervals = common::fetch_billingintervals();
         $plans=common::fetch_plans();
-        $useplans = []
+        $useplans = [];
         foreach($plans as $plan) {
             $plan->billingintervalname=$billingintervals[$plan->billinginterval];
             $useplans[] = array($plan);
