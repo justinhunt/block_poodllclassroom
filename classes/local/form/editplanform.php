@@ -73,7 +73,7 @@ class editplanform extends \moodleform {
         $mform->setType('billinginterval', PARAM_INT);
 
         $mform->addElement('text', 'price', get_string('price', constants::M_COMP), array());
-        $mform->setType('price', PARAM_INT);
+        $mform->setType('price', PARAM_TEXT);
 
         $mform->addElement('text', 'description', get_string('description', constants::M_COMP), array());
         $mform->setType('description', PARAM_TEXT);

@@ -70,9 +70,9 @@ function xmldb_block_poodllclassroom_upgrade($oldversion) {
         $fields[] = new xmldb_field('billinginterval',
                 XMLDB_TYPE_INTEGER, '4', null, null, null, 0);
         $fields[] = new xmldb_field('price',
-                XMLDB_TYPE_INTEGER, '4', null, null, null, 0);
+                XMLDB_TYPE_CHAR, '255', null, null, null, '0');
         $fields[] = new xmldb_field('description',
-                XMLDB_TYPE_TEXT, null, null, null, null, '');
+                XMLDB_TYPE_TEXT, null, null, null, null, null);
 
         foreach($fields as $field) {
             if (!$dbman->field_exists($table, $field)) {

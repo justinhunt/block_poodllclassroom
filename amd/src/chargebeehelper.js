@@ -22,7 +22,6 @@ define(['jquery','core/log','core/ajax'], function($, log, ajax) {
             $.getScript('https://js.chargebee.com/v2/chargebee.js', function(){
                 var chargebee = Chargebee.init({'site': that.siteprefix});
                 $("." + elementselector).on("click", function() {
-                    log.debug('hello');
                     event.preventDefault();
                     chargebee.openCheckout({
                         hostedPage: function() {

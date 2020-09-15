@@ -12,7 +12,7 @@
         <FIELD NAME="maxcourses" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="max courses in plan"/>
         <FIELD NAME="features" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Sub features. Stored as text but can be interpreted by the plugin however it likes."/>
         <FIELD NAME="billinginterval" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="billing interval"/>
-        <FIELD NAME="price" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="price in usd of plan"/>
+        <FIELD NAME="price" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="true" DEFAULT="-" SEQUENCE="false"  COMMENT="price in usd of plan"/>
         <FIELD NAME="description" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Short description of plan."/>
         <FIELD NAME="upstreamplan" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="true" DEFAULT="-" SEQUENCE="false" COMMENT="the key that links plan with gateway plan"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false"/>

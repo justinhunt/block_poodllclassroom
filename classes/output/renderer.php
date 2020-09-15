@@ -300,10 +300,10 @@ class renderer extends \plugin_renderer_base {
             $fields[] = $plan->maxusers;
             $fields[] = $plan->maxcourses;
             $fields[] = $plan->features;
+            $fields[] = $plan->upstreamplan;
             $fields[] = $billingintervals[$plan->billinginterval];
             $fields[] = $plan->price;
             $fields[] = $plan->description;
-            $fields[] = $plan->upstreamplan;
 
             $buttons = array();
 
