@@ -93,7 +93,7 @@ class renderer extends \plugin_renderer_base {
         $useplans = [];
         foreach($plans as $plan) {
             $plan->billingintervalname=$billingintervals[$plan->billinginterval];
-            $useplans[] = array($plan);
+            $useplans[] = $plan;//array($plan);
         }
 
         //here we set up any info we need to pass into javascript
