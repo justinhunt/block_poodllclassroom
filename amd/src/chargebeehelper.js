@@ -35,7 +35,7 @@ define(['jquery','core/log','core/ajax'], function($, log, ajax) {
                             // Now we can continue...
                             var promises = ajax.call([{
                                 methodname: 'block_poodllclassroom_get_checkout_existing',
-                                args: {planid: $(this).data('planid')}
+                                args: {planid: this.data('planid')}
                             }]);
                             return promises[0];
                         },
