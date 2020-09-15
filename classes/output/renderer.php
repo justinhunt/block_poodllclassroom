@@ -90,8 +90,10 @@ class renderer extends \plugin_renderer_base {
         //get plans
         $billingintervals = common::fetch_billingintervals();
         $plans=common::fetch_plans();
+        $useplans = []
         foreach($plans as $plan) {
             $plan->billingintervalname=$billingintervals[$plan->billinginterval];
+            $useplans[] = array($plan);
         }
 
         //here we set up any info we need to pass into javascript
@@ -101,7 +103,7 @@ class renderer extends \plugin_renderer_base {
         $this->page->requires->js_call_amd(constants::M_COMP . "/chargebeehelper", 'init', array($opts));
 
         $data =array();
-        $data['plans']=(array)$plans;
+        $data['plans']=$useplans;
         return $this->render_from_template('block_poodllclassroom/upgradecontainer', $data);
 
     }
