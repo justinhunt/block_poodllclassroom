@@ -50,7 +50,7 @@ class renderer extends \plugin_renderer_base {
         $mysublink = $this->create_editmysub_button();
 
         //changeplan link
-        $changeplanlink = $this->create_changeplan_button();
+        $changeplanlink = $this->fetch_gotochangeplan_button();
         //mysublink + createcoursebutton
 
         //mysublink + createcoursebutton
@@ -144,16 +144,11 @@ class renderer extends \plugin_renderer_base {
     }
 
 
-    function create_changeplan_button(){
+    function fetch_gotochangeplan_button(){
+    global $CFG;
 
-        //here we set up any info we need to pass into javascript
-        $opts =Array();
-        $opts['siteprefix']= get_config(constants::M_COMP,'chargebeesiteprefix');
-        $opts['changeplanclass']=constants::M_COMP . '_changeplan';
-        $this->page->requires->js_call_amd(constants::M_COMP . "/chargebeehelper", 'init', array($opts));
-
-        $link = \html_writer::link('#',get_string('changeplan',constants::M_COMP),
-                array('class' => 'btn btn-secondary ' .  $opts['changeplanclass']));
+        $link = \html_writer::link($CFG->wwwroot . '/subs/changeplan.php',get_string('changeplan',constants::M_COMP),
+                array('class' => 'btn btn-secondary '));
         return \html_writer::div($link,constants::M_COMP . '_changeplandiv');
 
     }
