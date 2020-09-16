@@ -165,5 +165,7 @@ $string['price'] = 'Price';
 $string['description'] = 'Description';
 $string['monthly'] = 'Monthly';
 $string['yearly'] = 'Yearly';
+$string['users'] = 'users';
+$string['courses'] = 'courses';
 $string['upgradeplanheader'] = 'Change Plan Options';
 
