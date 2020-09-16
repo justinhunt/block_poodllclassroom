@@ -13,7 +13,7 @@ define(['jquery','core/log','core/ajax'], function($, log, ajax) {
 
         //pass in config, and register any events
         init: function(props){
-            log.debug(props);
+            //log.debug(props);
             this.instanceprops=props;
             this.changeplanclass=props.changeplanclass;
             this.siteprefix=props.siteprefix;
@@ -32,6 +32,7 @@ define(['jquery','core/log','core/ajax'], function($, log, ajax) {
 
             //set up toggle button
             this.controls.togglebutton.on('click',function(){
+                event.preventDefault();
                 that.controls.monthlyplans.toggle();
                 that.controls.yearlyplans.toggle();
             });
