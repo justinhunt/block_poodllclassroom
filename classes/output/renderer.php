@@ -85,8 +85,8 @@ class renderer extends \plugin_renderer_base {
     }
 
     function fetch_changeplan_toppart() {
-        $ret = $this->output->heading(get_string('changeplans', constants::M_COMP),3);
-        $ret .= \html_writer::div(get_string(),constants::M_COMP . '_changeplaninstructions');
+        $ret = $this->output->heading(get_string('changeplan', constants::M_COMP),3);
+        $ret .= \html_writer::div(get_string('changeplaninstructions',constants::M_COMP),constants::M_COMP . '_changeplaninstructions');
         return $ret;
 
     }
