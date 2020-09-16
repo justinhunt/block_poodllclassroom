@@ -9,6 +9,7 @@ define(['jquery','core/log','core/ajax'], function($, log, ajax) {
         instanceprops: null,
         changeplanclass: '',
         siteprefix: '',
+        controls: {},
 
         //pass in config, and register any events
         init: function(props){
@@ -16,12 +17,26 @@ define(['jquery','core/log','core/ajax'], function($, log, ajax) {
             this.instanceprops=props;
             this.changeplanclass=props.changeplanclass;
             this.siteprefix=props.siteprefix;
-            this.setuplinks();
+            this.registercontrols();
+            this.registerevents();
         },
 
-        setuplinks: function() {
+        registercontrols: function(){
+            this.controls.togglebutton = $('a.monthlyyearly');
+            this.controls.monthlyplans = $('div.monthly');
+            this.controls.yearlyplans = $('div.yearly');
+        },
+
+        registerevents: function() {
             var that = this;
 
+            //set up toggle button
+            this.controls.togglebutton.on('click',function(){
+                that.controls.monthlyplans.toggle();
+                that.controls.yearlyplans.toggle();
+            });
+
+            //set up checkout links
             $.getScript('https://js.chargebee.com/v2/chargebee.js', function(){
                 var chargebee = Chargebee.init({'site': that.siteprefix});
                 $("." + that.changeplanclass).on("click", function() {

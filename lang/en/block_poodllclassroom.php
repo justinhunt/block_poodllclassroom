@@ -168,4 +168,6 @@ $string['yearly'] = 'Yearly';
 $string['users'] = 'users';
 $string['courses'] = 'courses';
 $string['upgradeplanheader'] = 'Change Plan Options';
+$string['monthlyyearly'] = 'Monthly <--> Yearly';
+
 

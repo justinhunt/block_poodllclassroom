@@ -1,9 +1,7 @@
 
-<div id="block_poodllclassroom_upgrades_cont" class="block_poodllclassroom_upgrades_cont" style="display: {{display}};">
-    <div class="center"><h4>{{#str}}upgradeplanheader, block_poodllclassroom{{/str}}</h4></div>
-    <div class="center">
+<div class="center"><h4>{{#str}}upgradeplanheader, block_poodllclassroom{{/str}}</h4></div>
+<div id="block_poodllclassroom_upgrades_cont" class="block_poodllclassroom_upgrades_cont center {{billinginterval}}" style="display: {{display}};">
         {{#plans}}
             {{> block_poodllclassroom/upgradetile}}
         {{/plans}}
-    </div>
 </div>

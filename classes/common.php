@@ -855,7 +855,7 @@ class common
     public static function fetch_plans(){
         global $DB;
 
-        $plans = $DB->get_records(constants::M_TABLE_PLANS,array()) ;
+        $plans = $DB->get_records(constants::M_TABLE_PLANS,array(),'price DESC') ;
         if($plans) {
             return $plans;
         }else{

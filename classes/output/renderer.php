@@ -90,10 +90,15 @@ class renderer extends \plugin_renderer_base {
         //get plans
         $billingintervals = common::fetch_billingintervals();
         $plans=common::fetch_plans();
-        $useplans = [];
+        $monthlyplans = [];
+        $yearlyplans = [];
         foreach($plans as $plan) {
             $plan->billingintervalname=$billingintervals[$plan->billinginterval];
-            $useplans[] = $plan;//array($plan);
+            if($plan->billinginterval ==constants::M_BILLING_MONTHLY) {
+                $monthlyplans[] = $plan;
+            }else {
+                $yearlyplans[] = $plan;
+            }
         }
 
         //here we set up any info we need to pass into javascript
@@ -102,9 +107,27 @@ class renderer extends \plugin_renderer_base {
         $opts['changeplanclass']=constants::M_COMP . '_changeplan';
         $this->page->requires->js_call_amd(constants::M_COMP . "/chargebeehelper", 'init', array($opts));
 
-        $data =array();
-        $data['plans']=$useplans;
-        return $this->render_from_template('block_poodllclassroom/upgradecontainer', $data);
+
+        //togglebutton
+        $togglebutton = \html_writer::link('#',get_string('monthlyyearly',constants::M_COMP),
+                array('class' => 'btn btn-secondary monthlyyearly' ));
+        $togglediv= \html_writer::div($togglebutton,constants::M_COMP . '_monthlyyearly');
+
+        //monthly plans
+        $mdata =array();
+        $mdata['plans']=$monthlyplans;
+        $mdata['display']='block';
+        $mdata['billinginterval']='monthly';
+        $monthly = $this->render_from_template('block_poodllclassroom/upgradecontainer', $mdata);
+
+        //yearly plans
+        $ydata =array();
+        $ydata['plans']=$yearlyplans;
+        $ydata['display']='none';
+        $ydata['billinginterval']='yearly';
+        $yearly = $this->render_from_template('block_poodllclassroom/upgradecontainer', $ydata);
+
+        return $togglediv . $monthly . $yearly;
 
     }
 
