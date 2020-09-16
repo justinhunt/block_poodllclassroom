@@ -26,6 +26,7 @@ define(['jquery','core/log','core/ajax'], function($, log, ajax) {
                 var chargebee = Chargebee.init({'site': that.siteprefix});
                 $("." + that.changeplanclass).on("click", function() {
                     event.preventDefault();
+                    var planid = $(this).data('planid');
                     chargebee.openCheckout({
                         hostedPage: function() {
                             // Hit your end point that returns hosted page object as response
@@ -35,7 +36,7 @@ define(['jquery','core/log','core/ajax'], function($, log, ajax) {
                             // Now we can continue...
                             var promises = ajax.call([{
                                 methodname: 'block_poodllclassroom_get_checkout_existing',
-                                args: {planid: this.data('planid')}
+                                args: {planid: planid}
                             }]);
                             return promises[0];
                         },
