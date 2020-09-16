@@ -84,16 +84,28 @@ class renderer extends \plugin_renderer_base {
 
     }
 
+    function fetch_changeplan_toppart() {
+        $ret = $this->output->heading(get_string('changeplans', constants::M_COMP),3);
+        $ret .= \html_writer::div(get_string(),constants::M_COMP . '_changeplaninstructions');
+        return $ret;
+
+    }
 
     function fetch_changeplan_buttons(){
 
         //get plans
         $billingintervals = common::fetch_billingintervals();
         $plans=common::fetch_plans();
+        $myschool = common::get_poodllschool_by_currentuser();
         $monthlyplans = [];
         $yearlyplans = [];
+        $showfirst = constants::M_BILLING_MONTHLY;
         foreach($plans as $plan) {
             $plan->billingintervalname=$billingintervals[$plan->billinginterval];
+            if($plan->id==$myschool->planid){
+                $plan->selected=true;
+                $showfirst = $plan->billinginterval;
+            }
             if($plan->billinginterval ==constants::M_BILLING_MONTHLY) {
                 $monthlyplans[] = $plan;
             }else {
@@ -116,14 +128,14 @@ class renderer extends \plugin_renderer_base {
         //monthly plans
         $mdata =array();
         $mdata['plans']=$monthlyplans;
-        $mdata['display']='block';
+        $mdata['display']=($showfirst==constants::M_BILLING_MONTHLY) ? 'block': 'none';
         $mdata['billinginterval']='monthly';
         $monthly = $this->render_from_template('block_poodllclassroom/upgradecontainer', $mdata);
 
         //yearly plans
         $ydata =array();
         $ydata['plans']=$yearlyplans;
-        $ydata['display']='none';
+        $ydata['display']=($showfirst==constants::M_BILLING_YEARLY) ? 'block': 'none';
         $ydata['billinginterval']='yearly';
         $yearly = $this->render_from_template('block_poodllclassroom/upgradecontainer', $ydata);
 

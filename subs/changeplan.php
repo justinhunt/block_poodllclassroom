@@ -59,5 +59,6 @@ if(!$ok){
 //if we get to here there was an issue and user could not be sent to portal
 echo $renderer->header();
 echo $renderer->heading($SITE->fullname);
+echo $renderer->fetch_changeplan_toppart();
 echo $renderer->fetch_changeplan_buttons();
 echo $renderer->footer();

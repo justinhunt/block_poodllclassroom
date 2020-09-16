@@ -884,6 +884,17 @@ class common
         return $DB->get_record(constants::M_TABLE_SCHOOLS,array('ownerid'=>$USER->id));
     }
 
+    public static function get_plan_by_currentuser(){
+        global $DB,$USER;
+        $school = $DB->get_record(constants::M_TABLE_SCHOOLS,array('ownerid'=>$USER->id));
+        if($school){
+            $plan = $DB->get_record(constants::M_TABLE_PLANS,array('id'=>$school->planid));
+            return $plan;
+        }else{
+            return false;
+        }
+    }
+
     public static function get_poodllschool_by_upstreamsubid($upstreamsubid){
         global $DB;
         return $DB->get_record(constants::M_TABLE_SCHOOLS,array('upstreamsubid'=>$upstreamsubid));
