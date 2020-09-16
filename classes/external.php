@@ -442,7 +442,7 @@ class block_poodllclassroom_external extends external_api {
     public static function get_checkout_existing_parameters() {
         return new external_function_parameters(
                 array(
-                  'planid' => new external_value(PARAM_INT, 'The change-to plan id for this subscripton')
+                  'planid' => new external_value(PARAM_TEXT, 'The change-to plan id for this subscripton')
                 )
         );
     }
