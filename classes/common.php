@@ -1063,7 +1063,7 @@ class common
             $postdata['subscription']= array(
                     "id" => $school->upstreamsubid,
                     "plan_id" => $planid,
-                    "cf_school_name"=>$school->$schoolname,
+                    "cf_school_name"=>$schoolname,
                     );
             $curlresult = self::curl_fetch($url,$postdata,$apikey);
             $jsonresult = self::make_object_from_json($curlresult);
