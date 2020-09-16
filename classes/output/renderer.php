@@ -50,7 +50,7 @@ class renderer extends \plugin_renderer_base {
         $mysublink = $this->create_editmysub_button();
 
         //changeplan link
-        $changeplanlink = $this->fetch_gotochangeplan_button();
+        $changeplanlink = $this->create_gotochangeplan_button();
         //mysublink + createcoursebutton
 
         //mysublink + createcoursebutton
@@ -144,7 +144,7 @@ class renderer extends \plugin_renderer_base {
     }
 
 
-    function fetch_gotochangeplan_button(){
+    function create_gotochangeplan_button(){
     global $CFG;
 
         $link = \html_writer::link($CFG->wwwroot . constants::M_URL . '/subs/changeplan.php',get_string('changeplan',constants::M_COMP),
@@ -154,10 +154,17 @@ class renderer extends \plugin_renderer_base {
     }
 
     function create_editmysub_button(){
+        global $CFG;
+        /*
         $urlparams =array();
         $link = \html_writer::link(new \moodle_url(constants::M_URL . '/subs/accessportal.php', $urlparams),
                 $this->output->pix_icon('t/edit', get_string('editmysub',constants::M_COMP)),
                 array('title' => get_string('editmysub',constants::M_COMP)));
+        return \html_writer::div($link,constants::M_COMP . '_editmysub');
+        */
+
+        $link = \html_writer::link($CFG->wwwroot . constants::M_URL . '/subs/accessportal.php',get_string('editmysub',constants::M_COMP),
+                array('class' => 'btn btn-secondary '));
         return \html_writer::div($link,constants::M_COMP . '_editmysub');
 
     }
