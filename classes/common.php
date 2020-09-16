@@ -942,6 +942,35 @@ class common
         return $ret;
     }
 
+    public static function reactivate_poodllschool($school){
+        global $DB;
+        $ret =false;
+        $owner = $DB->get_record('user',array('id'=>$school->ownerid));
+        if($owner) {
+            $ret = $DB->update_record('user', array('id' => $owner->id, 'suspended' => 0));
+            if($ret){
+                $ret = $DB->update_record(constants::M_TABLE_SCHOOLS,
+                        array('id' => $school->id, 'status' => 'active','timemodified'=>time()));
+            }
+        }
+        return $ret;
+    }
+
+    //TO DO what to do here?
+    public static function activate_poodllschool($school){
+        global $DB;
+        $ret =false;
+        $owner = $DB->get_record('user',array('id'=>$school->ownerid));
+        if($owner) {
+            $ret = $DB->update_record('user', array('id' => $owner->id, 'suspended' => 0));
+            if($ret){
+                $ret = $DB->update_record(constants::M_TABLE_SCHOOLS,
+                        array('id' => $school->id, 'status' => 'active','timemodified'=>time()));
+            }
+        }
+        return $ret;
+    }
+
     public static function cancel_poodllschool($school){
         global $DB;
         $ret =false;

@@ -78,5 +78,22 @@ $functions = array(
             'capabilities'=> 'block/poodllclassroom:manageintegration',
             'type'        => 'write',
             'ajax'        => true,
+    ),
+
+    'block_poodllclassroom_reactivate_sub' => array(
+            'classname'   => 'block_poodllclassroom_external',
+            'methodname'  => 'reactivate_sub',
+            'description' => 'reactivate sub',
+            'capabilities'=> 'block/poodllclassroom:manageintegration',
+            'type'        => 'write',
+            'ajax'        => true,
+    ),
+    'block_poodllclassroom_activate_sub' => array(
+            'classname'   => 'block_poodllclassroom_external',
+            'methodname'  => 'activate_sub',
+            'description' => 'activate sub',
+            'capabilities'=> 'block/poodllclassroom:manageintegration',
+            'type'        => 'write',
+            'ajax'        => true,
     )
 );

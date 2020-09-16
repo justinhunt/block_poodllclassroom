@@ -60,6 +60,48 @@ class iomadadaptor
         return $ret;
     }
 
+    public static function reactivate_sub($params) {
+        global $CFG, $SESSION, $DB, $USER;
+
+
+        //initialise return value
+        $ret = [];
+        $ret['error'] = false;
+        $ret['message'] = '';
+
+        //Get Poodll School and once its got, resume it
+        $poodllschool =common::get_poodllschool_by_upstreamsubid($params['upstreamsubid']);
+        if($poodllschool){
+            common::reactivate_poodllschool($poodllschool);
+            $ret['message'] = 'Subscription reactivated ok';
+        }else{
+            $ret['error'] = true;
+            $ret['message'] = 'No such Subscription  was found';
+        }
+        return $ret;
+    }
+
+    public static function activate_sub($params) {
+        global $CFG, $SESSION, $DB, $USER;
+
+
+        //initialise return value
+        $ret = [];
+        $ret['error'] = false;
+        $ret['message'] = '';
+
+        //Get Poodll School and once its got, resume it
+        $poodllschool =common::get_poodllschool_by_upstreamsubid($params['upstreamsubid']);
+        if($poodllschool){
+            common::activate_poodllschool($poodllschool);
+            $ret['message'] = 'Subscription activated ok';
+        }else{
+            $ret['error'] = true;
+            $ret['message'] = 'No such Subscription  was found';
+        }
+        return $ret;
+    }
+
     public static function pause_sub($params) {
         global $CFG, $SESSION, $DB, $USER;
 

@@ -128,6 +128,80 @@ class block_poodllclassroom_external extends external_api {
         ]);
     }
 
+    //------------ REACTIVATE SUB ---------------//
+    public static function reactivate_sub_parameters() {
+        return new external_function_parameters(
+                array(
+                        'upstreamplanid' => new external_value(PARAM_TEXT, 'upstreamplanid'),
+                        'upstreamownerid' => new external_value(PARAM_TEXT, 'upstreamownerid'),
+                        'upstreamsubid' => new external_value(PARAM_TEXT, 'upstreamsubid')
+
+                )
+        );
+    }
+
+    public static function reactivate_sub( $upstreamplanid, $upstreamownerid,$upstreamsubid) {
+        global $CFG, $SESSION, $DB, $USER;
+
+        // Get/check context/capability
+        $context = \context_system::instance();
+        self::validate_context($context);
+        require_capability('block/poodllclassroom:manageintegration', $context);
+
+        // We always must pass webservice params through validate_parameters.
+        $params = self::validate_parameters(self::reactivate_sub_parameters(),
+                ['upstreamplanid' => $upstreamplanid,
+                        'upstreamownerid' => $upstreamownerid,
+                        'upstreamsubid' => $upstreamsubid]);
+
+        $ret = iomadadaptor::reactivate_sub($params);
+
+    }
+
+    public static function reactivate_sub_returns() {
+        return new external_single_structure([
+                'message' => new external_value(PARAM_TEXT, 'error message'),
+                'error' => new external_value(PARAM_BOOL, 'error'),
+        ]);
+    }
+
+    //------------ ACTIVATE SUB ---------------//
+    public static function activate_sub_parameters() {
+        return new external_function_parameters(
+                array(
+                        'upstreamplanid' => new external_value(PARAM_TEXT, 'upstreamplanid'),
+                        'upstreamownerid' => new external_value(PARAM_TEXT, 'upstreamownerid'),
+                        'upstreamsubid' => new external_value(PARAM_TEXT, 'upstreamsubid')
+
+                )
+        );
+    }
+
+    public static function activate_sub( $upstreamplanid, $upstreamownerid,$upstreamsubid) {
+        global $CFG, $SESSION, $DB, $USER;
+
+        // Get/check context/capability
+        $context = \context_system::instance();
+        self::validate_context($context);
+        require_capability('block/poodllclassroom:manageintegration', $context);
+
+        // We always must pass webservice params through validate_parameters.
+        $params = self::validate_parameters(self::activate_sub_parameters(),
+                ['upstreamplanid' => $upstreamplanid,
+                        'upstreamownerid' => $upstreamownerid,
+                        'upstreamsubid' => $upstreamsubid]);
+
+        $ret = iomadadaptor::activate_sub($params);
+
+    }
+
+    public static function activate_sub_returns() {
+        return new external_single_structure([
+                'message' => new external_value(PARAM_TEXT, 'error message'),
+                'error' => new external_value(PARAM_BOOL, 'error'),
+        ]);
+    }
+
     //------------ UPDATE SUB ---------------//
     public static function update_sub_parameters() {
         return new external_function_parameters(
