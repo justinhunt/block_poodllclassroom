@@ -33,8 +33,8 @@ define(['jquery','core/log','core/ajax'], function($, log, ajax) {
             //set up toggle button
             this.controls.togglebutton.on('click',function(){
                 event.preventDefault();
-                that.controls.monthlyplans.toggle();
-                that.controls.yearlyplans.toggle();
+                that.controls.monthlyplans.toggleClass('block_poodllclassroom_hidden');
+                that.controls.yearlyplans.toggleClass('block_poodllclassroom_hidden');
             });
 
             //set up checkout links

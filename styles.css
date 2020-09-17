@@ -28,6 +28,13 @@
 .block_poodllclassroom_changeplan_cont {
     margin: 10px;
 }
+
+.block_poodllclassroom_flexbox {
+    display: flex;
+}
+.block_poodllclassroom_hidden {
+    display: none;
+}
 /*
 .d-row {
     display: -webkit-box;

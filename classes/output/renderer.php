@@ -133,14 +133,14 @@ class renderer extends \plugin_renderer_base {
         //monthly plans
         $mdata =array();
         $mdata['plans']=$monthlyplans;
-        $mdata['display']=($showfirst==constants::M_BILLING_MONTHLY) ? 'flex': 'none';
+        $mdata['display']=($showfirst==constants::M_BILLING_MONTHLY) ? 'block_poodllclassroom_hidden': '';
         $mdata['billinginterval']='monthly';
         $monthly = $this->render_from_template('block_poodllclassroom/upgradecontainer', $mdata);
 
         //yearly plans
         $ydata =array();
         $ydata['plans']=$yearlyplans;
-        $ydata['display']=($showfirst==constants::M_BILLING_YEARLY) ? 'flex': 'none';
+        $ydata['display']=($showfirst==constants::M_BILLING_YEARLY) ? 'block_poodllclassroom_hidden': '';
         $ydata['billinginterval']='yearly';
         $yearly = $this->render_from_template('block_poodllclassroom/upgradecontainer', $ydata);
 
