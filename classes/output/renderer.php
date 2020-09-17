@@ -97,6 +97,10 @@ class renderer extends \plugin_renderer_base {
         $billingintervals = common::fetch_billingintervals();
         $plans=common::fetch_plans();
         $myschool = common::get_poodllschool_by_currentuser();
+        if(!$myschool){
+            $ret =  \html_writer::div(get_string('youhavenosubscription',constants::M_COMP),constants::M_COMP . '_nosubscription');
+
+        }
         $monthlyplans = [];
         $yearlyplans = [];
         $showfirst = constants::M_BILLING_MONTHLY;

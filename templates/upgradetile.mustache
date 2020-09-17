@@ -5,6 +5,6 @@
     <div class="block_poodllclassroom_maxusers">{{maxusers}} {{#str}}users, block_poodllclassroom{{/str}}</div>
     <div class="block_poodllclassroom_maxusers">{{maxcourses}} {{#str}}courses, block_poodllclassroom{{/str}} </div>
     <div class="block_poodllclassroom_description">{{description}}</div>
-   <a href="#" class="block_poodllclassroom_changeplan" data-planid="{{upstreamplan}}">{{#str}}changeplan, block_poodllclassroom{{/str}}</a>
+   <a href="#" {{#selected}}disabled{{/selected}} class="btn btn-secondary block_poodllclassroom_changeplan" data-planid="{{upstreamplan}}">{{#str}}changeplan, block_poodllclassroom{{/str}}</a>
     <div class="block_poodllclassroom_currentplan">{{#selected}}{{#str}}yourcurrentplan, block_poodllclassroom{{/str}}{{/selected}}</div>
 </div>
