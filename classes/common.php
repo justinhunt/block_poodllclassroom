@@ -814,7 +814,8 @@ class common
 
     public static function fetch_billingintervals(){
         return array(constants::M_BILLING_YEARLY=>get_string('yearly',constants::M_COMP),
-                constants::M_BILLING_MONTHLY=>get_string('monthly',constants::M_COMP));
+                constants::M_BILLING_MONTHLY=>get_string('monthly',constants::M_COMP),
+                constants::M_BILLING_FREE=>get_string('free',constants::M_COMP));
     }
 
 
