@@ -42,21 +42,31 @@ class renderer extends \plugin_renderer_base {
         $createcoursebutton = $this->js_trigger_button('createcourse', true,
                 get_string('createcourse',constants::M_COMP), 'btn-primary');
 
-        //we attach an event to it. The event comes from a JS AMD module also in this plugin
-        $opts=array('modulecssclass' => 'block_poodllclassroom', 'contextid'=>$contextid,'tableid'=>$tableid);
-        $this->page->requires->js_call_amd(constants::M_COMP . "/blockcontroller", 'init', array($opts));
+        //This is all the info we pass to javascript
+        //we need to write it to html so we do not clog the JS. ( moodle complains  )
+        $schoolinfo = common::get_poodllschool_by_currentuser();
+        $schoolplan = common::get_plan_by_currentuser();
+        $blockopts=array('modulecssclass' => 'block_poodllclassroom',
+                'contextid'=>$contextid,
+                'tableid'=>$tableid,
+                'schoolinfo'=>$schoolinfo,
+                'schoolplan'=>$schoolplan);
+        $jsonstring = json_encode($blockopts);
+        $blockopts_html =
+                \html_writer::tag('input', '', array('id' => $propsid, 'type' => 'hidden', 'value' => $jsonstring));
+        // we tag the html element that we stashed the props in with an id, and just pass that id to js
+        //js will pull the props from DOM and recreate the props data object
+        $propsid = 'propsid_' . \html_writer::random_id();
+        $props = array('id'=>$propsid);
+        $this->page->requires->js_call_amd(constants::M_COMP . "/blockcontroller", 'init', array($props));
 
         //mysublink
         $mysublink = $this->create_editmysub_button();
 
         //changeplan link
         $changeplanlink = $this->create_gotochangeplan_button();
-        //mysublink + createcoursebutton
-
-        //mysublink + createcoursebutton
-        $content =  $changeplanlink .  $mysublink  . $createcoursebutton . '<br>';
-
-
+        //initialise content
+        $content =  $blockopts_html  . $changeplanlink .  $mysublink  . $createcoursebutton . '<br>';
 
         $visible=false;
         if($courses) {

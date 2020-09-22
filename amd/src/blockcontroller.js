@@ -10,12 +10,26 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
         modulecssclass: null,
         contextid: 0,
         strings: [],
+        schoolinfo: {},
 
 
         init: function(props){
-            this.modulecssclass = props.modulecssclass;
-            this.contextid = props.contextid;
-            this.tableid = props.tableid;
+            //pick up opts from html
+            var optscontrol = $(props.id).get(0);
+            if (optscontrol) {
+                var opts = JSON.parse(optscontrol.value);
+                $(optscontrol).remove();
+            } else {
+                //if there is no config we might as well give up
+                log.debug('Poodll classroom Controller: No config found on page. Giving up.');
+                return;
+            }
+
+            this.modulecssclass = opts.modulecssclass;
+            this.contextid = opts.contextid;
+            this.tableid = opts.tableid;
+            this.schoolinfo = opts.schoolinfo;
+            this.schoolplan = opts.schoolplan;
             this.prepare_html();
             this.register_events();
         },
@@ -60,7 +74,7 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
                 that.controls.nouserscontainer.hide();
                 that.controls.userscontainer.show();
                 //can we now add users where before we could not?
-                // that.check_user_count(that);
+                that.check_user_count(that);
             };
             var after_courseadd= function(item, itemid) {
                 log.debug('after course add');
@@ -73,10 +87,12 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
                         that.controls.coursescontainer.append($(html)[0]);
                     }
                 );
-                that.controls.nouserscontainer.hide();
-                that.controls.userscontainer.show();
+
+                //
+                that.controls.nocoursescontainer.hide();
+                that.controls.coursescontainer.show();
                 //can we now add users where before we could not?
-                // that.check_user_count(that);
+                that.check_user_count(that);
             };
             var after_useredit= function(item, itemid) {
                 var therow = '#' + that.modulecssclass + '_user_row_' + itemid;
@@ -101,7 +117,7 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
                     that.controls.coursescontainer.hide();
                 }
                 //can we now add courses where before we could not?
-                //that.check_course_count(that);
+                that.check_course_count(that);
             };
             var after_userdelete= function(itemid) {
                 log.debug('after user delete');
@@ -112,7 +128,7 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
                     that.controls.userscontainer.hide();
                 }
                 //can we now add users where before we could not?
-                // that.check_user_count(that);
+                that.check_user_count(that);
             };
 
             //form helper
@@ -126,6 +142,38 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
             mdh.init('.' + this.modulecssclass + '_userdeletelink', this.contextid, 'deleteuser',after_userdelete);
 
         }, //en of reg events
+
+        check_course_count: function(that){
+            var coursecount = $('.' + this.modulecssclass + '_courseitem').length;
+            if(this.schoolplan.maxcourses >= coursecount) {
+                this.set_enabled(this.createcoursestartbutton,false);
+            }else{
+                this.set_enabled(this.createcoursestartbutton,true);
+            }
+        },
+
+        check_user_count: function(that){
+            var usercount = $('.' + this.modulecssclass + '_user_row').length;
+            if(this.schoolplan.maxusers >= usercount) {
+                this.set_enabled(this.createuserstartbutton,false);
+            }else{
+                this.set_enabled(this.createuserstartbutton,true);
+            }
+        },
+
+        set_enabled: function (elem, enabled){
+            switch(enabled){
+                case true:
+                    elem.removeClass('disabled');
+                    elem.attr('aria-disabled','false');
+                    elem.attr('tabindex','0');
+                    break;
+                case false:
+                    elem.addClass('disabled');
+                    elem.attr('aria-disabled','true');
+                    elem.attr('tabindex','-1');
+            }
+        },
 
         format_date: function(timestamp) {
                 var d = new Date(timestamp * 1000);
