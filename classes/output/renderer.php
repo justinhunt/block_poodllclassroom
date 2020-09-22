@@ -108,9 +108,11 @@ class renderer extends \plugin_renderer_base {
         foreach($plans as $plan) {
             $plan->billingintervalname=$billingintervals[$plan->billinginterval];
             //if the users current plan, and its not free/monthly, then set the active display to yeif($plan->id==$myschool->planid){
-            $plan->selected=true;
-            if($plan->billinginterval == constants::M_BILLING_YEARLY) {
-                $showfirst = constants::M_BILLING_YEARLY;
+            if($plan->id == $myschool->planid) {
+                $plan->selected = true;
+                if ($plan->billinginterval == constants::M_BILLING_YEARLY) {
+                    $showfirst = constants::M_BILLING_YEARLY;
+                }
             }
 
             switch($plan->billinginterval){
