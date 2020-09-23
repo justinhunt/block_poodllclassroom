@@ -146,18 +146,18 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
         check_course_count: function(that){
             var coursecount = $('.' + this.modulecssclass + '_courseitem').length;
             if(this.schoolplan.maxcourses >= coursecount) {
-                this.set_enabled(this.createcoursestartbutton,false);
+                this.set_enabled(this.controls.createcoursestartbutton,false);
             }else{
-                this.set_enabled(this.createcoursestartbutton,true);
+                this.set_enabled(this.controls.createcoursestartbutton,true);
             }
         },
 
         check_user_count: function(that){
             var usercount = $('.' + this.modulecssclass + '_user_row').length;
             if(this.schoolplan.maxusers >= usercount) {
-                this.set_enabled(this.createuserstartbutton,false);
+                this.set_enabled(this.controls.createuserstartbutton,false);
             }else{
-                this.set_enabled(this.createuserstartbutton,true);
+                this.set_enabled(this.controls.createuserstartbutton,true);
             }
         },
 
