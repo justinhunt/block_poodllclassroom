@@ -17,6 +17,7 @@
 namespace block_poodllclassroom;
 
 use block_poodllclassroom\constants;
+use Matrix\Exception;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -399,7 +400,15 @@ class common
     }
 
     public static function delete_course_from_company($companyid, $courseid){
-       return \company::delete_course($companyid, $courseid);
+        ob_start();
+        $ret =false;
+        try{
+            $ret = \company::delete_course($companyid, $courseid);
+        }catch(\Exception $e){
+            error_log('Could not delete course');
+        }
+        ob_end_clean();
+        return $ret;
     }
 
     public static function remove_course_from_company($context,$companyid,$courseid){
