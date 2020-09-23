@@ -15,7 +15,7 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
 
         init: function(props){
             //pick up opts from html
-            var optscontrol = $(props.id).get(0);
+            var optscontrol = $('#' + props.id).get(0);
             if (optscontrol) {
                 var opts = JSON.parse(optscontrol.value);
                 $(optscontrol).remove();
