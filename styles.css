@@ -35,6 +35,9 @@
 .block_poodllclassroom_hidden {
     display: none;
 }
+.block_poodllclassroom_courseitem {
+    margin: 10px;
+}
 /*
 .d-row {
     display: -webkit-box;
