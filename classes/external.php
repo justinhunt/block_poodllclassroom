@@ -325,7 +325,8 @@ class block_poodllclassroom_external extends external_api {
                 break;
 
             case constants::FORM_DELETECOURSE:
-              $result =  common::remove_course_from_company($context,$companyid,$itemid);
+              //$result =  common::remove_course_from_company($context,$companyid,$itemid);
+                $result =  common::delete_course_from_company($companyid,$itemid);
               break;
         }
 

@@ -248,9 +248,8 @@ class renderer extends \plugin_renderer_base {
 
     function create_course_list($courses,$visible){
         global $CFG;
-
         $data = [];
-        $data['display'] = $visible ? 'block' : 'none';
+        $data['display'] = $visible ? '' : 'block_poodllclassroom_hidden';
         $data['courses']=[];
         //loop through the items,massage data and add to table
         //itemname itemid,filename,itemdate, id
@@ -271,7 +270,7 @@ class renderer extends \plugin_renderer_base {
      */
     public function no_courses($visible){
         $data=[];
-        $data['display'] = $visible ? 'block' : 'none';
+        $data['display'] = $visible ? '' : 'block_poodllclassroom_hidden';
         return $this->render_from_template('block_poodllclassroom/nocoursescontainer', $data);
     }
 

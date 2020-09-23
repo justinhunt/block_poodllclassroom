@@ -71,12 +71,13 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
                 templates.render('block_poodllclassroom/userlistrow',item).then(
                     function(html,js){
                         that.controls.theusertable.row.add($(html)[0]).draw();
+                        //can we now add users where before we could not?
+                        that.check_user_count();
                     }
                 );
                 that.controls.nouserscontainer.hide();
                 that.controls.userscontainer.show();
-                //can we now add users where before we could not?
-                that.check_user_count();
+
             };
             var after_courseadd= function(item, itemid) {
                 log.debug('after course add');
@@ -87,14 +88,14 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
                 templates.render('block_poodllclassroom/courseitem',item).then(
                     function(html,js){
                         that.controls.coursescontainer.append($(html)[0]);
+                        //can we now add users where before we could not?
+                        that.check_course_count();
                     }
                 );
 
-                //
-                that.controls.nocoursescontainer.hide();
-                that.controls.coursescontainer.show();
-                //can we now add users where before we could not?
-                that.check_course_count();
+                that.controls.nocoursescontainer.addClass('block_poodllclassroom_hidden');
+                that.controls.coursescontainer.removeClass('block_poodllclassroom_hidden');
+
             };
             var after_useredit= function(item, itemid) {
                 var therow = '#' + that.modulecssclass + '_user_row_' + itemid;
@@ -115,8 +116,8 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
                 $('#' + that.modulecssclass + '_courseitem_' + itemid).remove();
                 var itemcount = $('div.' + that.modulecssclass + '_courseitem').length;
                 if(!itemcount){
-                    that.controls.nocoursescontainer.show();
-                    that.controls.coursescontainer.hide();
+                    that.controls.nocoursescontainer.removeClass('block_poodllclassroom_hidden');
+                    that.controls.coursescontainer.addClass('block_poodllclassroom_hidden');
                 }
                 //can we now add courses where before we could not?
                 that.check_course_count();

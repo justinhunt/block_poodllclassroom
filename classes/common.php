@@ -398,6 +398,9 @@ class common
         return $companyid;
     }
 
+    public static function delete_course_from_company($companyid, $courseid){
+       return \company::delete_course($companyid, $courseid);
+    }
 
     public static function remove_course_from_company($context,$companyid,$courseid){
         global $DB;
