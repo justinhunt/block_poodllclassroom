@@ -52,11 +52,11 @@ class renderer extends \plugin_renderer_base {
                 'schoolinfo'=>$schoolinfo,
                 'schoolplan'=>$schoolplan);
         $jsonstring = json_encode($blockopts);
+        $propsid = 'propsid_' . \html_writer::random_id();
         $blockopts_html =
                 \html_writer::tag('input', '', array('id' => $propsid, 'type' => 'hidden', 'value' => $jsonstring));
         // we tag the html element that we stashed the props in with an id, and just pass that id to js
         //js will pull the props from DOM and recreate the props data object
-        $propsid = 'propsid_' . \html_writer::random_id();
         $props = array('id'=>$propsid);
         $this->page->requires->js_call_amd(constants::M_COMP . "/blockcontroller", 'init', array($props));
 
