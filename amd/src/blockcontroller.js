@@ -32,6 +32,8 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
             this.schoolplan = opts.schoolplan;
             this.prepare_html();
             this.register_events();
+            this.check_user_count();
+            this.check_course_count();
         },
 
         init_strings: function(){
@@ -74,7 +76,7 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
                 that.controls.nouserscontainer.hide();
                 that.controls.userscontainer.show();
                 //can we now add users where before we could not?
-                that.check_user_count(that);
+                that.check_user_count();
             };
             var after_courseadd= function(item, itemid) {
                 log.debug('after course add');
@@ -92,7 +94,7 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
                 that.controls.nocoursescontainer.hide();
                 that.controls.coursescontainer.show();
                 //can we now add users where before we could not?
-                that.check_user_count(that);
+                that.check_course_count();
             };
             var after_useredit= function(item, itemid) {
                 var therow = '#' + that.modulecssclass + '_user_row_' + itemid;
@@ -117,7 +119,7 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
                     that.controls.coursescontainer.hide();
                 }
                 //can we now add courses where before we could not?
-                that.check_course_count(that);
+                that.check_course_count();
             };
             var after_userdelete= function(itemid) {
                 log.debug('after user delete');
@@ -128,7 +130,7 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
                     that.controls.userscontainer.hide();
                 }
                 //can we now add users where before we could not?
-                that.check_user_count(that);
+                that.check_user_count();
             };
 
             //form helper
@@ -143,21 +145,21 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
 
         }, //en of reg events
 
-        check_course_count: function(that){
+        check_course_count: function(){
             var coursecount = $('.' + this.modulecssclass + '_courseitem').length;
-            if(this.schoolplan.maxcourses >= coursecount) {
-                this.set_enabled(this.controls.createcoursestartbutton,false);
-            }else{
+            if(this.schoolplan.maxcourses > coursecount) {
                 this.set_enabled(this.controls.createcoursestartbutton,true);
+            }else{
+                this.set_enabled(this.controls.createcoursestartbutton,false);
             }
         },
 
-        check_user_count: function(that){
+        check_user_count: function(){
             var usercount = $('.' + this.modulecssclass + '_user_row').length;
-            if(this.schoolplan.maxusers >= usercount) {
-                this.set_enabled(this.controls.createuserstartbutton,false);
-            }else{
+            if(this.schoolplan.maxusers > usercount) {
                 this.set_enabled(this.controls.createuserstartbutton,true);
+            }else{
+                this.set_enabled(this.controls.createuserstartbutton,false);
             }
         },
 

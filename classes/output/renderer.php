@@ -60,13 +60,17 @@ class renderer extends \plugin_renderer_base {
         $props = array('id'=>$propsid);
         $this->page->requires->js_call_amd(constants::M_COMP . "/blockcontroller", 'init', array($props));
 
-        //mysublink
+        //mysub link
         $mysublink = $this->create_editmysub_button();
 
         //changeplan link
         $changeplanlink = $this->create_gotochangeplan_button();
+
+        //editsubs link
+        $subslink = $this->create_editsubs_button();
+
         //initialise content
-        $content =  $blockopts_html  . $changeplanlink .  $mysublink  . $createcoursebutton . '<br>';
+        $content =  $blockopts_html  . $subslink . $changeplanlink .  $mysublink  . $createcoursebutton . '<br>';
 
         $visible=false;
         if($courses) {
@@ -180,15 +184,23 @@ class renderer extends \plugin_renderer_base {
 
     }
 
+    function create_editsubs_button(){
+        global $CFG;
+        $context = \context_system::instance();
+        $ok = has_capability('block/poodllclassroom:manageintegration', $context);
+        if($ok) {
+            $link = \html_writer::link($CFG->wwwroot . constants::M_URL . '/subs/subs.php',
+                    get_string('editsubs', constants::M_COMP),
+                    array('class' => 'btn btn-secondary '));
+        }else{
+            $link='';
+        }
+        return \html_writer::div($link,constants::M_COMP . '_editsubs');
+
+    }
+
     function create_editmysub_button(){
         global $CFG;
-        /*
-        $urlparams =array();
-        $link = \html_writer::link(new \moodle_url(constants::M_URL . '/subs/accessportal.php', $urlparams),
-                $this->output->pix_icon('t/edit', get_string('editmysub',constants::M_COMP)),
-                array('title' => get_string('editmysub',constants::M_COMP)));
-        return \html_writer::div($link,constants::M_COMP . '_editmysub');
-        */
 
         $link = \html_writer::link($CFG->wwwroot . constants::M_URL . '/subs/accessportal.php',get_string('editmysub',constants::M_COMP),
                 array('class' => 'btn btn-secondary '));
