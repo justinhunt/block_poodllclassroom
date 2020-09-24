@@ -43,6 +43,7 @@ class renderer extends \plugin_renderer_base {
         $createcoursebutton = $this->js_trigger_button('createcourse', true,
                 get_string('createcoursestart',constants::M_COMP), 'btn-primary');
 
+
         //This is all the info we pass to javascript
         //we need to write it to html so we do not clog the JS. ( moodle complains  )
         $schoolinfo = common::get_poodllschool_by_currentuser();
@@ -76,8 +77,14 @@ class renderer extends \plugin_renderer_base {
         $optionsdata['options']=$options;
         $optionsdropdown = $this->render_from_template('block_poodllclassroom/optionsdropdown', $optionsdata);
 
+        //max labels
+        $maxusers = $schoolplan ? $schoolplan->maxusers : 0;
+        $maxcourses = $schoolplan ? $schoolplan->maxcourses : 0;
+        $maxcourseslabel = get_string('maximumcourses',constants::M_COMP,$maxcourses);
+        $maxuserslabel = get_string('maximumusers',constants::M_COMP,$maxusers);
+
         //initialise content
-        $content =  $blockopts_html  . $optionsdropdown .  $createcoursebutton . '<br>';
+        $content =  $blockopts_html  . $optionsdropdown .  $createcoursebutton . $maxcourseslabel  . '<br>';
 
         $visible=false;
         if($courses) {
@@ -88,7 +95,7 @@ class renderer extends \plugin_renderer_base {
         $content .= $this->create_course_list($courses,$visible );
         $content .= $this->no_courses(!$visible);
 
-        $content .=  '<br>' . $createuserbutton . '<br>';
+        $content .=  '<br>' . $createuserbutton . $maxuserslabel . '<br>';
 
         $visible=false;
         if($users) {

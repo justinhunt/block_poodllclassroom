@@ -175,4 +175,6 @@ $string['yourcurrentplan'] = '* current plan *';
 $string['changeplaninstructions'] = 'Choose a subscription plan from the options below. Annual and monthly payment options can be selected. The prices shown are unadjusted prices. If your plan is an annual one, when selected the new plan\'s price will be adjusted to factor in the cost from now until the end of the original subscription period.' ;
 $string['youhavenosubscription'] = 'You do not have a subscription, so we can not change your plan.';
 $string['poodllclassroomoptions'] = 'Options';
+$string['maximumcourses'] = '<i>Maximum {$a} courses</i>';
+$string['maximumusers'] = '<i>Maximum {$a} users</i>';
 
