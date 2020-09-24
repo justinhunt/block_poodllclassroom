@@ -30,7 +30,7 @@ use block_poodllclassroom\common;
 class block_poodllclassroom extends block_base {
 
     function init() {
-        //    $this->title = get_string('pluginname', constants::M_COMP);
+            $this->title = get_string('pluginname', constants::M_COMP);
     }
 
     function get_content() {
