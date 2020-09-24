@@ -23,6 +23,7 @@ class renderer extends \plugin_renderer_base {
     }
 
     function fetch_block_content($context, $company,$users, $courses){
+        global $CFG;
 
         //userlist
         //if we have items, show em. Data tables will make it pretty
@@ -37,10 +38,10 @@ class renderer extends \plugin_renderer_base {
         $amodalcontainer = $this->fetch_modalcontainer($title,$content,$containertag);
 
         $createuserbutton = $this->js_trigger_button('createuser', true,
-                get_string('createuser',constants::M_COMP), 'btn-primary');
+                get_string('createuserstart',constants::M_COMP), 'btn-primary');
 
         $createcoursebutton = $this->js_trigger_button('createcourse', true,
-                get_string('createcourse',constants::M_COMP), 'btn-primary');
+                get_string('createcoursestart',constants::M_COMP), 'btn-primary');
 
         //This is all the info we pass to javascript
         //we need to write it to html so we do not clog the JS. ( moodle complains  )
@@ -60,14 +61,20 @@ class renderer extends \plugin_renderer_base {
         $props = array('id'=>$propsid);
         $this->page->requires->js_call_amd(constants::M_COMP . "/blockcontroller", 'init', array($props));
 
-        //mysub link
-        $mysublink = $this->create_editmysub_button();
-
-        //changeplan link
-        $changeplanlink = $this->create_gotochangeplan_button();
-
-        //editsubs link
-        $subslink = $this->create_editsubs_button();
+        //options thingy
+        $optionsdata=array();
+        $options=array();
+        $options[]=array('url'=>$CFG->wwwroot . '/blocks/poodllclassroom/subs/accessportal.php',
+                'label'=>get_string('edtmysub',constants::M_COMP));
+        $options[]=array('url'=>$CFG->wwwroot . '/blocks/poodllclassroom/subs/changeplan.php',
+                'label'=>get_string('changeplan',constants::M_COMP));
+        $context = \context_system::instance();
+        if(has_capability('block/poodllclassroom:manageintegration', $context)){
+            $options[]=array('url'=>$CFG->wwwroot . '/blocks/poodllclassroom/subs/subs.php',
+                    'label'=>get_string('editsubs',constants::M_COMP));
+        }
+        $optionsdata['options']=$options;
+        $this->render_from_template('block_poodllclassroom/optionsdropdown', $optionsdata);
 
         //initialise content
         $content =  $blockopts_html  . $subslink . $changeplanlink .  $mysublink  . $createcoursebutton . '<br>';
@@ -174,39 +181,6 @@ class renderer extends \plugin_renderer_base {
 
     }
 
-
-    function create_gotochangeplan_button(){
-    global $CFG;
-
-        $link = \html_writer::link($CFG->wwwroot . constants::M_URL . '/subs/changeplan.php',get_string('changeplan',constants::M_COMP),
-                array('class' => 'btn btn-secondary '));
-        return \html_writer::div($link,constants::M_COMP . '_changeplandiv');
-
-    }
-
-    function create_editsubs_button(){
-        global $CFG;
-        $context = \context_system::instance();
-        $ok = has_capability('block/poodllclassroom:manageintegration', $context);
-        if($ok) {
-            $link = \html_writer::link($CFG->wwwroot . constants::M_URL . '/subs/subs.php',
-                    get_string('editsubs', constants::M_COMP),
-                    array('class' => 'btn btn-secondary '));
-        }else{
-            $link='';
-        }
-        return \html_writer::div($link,constants::M_COMP . '_editsubs');
-
-    }
-
-    function create_editmysub_button(){
-        global $CFG;
-
-        $link = \html_writer::link($CFG->wwwroot . constants::M_URL . '/subs/accessportal.php',get_string('editmysub',constants::M_COMP),
-                array('class' => 'btn btn-secondary '));
-        return \html_writer::div($link,constants::M_COMP . '_editmysub');
-
-    }
 
 
     function create_user_list($users,$tableid,$visible){

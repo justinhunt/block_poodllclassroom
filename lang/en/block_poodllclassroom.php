@@ -88,7 +88,7 @@ $string['updatedsetting'] = 'Updated setting: {$a}';
 
 $string['createcourse'] = 'Create Course';
 $string['createcourse_mform'] = 'Create Course';
-$string['createcoursestart'] = 'Create Course [ + ]';
+$string['createcoursestart'] = '<i class="fa fa-plus" aria-hidden="true"></i> Course';
 $string['editcourse'] = 'Edit Course';
 $string['editcourse_mform'] = 'Edit Course';
 $string['close'] = 'Close';
@@ -99,7 +99,7 @@ $string['enroluser_mform'] = 'Enrol User';
 $string['createuser'] = 'Create User';
 $string['edituser']="Edit User";
 $string['createuser_mform'] = 'Create User';
-$string['createuserstart'] = 'Create User [ + ]';
+$string['createuserstart'] = '<i class="fa fa-plus" aria-hidden="true"></i> User';
 $string['nousersheader'] = 'No Users';
 $string['nousersinfo'] = 'You currently have no users.';
 $string['nocoursesheader'] = 'No Courses';
