@@ -29,7 +29,7 @@ class renderer extends \plugin_renderer_base {
         //if we have items, show em. Data tables will make it pretty
         //Prepare datatable(before header printed)
         $tableid = '' . constants::M_CLASS_USERLIST . '_' . '_opts_9999';
-        $this->setup_datatables($tableid);
+        $this->setup_datatables($tableid,count($users));
 
         $contextid = $context->id;
         $title = get_string('createcourse',constants::M_COMP);
@@ -255,7 +255,7 @@ class renderer extends \plugin_renderer_base {
         return $this->render_from_template('block_poodllclassroom/nocoursescontainer', $data);
     }
 
-    function setup_datatables($tableid){
+    function setup_datatables($tableid, $usercount=0){
         global $USER;
 
         $tableprops = array();
@@ -272,6 +272,11 @@ class renderer extends \plugin_renderer_base {
         $order = array();
         $order[0] =array(2, "desc");
         $tableprops['order']=$order;
+
+        if($usercount < 5){
+            $tableprops['searching']=false;
+            $tableprops['paging']=false;
+        }
 
         //here we set up any info we need to pass into javascript
         $opts =Array();
