@@ -30,13 +30,7 @@ use block_poodllclassroom\common;
 class block_poodllclassroom extends block_base {
 
     function init() {
-        $companyid = common::get_my_companyid($this->context);
-        if ($companyid) {
-           $company = new company($companyid);
-           $this->title = $company->get_name();
-        }else {
-            $this->title = get_string('pluginname', constants::M_COMP);
-        }
+        //    $this->title = get_string('pluginname', constants::M_COMP);
     }
 
     function get_content() {
@@ -81,7 +75,7 @@ class block_poodllclassroom extends block_base {
         $company = new company($companyid);
         $companyusers = common::fetch_company_users($companyid);
         $companycourses = common::fetch_company_courses($companyid);
-
+        $this->title = $company->get_name();
 
         $renderer = $this->page->get_renderer(constants::M_COMP);
         $this->content->text = $renderer->fetch_block_content($this->context, $company,$companyusers,$companycourses) ;
