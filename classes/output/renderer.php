@@ -74,10 +74,10 @@ class renderer extends \plugin_renderer_base {
                     'label'=>get_string('editsubs',constants::M_COMP));
         }
         $optionsdata['options']=$options;
-        $this->render_from_template('block_poodllclassroom/optionsdropdown', $optionsdata);
+        $optionsdropdown = $this->render_from_template('block_poodllclassroom/optionsdropdown', $optionsdata);
 
         //initialise content
-        $content =  $blockopts_html  . $subslink . $changeplanlink .  $mysublink  . $createcoursebutton . '<br>';
+        $content =  $blockopts_html  . $optionsdropdown .  $createcoursebutton . '<br>';
 
         $visible=false;
         if($courses) {
