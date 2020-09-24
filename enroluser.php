@@ -120,5 +120,11 @@ if ( $usersform->is_cancelled() ||
     }
     echo html_writer::end_tag('div');
 
+    //return to top button
+    $returnbutton = \html_writer::link('/my',get_string('returntotop',constants::M_COMP),
+            array('class' => 'btn btn-secondary' ));
+    $returndiv= \html_writer::div($returnbutton,constants::M_COMP . '_returntotop');
+    echo $returndiv;
+
     echo $output->footer();
 }

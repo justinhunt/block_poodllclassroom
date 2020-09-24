@@ -177,4 +177,5 @@ $string['youhavenosubscription'] = 'You do not have a subscription, so we can no
 $string['poodllclassroomoptions'] = 'Options';
 $string['maximumcourses'] = '<i>Maximum {$a} courses</i>';
 $string['maximumusers'] = '<i>Maximum {$a} users</i>';
+$string['returntotop'] = 'Return to Dashboard';
 
