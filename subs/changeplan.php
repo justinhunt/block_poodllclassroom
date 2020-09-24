@@ -43,7 +43,7 @@ $PAGE->navbar->add(get_string('pluginname', constants::M_COMP));
 
 //company name
 //Set the companyid
-$companyid = common::get_my_companyid($this->context);
+$companyid = common::get_my_companyid($context);
 if($companyid) {
     $company = new company($companyid);
     $companyname = $company->get_name();
