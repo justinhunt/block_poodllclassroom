@@ -84,28 +84,36 @@ class renderer extends \plugin_renderer_base {
         $maxuserslabel = get_string('maximumusers',constants::M_COMP,$maxusers);
 
         //initialise content
-        $content =  $blockopts_html  . $optionsdropdown .  $createcoursebutton . $maxcourseslabel  . '<br>';
+        $content =  $blockopts_html  . $optionsdropdown;
 
-        $visible=false;
+        //courses section
+        $coursesectiondata=array('label'=>get_string('courses',constants::M_COMP));
+        $content .= $this->render_from_template('block_poodllclassroom/sectionheader', $coursesectiondata);
+        $content .=  $maxcourseslabel . $createcoursebutton . '<br>';
+
+        $courselistvisible=false;
         if($courses) {
-            $visible = true;
+            $courselistvisible = true;
         }else{
             $courses=[];
         }
-        $content .= $this->create_course_list($courses,$visible );
-        $content .= $this->no_courses(!$visible);
+        $content .= $this->create_course_list($courses,$courselistvisible);
+        $content .= $this->no_courses(!$courselistvisible);
 
-        $content .=  '<br>' . $createuserbutton . $maxuserslabel . '<br>';
+        //user section
+        $usersectiondata=array('label'=>get_string('users',constants::M_COMP));
+        $content .= $this->render_from_template('block_poodllclassroom/sectionheader', $usersectiondata);
+        $content .=  '<br>' . $maxuserslabel . $createuserbutton  . '<br>';
 
-        $visible=false;
+        $userlistvisible=false;
         if($users) {
-            $visible = true;
+            $userlistvisible = true;
         }else{
             $users=[];
         }
 
-        $content .= $this->create_user_list($users,$tableid,$visible );
-        $content .= $this->no_users(!$visible);
+        $content .= $this->create_user_list($users,$tableid, $userlistvisible);
+        $content .= $this->no_users(! $userlistvisible);
 
          $content .= $amodalcontainer;
          return $content;
