@@ -65,7 +65,7 @@ class renderer extends \plugin_renderer_base {
         $optionsdata=array();
         $options=array();
         $options[]=array('url'=>$CFG->wwwroot . '/blocks/poodllclassroom/subs/accessportal.php',
-                'label'=>get_string('edtmysub',constants::M_COMP));
+                'label'=>get_string('editmysub',constants::M_COMP));
         $options[]=array('url'=>$CFG->wwwroot . '/blocks/poodllclassroom/subs/changeplan.php',
                 'label'=>get_string('changeplan',constants::M_COMP));
         $context = \context_system::instance();

@@ -38,6 +38,9 @@
 .block_poodllclassroom_courseitem {
     margin: 10px;
 }
+.block_poodllclassroom_options {
+    float: right;
+}
 /*
 .d-row {
     display: -webkit-box;
