@@ -99,11 +99,12 @@ class renderer extends \plugin_renderer_base {
         }
         $content .= $this->create_course_list($courses,$courselistvisible);
         $content .= $this->no_courses(!$courselistvisible);
+        $content .= '<hr>';
 
         //user section
         $usersectiondata=array('label'=>get_string('users',constants::M_COMP));
         $content .= $this->render_from_template('block_poodllclassroom/sectionheader', $usersectiondata);
-        $content .=  '<br>' . $maxuserslabel . $createuserbutton  . '<br>';
+        $content .=  $maxuserslabel . $createuserbutton  . '<br>';
 
         $userlistvisible=false;
         if($users) {
