@@ -40,6 +40,18 @@ $PAGE->set_heading($SITE->fullname);
 $PAGE->set_pagelayout('course');
 $PAGE->set_title(get_string('pluginname', constants::M_COMP));
 $PAGE->navbar->add(get_string('pluginname', constants::M_COMP));
+
+//company name
+//Set the companyid
+$companyid = common::get_my_companyid($this->context);
+if($companyid) {
+    $company = new company($companyid);
+    $companyname = $company->get_name();
+}else{
+    $companyname = $SITE->fullname;
+}
+
+
 //get our renderer
 $renderer = $PAGE->get_renderer(constants::M_COMP);
 
@@ -47,7 +59,7 @@ $renderer = $PAGE->get_renderer(constants::M_COMP);
 $ok = has_capability('block/poodllclassroom:managepoodllclassroom', $context);
 if(!$ok){
     echo $renderer->header();
-    echo $renderer->heading($SITE->fullname);
+    echo $renderer->heading($companyname );
     echo  get_string('nopermission', constants::M_COMP);
     echo $renderer->footer();
     die;
@@ -58,7 +70,7 @@ if(!$ok){
 
 //if we get to here there was an issue and user could not be sent to portal
 echo $renderer->header();
-echo $renderer->heading($SITE->fullname);
+echo $renderer->heading($companyname);
 echo $renderer->fetch_changeplan_toppart();
 echo $renderer->fetch_changeplan_buttons();
 echo $renderer->footer();

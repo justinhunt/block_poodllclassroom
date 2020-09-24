@@ -60,7 +60,8 @@ $school = common::get_poodllschool_by_currentuser();
 if($school) {
     $portalurl = common::get_portalurl_by_school($school);
     if($portalurl){
-        redirect($portalurl,get_string('sendingtoportal',constants::M_COMP));
+       // redirect($portalurl,get_string('sendingtoportal',constants::M_COMP));
+        redirect($portalurl);
     }
 }
 
