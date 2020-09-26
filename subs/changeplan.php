@@ -72,5 +72,5 @@ if(!$ok){
 echo $renderer->header();
 echo $renderer->heading($companyname);
 echo $renderer->fetch_changeplan_toppart();
-echo $renderer->fetch_changeplan_buttons();
+echo $renderer->fetch_changeplan_buttons($users, $courses);
 echo $renderer->footer();

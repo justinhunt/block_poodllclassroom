@@ -139,6 +139,14 @@ class renderer extends \plugin_renderer_base {
             return $ret;
 
         }
+        $usercount=0;
+        $companyusers = common::fetch_company_users($myschool->id);
+        if($companyusers){$usercount = count($companyusers);}
+        $coursecount=0;
+        $companycourses = common::fetch_company_courses($myschool->id);
+        if($companycourses){$coursecount = count($companycourses);}
+
+
         $monthlyplans = [];
         $yearlyplans = [];
         $showfirst = constants::M_BILLING_MONTHLY;
@@ -147,8 +155,20 @@ class renderer extends \plugin_renderer_base {
             //if the users current plan, and its not free/monthly, then set the active display to yeif($plan->id==$myschool->planid){
             if($plan->id == $myschool->planid) {
                 $plan->selected = true;
+                $plan->disabled = true;
                 if ($plan->billinginterval == constants::M_BILLING_YEARLY) {
                     $showfirst = constants::M_BILLING_YEARLY;
+                }
+            }else{
+                if($plan->maxusers < $usercount){
+                    $plan->disabled = true;
+                    $plan->toomanyusers = true;
+                    $plan->usercount = $usercount;
+                }
+                if($plan->maxcourses < $coursecount){
+                    $plan->disabled = true;
+                    $plan->toomanycourses = true;
+                    $plan->coursecount = $coursecount;
                 }
             }
 

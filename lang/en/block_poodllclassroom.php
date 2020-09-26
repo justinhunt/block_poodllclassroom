@@ -178,4 +178,7 @@ $string['poodllclassroomoptions'] = 'Options';
 $string['maximumcourses'] = '<i>Maximum {$a} courses</i>';
 $string['maximumusers'] = '<i>Maximum {$a} users</i>';
 $string['returntotop'] = 'Return to Dashboard';
+$string['toomanyusers'] = 'Too many users: ({$a})';
+$string['toomanycourses'] = 'Too many courses: ({$a})';
+
 
