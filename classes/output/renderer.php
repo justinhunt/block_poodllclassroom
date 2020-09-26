@@ -140,10 +140,10 @@ class renderer extends \plugin_renderer_base {
 
         }
         $usercount=0;
-        $companyusers = common::fetch_company_users($myschool->id);
+        $companyusers = common::fetch_company_users($myschool->companyid);
         if($companyusers){$usercount = count($companyusers);}
         $coursecount=0;
-        $companycourses = common::fetch_company_courses($myschool->id);
+        $companycourses = common::fetch_company_courses($myschool->companyid);
         if($companycourses){$coursecount = count($companycourses);}
 
 
