@@ -66,11 +66,9 @@ if(!$ok){
 
 }
 
-
-
 //if we get to here there was an issue and user could not be sent to portal
 echo $renderer->header();
 echo $renderer->heading($companyname);
 echo $renderer->fetch_changeplan_toppart();
-echo $renderer->fetch_changeplan_buttons($users, $courses);
+echo $renderer->fetch_changeplan_buttons();
 echo $renderer->footer();
