@@ -184,6 +184,7 @@ class renderer extends \plugin_renderer_base {
         $mdata['plans']=$monthlyplans;
         $mdata['display']=($showfirst==constants::M_BILLING_MONTHLY) ? '' : 'block_poodllclassroom_hidden';
         $mdata['billinginterval']='monthly';
+        $mdata['billingintervallabel']=get_string('monthly',constants::M_COMP);
         $monthly = $this->render_from_template('block_poodllclassroom/upgradecontainer', $mdata);
 
         //yearly plans
@@ -191,6 +192,7 @@ class renderer extends \plugin_renderer_base {
         $ydata['plans']=$yearlyplans;
         $ydata['display']=($showfirst==constants::M_BILLING_YEARLY) ? '' : 'block_poodllclassroom_hidden';
         $ydata['billinginterval']='yearly';
+        $mdata['billingintervallabel']=get_string('yearly',constants::M_COMP);
         $yearly = $this->render_from_template('block_poodllclassroom/upgradecontainer', $ydata);
 
         return $togglediv . $monthly . $yearly;
