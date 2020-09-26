@@ -28,6 +28,9 @@
 .block_poodllclassroom_changeplan_cont {
     margin: 10px;
 }
+.block_poodllclassroom_billingheader{
+    margin-top: 10px;
+}
 
 .block_poodllclassroom_flexbox {
     display: flex;
