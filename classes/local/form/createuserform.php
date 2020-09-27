@@ -137,13 +137,8 @@ class createuserform extends \moodleform {
             $mform->setType('username', PARAM_RAW);
             $mform->disabledif('username', 'use_email_as_username', 'eq', 1);
         }
-        
-        $mform->addElement('advcheckbox', 'use_email_as_username', get_string('iomad_use_email_as_username', 'local_iomad_settings'));
-        if (!empty($CFG->iomad_use_email_as_username)) {
-            $mform->setDefault('use_email_as_username', 1);
-        } else {
-            $mform->setDefault('use_email_as_username', 0);
-        }
+        $mform->addElement('hidden', 'use_email_as_username', 0);
+
 
 
         /* /copied from /user/editlib.php */

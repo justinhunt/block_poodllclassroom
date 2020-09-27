@@ -16,7 +16,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * For testing
+ * Thanks for checking out
  *
  * @package block_poodllclassroom
  * @copyright  2020 Justin Hunt (http://poodll.com)
@@ -24,14 +24,7 @@
  */
 
 require('../../config.php');
-/*
-$ret = \block_poodllclassroom_external::create_school('goldenearring','Golden','Earring',
-        'goldenearring@poodll.com','Radar Love Academy',
-        'starter-monthly','abcd-1234','xyz-123');
-var_dump($ret);
-*/
-
-/*
-$ret = \block_poodllclassroom_external::get_checkout_existing();
-var_dump($ret);
-*/
+echo $OUTPUT->header();
+$thanksdata = array('dashboardurl'=>$CFG->wwwroot . '/my');
+echo $OUTPUT->render_from_template('block_poodllclassroom/thanks',$thanksdata );
+echo $OUTPUT->footer();

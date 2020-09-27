@@ -351,6 +351,13 @@ class common
         $companydetails->category = $coursecat->id;
         $DB->update_record('company', $companydetails);
 
+        //apply the default email templates for Poodll NET
+        //They need to be created first. The ID just happens to be '1' in this case
+        $thecompany = new \company($companyid);
+        $default_templateset_id = 1;
+        $emailtemplateresult =$thecompany->apply_email_templates($default_templateset_id);
+
+        // all done
         return $companydetails;
 
     }
