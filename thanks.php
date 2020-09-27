@@ -24,7 +24,11 @@
  */
 
 require('../../config.php');
+use block_poodllclassroom\constants;
+
 echo $OUTPUT->header();
+$PAGE->set_context(\context_system::instance());
+$PAGE->set_url(constants::M_URL . '/thanks.php');
 $thanksdata = array('dashboardurl'=>$CFG->wwwroot . '/my');
 echo $OUTPUT->render_from_template('block_poodllclassroom/thanks',$thanksdata );
 echo $OUTPUT->footer();
