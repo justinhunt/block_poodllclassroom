@@ -936,73 +936,89 @@ class common
 
     public static function pause_poodllschool($school){
         global $DB;
-        $ret =false;
-        $owner = $DB->get_record('user',array('id'=>$school->ownerid));
-        if($owner) {
-            $ret = $DB->update_record('user', array('id' => $owner->id, 'suspended' => 1));
-            if($ret){
-                $ret = $DB->update_record(constants::M_TABLE_SCHOOLS,
-                        array('id' => $school->id, 'status' => 'paused','timemodified'=>time()));
-            }
+        $ret = self::suspend_school($school);
+        if($ret){
+            $ret = $DB->update_record(constants::M_TABLE_SCHOOLS,
+                    array('id' => $school->id, 'status' => 'paused','timemodified'=>time()));
         }
+
         return $ret;
     }
 
     public static function resume_poodllschool($school){
         global $DB;
-        $ret =false;
-        $owner = $DB->get_record('user',array('id'=>$school->ownerid));
-        if($owner) {
-            $ret = $DB->update_record('user', array('id' => $owner->id, 'suspended' => 0));
-            if($ret){
-                $ret = $DB->update_record(constants::M_TABLE_SCHOOLS,
-                        array('id' => $school->id, 'status' => 'active','timemodified'=>time()));
-            }
+        $ret = self::unsuspend_school($school);
+        if($ret){
+            $ret = $DB->update_record(constants::M_TABLE_SCHOOLS,
+                    array('id' => $school->id, 'status' => 'active','timemodified'=>time()));
         }
+
         return $ret;
     }
 
     public static function reactivate_poodllschool($school){
         global $DB;
-        $ret =false;
-        $owner = $DB->get_record('user',array('id'=>$school->ownerid));
-        if($owner) {
-            $ret = $DB->update_record('user', array('id' => $owner->id, 'suspended' => 0));
-            if($ret){
-                $ret = $DB->update_record(constants::M_TABLE_SCHOOLS,
-                        array('id' => $school->id, 'status' => 'active','timemodified'=>time()));
-            }
+        $ret = self::unsuspend_school($school);
+        if($ret){
+            $ret = $DB->update_record(constants::M_TABLE_SCHOOLS,
+                    array('id' => $school->id, 'status' => 'active','timemodified'=>time()));
         }
+
         return $ret;
     }
 
     //TO DO what to do here?
     public static function activate_poodllschool($school){
         global $DB;
-        $ret =false;
-        $owner = $DB->get_record('user',array('id'=>$school->ownerid));
-        if($owner) {
-            $ret = $DB->update_record('user', array('id' => $owner->id, 'suspended' => 0));
-            if($ret){
-                $ret = $DB->update_record(constants::M_TABLE_SCHOOLS,
-                        array('id' => $school->id, 'status' => 'active','timemodified'=>time()));
-            }
+
+        $ret = self::unsuspend_school($school);
+        if($ret){
+            $ret = $DB->update_record(constants::M_TABLE_SCHOOLS,
+                    array('id' => $school->id, 'status' => 'active','timemodified'=>time()));
         }
+
         return $ret;
     }
 
+
     public static function cancel_poodllschool($school){
         global $DB;
-        $ret =false;
-        $owner = $DB->get_record('user',array('id'=>$school->ownerid));
-        if($owner) {
-            $ret = $DB->update_record('user', array('id' => $owner->id, 'suspended' => 1));
-            if($ret){
-                $ret = $DB->update_record(constants::M_TABLE_SCHOOLS,
-                        array('id' => $school->id, 'status' => 'cancelled','timemodified'=>time()));
-            }
+
+        $ret = self::suspend_school($school);
+        if($ret){
+            $ret = $DB->update_record(constants::M_TABLE_SCHOOLS,
+                    array('id' => $school->id, 'status' => 'cancelled','timemodified'=>time()));
         }
+
         return $ret;
+    }
+
+    public static function suspend_school($school){
+        global $USER;
+
+        // Suspend the company
+        // Create an event for this.  This handles the actual lifting.
+        $eventother = array('companyid' => $school->companyid);
+        $event = \block_iomad_company_admin\event\company_suspended::create(array('context' => \context_system::instance(),
+                'objectid' => $school->companyid,
+                'userid' => $USER->id,
+                'other' => $eventother));
+        $event->trigger();
+        return true;
+    }
+
+    public static function unsuspend_school($school){
+        global $USER;
+
+        // Suspend the company
+        // Create an event for this.  This handles the actual lifting.
+        $eventother = array('companyid' => $school->companyid);
+        $event = \block_iomad_company_admin\event\company_unsuspended::create(array('context' => \context_system::instance(),
+                'objectid' => $school->companyid,
+                'userid' => $USER->id,
+                'other' => $eventother));
+        $event->trigger();
+        return true;
     }
 
     //if we have a sale we need to keep the data and deal with any fallout if the plan had no matching pclassroom equiv.
