@@ -222,6 +222,7 @@ class renderer extends \plugin_renderer_base {
 
 
     function create_user_list($users,$tableid,$visible){
+        global $USER;
 
         $data = [];
         $data['display'] = $visible ? 'block' : 'none';
@@ -242,6 +243,9 @@ class renderer extends \plugin_renderer_base {
             $ditem['firstname'] = $user->firstname;
             $ditem['lastname'] =  $user->lastname;
             $ditem['lastaccess'] = $lastaccess;
+            if($user->id ==$USER->id){
+                $ditem['isme'] = true;
+            }
             $data['items'][]=$ditem;
 
         }
