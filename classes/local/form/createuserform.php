@@ -82,8 +82,12 @@ class createuserform extends \moodleform {
                 'showopenshared' => true,
                 'license' => false);
 
+        //dont do this, we enrol new users in all courses
+        /*
         $this->currentcourses = new \potential_subdepartment_course_selector('currentcourses', $options);
         $this->currentcourses->set_rows(20);
+        */
+        
         $this->context = \context_coursecat::instance($CFG->defaultrequestcategory);
 
         $method='post';
@@ -307,7 +311,8 @@ class createuserform extends \moodleform {
             }
         }
 
-        if (iomad::has_capability('block/iomad_company_admin:company_course_users', $systemcontext)) {
+        //Dont do this, we enrol new users in all courses
+        if (false && iomad::has_capability('block/iomad_company_admin:company_course_users', $systemcontext)) {
             $mform->addElement('header', 'courses', get_string('assigncourses', 'block_iomad_company_admin'));
             $mform->addElement('html', "<div class='fitem'><div class='fitemtitle'>" .
                     get_string('selectenrolmentcourse', 'block_iomad_company_admin') .

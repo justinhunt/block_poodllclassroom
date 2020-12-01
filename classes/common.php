@@ -664,7 +664,13 @@ class common
 
 
         // Enrol the user on the courses.
-        $createcourses=[];//we might want to poppulate this ...
+        $courses = self::fetch_company_courses($companyid);
+        $createcourses=[];
+        if($courses){
+            foreach($courses as $thecourse){
+                $createcourses[] = $thecourse->courseid;
+            }
+        }
         if (!empty($createcourses)) {
             \company_user::enrol($userdata, $createcourses, $companyid);
         }
