@@ -104,9 +104,11 @@ class edituserform extends \user_editadvanced_form {
         if ($userid !== -1) {
             $mform->disabledIf('username', 'auth', 'in', $cannotchangeusername);
         }
-
+//do not show auth method on edit form
+        /*
         $mform->addElement('selectgroups', 'auth', get_string('chooseauthmethod', 'auth'), $authoptions);
         $mform->addHelpButton('auth', 'chooseauthmethod', 'auth');
+        */
 
         $mform->addElement('advcheckbox', 'suspended', get_string('suspended', 'auth'));
         $mform->addHelpButton('suspended', 'suspended', 'auth');

@@ -519,7 +519,8 @@ class common
         $usernew->lastname = trim($usernew->lastname);
         $usercontext = \context_user::instance($usernew->id);
 
-        if (empty($usernew->auth)) {
+        //we do not let users chaneg auth method
+        if (true || empty($usernew->auth)) {
             // User editing self.
             $authplugin = get_auth_plugin($user->auth);
             unset($usernew->auth); // Can not change/remove.
@@ -538,8 +539,9 @@ class common
             $usernew->id);
 */
         $DB->update_record('user', $usernew);
-        // Pass a true $userold here.
-        if (! $authplugin->user_update($user, $usernew)) {
+
+        //We do not update the authplugin
+        if (false && !$authplugin->user_update($user, $usernew)) {
             // Auth update failed, rollback for moodle.
             $DB->update_record('user', $user);
             print_error('cannotupdateuseronexauth', '', '', $user->auth);

@@ -87,7 +87,7 @@ class createuserform extends \moodleform {
         $this->currentcourses = new \potential_subdepartment_course_selector('currentcourses', $options);
         $this->currentcourses->set_rows(20);
         */
-        
+
         $this->context = \context_coursecat::instance($CFG->defaultrequestcategory);
 
         $method='post';
