@@ -533,8 +533,8 @@ class block_poodllclassroom_external extends external_api {
                                 $userrow['companyid']=$companyid;
                                 $userrow['user_email_as_username']=false;
                                 $userrow['firstname']=$cols[0];
-                                $userrow['lastname']=$cols[2];
-                                $userrow['email']=$cols[3];
+                                $userrow['lastname']=$cols[1];
+                                $userrow['email']=$cols[2];
                                 if(count($cols)>3&&!empty($cols[3])){
                                     $userrow['newpassword']=$cols[3];
                                 }
