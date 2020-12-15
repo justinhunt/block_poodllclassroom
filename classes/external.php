@@ -528,16 +528,23 @@ class block_poodllclassroom_external extends external_api {
 
                         foreach($rows as $row){
                             $cols = explode($delimiter,$row,2);
-                            if(count($cols)==2 && !empty($cols[0]) && !empty($cols[1])){
+                            if(count($cols)>=3 && !empty($cols[0]) && !empty($cols[1])&& !empty($cols[2])){
+                                $userrow = [];
+                                $userrow['companyid']=$companyid;
+                                $userrow['user_email_as_username']=false;
+                                $userrow['firstname']=$cols[0];
+                                $userrow['lastname']=$cols[2];
+                                $userrow['email']=$cols[3];
+                                if(count($cols)>3&&!empty($cols[3])){
+                                    $userrow['newpassword']=$cols[3];
+                                }
 
-                                $ret = common::create_company_user($companyid,$validateddata);
-
-                                $insertdata = new stdClass();
-                                $insertdata->companyid = $companyid;
-                                $insertdata->term = $cols[0];
-                                $insertdata->definition = $cols[1];
-                                //$DB->insert_record('wordcards_terms', $insertdata);
-                                $imported++;
+                                $ret = common::create_company_user($companyid,$userrow);
+                                if(!$ret || $ret->error){
+                                    $failed[]=$row;
+                                }else {
+                                    $imported++;
+                                }
                             }else{
                                 $failed[]=$row;
                             }//end of if cols ok

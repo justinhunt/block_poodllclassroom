@@ -98,6 +98,7 @@ $string['enroluser_mform'] = 'Enrol User';
 
 $string['createuser'] = 'Create User';
 $string['edituser']="Edit User";
+$string['upoloaduser']="Upload Users";
 $string['createuser_mform'] = 'Create User';
 $string['createuserstart'] = '<i class="fa fa-plus" aria-hidden="true"></i> User';
 $string['uploaduserstart'] = '<i class="fa fa-plus" aria-hidden="true"></i> Upload User';
