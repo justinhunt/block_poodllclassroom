@@ -40,6 +40,9 @@ class renderer extends \plugin_renderer_base {
         $createuserbutton = $this->js_trigger_button('createuser', true,
                 get_string('createuserstart',constants::M_COMP), 'btn-primary');
 
+        $uploaduserbutton = $this->js_trigger_button('uploaduser', true,
+                get_string('uploaduserstart',constants::M_COMP), 'btn-primary');
+
         $createcoursebutton = $this->js_trigger_button('createcourse', true,
                 get_string('createcoursestart',constants::M_COMP), 'btn-primary');
 
@@ -105,6 +108,7 @@ class renderer extends \plugin_renderer_base {
         $usersectiondata=array('label'=>get_string('users',constants::M_COMP));
         $content .= $this->render_from_template('block_poodllclassroom/sectionheader', $usersectiondata);
         $content .=  $maxuserslabel . $createuserbutton  . '<br>';
+        $content .=  $uploaduserbutton  . '<br>';
 
         $userlistvisible=false;
         if($users) {

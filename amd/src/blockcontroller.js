@@ -48,6 +48,7 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
 
         prepare_html: function(){
             this.controls.createuserstartbutton = $('#' + this.modulecssclass + '_createuser_btn');
+            this.controls.uploaduserstartbutton = $('#' + this.modulecssclass + '_uploaduser_btn');
             this.controls.createcoursestartbutton = $('#' + this.modulecssclass + '_createcourse_btn');
             this.controls.createcoursestartcontainer = $('#' + this.modulecssclass +'_createcourse_cnt');
             this.controls.nocoursescontainer = $('.' + this.modulecssclass + '_nocourses_cont');
@@ -78,6 +79,9 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
                 that.controls.nouserscontainer.hide();
                 that.controls.userscontainer.show();
 
+            };
+            var after_userupload= function() {
+                log.debug('after user upload');
             };
             var after_courseadd= function(item, itemid) {
                 log.debug('after course add');
@@ -136,6 +140,7 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
 
             //form helper
             mfh.init('#' + this.modulecssclass + '_createuser_btn', this.contextid, 'createuser',after_useradd);
+            mfh.init('#' + this.modulecssclass + '_uploaduser_btn', this.contextid, 'uploaduser',after_userupload);
             mfh.init('#' + this.modulecssclass + '_createcourse_btn', this.contextid, 'createcourse', after_courseadd);
             mfh.init('.' + this.modulecssclass + '_usereditlink', this.contextid, 'edituser', after_useredit);
             mfh.init('.' + this.modulecssclass + '_courseeditlink', this.contextid, 'editcourse', after_courseedit);

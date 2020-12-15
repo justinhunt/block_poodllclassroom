@@ -38,6 +38,7 @@ const FORM_DELETEUSER = 'deleteuser';
 const FORM_CREATECOURSE = 'createcourse';
 const FORM_EDITCOURSE = 'editcourse';
 const FORM_DELETECOURSE = 'deletecourse';
+const FORM_UPLOADUSER = 'uploaduser';
 
 const M_TABLE_PLANS = 'block_poodllclassroom_plan';
 const M_TABLE_SCHOOLS = 'block_poodllclassroom_school';

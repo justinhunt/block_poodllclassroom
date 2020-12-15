@@ -463,7 +463,6 @@ class block_poodllclassroom_external extends external_api {
                 $mform = new \block_poodllclassroom\local\form\createuserform($companyid, $departmentid, $licenseid, $data);
                 $validateddata = $mform->get_data();
                 if ($validateddata) {
-
                     $ret = common::create_company_user($companyid,$validateddata);
                     return json_encode($ret);
                 }
@@ -502,6 +501,72 @@ class block_poodllclassroom_external extends external_api {
                     return json_encode($ret);
                 }
                 break;
+
+            case constants::FORM_UPLOADUSER:
+                $companyid = iomad::get_my_companyid($context);
+                $mform = new \block_poodllclassroom\local\form\uploaduserform($companyid, $data);
+                $validateddata = $mform->get_data();
+                if ($validateddata) {
+                    if (!empty($validateddata->importdata)) {
+
+                        //get delimiter
+                        switch($validateddata->delimiter){
+                            case 'delim_comma': $delimiter = ',';break;
+                            case 'delim_pipe': $delimiter = '|';break;
+                            case 'delim_tab':
+                            default:
+                                $delimiter ="\t";
+                        }
+
+                        //get array of rows
+                        $rawdata =trim($validateddata->importdata);
+                        $rows = explode(PHP_EOL, $rawdata);
+
+                        //prepare results fields
+                        $imported = 0;
+                        $failed = array();
+
+                        foreach($rows as $row){
+                            $cols = explode($delimiter,$row,2);
+                            if(count($cols)==2 && !empty($cols[0]) && !empty($cols[1])){
+
+                                $ret = common::create_company_user($companyid,$validateddata);
+
+                                $insertdata = new stdClass();
+                                $insertdata->companyid = $companyid;
+                                $insertdata->term = $cols[0];
+                                $insertdata->definition = $cols[1];
+                                //$DB->insert_record('wordcards_terms', $insertdata);
+                                $imported++;
+                            }else{
+                                $failed[]=$row;
+                            }//end of if cols ok
+                        }//end of for each
+
+
+                        // Uncomment when migrating to 3.1.
+                        // redirect($PAGE->url, get_string('termadded', 'mod_wordcards', $data->term));
+                        $result=new stdClass();
+                        $result->imported=$imported;
+                        $result->failed=count($failed);
+                        $message=get_string('importresults','mod_wordcards',$result);
+
+                        $ret = new \stdClass();
+                        $ret->companyid=$companyid;
+                        $ret->message='';
+                        $ret->error=false;
+
+                        if(count($failed)>0){
+                            $leftoverrows = implode(PHP_EOL,$failed);
+                            $ret->leftoverrows=$leftoverrows;
+                            $ret->message='leftoverrows';
+                            $ret->error=true;
+                        }
+                        return json_encode($ret);
+
+                    }
+                }
+
 
         }
     }

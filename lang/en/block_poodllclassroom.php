@@ -100,6 +100,8 @@ $string['createuser'] = 'Create User';
 $string['edituser']="Edit User";
 $string['createuser_mform'] = 'Create User';
 $string['createuserstart'] = '<i class="fa fa-plus" aria-hidden="true"></i> User';
+$string['uploaduserstart'] = '<i class="fa fa-plus" aria-hidden="true"></i> Upload User';
+
 $string['nousersheader'] = 'No Users';
 $string['nousersinfo'] = 'You currently have no users.';
 $string['nocoursesheader'] = 'No Courses';
@@ -180,5 +182,11 @@ $string['maximumusers'] = '<i>Maximum {$a} users</i>';
 $string['returntotop'] = 'Return to Dashboard';
 $string['toomanyusers'] = 'Too many users: ({$a})';
 $string['toomanycourses'] = 'Too many courses: ({$a})';
+
+$string['delimiter'] = 'Delimiter Character';
+$string['delim_tab'] = 'Tab';
+$string['delim_comma'] = 'Comma';
+$string['delim_pipe'] = 'Pipe';
+$string['importdata'] = 'Import Data';
 
 
