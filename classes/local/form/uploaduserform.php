@@ -40,11 +40,10 @@ class uploaduserform extends \moodleform {
 
     public function definition() {
         $mform = $this->_form;
-        $leftover_rows = $this->_customdata['leftover_rows'];
-
-        $delimiter_options = array('delim_tab' => get_string('delim_tab', constants::M_COMP),
-                'delim_comma' => get_string('delim_comma', constants::M_COMP),
-                'delim_pipe' => get_string('delim_pipe', constants::M_COMP)
+        $mform->addElement('static', 'instructions','', get_string('uploadinstructions', constants::M_COMP));
+        $delimiter_options = array('delim_comma' => get_string('delim_comma', constants::M_COMP),
+                 'delim_tab' => get_string('delim_tab', constants::M_COMP),
+                 'delim_pipe' => get_string('delim_pipe', constants::M_COMP)
         );
         $mform->addElement('select', 'delimiter', get_string('delimiter', constants::M_COMP), $delimiter_options);
         $mform->setType('delimiter', PARAM_NOTAGS);
@@ -52,7 +51,6 @@ class uploaduserform extends \moodleform {
         $mform->addRule('delimiter', null, 'required', null, 'client');
 
         $mform->addElement('textarea', 'importdata', get_string('importdata', constants::M_COMP));
-        $mform->setDefault('importdata', $leftover_rows);
         $mform->setType('importdata', PARAM_NOTAGS);
         $mform->addRule('importdata', null, 'required', null, 'client');
         $this->add_action_buttons(false);

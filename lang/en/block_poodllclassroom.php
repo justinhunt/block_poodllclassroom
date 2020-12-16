@@ -98,10 +98,10 @@ $string['enroluser_mform'] = 'Enrol User';
 
 $string['createuser'] = 'Create User';
 $string['edituser']="Edit User";
-$string['upoloaduser']="Upload Users";
+$string['uploaduser']="Upload Users";
 $string['createuser_mform'] = 'Create User';
 $string['createuserstart'] = '<i class="fa fa-plus" aria-hidden="true"></i> User';
-$string['uploaduserstart'] = '<i class="fa fa-plus" aria-hidden="true"></i> Upload User';
+$string['uploaduserstart'] = '<i class="fa fa-plus" aria-hidden="true"></i> Upload';
 
 $string['nousersheader'] = 'No Users';
 $string['nousersinfo'] = 'You currently have no users.';
@@ -189,5 +189,8 @@ $string['delim_tab'] = 'Tab';
 $string['delim_comma'] = 'Comma';
 $string['delim_pipe'] = 'Pipe';
 $string['importdata'] = 'Import Data';
+$string['importresults'] = 'Imported users: {$a->imported} Failed: {$a->failed}';
+$string['returnedrows'] = 'Some rows could not be imported. They have been returned. They either already exist or are incorrect. Please fix them and re-submit.';
+$string['uploadinstructions'] = 'Enter or paste each user to upload on a new line below: first name, last name, email, password [optional] ';
 
 

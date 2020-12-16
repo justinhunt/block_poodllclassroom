@@ -174,12 +174,11 @@ define(['jquery', 'core/log', 'core/str', 'core/modal_factory', 'core/modal_even
          * @return {Promise}
          */
         TheForm.prototype.handleFormSubmissionResponse = function(formData,ajaxresult) {
-            this.modal.hide();
-            // We could trigger an event instead.
-            // Yuk.
-            Y.use('moodle-core-formchangechecker', function() {
-                M.core_formchangechecker.reset_form_dirty_state();
-            });
+      //      this.modal.hide();
+      //      Y.use('moodle-core-formchangechecker', function() {
+      //          M.core_formchangechecker.reset_form_dirty_state();
+      //      });
+
             log.debug(ajaxresult); //this contains what the server returns (eg new item->id etc)
             log.debug(formData); //this contains the original form data
 
@@ -189,8 +188,12 @@ define(['jquery', 'core/log', 'core/str', 'core/modal_factory', 'core/modal_even
                 log.debug(payloadobject);
                 switch(payloadobject.error) {
                     case false:
-                        //we could just reload here. But we wont
-                        //document.location.reload();
+                        this.modal.hide();
+                        // We could trigger an event instead.
+                        Y.use('moodle-core-formchangechecker', function() {
+                            M.core_formchangechecker.reset_form_dirty_state();
+                        });
+
                         //process formData
                         var dataobject = JSON.parse('{"' + decodeURI(formData).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}');
                         this.callback(dataobject,payloadobject.itemid);
@@ -198,8 +201,35 @@ define(['jquery', 'core/log', 'core/str', 'core/modal_factory', 'core/modal_even
 
                     case true:
                     default:
+                        //if we had an error and this is upload user, alert user and reload failed rows
+                        if(this.formname==='uploaduser') {
+                            var thedata = formData.split('&');
+                            var usedata ={};
+                            for(var i=0; i<thedata.length; i++){
+                                if(thedata[i].includes('importdata')){
+                                    usedata['importdata'] = payloadobject.importdata;
+                                }else{
+                                    var pair = thedata[i].split('=');
+                                    usedata[decodeURIComponent(pair[0])]=decodeURIComponent(pair[1]);
+                                }
+                            }
+                            this.modal.setBody(this.getBody(usedata));
+                            alert(payloadobject.message);
+                        }else{
+                            this.modal.hide();
+                            // We could trigger an event instead.
+                            Y.use('moodle-core-formchangechecker', function() {
+                                M.core_formchangechecker.reset_form_dirty_state();
+                            });
+                        }
                         log.debug('that was an error: ');
                 }
+            }else{
+                this.modal.hide();
+                // We could trigger an event instead.
+                Y.use('moodle-core-formchangechecker', function() {
+                    M.core_formchangechecker.reset_form_dirty_state();
+                });
             }
 
 

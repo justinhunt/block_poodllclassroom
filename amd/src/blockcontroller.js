@@ -82,6 +82,8 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
             };
             var after_userupload= function() {
                 log.debug('after user upload');
+                //Its cheating a bit, but lets just reload
+                document.location.reload();
             };
             var after_courseadd= function(item, itemid) {
                 log.debug('after course add');
@@ -164,8 +166,10 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
             var usercount = $('.' + this.modulecssclass + '_user_row').length;
             if(this.schoolplan.maxusers > usercount) {
                 this.set_enabled(this.controls.createuserstartbutton,true);
+                this.set_enabled(this.controls.uploaduserstartbutton,true);
             }else{
                 this.set_enabled(this.controls.createuserstartbutton,false);
+                this.set_enabled(this.controls.uploaduserstartbutton,false);
             }
         },
 

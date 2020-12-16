@@ -527,16 +527,17 @@ class block_poodllclassroom_external extends external_api {
                         $failed = array();
 
                         foreach($rows as $row){
-                            $cols = explode($delimiter,$row,2);
+                            $cols = explode($delimiter,$row);
                             if(count($cols)>=3 && !empty($cols[0]) && !empty($cols[1])&& !empty($cols[2])){
-                                $userrow = [];
-                                $userrow['companyid']=$companyid;
-                                $userrow['user_email_as_username']=false;
-                                $userrow['firstname']=$cols[0];
-                                $userrow['lastname']=$cols[1];
-                                $userrow['email']=$cols[2];
+                                $userrow = new \stdClass();
+                                $userrow->companyid=$companyid;
+                                $userrow->user_email_as_username=false;
+                                $userrow->due=0; //needed for email of password, might need to be set more properly
+                                $userrow->firstname=$cols[0];
+                                $userrow->lastname=$cols[1];
+                                $userrow->email=$cols[2];
                                 if(count($cols)>3&&!empty($cols[3])){
-                                    $userrow['newpassword']=$cols[3];
+                                    $userrow->newpassword=$cols[3];
                                 }
 
                                 $ret = common::create_company_user($companyid,$userrow);
@@ -556,7 +557,7 @@ class block_poodllclassroom_external extends external_api {
                         $result=new stdClass();
                         $result->imported=$imported;
                         $result->failed=count($failed);
-                        $message=get_string('importresults','mod_wordcards',$result);
+                        $message=get_string('importresults',constants::M_COMP,$result);
 
                         $ret = new \stdClass();
                         $ret->companyid=$companyid;
@@ -565,8 +566,9 @@ class block_poodllclassroom_external extends external_api {
 
                         if(count($failed)>0){
                             $leftoverrows = implode(PHP_EOL,$failed);
-                            $ret->leftoverrows=$leftoverrows;
-                            $ret->message='leftoverrows';
+                            $ret->delimiter=$validateddata->delimiter;
+                            $ret->importdata=$leftoverrows;
+                            $ret->message=$message . ' ' . get_string('returnedrows',constants::M_COMP); ;
                             $ret->error=true;
                         }
                         return json_encode($ret);

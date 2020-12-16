@@ -107,8 +107,9 @@ class renderer extends \plugin_renderer_base {
         //user section
         $usersectiondata=array('label'=>get_string('users',constants::M_COMP));
         $content .= $this->render_from_template('block_poodllclassroom/sectionheader', $usersectiondata);
-        $content .=  $maxuserslabel . $createuserbutton  . '<br>';
-        $content .=  $uploaduserbutton  . '<br>';
+        $userheaderdata=array('maxuserslabel'=>$maxuserslabel,'createuserbutton'=>$createuserbutton,'uploaduserbutton'=>$uploaduserbutton );
+        $content .= $this->render_from_template('block_poodllclassroom/userheader', $userheaderdata);
+
 
         $userlistvisible=false;
         if($users) {

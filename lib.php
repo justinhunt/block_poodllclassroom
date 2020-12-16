@@ -65,6 +65,11 @@ function block_poodllclassroom_output_fragment_mform($args) {
 
             $data=null;
             $mform = new \block_poodllclassroom\local\form\uploaduserform($companyid, $data);
+            if(isset($args->jsonformdata)){
+                $data = json_decode($args->jsonformdata);
+                $mform->set_data($data);
+            }
+
 
             break;
 
