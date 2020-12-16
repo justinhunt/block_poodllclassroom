@@ -47,10 +47,10 @@ class uploaduserform extends \moodleform {
         );
         $mform->addElement('select', 'delimiter', get_string('delimiter', constants::M_COMP), $delimiter_options);
         $mform->setType('delimiter', PARAM_NOTAGS);
-        $mform->setDefault('delimiter', 'delim_tab');
+        $mform->setDefault('delimiter', 'delim_comma');
         $mform->addRule('delimiter', null, 'required', null, 'client');
 
-        $mform->addElement('textarea', 'importdata', get_string('importdata', constants::M_COMP));
+        $mform->addElement('textarea', 'importdata', get_string('importdata', constants::M_COMP),array('style'=>'width: 100%'));
         $mform->setType('importdata', PARAM_NOTAGS);
         $mform->addRule('importdata', null, 'required', null, 'client');
         $this->add_action_buttons(false);
