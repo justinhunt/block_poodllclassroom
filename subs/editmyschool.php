@@ -47,7 +47,7 @@ require_capability('block/poodllclassroom:managepoodllclassroom', $context);
 if (!empty($returnurl)) {
     $returnurl = new moodle_url($returnurl);
 } else {
-    $returnurl = new moodle_url($cfg->wwwroot . '/my', array());
+    $returnurl = new moodle_url($CFG->wwwroot . '/my', array());
 }
 
 
