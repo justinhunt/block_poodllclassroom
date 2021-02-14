@@ -196,4 +196,5 @@ $string['uploadinstructions'] = 'Enter or paste each user to upload on a new lin
 $string['upstreamsub'] = 'Upstream Sub';
 $string['upstreamowner'] = 'Upstream Owner';
 $string['addschool'] = 'Add School';
+$string['editmyschool'] = 'Change School Name';
 

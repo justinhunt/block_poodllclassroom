@@ -22,6 +22,12 @@ class renderer extends \plugin_renderer_base {
         return $this->output->header();
     }
 
+
+    function fetch_normalpeople_block_content($company){
+        $content = \html_writer::tag('h5',$company->get_name());
+        return $content;
+    }
+
     function fetch_block_content($context, $company,$users, $courses){
         global $CFG;
 
@@ -68,6 +74,8 @@ class renderer extends \plugin_renderer_base {
         //options thingy
         $optionsdata=array();
         $options=array();
+        $options[]=array('url'=>$CFG->wwwroot . '/blocks/poodllclassroom/subs/edit.php?type=myschool',
+                'label'=>get_string('editmyschool',constants::M_COMP));
         $options[]=array('url'=>$CFG->wwwroot . '/blocks/poodllclassroom/subs/accessportal.php',
                 'label'=>get_string('editmysub',constants::M_COMP));
         $options[]=array('url'=>$CFG->wwwroot . '/blocks/poodllclassroom/subs/changeplan.php',

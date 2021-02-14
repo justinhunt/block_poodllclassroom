@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Script to edit a school
+ * Script to edit own school
  */
 
 /**
@@ -36,7 +36,7 @@ require_once($CFG->dirroot.'/lib/formslib.php');
 
 
 
-class editschoolform extends \moodleform {
+class editmyschoolform extends \moodleform {
 
     public function definition() {
         $mform = $this->_form;
@@ -46,26 +46,12 @@ class editschoolform extends \moodleform {
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
 
-        $companies = common::fetch_companies_array();
-        $mform->addElement('select', 'companyid', get_string('company', constants::M_COMP), $companies);
-
-        $owners = common::fetch_owners_array();
-        $mform->addElement('select', 'ownerid', get_string('owner', constants::M_COMP), $owners);
-
-        $mform->addElement('text', 'upstreamsubid', get_string('upstreamsub', constants::M_COMP), array('size'=>70));
-        $mform->setType('upstreamsubid', PARAM_TEXT);
-        $mform->setDefault('upstreamsubid', 'unspecified');
-
-        $mform->addElement('text', 'upstreamownerid', get_string('upstreamowner', constants::M_COMP), array('size'=>70));
-        $mform->setType('upstreamownerid', PARAM_TEXT);
-        $mform->setDefault('upstreamownerid', 'unspecified');
-
         $mform->addElement('hidden', 'type','myschool');
         $mform->setType('type', PARAM_TEXT);
 
-        $options = common::fetch_plans_array();
-        $mform->addElement('select', 'planid', get_string('plan', constants::M_COMP), $options);
-
+        $mform->addElement('text', 'schoolname', get_string('schoolname', constants::M_COMP), array('size'=>70));
+        $mform->setType('schoolname', PARAM_TEXT);
+        $mform->addRule('schoolname', get_string('required'), 'required', null, 'client');
 
         //add the action buttons
         $this->add_action_buttons(get_string('cancel'), get_string('save', constants::M_COMP));

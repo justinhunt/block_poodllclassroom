@@ -31,7 +31,7 @@ use block_poodllclassroom\common;
 $id        = optional_param('id', 0, PARAM_INT);
 $delete    = optional_param('delete', 0, PARAM_BOOL);
 $confirm    = optional_param('confirm', 0, PARAM_BOOL);
-$type    = optional_param('type', 'plan', PARAM_TEXT);
+$type    = optional_param('type', 'plan', PARAM_TEXT);//school //myschool
 $returnurl = optional_param('returnurl', '', PARAM_LOCALURL);
 
 require_login();
@@ -95,6 +95,9 @@ if ($delete && $id) {
             echo $renderer->confirm($message, $yesurl, $returnurl);
             echo $renderer->footer();
             die;
+
+        case 'myschool':
+            //there is no delete myschool (yet!!)
     }
 
 }
@@ -106,6 +109,9 @@ switch($type){
         break;
     case 'school':
         $editform = new \block_poodllclassroom\local\form\editschoolform();
+        break;
+    case 'myschool':
+        $editform = new \block_poodllclassroom\local\form\editmyschoolform();
 }
 
 
@@ -139,6 +145,12 @@ if ($editform->is_cancelled()){
                 $updatedata = array('id' => $data->id, 'planid' => $data->planid);
                 $result = $DB->update_record(constants::M_TABLE_SCHOOLS, $updatedata);
             }
+            break;
+        case 'myschool':
+            $theschool = $DB->get_record(constants::M_TABLE_SCHOOLS, array('id' => $data->id));
+            if($theschool && $theschool->ownerid==$USER->id && !empty($data->schoolname)) {
+                common::set_schoolname_by_school($theschool, $data->schoolname);
+            }
     }
 
 
@@ -159,6 +171,16 @@ switch($type){
             $usedata = $DB->get_record(constants::M_TABLE_SCHOOLS, array('id' => $id));
             $editform->set_data($usedata);
         }
+        break;
+    case 'myschool':
+        $theschool = $DB->get_record(constants::M_TABLE_SCHOOLS, array('id' => $id));
+        if($theschool && $theschool->ownerid==$USER->id) {
+            $usedata = new stdClass();
+            $usedata->id=$theschool->id;
+            $usedata->schoolname=common::get_schoolname_by_school($theschool);
+            $editform->set_data($usedata);
+        }
+
 }
 
 $strheading = get_string('subsschoolsplans', constants::M_COMP);

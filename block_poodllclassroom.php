@@ -36,9 +36,23 @@ class block_poodllclassroom extends block_base {
     function get_content() {
         global $CFG, $OUTPUT;
 
-        //we only show this to super people
+        $renderer = $this->page->get_renderer(constants::M_COMP);
+
+        //we only show full block to super people, other people just get the schoolname
+        //later we can add more stuff here
         if (!has_capability('block/poodllclassroom:managepoodllclassroom', $this->context)) {
-            return null;
+            $ret=null;
+            $companyid = common::get_my_companyid($this->context);
+            if($companyid){
+                $company = new company($companyid);
+                $this->content = new stdClass();
+                $this->content->items = array();
+                $this->content->icons = array();
+                $this->content->footer = '';
+                $this->content->text = $renderer->fetch_normalpeople_block_content($company);
+                $ret = $this->content;
+            }
+            return $ret;
         }
 
         if ($this->content !== null) {
@@ -77,7 +91,6 @@ class block_poodllclassroom extends block_base {
         $companycourses = common::fetch_company_courses($companyid);
         $this->title = $company->get_name();
 
-        $renderer = $this->page->get_renderer(constants::M_COMP);
         $this->content->text = $renderer->fetch_block_content($this->context, $company,$companyusers,$companycourses) ;
         return $this->content  ;
     }

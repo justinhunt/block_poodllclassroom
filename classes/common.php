@@ -1093,6 +1093,13 @@ class common
 
     }
 
+    public static function set_schoolname_by_school($school,$schoolname){
+        global $DB;
+        $ret = $DB->set_field('company','name',$schoolname,array('id'=>$school->companyid));
+        return $ret;
+
+    }
+
     public static function curl_fetch($url, $postdata = false, $username='') {
         global $CFG;
 
