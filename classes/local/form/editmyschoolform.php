@@ -41,8 +41,6 @@ class editmyschoolform extends \moodleform {
     public function definition() {
         $mform = $this->_form;
 
-        $mform->addElement('header', 'typeheading', get_string('editmyschool', constants::M_COMP));
-
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
 

@@ -74,7 +74,7 @@ class renderer extends \plugin_renderer_base {
         //options thingy
         $optionsdata=array();
         $options=array();
-        $options[]=array('url'=>$CFG->wwwroot . '/blocks/poodllclassroom/subs/edit.php?type=myschool',
+        $options[]=array('url'=>$CFG->wwwroot . '/blocks/poodllclassroom/subs/editmyschool.php',
                 'label'=>get_string('editmyschool',constants::M_COMP));
         $options[]=array('url'=>$CFG->wwwroot . '/blocks/poodllclassroom/subs/accessportal.php',
                 'label'=>get_string('editmysub',constants::M_COMP));
