@@ -95,8 +95,7 @@ if ($editform->is_cancelled()){
 switch($type){
 
     case 'myschool':
-        $schoolid = common::get_poodllschool_by_currentuser();
-        $theschool = $DB->get_record(constants::M_TABLE_SCHOOLS, array('id' => $schoolid));
+        $theschool = common::get_poodllschool_by_currentuser();
         if($theschool && $theschool->ownerid==$USER->id) {
             $usedata = new stdClass();
             $usedata->id=$theschool->id;
