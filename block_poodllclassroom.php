@@ -49,6 +49,7 @@ class block_poodllclassroom extends block_base {
                 $this->content->items = array();
                 $this->content->icons = array();
                 $this->content->footer = '';
+                $this->title = '';
                 $this->content->text = $renderer->fetch_normalpeople_block_content($company);
                 $ret = $this->content;
             }
