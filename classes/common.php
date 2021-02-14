@@ -880,6 +880,26 @@ class common
 
     }
 
+    public static function fetch_companies_array(){
+        global $DB;
+       $companies  = $DB->get_records('company', array());
+        $ret = [];
+        foreach($companies as $company){
+            $ret[$company->id]=$company->name;
+        }
+        return $ret;
+    }
+
+    public static function fetch_owners_array(){
+        global $DB;
+        $owners = $DB->get_records('user', array());
+        $ret = [];
+        foreach($owners as $owner){
+            $ret[$owner->id]=$owner->lastname . ' ' . $owner->firstname ;
+        }
+        return $ret;
+    }
+
     public static function fetch_plans(){
         global $DB;
 

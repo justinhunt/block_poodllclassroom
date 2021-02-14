@@ -52,6 +52,27 @@ function block_poodllclassroom_output_fragment_mform($args) {
 
             break;
 
+        case constants::FORM_CREATEUSER:
+            $context = context_system::instance();
+            if(!iomad::has_capability('block/iomad_company_admin:user_create', $context)){
+                return false;
+            }
+
+            // Set the companyid
+            $companyid = iomad::get_my_companyid($context);
+            $departmentid=0;
+            $licenseid=0;
+
+            $data=null;
+            $mform = new \block_poodllclassroom\local\form\createuserform($companyid, $departmentid,$licenseid, $data);
+            if(isset($args->jsonformdata)){
+                $data = json_decode($args->jsonformdata);
+                $mform->set_data($data);
+            }
+
+
+            break;
+
         case constants::FORM_UPLOADUSER:
             $context = context_system::instance();
             if(!iomad::has_capability('block/iomad_company_admin:user_create', $context)){

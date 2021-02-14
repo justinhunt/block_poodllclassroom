@@ -466,6 +466,15 @@ class renderer extends \plugin_renderer_base {
 
     }
 
+    //return a button that will allow user to add a new sub
+    function fetch_addschool_button(){
+        $thebutton = new \single_button(
+            new \moodle_url(constants::M_URL . '/subs/edit.php',array('type'=>'school')),
+            get_string('addschool', constants::M_COMP), 'get');
+        return $thebutton;
+    }
+
+
     //Fetch schools table
     function fetch_schools_table($schools){
         global $DB;
@@ -474,6 +483,9 @@ class renderer extends \plugin_renderer_base {
         $baseurl = new \moodle_url(constants::M_URL . '/subs/subs.php', $params);
         $plans = common::fetch_plans();
         $billingintervals = common::fetch_billingintervals();
+
+        //add sub button
+        $addbutton = $this->fetch_addschool_button();
 
         $data = array();
         foreach($schools as $school) {
@@ -526,7 +538,7 @@ class renderer extends \plugin_renderer_base {
 
         //return add button and table
         $heading = $this->output->heading('Schools',3);
-        return   $heading . \html_writer::table($table);
+        return   $heading  . $this->render($addbutton) .  \html_writer::table($table);
 
     }
 }

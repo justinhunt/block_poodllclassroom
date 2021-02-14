@@ -159,13 +159,16 @@ define(['jquery', 'core/log', 'core/str', 'core/modal_factory', 'core/modal_even
          * @return {Promise}
          */
         TheForm.prototype.getBody = function(formdata) {
+            log.debug(formdata);
             if (typeof formdata === "undefined") {
                 formdata = {};
             }
 
             // Get the content of the modal.
             var params = {jsonformdata: JSON.stringify(formdata), formname: this.formname, itemid: this.itemid};
-            return Fragment.loadFragment('block_poodllclassroom', 'mform', this.contextid, params);
+            var ret = Fragment.loadFragment('block_poodllclassroom', 'mform', this.contextid, params);
+            log.debug(ret);
+            return ret;
         };
 
         /**

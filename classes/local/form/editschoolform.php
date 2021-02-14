@@ -46,6 +46,20 @@ class editschoolform extends \moodleform {
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
 
+        $companies = common::fetch_companies_array();
+        $mform->addElement('select', 'companyid', get_string('company', constants::M_COMP), $companies);
+
+        $owners = common::fetch_owners_array();
+        $mform->addElement('select', 'ownerid', get_string('owner', constants::M_COMP), $owners);
+
+        $mform->addElement('text', 'upstreamsubid', get_string('upstreamsub', constants::M_COMP), array('size'=>70));
+        $mform->setType('upstreamsubid', PARAM_TEXT);
+        $mform->setDefault('upstreamsubid', 'unspecified');
+
+        $mform->addElement('text', 'upstreamownerid', get_string('upstreamowner', constants::M_COMP), array('size'=>70));
+        $mform->setType('upstreamownerid', PARAM_TEXT);
+        $mform->setDefault('upstreamownerid', 'unspecified');
+
         $mform->addElement('hidden', 'type','school');
         $mform->setType('type', PARAM_TEXT);
 

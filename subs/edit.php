@@ -131,8 +131,14 @@ if ($editform->is_cancelled()){
             }
             break;
         case 'school':
-            $updatedata = array('id'=>$data->id,'planid'=>$data->planid);
-            $result=$DB->update_record(constants::M_TABLE_SCHOOLS,$updatedata);
+            if (!$data->id) {
+                $data->timemodified=time();
+                $data->timecreated=time();
+                $result=$DB->insert_record(constants::M_TABLE_SCHOOLS,$data);
+            } else {
+                $updatedata = array('id' => $data->id, 'planid' => $data->planid);
+                $result = $DB->update_record(constants::M_TABLE_SCHOOLS, $updatedata);
+            }
     }
 
 
@@ -149,8 +155,10 @@ switch($type){
         }
         break;
     case 'school':
-        $usedata = $DB->get_record(constants::M_TABLE_SCHOOLS,array('id'=>$id));
-        $editform->set_data($usedata);
+        if ($id) {
+            $usedata = $DB->get_record(constants::M_TABLE_SCHOOLS, array('id' => $id));
+            $editform->set_data($usedata);
+        }
 }
 
 $strheading = get_string('subsschoolsplans', constants::M_COMP);

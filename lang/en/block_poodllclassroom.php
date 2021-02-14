@@ -193,4 +193,7 @@ $string['importresults'] = 'Imported users: {$a->imported} Failed: {$a->failed}'
 $string['returnedrows'] = 'Some rows could not be imported. They have been returned. They either already exist or are incorrect. Please fix them and re-submit.';
 $string['uploadinstructions'] = 'Enter or paste each user to upload on a new line below: first name, last name, email, password [optional] ';
 
+$string['upstreamsub'] = 'Upstream Sub';
+$string['upstreamowner'] = 'Upstream Owner';
+$string['addschool'] = 'Add School';
 
