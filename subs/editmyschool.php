@@ -44,10 +44,10 @@ $baseurl = constants::M_URL;
 $context = context_system::instance();
 require_capability('block/poodllclassroom:managepoodllclassroom', $context);
 
-if ($returnurl) {
+if (!empty($returnurl)) {
     $returnurl = new moodle_url($returnurl);
 } else {
-    $returnurl = new moodle_url($baseurl . '/subs/editmyschool.php', array());
+    $returnurl = new moodle_url($cfg->wwwroot . '/my', array());
 }
 
 
