@@ -52,8 +52,7 @@ $capabilities = array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_BLOCK,
         'archetypes' => array(
-                'manager' => CAP_ALLOW,
-                'companymanager' => CAP_ALLOW
+                'manager' => CAP_ALLOW
         )
      ),
 
