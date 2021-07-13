@@ -24,7 +24,7 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="block_poodllclassroom_reseller" COMMENT="reseller">
+    <TABLE NAME="block_poodllclassroom_seller" COMMENT="reseller">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" />
         <FIELD NAME="type" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="reseller type: poodll,parter etc"/>
