@@ -34,7 +34,7 @@ use block_poodllclassroom\common;
 
 require_once($CFG->dirroot.'/lib/formslib.php');
 require_once($CFG->dirroot.'/user/editlib.php');
-require_once($CFG->dirroot . '/blocks/iomad_company_admin/editadvanced_form.php');
+
 
 class edituserform extends \user_editadvanced_form {
     /**
@@ -183,7 +183,6 @@ class edituserform extends \user_editadvanced_form {
 
         // Do not show email field if change confirmation is pending.
         if ($user->id > 0 and !empty($CFG->emailchangeconfirmation) and !empty($user->preference_newemail)) {
-            // IOMAD - Change to allow a manager to cancel the email request change.
             $pageurl = $PAGE->url;
             $pageurl .= "&amp;cancelemailchange=1";
             $notice = get_string('emailchangepending', 'auth', $user);

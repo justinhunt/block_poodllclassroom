@@ -13,7 +13,10 @@
         <FIELD NAME="features" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Sub features. Stored as text but can be interpreted by the plugin however it likes."/>
         <FIELD NAME="billinginterval" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="billing interval"/>
         <FIELD NAME="price" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="true" DEFAULT="-" SEQUENCE="false"  COMMENT="price in usd of plan"/>
+        <FIELD NAME="planfamily" TYPE="char" LENGTH="255" NOTNULL="false" UNSIGNED="true" DEFAULT="-" SEQUENCE="false"  COMMENT="plan family"/>
+        <FIELD NAME="platform" TYPE="char" LENGTH="255" NOTNULL="false" UNSIGNED="true" DEFAULT="-" SEQUENCE="false"  COMMENT="platform, LTI/MOODLE/CLASSROOM"/>
         <FIELD NAME="description" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Short description of plan."/>
+        <FIELD NAME="jsonfields" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="extra info in json."/>
         <FIELD NAME="upstreamplan" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="true" DEFAULT="-" SEQUENCE="false" COMMENT="the key that links plan with gateway plan"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false"/>
       </FIELDS>
@@ -21,15 +24,51 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
-	 <TABLE NAME="block_poodllclassroom_school" COMMENT="poodllclassroomschool">
+    <TABLE NAME="block_poodllclassroom_reseller" COMMENT="reseller">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" />
-        <FIELD NAME="companyid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="The company id" />
-		<FIELD NAME="ownerid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="The company owner user id" />
-		<FIELD NAME="planid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="The poodllclassroom plan id" />
-        <FIELD NAME="upstreamsubid" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="the chargebee ID for this sub"/>
+        <FIELD NAME="type" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="reseller type: poodll,parter etc"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="name field for school" />
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="The company owner user id" />
+        <FIELD NAME="upstreamownerid" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="the chargebee owner ID for this sub"/>
+         <FIELD NAME="status" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="true" DEFAULT="-" SEQUENCE="false" COMMENT="the school status"/>
+        <FIELD NAME="description" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Short description of reseller."/>
+        <FIELD NAME="jsonfields" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="extra info in json."/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" />
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="block_poodllclassroom_school" COMMENT="poodllclassroomschool">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" />
+        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="name field for school" />
+        <FIELD NAME="ownerid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="The company owner user id" />
+        <FIELD NAME="resellerid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="The reseller table id" />
         <FIELD NAME="upstreamownerid" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="the chargebee owner ID for this sub"/>
         <FIELD NAME="status" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="true" DEFAULT="-" SEQUENCE="false" COMMENT="the school status"/>
+        <FIELD NAME="description" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Short description of school."/>
+        <FIELD NAME="apiuser" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="apiuser in json"/>
+        <FIELD NAME="apisecret" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="apisecret in json"/>
+        <FIELD NAME="siteurls" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="siteurls in json"/>
+        <FIELD NAME="jsonfields" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="extra info in json."/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" />
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+	 <TABLE NAME="block_poodllclassroom_sub" COMMENT="poodllclassroomsub">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" />
+        <FIELD NAME="schoolid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="The school id" />
+		<FIELD NAME="planid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="The poodllclassroom plan id" />
+        <FIELD NAME="upstreamsubid" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="the chargebee ID for this sub"/>
+        <FIELD NAME="status" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="true" DEFAULT="-" SEQUENCE="false" COMMENT="the school status"/>
+        <FIELD NAME="jsonfields" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="extra info in json."/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" />
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false"/>
       </FIELDS>

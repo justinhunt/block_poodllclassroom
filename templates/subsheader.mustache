@@ -1,0 +1,23 @@
+{{{maxuserslabel}}}
+<div class="block_poodllclassroom_userheader block_poodllclassroom_flexbox">
+    {{{createuserbutton}}} {{{uploaduserbutton}}}
+</div>
+<div id="block_poodllclassroom_subslist_cont" class="block_poodllclassroom_subslist_cont" style="display: {{display}};">
+    <h3 class="block_poodllclassroom_allschoolsubs">{{#str}}allschoolsubs, block_poodllclassroom{{/str}}</h3>
+    <table class="generaltable block_poodllclassroom_subslist_table" id="{{tableid}}">
+        <thead>
+        <tr>
+            <th class="header c0 subname" style="" scope="col">{{#str}}subname, block_poodllclassroom{{/str}}</th>
+            <th class="header c1 subperiod" style="" scope="col">{{#str}}subperiod, block_poodllclassroom{{/str}}</th>
+            <th class="header c2 date" style="" scope="col">{{#str}}timecreated, block_poodllclassroom{{/str}}</th>
+            <th class="header c3 edit" style="" scope="col">{{#str}}action, block_poodllclassroom{{/str}}</th>
+            <th class="header c4 lastcol renew" style="" scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#subs}}
+            {{> block_poodllclassroom/subslistrow}}
+        {{/subs}}
+        </tbody>
+    </table>
+</div>

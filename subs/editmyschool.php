@@ -42,7 +42,7 @@ $baseurl = constants::M_URL;
 
 
 $context = context_system::instance();
-require_capability('block/poodllclassroom:managepoodllclassroom', $context);
+//require_capability('block/poodllclassroom:managepoodllclassroom', $context);
 
 if (!empty($returnurl)) {
     $returnurl = new moodle_url($returnurl);
@@ -57,6 +57,32 @@ $PAGE->set_url($baseurl);
 $PAGE->set_context($context);
 $PAGE->set_pagelayout('course');
 $renderer = $PAGE->get_renderer(constants::M_COMP);
+
+$ok =false;
+$school  = $DB->get_record(constants::M_TABLE_SCHOOLS, array('id' => $id));
+if($school){$ok=true;}
+if($ok){
+    $ok = $school->ownerid==$USER->id;
+    if(!$ok){
+        $reseller = common::fetch_me_reseller();
+        if($reseller){
+            $resold_schools= common::fetch_schools_by_reseller($reseller->id);
+            foreach($resold_schools as $resold_school){
+                if($school->id==$resold_school->id){
+                    $ok=true;
+                    break;
+                }
+            }
+        }
+    }
+}
+if(!$ok){
+    //we dont have ownership of this school so cancel out of here
+    $returnurl=$CFG->wwwroot . '/my';
+    redirect($returnurl,get_string('dontownthisschool',constants::M_COMP),
+            3,\core\output\notification::NOTIFY_WARNING);
+}
+
 
 if ($delete && $id) {
     $PAGE->url->param('delete', 1);
@@ -81,8 +107,10 @@ if ($editform->is_cancelled()){
 
         case 'myschool':
             $theschool = $DB->get_record(constants::M_TABLE_SCHOOLS, array('id' => $data->id));
-            if($theschool && $theschool->ownerid==$USER->id && !empty($data->schoolname)) {
-                common::set_schoolname_by_school($theschool, $data->schoolname);
+            if($theschool && $theschool->ownerid==$USER->id && !empty($data->name)) {
+                if(!empty($data->siteurl)){$data->siteurls=json_encode($data->siteurl);}
+                $DB->update_record(constants::M_TABLE_SCHOOLS,$data);
+                //common::set_schoolname($theschool, $data->name);
             }
     }
 
@@ -95,13 +123,19 @@ if ($editform->is_cancelled()){
 switch($type){
 
     case 'myschool':
-        $theschool = common::get_poodllschool_by_currentuser();
-        if($theschool && $theschool->ownerid==$USER->id) {
+
             $usedata = new stdClass();
-            $usedata->id=$theschool->id;
-            $usedata->schoolname=common::get_schoolname_by_school($theschool);
+            $usedata->id=$school->id;
+            $usedata->name=$school->name;
+
+
+            //deal with URLS
+            if(!empty($school->siteurls)) {
+                $usedata->siteurl = json_decode($school->siteurls);
+            }
+
             $editform->set_data($usedata);
-        }
+
 }
 
 $strheading = get_string('editmyschool', constants::M_COMP);

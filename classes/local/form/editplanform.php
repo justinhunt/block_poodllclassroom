@@ -75,8 +75,22 @@ class editplanform extends \moodleform {
         $mform->addElement('text', 'price', get_string('price', constants::M_COMP), array());
         $mform->setType('price', PARAM_TEXT);
 
+        //plan families
+        $planfamilies = common::fetch_planfamilies();
+        $mform->addElement('select', 'planfamily', get_string('planfamily', constants::M_COMP), $planfamilies);
+        $mform->setType('planfamily', PARAM_TEXT);
+
+        //platform
+        $platforms = common::fetch_platforms();
+        $mform->addElement('select', 'platform', get_string('platform', constants::M_COMP), $platforms);
+        $mform->setType('platform', PARAM_TEXT);
+
         $mform->addElement('text', 'description', get_string('description', constants::M_COMP), array());
         $mform->setType('description', PARAM_TEXT);
+
+        $mform->addElement('textarea', 'jsonfields', get_string('jsonfields', constants::M_COMP), array('size'=>70));
+        $mform->setType('jsonfields', PARAM_RAW);
+        $mform->setDefault('jsonfields', '{}');
 
 
         //add the action buttons

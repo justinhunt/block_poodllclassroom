@@ -47,9 +47,16 @@ class editmyschoolform extends \moodleform {
         $mform->addElement('hidden', 'type','myschool');
         $mform->setType('type', PARAM_TEXT);
 
-        $mform->addElement('text', 'schoolname', get_string('schoolname', constants::M_COMP), array('size'=>70));
-        $mform->setType('schoolname', PARAM_TEXT);
-        $mform->addRule('schoolname', get_string('required'), 'required', null, 'client');
+        $mform->addElement('text', 'name', get_string('schoolname', constants::M_COMP), array('size'=>70));
+        $mform->setType('name', PARAM_TEXT);
+        $mform->addRule('name', get_string('required'), 'required', null, 'client');
+
+        for($urlcount =0; $urlcount<5; $urlcount++) {
+            $mform->addElement('text', 'siteurl[' . $urlcount  . ']', get_string('siteurl', constants::M_COMP, $urlcount+1), array('size' => 70));
+            $mform->setType('siteurl[' . $urlcount  . ']', PARAM_TEXT);
+        }
+
+
 
         //add the action buttons
         $this->add_action_buttons(get_string('cancel'), get_string('save', constants::M_COMP));

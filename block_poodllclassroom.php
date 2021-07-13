@@ -42,17 +42,15 @@ class block_poodllclassroom extends block_base {
         //later we can add more stuff here
         if (!has_capability('block/poodllclassroom:managepoodllclassroom', $this->context)) {
             $ret=null;
-            $companyid = common::get_my_companyid($this->context);
-            if($companyid){
-                $company = new company($companyid);
-                $this->content = new stdClass();
-                $this->content->items = array();
-                $this->content->icons = array();
-                $this->content->footer = '';
-                $this->title = '';
-                $this->content->text = $renderer->fetch_normalpeople_block_content($company);
-                $ret = $this->content;
-            }
+
+            $this->content = new stdClass();
+            $this->content->items = array();
+            $this->content->icons = array();
+            $this->content->footer = '';
+            $this->title = '';
+            $this->content->text = $renderer->fetch_normalpeople_block_content();
+            $ret = $this->content;
+
             return $ret;
         }
 
@@ -85,14 +83,15 @@ class block_poodllclassroom extends block_base {
         //get best config. our helper class to merge local and admin configs
         $bestconfig = common::fetch_best_config($instancesettings->id);
 
-        //Set the companyid
-        $companyid = common::get_my_companyid($this->context);
-        $company = new company($companyid);
-        $companyusers = common::fetch_company_users($companyid);
-        $companycourses = common::fetch_company_courses($companyid);
-        $this->title = $company->get_name();
+        //Set the school
+        $school= common::get_poodllschool_by_currentuser();
+        if($school) {
+            $this->title = $school->name;
+        }else{
+            $this->title = 'Poodll Subscriptions';
+        }
 
-        $this->content->text = $renderer->fetch_block_content($this->context, $company,$companyusers,$companycourses) ;
+        $this->content->text = $renderer->fetch_block_content($this->context) ;
         return $this->content  ;
     }
 

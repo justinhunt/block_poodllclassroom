@@ -51,7 +51,7 @@ function xmldb_block_poodllclassroom_upgrade($oldversion) {
 
     if ($oldversion < 2020090303) {
 
-        $table = new xmldb_table(constants::M_TABLE_SCHOOLS);
+        $table = new xmldb_table(constants::M_TABLE_SUBS);
         $field = new xmldb_field('status', XMLDB_TYPE_CHAR, '255', null, null, null, '-');
 
         if (!$dbman->field_exists($table, $field)) {

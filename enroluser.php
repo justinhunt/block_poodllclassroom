@@ -65,7 +65,7 @@ $PAGE->navbar->add($linktext, $linkurl);
 require_login(null, false); // Adds to $PAGE, creates $output.
 iomad::require_capability('block/iomad_company_admin:company_course_users', $context);
 // Set the companyid
-$companyid = iomad::get_my_companyid($context);
+$companyid = common::get_my_schoolid($context);
 $parentlevel = company::get_company_parentnode($companyid);
 $companydepartment = $parentlevel->id;
 $syscontext = context_system::instance();

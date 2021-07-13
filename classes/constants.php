@@ -20,6 +20,9 @@ const M_CLASS='block_poodllclassroom';
 const M_HOOKCOUNT =5;
 const M_CLASS_USERLIST ='block_poodllclassroom_userlist_cont';
 
+const RESELLER_POODLL=1;
+const RESELLER_THIRDPARTY=2;
+
 const SETTING_NONE ='none';
 const SETTING_MICROSOFTAUTH ='microsoftauth';
 const SETTING_GOOGLEAUTH ='googleauth';
@@ -41,7 +44,9 @@ const FORM_DELETECOURSE = 'deletecourse';
 const FORM_UPLOADUSER = 'uploaduser';
 
 const M_TABLE_PLANS = 'block_poodllclassroom_plan';
+const M_TABLE_SUBS = 'block_poodllclassroom_sub';
 const M_TABLE_SCHOOLS = 'block_poodllclassroom_school';
+const M_TABLE_RESELLERS = 'block_poodllclassroom_reseller';
 
 const M_INTEGRATION_POODLLNET = 'poodllnet';
 const M_INTEGRATION_CLOUDPOODLL = 'cloudpoodll';
@@ -49,5 +54,12 @@ const M_INTEGRATION_CLOUDPOODLL = 'cloudpoodll';
 const M_BILLING_YEARLY = 0;
 const M_BILLING_MONTHLY = 1;
 const M_BILLING_FREE = 2;
+
+const M_PLATFORM_MOODLE = 'MOODLE';
+const M_PLATFORM_LTI = 'LTI';
+const M_PLATFORM_CLASSROOM = 'CLASSROOM';
+
+const M_RESELLER_THIRDPARTY =0;
+const M_RESELLER_POODLL =1;
 
 }

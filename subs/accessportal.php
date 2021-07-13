@@ -26,10 +26,12 @@ use block_poodllclassroom\constants;
 use block_poodllclassroom\common;
 require('../../../config.php');
 
+$subid        = required_param('subid',  PARAM_INT);
+
 //set the url of the $PAGE
 //note we do this before require_login preferably
 //so Moodle will send user back here if it bounces them off to login first
-$PAGE->set_url(constants::M_URL . '/subs/accessportal.php',array());
+$PAGE->set_url(constants::M_URL . '/subs/accessportal.php',array('subid'=>$subid));
 $course = get_course(1);
 require_login($course);
 
@@ -44,7 +46,12 @@ $PAGE->navbar->add(get_string('pluginname', constants::M_COMP));
 $renderer = $PAGE->get_renderer(constants::M_COMP);
 
 
-$ok = has_capability('block/poodllclassroom:managepoodllclassroom', $context);
+//Get the sub
+$sub =$DB->get_record(constants::M_TABLE_SUBS,array('id'=>$subid));
+$extended_sub=common::get_extended_sub_data([$sub])[0];
+
+//$ok = has_capability('block/poodllclassroom:managepoodllclassroom', $context);
+$ok = ($extended_sub->school->ownerid == $USER->id) ||($extended_sub->school->reseller->userid == $USER->id) ;
 if(!$ok){
     echo $renderer->header();
     echo $renderer->heading($SITE->fullname);
@@ -56,9 +63,8 @@ if(!$ok){
 
 
 //get subscription details
-$school = common::get_poodllschool_by_currentuser();
-if($school) {
-    $portalurl = common::get_portalurl_by_school($school);
+if($extended_sub) {
+    $portalurl = common::get_portalurl_by_sub($extended_sub);
     if($portalurl){
        // redirect($portalurl,get_string('sendingtoportal',constants::M_COMP));
         redirect($portalurl);

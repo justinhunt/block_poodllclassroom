@@ -1,0 +1,18 @@
+
+<div id="block_poodllclassroom_moodlesubslist_cont" class="block_poodllclassroom_moodlesubslist_cont" style="display: {{display}};">
+        <h3 class="block_poodllclassroom_subslist_title">{{#str}}moodlesubs, block_poodllclassroom{{/str}}</h3>
+        <a href="{{{editschoolurl}}}">EDIT ME</a>
+        <div>School Name: {{school.name}}</div>
+        {{#school.siteurls}}
+            <div>Site URL: {{.}}</div>
+        {{/school.siteurls}}
+        {{^school.siteurls}}
+            {{#str}}nositeurls, block_poodllclassroom{{/str}}
+        {{/school.siteurls}}
+
+        <div>API User: {{school.apiuser}}</div>
+        <div>API Secret: {{school.apisecret}}</div>
+        <hr>
+
+</div>
+<hr>

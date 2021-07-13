@@ -10,7 +10,7 @@
 
 use \block_poodllclassroom\common;
 use \block_poodllclassroom\constants;
-use \block_poodllclassroom\iomadadaptor;
+use \block_poodllclassroom\standardadaptor;
 
 class block_poodllclassroom_external extends external_api {
 
@@ -40,7 +40,7 @@ class block_poodllclassroom_external extends external_api {
                         'upstreamownerid' => $upstreamownerid,
                         'upstreamsubid' => $upstreamsubid]);
 
-        $ret = iomadadaptor::update_sub($params);
+        $ret = standardadaptor::update_sub($params);
         return $ret;
     }
 
@@ -79,7 +79,7 @@ class block_poodllclassroom_external extends external_api {
                         'upstreamownerid' => $upstreamownerid,
                         'upstreamsubid' => $upstreamsubid]);
 
-        $ret = iomadadaptor::resume_sub($params);
+        $ret = standardadaptor::resume_sub($params);
         return $ret;
     }
 
@@ -117,7 +117,7 @@ class block_poodllclassroom_external extends external_api {
                         'upstreamownerid' => $upstreamownerid,
                         'upstreamsubid' => $upstreamsubid]);
 
-        $ret = iomadadaptor::pause_sub($params);
+        $ret = standardadaptor::pause_sub($params);
 
     }
 
@@ -154,7 +154,7 @@ class block_poodllclassroom_external extends external_api {
                         'upstreamownerid' => $upstreamownerid,
                         'upstreamsubid' => $upstreamsubid]);
 
-        $ret = iomadadaptor::reactivate_sub($params);
+        $ret = standardadaptor::reactivate_sub($params);
 
     }
 
@@ -191,7 +191,7 @@ class block_poodllclassroom_external extends external_api {
                         'upstreamownerid' => $upstreamownerid,
                         'upstreamsubid' => $upstreamsubid]);
 
-        $ret = iomadadaptor::activate_sub($params);
+        $ret = standardadaptor::activate_sub($params);
 
     }
 
@@ -228,7 +228,7 @@ class block_poodllclassroom_external extends external_api {
                  'upstreamownerid' => $upstreamownerid,
                  'upstreamsubid' => $upstreamsubid]);
 
-        $ret = iomadadaptor::update_sub($params);
+        $ret = standardadaptor::update_sub($params);
         return $ret;
     }
 
@@ -272,7 +272,7 @@ class block_poodllclassroom_external extends external_api {
             ['username' => $username, 'firstname' => $firstname, 'lastname' => $lastname, 'email' => $email, 'schoolname'=>$schoolname,
                     'upstreamplanid'=>$upstreamplanid,'upstreamownerid'=>$upstreamownerid,'upstreamsubid'=>$upstreamsubid]);
 
-        $ret = iomadadaptor::create_sub($params);
+        $ret = standardadaptor::create_sub($params);
 
         return $ret;
     }
@@ -304,7 +304,6 @@ class block_poodllclassroom_external extends external_api {
     {
         global $CFG, $DB, $USER;
 
-        require_once($CFG->dirroot . '/blocks/iomad_company_admin/lib.php');
 
         // We always must pass webservice params through validate_parameters.
         $params = self::validate_parameters(self::delete_item_parameters(),
@@ -315,18 +314,14 @@ class block_poodllclassroom_external extends external_api {
         // We always must call validate_context in a webservice.
         self::validate_context($context);
 
-        //Set the companyid
-        $companyid = iomad::get_my_companyid($context);
-        $company = new company($companyid);
-
         switch($formname){
             case constants::FORM_DELETEUSER:
-                $result =  common::remove_user_from_company($context,$company,$itemid);
+               // $result =  common::remove_user_from_company($context,$company,$itemid);
                 break;
 
             case constants::FORM_DELETECOURSE:
               //$result =  common::remove_course_from_company($context,$companyid,$itemid);
-                $result =  common::delete_course_from_company($companyid,$itemid);
+               // $result =  common::delete_course_from_company($companyid,$itemid);
               break;
         }
 
@@ -356,7 +351,7 @@ class block_poodllclassroom_external extends external_api {
     public static function submit_mform($contextid,$jsonformdata, $formname) {
         global $CFG, $DB, $USER;
 
-        require_once($CFG->dirroot .'/blocks/iomad_company_admin/lib.php');
+
 
         // We always must pass webservice params through validate_parameters.
         $params = self::validate_parameters(self::submit_mform_parameters(),
@@ -378,40 +373,10 @@ class block_poodllclassroom_external extends external_api {
             case constants::FORM_EDITUSER:
                 require_once($CFG->dirroot . '/user/editlib.php');
                 $systemcontext = context_system::instance();
-                iomad::require_capability('block/iomad_company_admin:user_create', $systemcontext);
-
-                //Set the companyid
-                $companyid = iomad::get_my_companyid($context);
-                $company = new company($companyid);
-                $departmentid=0;
-
-                //not sure about this
-                $userid = $data['id'];
-
-                // Editing existing user.
-                iomad::require_capability('block/iomad_company_admin:editusers', $systemcontext);
-                if (!$user = $DB->get_record('user', array('id' => $userid))) {
-                    print_error('invaliduserid',constants::M_COMP);
-                }
-                if (!company::check_canedit_user($companyid, $userid)) {
-                    print_error('invaliduserid', constants::M_COMP);
-                }
-
-                if (!empty($userid) && !company::check_valid_user($companyid, $userid, $departmentid)) {
-                    print_error('invaliduserdepartment', constants::M_COMP);
-                }
-
-                // Remote users cannot be edited.
-                if ($user->id != -1 and is_mnet_remote_user($user)) {
-                    print_error('canteditremoteusers');
-                }
-
-                if (isguestuser($user->id)) { // The real guest user can not be edited.
-                    print_error('guestnoeditprofileother');
-                }
 
 
-                $usercontext = context_user::instance($user->id);
+
+                $usercontext = context_user::instance($USER->id);
                 $editoroptions = array(
                     'maxfiles'   => EDITOR_UNLIMITED_FILES,
                     'maxbytes'   => $CFG->maxbytes,
@@ -435,8 +400,8 @@ class block_poodllclassroom_external extends external_api {
                 $usernew = $mform->get_data();
                 if ($usernew) {
 
-                    $ret = common::update_company_user($companyid,$usernew,$user,$editoroptions);
-                    return json_encode($ret);
+                   // $ret = common::update_company_user($companyid,$usernew,$user,$editoroptions);
+                    return json_encode('{}');
                 }
                 break;
 
@@ -446,27 +411,16 @@ class block_poodllclassroom_external extends external_api {
 
 
                 $systemcontext = context_system::instance();
-                iomad::require_capability('block/iomad_company_admin:user_create', $systemcontext);
-                
-                //Set the companyid
-                $companyid = iomad::get_my_companyid($context);
-                $company = new company($companyid);
-                
-                // Check if the company has gone over the user quota.
-                if (!$company->check_usercount(1)) {
-                    $dashboardurl = new moodle_url('/my');
-                    $maxusers = $company->get('maxusers');
-                    print_error('maxuserswarning', 'block_iomad_company_admin', $dashboardurl, $maxusers);
-                }
-                $departmentid=0;
-                $licenseid=0;
-                $mform = new \block_poodllclassroom\local\form\createuserform($companyid, $departmentid, $licenseid, $data);
+
+/*
+                $mform = new \block_poodllclassroom\local\form\createuserform($companyid,  $data);
                 $validateddata = $mform->get_data();
                 if ($validateddata) {
                     $ret = common::create_company_user($companyid,$validateddata);
                     return json_encode($ret);
                 }
-
+*/
+                return json_encode([]);
                 break;
 
             case constants::FORM_CREATECOURSE:
@@ -475,10 +429,7 @@ class block_poodllclassroom_external extends external_api {
 
 
                 $systemcontext = context_system::instance();
-                iomad::require_capability('block/iomad_company_admin:createcourse', $systemcontext);
 
-                // Set the companyid
-                $companyid = iomad::get_my_companyid($context);
 
 
                 /* next line copied from /course/edit.php */
@@ -491,20 +442,20 @@ class block_poodllclassroom_external extends external_api {
                 $target='';
                 $attributes=null;
                 $editable=true;
-                $mform = new \block_poodllclassroom\local\form\createcourseform(null, array('companyid'=>$companyid,'editoroptions'=>$editoroptions),
+                $mform = new \block_poodllclassroom\local\form\createcourseform(null, array('schoolid'=>0,'editoroptions'=>$editoroptions),
                         $method,$target,$attributes,$editable,$data);
 
                 $validateddata = $mform->get_data();
                 if ($validateddata) {
                     //error_log(print_r( $validateddata, true ));
-                    $ret = common::upsert_company_course($companyid,$validateddata,$editoroptions, $formname);
-                    return json_encode($ret);
+                   // $ret = common::upsert_company_course(0,$validateddata,$editoroptions, $formname);
+                    return json_encode([]);
                 }
                 break;
 
             case constants::FORM_UPLOADUSER:
-                $companyid = iomad::get_my_companyid($context);
-                $mform = new \block_poodllclassroom\local\form\uploaduserform($companyid, $data);
+                $schoolid = 1;
+                $mform = new \block_poodllclassroom\local\form\uploaduserform($schoolid, $data);
                 $validateddata = $mform->get_data();
                 if ($validateddata) {
                     if (!empty($validateddata->importdata)) {
@@ -530,7 +481,7 @@ class block_poodllclassroom_external extends external_api {
                             $cols = explode($delimiter,$row);
                             if(count($cols)>=3 && !empty($cols[0]) && !empty($cols[1])&& !empty($cols[2])){
                                 $userrow = new \stdClass();
-                                $userrow->companyid=$companyid;
+                                $userrow->schoolid=$schoolid;
                                 $userrow->user_email_as_username=false;
                                 $userrow->due=0; //needed for email of password, might need to be set more properly
                                 $userrow->firstname=$cols[0];
@@ -540,7 +491,7 @@ class block_poodllclassroom_external extends external_api {
                                     $userrow->newpassword=$cols[3];
                                 }
 
-                                $ret = common::create_company_user($companyid,$userrow);
+                                $ret = true;//common::create_company_user($companyid,$userrow);
                                 if(!$ret || $ret->error){
                                     $failed[]=$row;
                                 }else {
@@ -560,7 +511,7 @@ class block_poodllclassroom_external extends external_api {
                         $message=get_string('importresults',constants::M_COMP,$result);
 
                         $ret = new \stdClass();
-                        $ret->companyid=$companyid;
+                        $ret->schoolid=$schoolid;
                         $ret->message='';
                         $ret->error=false;
 

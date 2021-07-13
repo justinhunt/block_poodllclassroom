@@ -10,7 +10,7 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
         modulecssclass: null,
         contextid: 0,
         strings: [],
-        schoolinfo: {},
+        subinfo: {},
 
 
         init: function(props){
@@ -28,7 +28,7 @@ define(['jquery','core/config','core/log','core/ajax','core/templates','core/mod
             this.modulecssclass = opts.modulecssclass;
             this.contextid = opts.contextid;
             this.tableid = opts.tableid;
-            this.schoolinfo = opts.schoolinfo;
+            this.subinfo = opts.subinfo;
             this.schoolplan = opts.schoolplan;
             this.prepare_html();
             this.register_events();

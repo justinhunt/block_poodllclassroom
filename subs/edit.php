@@ -31,7 +31,7 @@ use block_poodllclassroom\common;
 $id        = optional_param('id', 0, PARAM_INT);
 $delete    = optional_param('delete', 0, PARAM_BOOL);
 $confirm    = optional_param('confirm', 0, PARAM_BOOL);
-$type    = optional_param('type', 'plan', PARAM_TEXT);//school //myschool
+$type    = optional_param('type', 'plan', PARAM_TEXT);//plan/ sub school //myschool
 $returnurl = optional_param('returnurl', '', PARAM_LOCALURL);
 
 require_login();
@@ -66,6 +66,14 @@ if ($delete && $id) {
                 $result=$DB->delete_records(constants::M_TABLE_PLANS,array('id'=>$id));
                 redirect($returnurl);
             }
+
+            //cancel the deletion request if their exist subs using this plan
+            $subs = common::fetch_subs_by_plan($id);
+            if($subs && count($subs)){
+                redirect($returnurl,get_string('existingsubsforplan',constants::M_COMP),
+                        3,\core\output\notification::NOTIFY_WARNING);
+            }
+
             $strheading = get_string('deleteplan', constants::M_COMP);
             $PAGE->navbar->add($strheading);
             $PAGE->set_title($strheading);
@@ -78,11 +86,40 @@ if ($delete && $id) {
             echo $renderer->confirm($message, $yesurl, $returnurl);
             echo $renderer->footer();
             die;
+        case 'sub':
+            if ($confirm and confirm_sesskey()) {
+                $result=$DB->delete_records(constants::M_TABLE_SUBS,array('id'=>$id));
+                redirect($returnurl);
+            }
+            $strheading = get_string('deletesub', constants::M_COMP);
+            $PAGE->navbar->add($strheading);
+            $PAGE->set_title($strheading);
+            $PAGE->set_heading($SITE->fullname);
+            echo $renderer->header();
+            echo $renderer->heading($strheading);
+            $yesurl = new moodle_url($baseurl . '/subs/edit.php', array('id' => $id, 'delete' => 1,'type'=>'sub',
+                    'confirm' => 1, 'sesskey' => sesskey(), 'returnurl' => $returnurl->out_as_local_url()));
+            $message = get_string('deletesubconfirm', constants::M_COMP);
+            echo $renderer->confirm($message, $yesurl, $returnurl);
+            echo $renderer->footer();
+            die;
         case 'school':
             if ($confirm and confirm_sesskey()) {
                 $result=$DB->delete_records(constants::M_TABLE_SCHOOLS,array('id'=>$id));
                 redirect($returnurl);
             }
+
+            //cancel the deletion request if their exist subs using this plan
+            $subs = common::fetch_subs_by_school($id);
+            if($subs && count($subs)){
+                redirect($returnurl,get_string('existingsubsforschool',constants::M_COMP),
+                        3,\core\output\notification::NOTIFY_WARNING);
+            }
+
+            //first delete subs
+            //what to do about upstream???
+
+            //
             $strheading = get_string('deleteschool', constants::M_COMP);
             $PAGE->navbar->add($strheading);
             $PAGE->set_title($strheading);
@@ -95,8 +132,34 @@ if ($delete && $id) {
             echo $renderer->confirm($message, $yesurl, $returnurl);
             echo $renderer->footer();
             die;
+        case 'reseller':
 
-        case 'myschool':
+            if ($confirm and confirm_sesskey()) {
+                $result=$DB->delete_records(constants::M_TABLE_RESELLERS,array('id'=>$id));
+                redirect($returnurl);
+            }
+
+
+            //cancel the deletion request if there exist schools under this reseller
+            $schools = common::fetch_schools_by_reseller($id);
+            if($schools && count($schools)){
+                redirect($returnurl,get_string('existingschoolsforreseller',constants::M_COMP),
+                        3,\core\output\notification::NOTIFY_WARNING);
+            }
+
+            $strheading = get_string('deletereseller', constants::M_COMP);
+            $PAGE->navbar->add($strheading);
+            $PAGE->set_title($strheading);
+            $PAGE->set_heading($SITE->fullname);
+            echo $renderer->header();
+            echo $renderer->heading($strheading);
+            $yesurl = new moodle_url($baseurl . '/subs/edit.php', array('id' => $id, 'delete' => 1,'type'=>'reseller',
+                    'confirm' => 1, 'sesskey' => sesskey(), 'returnurl' => $returnurl->out_as_local_url()));
+            $message = get_string('deleteresellerconfirm', constants::M_COMP);
+            echo $renderer->confirm($message, $yesurl, $returnurl);
+            echo $renderer->footer();
+            die;
+        case 'mysub':
             //there is no delete myschool (yet!!)
     }
 
@@ -107,10 +170,16 @@ switch($type){
     case 'plan':
         $editform = new \block_poodllclassroom\local\form\editplanform();
         break;
+    case 'sub':
+        $editform = new \block_poodllclassroom\local\form\editsubform();
+        break;
     case 'school':
         $editform = new \block_poodllclassroom\local\form\editschoolform();
         break;
-    case 'myschool':
+    case 'reseller':
+        $editform = new \block_poodllclassroom\local\form\editresellerform();
+        break;
+    case 'mysub':
         $editform = new \block_poodllclassroom\local\form\editmyschoolform();
 }
 
@@ -118,38 +187,54 @@ switch($type){
 if ($editform->is_cancelled()){
     redirect($returnurl);
 }else if($data = $editform->get_data()) {
+
     switch($type){
         case 'plan':
             if (!$data->id) {
                 $data->timemodified=time();
                 $result=$DB->insert_record(constants::M_TABLE_PLANS,$data);
             } else {
-                $updatedata = array('id'=>$data->id,'name'=>$data->name,
-                        'maxusers'=>$data->maxusers,
-                        'maxcourses'=>$data->maxcourses,
-                        'features'=>$data->features,
-                        'billinginterval'=>$data->billinginterval,
-                        'price'=>$data->price,
-                        'description'=>$data->description,
-                        'upstreamplan'=>$data->upstreamplan,
-                        'timemodified'=>time());
-                $result=$DB->update_record(constants::M_TABLE_PLANS,$updatedata);
+                $data->timemodified=time();
+                $result=$DB->update_record(constants::M_TABLE_PLANS,$data);
             }
             break;
+        case 'sub':
+            if (!$data->id) {
+                $data->timemodified=time();
+                $data->timecreated=time();
+                $result=$DB->insert_record(constants::M_TABLE_SUBS,$data);
+            } else {
+                $data->timemodified=time();
+                $result = $DB->update_record(constants::M_TABLE_SUBS, $data);
+            }
+            break;
+        case 'reseller':
+            if (!$data->id) {
+                $data->timemodified=time();
+                $data->timecreated=time();
+                $result=$DB->insert_record(constants::M_TABLE_RESELLERS,$data);
+            } else {
+                $data->timemodified=time();
+                $result = $DB->update_record(constants::M_TABLE_RESELLERS, $data);
+            }
+            break;
+
         case 'school':
+            //deal with URLS
+            if(!empty($data->siteurl)){$data->siteurls=json_encode($data->siteurl);}
             if (!$data->id) {
                 $data->timemodified=time();
                 $data->timecreated=time();
                 $result=$DB->insert_record(constants::M_TABLE_SCHOOLS,$data);
             } else {
-                $updatedata = array('id' => $data->id, 'planid' => $data->planid);
-                $result = $DB->update_record(constants::M_TABLE_SCHOOLS, $updatedata);
+                $data->timemodified=time();
+                $result = $DB->update_record(constants::M_TABLE_SCHOOLS, $data);
             }
             break;
-        case 'myschool':
-            $theschool = $DB->get_record(constants::M_TABLE_SCHOOLS, array('id' => $data->id));
-            if($theschool && $theschool->ownerid==$USER->id && !empty($data->schoolname)) {
-                common::set_schoolname_by_school($theschool, $data->schoolname);
+        case 'mysub':
+            $thesub = $DB->get_record(constants::M_TABLE_SUBS, array('id' => $data->id));
+            if($thesub && $thesub->ownerid==$USER->id && !empty($data->schoolname)) {
+                common::set_schoolname_by_sub($thesub, $data->schoolname);
             }
     }
 
@@ -166,18 +251,34 @@ switch($type){
             $editform->set_data($usedata);
         }
         break;
-    case 'school':
+    case 'sub':
         if ($id) {
-            $usedata = $DB->get_record(constants::M_TABLE_SCHOOLS, array('id' => $id));
+            $usedata = $DB->get_record(constants::M_TABLE_SUBS, array('id' => $id));
             $editform->set_data($usedata);
         }
         break;
-    case 'myschool':
-        $theschool = $DB->get_record(constants::M_TABLE_SCHOOLS, array('id' => $id));
-        if($theschool && $theschool->ownerid==$USER->id) {
+    case 'school':
+        if ($id) {
+            $usedata = $DB->get_record(constants::M_TABLE_SCHOOLS, array('id' => $id));
+            //deal with URLS
+            if(!empty($usedata->siteurls)) {
+                $usedata->siteurl = json_decode($usedata->siteurls);
+            }
+            $editform->set_data($usedata);
+        }
+        break;
+    case 'reseller':
+        if ($id) {
+            $usedata = $DB->get_record(constants::M_TABLE_RESELLERS,array('id'=>$id));
+            $editform->set_data($usedata);
+        }
+        break;
+    case 'mysub':
+        $thesub = $DB->get_record(constants::M_TABLE_SUBS, array('id' => $id));
+        if($thesub && $thesub->ownerid==$USER->id) {
             $usedata = new stdClass();
-            $usedata->id=$theschool->id;
-            $usedata->schoolname=common::get_schoolname_by_school($theschool);
+            $usedata->id=$thesub->id;
+            $usedata->schoolname=common::get_schoolname_by_sub($thesub);
             $editform->set_data($usedata);
         }
 

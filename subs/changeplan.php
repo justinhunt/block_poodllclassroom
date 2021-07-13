@@ -26,10 +26,13 @@ use block_poodllclassroom\constants;
 use block_poodllclassroom\common;
 require('../../../config.php');
 
+
+$subid        = required_param('subid',  PARAM_INT);
+
 //set the url of the $PAGE
 //note we do this before require_login preferably
 //so Moodle will send user back here if it bounces them off to login first
-$PAGE->set_url(constants::M_URL . '/subs/changeplan.php',array());
+$PAGE->set_url(constants::M_URL . '/subs/changeplan.php',array('subid' => $subid));
 $course = get_course(1);
 require_login($course);
 
@@ -43,20 +46,19 @@ $PAGE->navbar->add(get_string('pluginname', constants::M_COMP));
 
 //company name
 //Set the companyid
-$companyid = common::get_my_companyid($context);
-if($companyid) {
-    $company = new company($companyid);
-    $companyname = $company->get_name();
-}else{
-    $companyname = $SITE->fullname;
-}
+$companyname = $SITE->fullname;
+
+//Get the sub
+$sub =$DB->get_record(constants::M_TABLE_SUBS,array('id'=>$subid));
+$extended_sub=common::get_extended_sub_data([$sub])[0];
 
 
 //get our renderer
 $renderer = $PAGE->get_renderer(constants::M_COMP);
 
 
-$ok = has_capability('block/poodllclassroom:managepoodllclassroom', $context);
+//$ok = has_capability('block/poodllclassroom:managepoodllclassroom', $context);
+$ok = $extended_sub->school->ownerid == $USER->id;
 if(!$ok){
     echo $renderer->header();
     echo $renderer->heading($companyname );
@@ -66,9 +68,8 @@ if(!$ok){
 
 }
 
-//if we get to here there was an issue and user could not be sent to portal
 echo $renderer->header();
 echo $renderer->heading($companyname);
 echo $renderer->fetch_changeplan_toppart();
-echo $renderer->fetch_changeplan_buttons();
+echo $renderer->fetch_changeplan_buttons($extended_sub);
 echo $renderer->footer();

@@ -191,9 +191,6 @@ class standardadaptor
         $userdata['validto']=null;
         $userdata['suspendafter']=0;
 
-        $companydata = $params;
-        $companydata['name']=$params['schoolname'];
-        $companydata['shortname']=$params['schoolname'];
 
 
         //if we alredy have this poodllschol then we just need to update to the new plan
@@ -201,7 +198,7 @@ class standardadaptor
         $poodllschool =common::get_poodllsub_by_upstreamsubid($params['upstreamsubid']);
         if($poodllschool){
             common::update_poodllsub_from_upstream($poodllschool, $params['upstreamplanid']);
-            $ret['schoolid'] = $poodllschool->companyid;
+            $ret['schoolid'] = $poodllschool->id;
             $ret['userid'] = $poodllschool->userid;
             $theuser = $DB->get_record('user',array('id'=>$poodllschool->userid));
             if($theuser) {
@@ -211,20 +208,23 @@ class standardadaptor
         }
 
 
-        //we have created a company and possibly a user also
+
+        //we have created a school and possibly a user also
         //at this point we should update the poodllclassroom tables also
         $plan = common::fetch_poodllplan_from_upstreamplan($params['upstreamplanid']);
+
+
         $newuserid=1;
-        $schoolid = common::create_poodllsub($newuserid, $plan->id,
+        $school = common::create_poodllsub($newuserid, $plan->id,
                 $params['upstreamownerid'],$params['upstreamsubid']);
 
         if($newuserid) {
-            $ret['schoolid'] = $schoolid;
+            $ret['schoolid'] = $school->id;
             $ret['userid'] = $newuserid;
-            $ret['username'] = 'fakename';
+            $ret['username'] = 'fake username';
         }else{
             $ret['error'] = true;
-            $ret['message'] = "failed to create company AND user";
+            $ret['message'] = "failed to create school AND user";
         }
         return $ret;
     }

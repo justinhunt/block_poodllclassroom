@@ -35,7 +35,7 @@
 
 /// DOMAIN NAME
 //$domainname = 'http://ubuntubox/iomad';
-$domainname = 'https://misc.poodll.com/iomad';
+$domainname = 'https://misc.poodll.com/cpapi';
 
 
 

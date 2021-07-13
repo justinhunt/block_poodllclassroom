@@ -24,10 +24,10 @@ require_once($CFG->libdir . '/formslib.php');
      */
 class uploaduserform extends \moodleform {
 
-    public function __construct($companyid, $ajaxdata) {
+    public function __construct($schoolid, $ajaxdata) {
         global $CFG, $USER;
 
-        $this->selectedcompany = $companyid;
+        $this->selectedschool = $schoolid;
 
         $this->context = \context_coursecat::instance($CFG->defaultrequestcategory);
 

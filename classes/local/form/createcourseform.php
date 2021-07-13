@@ -34,7 +34,7 @@ require_once($CFG->dirroot.'/lib/formslib.php');
 class createcourseform extends \moodleform {
     protected $title = '';
     protected $description = '';
-    protected $selectedcompany = 0;
+    protected $selectedschool = 0;
     protected $context = null;
 
 
@@ -43,14 +43,13 @@ class createcourseform extends \moodleform {
 
         $mform =& $this->_form;
         $this->editoroptions = $this->_customdata['editoroptions'];
-        $this->selectedcompany = $this->_customdata['companyid'];
+        $this->selectedschool = $this->_customdata['schoolid'];
         $this->context  = \context_coursecat::instance($CFG->defaultrequestcategory);
 
         $mform->addElement('hidden','id');
 
         // Then show the fields about where this block appears.
-        $mform->addElement('header', 'header',
-                            get_string('companycourse', 'block_iomad_company_admin'));
+        $mform->addElement('header', 'header', 'COURSe');
 
         $mform->addElement('text', 'fullname', get_string('fullnamecourse'),
                             'maxlength="254" size="50"');
@@ -64,35 +63,7 @@ class createcourseform extends \moodleform {
         $mform->addRule('shortname', get_string('missingshortname'), 'required', null, 'client');
         $mform->setType('shortname', PARAM_MULTILANG);
 
-        // Create course as self enrolable.
-        if (\iomad::has_capability('block/iomad_company_admin:edit_licenses', \context_system::instance())) {
-            $selectarray = array(get_string('selfenrolled', 'block_iomad_company_admin'),
-                                 get_string('enrolled', 'block_iomad_company_admin'),
-                                 get_string('licensedcourse', 'block_iomad_company_admin'));
-        } else {
-            $selectarray = array(get_string('selfenrolled', 'block_iomad_company_admin'),
-                                 get_string('enrolled', 'block_iomad_company_admin'));
-        }
-        $select = &$mform->addElement('select', 'selfenrol',
-                            get_string('enrolcoursetype', 'block_iomad_company_admin'),
-                            $selectarray);
-        $mform->addHelpButton('selfenrol', 'enrolcourse', 'block_iomad_company_admin');
-        $select->setSelected('no');
 
-        $mform->addElement('editor', 'summary_editor',
-                            get_string('coursesummary'), null, $this->editoroptions);
-        $mform->addHelpButton('summary_editor', 'coursesummary');
-        $mform->setType('summary_editor', PARAM_RAW);
-
-        // Add action buttons.
-        $buttonarray = array();
-        $buttonarray[] = &$mform->createElement('submit', 'submitbutton',
-                            get_string('createcourse', 'block_iomad_company_admin'));
-        $buttonarray[] = &$mform->createElement('submit', 'submitandviewbutton',
-                            get_string('createandvisitcourse', 'block_iomad_company_admin'));
-        $buttonarray[] = &$mform->createElement('cancel');
-        $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
-        $mform->closeHeaderBefore('buttonar');
 
     }
 

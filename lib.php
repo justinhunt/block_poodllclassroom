@@ -35,12 +35,10 @@ function block_poodllclassroom_output_fragment_mform($args) {
 
         case constants::FORM_ENROLUSER:
             $context = context_system::instance();
-            if(!iomad::has_capability('block/iomad_company_admin:user_create', $context)){
-                return false;
-            }
+
 
             // Set the companyid
-            $companyid = iomad::get_my_companyid($context);
+            $schoolid = common::get_my_schoolid($context);
             $departmentid=0;
             $licenseid=0;
             $courseid=$itemid;
@@ -48,23 +46,21 @@ function block_poodllclassroom_output_fragment_mform($args) {
             $actionurl="unused";
 
             $data=null;
-            $mform = new \block_poodllclassroom\local\form\enroluserform($actionurl,$context,$companyid, $departmentid, $courses, $ajaxdata);
+            $mform = new \block_poodllclassroom\local\form\enroluserform($actionurl,$context,$schoolid, $departmentid, $courses, $ajaxdata);
 
             break;
 
         case constants::FORM_CREATEUSER:
             $context = context_system::instance();
-            if(!iomad::has_capability('block/iomad_company_admin:user_create', $context)){
-                return false;
-            }
+
 
             // Set the companyid
-            $companyid = iomad::get_my_companyid($context);
+            $schoolid = common::get_my_schoolid($context);
             $departmentid=0;
             $licenseid=0;
 
             $data=null;
-            $mform = new \block_poodllclassroom\local\form\createuserform($companyid, $departmentid,$licenseid, $data);
+            $mform = new \block_poodllclassroom\local\form\createuserform($schoolid, $departmentid,$licenseid, $data);
             if(isset($args->jsonformdata)){
                 $data = json_decode($args->jsonformdata);
                 $mform->set_data($data);
@@ -75,17 +71,13 @@ function block_poodllclassroom_output_fragment_mform($args) {
 
         case constants::FORM_UPLOADUSER:
             $context = context_system::instance();
-            if(!iomad::has_capability('block/iomad_company_admin:user_create', $context)){
-                return false;
-            }
 
             // Set the companyid
-            $companyid = iomad::get_my_companyid($context);
-            $departmentid=0;
-            $licenseid=0;
+            $schoolid = common::get_my_schoolid($context);
+
 
             $data=null;
-            $mform = new \block_poodllclassroom\local\form\uploaduserform($companyid, $data);
+            $mform = new \block_poodllclassroom\local\form\uploaduserform($schoolid, $data);
             if(isset($args->jsonformdata)){
                 $data = json_decode($args->jsonformdata);
                 $mform->set_data($data);
@@ -96,24 +88,15 @@ function block_poodllclassroom_output_fragment_mform($args) {
 
         case constants::FORM_EDITUSER :
             $context = context_system::instance();
-            if(!iomad::has_capability('block/iomad_company_admin:user_create', $context)){
-                return false;
-            }
-            require_once($CFG->dirroot . '/blocks/iomad_company_admin/editadvanced_form.php');
+
             require_once($CFG->dirroot . '/user/editlib.php');
             require_once($CFG->dirroot . '/user/profile/lib.php');
 
             // Set the companyid
-            $companyid = iomad::get_my_companyid($context);
+            $schoolid = common::get_my_schoolid($context);
             $departmentid=0;
             $licenseid=0;
             $userid=$itemid;
-
-            // Check the userid is valid.
-            if (!empty($userid) && !company::check_valid_user($companyid, $userid, $departmentid)) {
-                print_error('invaliduserdepartment', 'block_iomad_company_management');
-                return;
-            }
 
             $user = $DB->get_record('user',array('id'=>$userid));
 
@@ -152,7 +135,7 @@ function block_poodllclassroom_output_fragment_mform($args) {
 
             // Create form.
             $mform =new \block_poodllclassroom\local\form\edituserform(null, array('editoroptions' => $editoroptions,
-                'companyid' => $companyid,
+                'schoolid' => $schoolid,
                 'user' => $user,
                 'filemanageroptions' => $filemanageroptions));
             //$mform = new \block_poodllclassroom\local\form\edituserform(null, array('filemanageroptions'=>$filemanageroptions,'editoroptions'=> $editoroptions, 'user'=>$user));
@@ -164,21 +147,12 @@ function block_poodllclassroom_output_fragment_mform($args) {
         case constants::FORM_CREATECOURSE:
 
             $context = context_system::instance();
-           if(! iomad::has_capability('block/iomad_company_admin:createcourse', $context)){
-               return false;
-           }
 
-            // Correct the navbar.
-            // Set the name for the page.
-            $linktext = get_string('createcourse_title', 'block_iomad_company_admin');
-
-            // Set the url.
-            $linkurl = new moodle_url('/blocks/iomad_company_admin/company_course_create_form.php');
 
             // Set the companyid
-            $companyid = iomad::get_my_companyid($context);
+            $schoolid = common::get_my_schoolid($context);
 
-            $urlparams = array('companyid' => $companyid);
+            $urlparams = array('schoolid' => $schoolid);
 
             $companylist = new moodle_url('/my', $urlparams);
 
@@ -188,28 +162,16 @@ function block_poodllclassroom_output_fragment_mform($args) {
                     'trusttext' => false,
                     'noclean' => true);
 
-            $mform = new \block_poodllclassroom\local\form\createcourseform(null, array('companyid'=>$companyid,'editoroptions'=> $editoroptions));
+            $mform = new \block_poodllclassroom\local\form\createcourseform(null, array('schoolid'=>$schoolid,'editoroptions'=> $editoroptions));
 
             break;
 
         case constants::FORM_EDITCOURSE:
 
             $systemcontext = context_system::instance();
-           if(!iomad::has_capability('block/iomad_company_admin:createcourse', $context)){
-               return false;
-           }
-
-            // Set the companyid
-            $companyid = iomad::get_my_companyid($systemcontext);
             $courseid = $itemid;
-            // Check the courseid is valid.
-            if (!empty($courseid) && !empty($companyid)) {
-                $thecourse= common::fetch_company_course($companyid,$courseid);
-                if(!$thecourse) {
-                    print_error('invalidcourse', 'block_poodllclassroom');
-                    return false;
-                }
-            }
+            $thecourse=get_course($courseid);
+
 
             $coursecontext = context_course::instance($courseid, MUST_EXIST);
             $editoroptions = array('maxfiles' => EDITOR_UNLIMITED_FILES,
@@ -217,8 +179,7 @@ function block_poodllclassroom_output_fragment_mform($args) {
                 'trusttext' => false,
                 'noclean' => true);
             $thecourse = file_prepare_standard_editor($thecourse, 'summary', $editoroptions, $coursecontext, 'course', 'summary',0);
-            $mform = new \block_poodllclassroom\local\form\createcourseform(null, array('companyid'=>$companyid,'editoroptions'=> $editoroptions));
-
+            $mform = new \block_poodllclassroom\local\form\createcourseform(null, array(0,'editoroptions'=> $editoroptions));
             $mform->set_data($thecourse);
 
             break;

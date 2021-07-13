@@ -43,8 +43,10 @@ $PAGE->navbar->add(get_string('pluginname', constants::M_COMP));
 
 
 $ok = has_capability('block/poodllclassroom:manageintegration', $context);
+$resellers=common::fetch_resellers();
 $plans=common::fetch_plans();
 $schools=common::fetch_schools();
+$subs=common::fetch_subs_for_all_users();
 
 //get our renderer
 $renderer = $PAGE->get_renderer(constants::M_COMP);
@@ -54,12 +56,21 @@ echo $renderer->heading($SITE->fullname);
 
 if($ok) {
 
-    //display the content of this page from our nice renderer
+    //plans
     $planstable = $renderer->fetch_plans_table($plans);
     echo $planstable;
-    //display the content of this page from our nice renderer
+
+    //resellers
+    $resellerstable = $renderer->fetch_resellers_table($resellers);
+    echo $resellerstable;
+
+    //schools
     $schoolstable = $renderer->fetch_schools_table($schools);
     echo $schoolstable;
+
+    //subs
+    $substable = $renderer->fetch_subs_table($subs);
+    echo $substable;
 
 }else{
     echo  get_string('nopermission', constants::M_COMP);
