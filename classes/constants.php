@@ -20,9 +20,6 @@ const M_CLASS='block_poodllclassroom';
 const M_HOOKCOUNT =5;
 const M_CLASS_USERLIST ='block_poodllclassroom_userlist_cont';
 
-const RESELLER_POODLL=1;
-const RESELLER_THIRDPARTY=2;
-
 const SETTING_NONE ='none';
 const SETTING_MICROSOFTAUTH ='microsoftauth';
 const SETTING_GOOGLEAUTH ='googleauth';

@@ -18,6 +18,9 @@
         {{#subs}}
             {{> block_poodllclassroom/subslistrow}}
         {{/subs}}
+        {{#nosubs}}
+            <tr><td colspan="5">{{#str}}nosubs, block_poodllclassroom{{/str}}</td></tr>
+        {{/nosubs}}
         </tbody>
     </table>
 </div>

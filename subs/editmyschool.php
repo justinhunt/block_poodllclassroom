@@ -59,8 +59,16 @@ $PAGE->set_pagelayout('course');
 $renderer = $PAGE->get_renderer(constants::M_COMP);
 
 $ok =false;
-$school  = $DB->get_record(constants::M_TABLE_SCHOOLS, array('id' => $id));
-if($school){$ok=true;}
+$school=false;
+if($id>0) {
+    $school = $DB->get_record(constants::M_TABLE_SCHOOLS, array('id' => $id));
+}
+if($school){
+    $ok=true;
+}else{
+    redirect($returnurl,get_string('donthaveaschool',constants::M_COMP),
+        3,\core\output\notification::NOTIFY_WARNING);
+}
 if($ok){
     $ok = $school->ownerid==$USER->id;
     if(!$ok){

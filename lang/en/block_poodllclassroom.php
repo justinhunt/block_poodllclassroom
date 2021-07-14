@@ -235,6 +235,11 @@ $string['youcantaccessthatschool']='You can not access that school';
 $string['schooldetails']='On this page you can review the subscriptions for the school and associated credentials and access details.';
 $string['managesubscriptions']='Manage Subscriptions';
 $string['dontownthisschool']='You can not manage this school';
+$string['donthaveaschool']='You do not yet have a school';
+$string['upstreamuserid']='Upstream User ID';
+$string['nosubs']='No subscriptions to display';
+$string['back']='Back';
+
 
 
 

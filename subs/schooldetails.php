@@ -27,11 +27,13 @@ use block_poodllclassroom\common;
 require('../../../config.php');
 
 $id = optional_param('id', 0, PARAM_INT);
+$type=optional_param('type', 'school', PARAM_TEXT);
+$returnurl=optional_param('returnurl', '', PARAM_TEXT);
 
 //set the url of the $PAGE
 //note we do this before require_login preferably
 //so Moodle will send user back here if it bounces them off to login first
-$PAGE->set_url(constants::M_URL . '/subs/subs.php',array());
+$PAGE->set_url(constants::M_URL . '/subs/schooldetails.php',array('id'=>$id));
 $course = get_course(1);
 require_login($course);
 
@@ -46,14 +48,14 @@ $PAGE->navbar->add(get_string('pluginname', constants::M_COMP));
 //generally speaking the reseller is Poodll(=1),
 $reseller = common::fetch_me_reseller();
 $school=false;
-if($reseller && $reseller->type == constants::RESELLER_THIRDPARTY) {
+if($reseller && $reseller->resellertype == constants::M_RESELLER_THIRDPARTY) {
     $schools = common::fetch_schools_by_reseller($reseller->id);
     foreach ($schools as $aschool){
         if($aschool->id==$id){
             $school = $aschool;
         }
     }
-}elseif($reseller && $reseller && $reseller->type == constants::RESELLER_POODLL){
+}elseif($reseller && $reseller->resellertype == constants::M_RESELLER_POODLL){
     $school = $DB->get_record(constants::M_TABLE_SCHOOLS,array('id'=>$id));
 
 }else{
@@ -80,17 +82,20 @@ $subs = common::fetch_schoolsubs_by_school($school->id);
 $extended_subs = common::get_extended_sub_data($subs);
 $display_subs = common::get_display_sub_data($extended_subs);
 $subssectiondata = array('subs'=>array_values($display_subs));
+if(count($subssectiondata['subs'])<1){
+    $subssectiondata['nosubs']=true;
+}
 
 
 //return the page header
 echo $renderer->header();
-echo $renderer->heading($school->name);
 
 
 if(true) {
 
     $content = $renderer->render_from_template('block_poodllclassroom/schoolheader',$school);
-    $content = $renderer->render_from_template('block_poodllclassroom/subsheader',$subssectiondata);
+    $content .='<br>';
+    $content .= $renderer->render_from_template('block_poodllclassroom/subsheader',$subssectiondata);
 
     //Platform Subs Details Section
     $moodlesubs=[];
@@ -127,6 +132,12 @@ if(true) {
     if(count($classroomsubs)>0){
         $content .= $renderer->render_from_template('block_poodllclassroom/classroomsubs',['subs'=>$classroomsubs]);
     }
+
+    //return button
+    $thebutton = new \single_button(
+        new \moodle_url($CFG->wwwroot . $returnurl,array()),
+        get_string('back', constants::M_COMP), 'get');
+    $content .= $renderer->render($thebutton);
 
     echo $content;
 

@@ -22,12 +22,6 @@ class renderer extends \plugin_renderer_base {
         return $this->output->header();
     }
 
-
-    function fetch_normalpeople_block_content(){
-        $content = \html_writer::tag('h5','fakename');
-        return $content;
-    }
-
     function fetch_block_content($context, $users=false, $courses=false){
         global $CFG;
 
@@ -50,6 +44,10 @@ class renderer extends \plugin_renderer_base {
         //if we are a reseller we are showing reseller things and reseller options
         $me_reseller = common::fetch_me_reseller();
         if($me_reseller){
+            //fetch reseller header
+            $resellerheader = $this->render_from_template('block_poodllclassroom/resellerheader', $me_reseller);
+            $content .= $resellerheader;
+
             $portalurl= common::get_portalurl_by_upstreamid($me_reseller->upstreamuserid);
             $options[] = array('url' => $portalurl,
                     'label' => get_string('managesubscriptions', constants::M_COMP));
@@ -61,7 +59,9 @@ class renderer extends \plugin_renderer_base {
 
             //display schools
             $resold_schools = common::fetch_schools_by_reseller($me_reseller->id);
-            $schoolstable = $this->fetch_schools_table($resold_schools);
+            $params=[];
+            $returnurl = new \moodle_url( $CFG->wwwroot . '/my', $params);
+            $schoolstable = $this->fetch_schools_table($resold_schools,$returnurl);
             $content .=  $schoolstable;
 
             return $content;
@@ -70,13 +70,21 @@ class renderer extends \plugin_renderer_base {
         }else{
 
             $school = common::get_poodllschool_by_currentuser();
-            $portalurl = common::get_portalurl_by_upstreamid($school->upstreamownerid);
-            $options[] = array('url' => $portalurl,
-                    'label' => get_string('managesubscriptions', constants::M_COMP));
+            //if we do not have a school we can not show subs or school options
+            if($school) {
 
-            //if not reseller we just have one school, so we can edit it
-            $options[] = array('url' => $CFG->wwwroot . '/blocks/poodllclassroom/subs/editmyschool.php?id='. $school->id,
+                $content .=   $this->render_from_template('block_poodllclassroom/schoolheader', $school);
+
+                $portalurl =common::get_portalurl_by_upstreamid($school->upstreamownerid);
+                //if not reseller we just have one school, so we can edit it
+                $options[] = array('url' => $CFG->wwwroot . '/blocks/poodllclassroom/subs/editmyschool.php?id=' . $school->id,
                     'label' => get_string('editmyschool', constants::M_COMP));
+
+                //manage all our subscriptions
+                $options[] = array('url' => $portalurl,
+                    'label' => get_string('managesubscriptions', constants::M_COMP));
+            }
+
 
             //Build options widget
             $optionsdata['options']=$options;
@@ -96,6 +104,9 @@ class renderer extends \plugin_renderer_base {
 
         //subs section
         $subssectiondata = array('subs'=>array_values($display_subs));
+        if(count($subssectiondata['subs'])<1){
+            $subssectiondata['nosubs']=true;
+        }
         $content .= $this->render_from_template('block_poodllclassroom/subsheader',$subssectiondata);
 
         //Platform Subs Details Section
@@ -119,8 +130,8 @@ class renderer extends \plugin_renderer_base {
         }
 
         //Platform Moodle Subs Section
-        $editschoolurl =  $CFG->wwwroot . '/blocks/poodllclassroom/subs/editmyschool.php?id='. $school->id;
         if(count($moodlesubs)>0){
+            $editschoolurl =  $CFG->wwwroot . '/blocks/poodllclassroom/subs/editmyschool.php?id='. $school->id;
             $content .= $this->render_from_template('block_poodllclassroom/moodlesubs',
                     ['school'=>$moodlesubs[0]->school,'subs'=>$moodlesubs, 'editschoolurl'=>$editschoolurl]);
         }
@@ -607,7 +618,13 @@ class renderer extends \plugin_renderer_base {
         $billingintervals = common::fetch_billingintervals();
 
         //add sub button
-        $addbutton = $this->fetch_addsub_button();
+        $context = \context_system::instance();
+        if(has_capability('block/poodllclassroom:manageintegration', $context)) {
+            $abutton = $this->fetch_addsub_button();
+            $addnewbutton = $this->render($abutton);
+        }else{
+            $addnewbutton ='';
+        }
 
         $data = array();
         foreach($subs as $sub) {
@@ -658,19 +675,22 @@ class renderer extends \plugin_renderer_base {
 
         //return add button and table
         $heading = $this->output->heading('Subs',3);
-        return   $heading  . $this->render($addbutton) .  \html_writer::table($table);
+        return   $heading  . $addnewbutton .  \html_writer::table($table);
 
     }
 
     //Fetch schools table
-    function fetch_schools_table($schools){
+    function fetch_schools_table($schools,$returnurl){
         global $DB;
 
-        $params=[];
-        $baseurl = new \moodle_url(constants::M_URL . '/subs/subs.php', $params);
-
         //add school button
-        $addbutton = $this->fetch_addschool_button();
+        $context = \context_system::instance();
+        if(has_capability('block/poodllclassroom:manageintegration', $context)) {
+            $abutton = $this->fetch_addschool_button();
+            $addnewbutton = $this->render($abutton);
+        }else{
+            $addnewbutton ='';
+        }
 
         $data = array();
         foreach($schools as $school) {
@@ -685,7 +705,7 @@ class renderer extends \plugin_renderer_base {
 
             $buttons = array();
 
-            $urlparams = array('id' => $school->id,'type'=>'school','returnurl' => $baseurl->out_as_local_url());
+            $urlparams = array('id' => $school->id,'type'=>'school','returnurl' => $returnurl->out_as_local_url());
 
             //view school subs and other details
             $buttons[] = \html_writer::link(new \moodle_url(constants::M_URL . '/subs/schooldetails.php', $urlparams),
@@ -725,7 +745,7 @@ class renderer extends \plugin_renderer_base {
 
         //return add button and table
         $heading = $this->output->heading('Schools',3);
-        return   $heading  . $this->render($addbutton) .  \html_writer::table($table);
+        return   $heading  . $addnewbutton . \html_writer::table($table);
 
     }
 
@@ -753,6 +773,9 @@ class renderer extends \plugin_renderer_base {
 
             $urlparams = array('id' => $reseller->id,'type'=>'reseller','returnurl' => $baseurl->out_as_local_url());
 
+            $buttons[] = \html_writer::link(new \moodle_url(constants::M_URL . '/subs/resellerdetails.php', $urlparams),
+                $this->output->pix_icon('t/preview', get_string('view')),
+                array('title' => get_string('view')));
 
             $buttons[] = \html_writer::link(new \moodle_url(constants::M_URL . '/subs/edit.php', $urlparams),
                     $this->output->pix_icon('t/edit', get_string('edit')),

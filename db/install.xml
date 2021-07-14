@@ -27,10 +27,10 @@
     <TABLE NAME="block_poodllclassroom_seller" COMMENT="reseller">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" />
-        <FIELD NAME="type" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="reseller type: poodll,parter etc"/>
         <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="name field for school" />
         <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="The company owner user id" />
-        <FIELD NAME="upstreamownerid" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="the chargebee owner ID for this sub"/>
+        <FIELD NAME="upstreamuserid" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="the chargebee owner ID for this sub"/>
+        <FIELD NAME="resellertype" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="reseller type: poodll,parter etc"/>
          <FIELD NAME="status" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="true" DEFAULT="-" SEQUENCE="false" COMMENT="the school status"/>
         <FIELD NAME="description" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Short description of reseller."/>
         <FIELD NAME="jsonfields" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="extra info in json."/>

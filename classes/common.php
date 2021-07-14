@@ -568,10 +568,7 @@ class common
     public static function fetch_me_reseller(){
         global $DB,$USER;
 
-        $sql = 'SELECT * ';
-        $sql .= 'from {'. constants::M_TABLE_RESELLERS .'} reseller ';
-        $sql .= 'WHERE reseller.userid = :resellerid ';
-        $reseller=$DB->get_records_sql($sql, ['resellerid'=>$USER->id]);
+        $reseller=$DB->get_record(constants::M_TABLE_RESELLERS, ['userid'=>$USER->id]);
         return $reseller;
     }
 
@@ -630,6 +627,7 @@ class common
 
     }
 
+    //this will be weird in the case of a reseller who may have more than one school. check for that before getting here
     public static function get_poodllschool_by_currentuser(){
         global $DB,$USER;
         return $DB->get_record(constants::M_TABLE_SCHOOLS,array('ownerid'=>$USER->id));
@@ -661,7 +659,7 @@ class common
             }
             $sub->school = $schools[$sub->schoolid];
             //if resold, flag that
-            if($schools[$sub->schoolid]->reseller->resellertype==constants::RESELLER_THIRDPARTY){
+            if($schools[$sub->schoolid]->reseller->resellertype==constants::M_RESELLER_THIRDPARTY){
                 $sub->resold=true;
             }
 
@@ -943,7 +941,9 @@ class common
                         return $portalurl;
                     }
                 }else{
-                    redirect($postdata['redirect_url'],get_string('noaccessportal',constants::M_COMP));
+                   //this causes infinite redirect ...
+                    // redirect($postdata['redirect_url'],get_string('noaccessportal',constants::M_COMP));
+                    return '';
                 }
             }
         }
@@ -953,7 +953,7 @@ class common
     public static function get_portalurl_by_sub($sub){
         global $CFG;
         //poodll reseller = client bought direct
-        if($sub->school->reseller->resellertype==constants::RESELLER_POODLL) {
+        if($sub->school->reseller->resellertype==constants::M_RESELLER_POODLL) {
             $customerid = $sub->school->upstreamownerid;
         //otherwise its a 3rd party reseller
         }else{

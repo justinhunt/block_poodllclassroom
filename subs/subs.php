@@ -65,7 +65,9 @@ if($ok) {
     echo $resellerstable;
 
     //schools
-    $schoolstable = $renderer->fetch_schools_table($schools);
+    $params=[];
+    $returnurl = new \moodle_url(constants::M_URL . '/subs/subs.php', $params);
+    $schoolstable = $renderer->fetch_schools_table($schools,$returnurl);
     echo $schoolstable;
 
     //subs

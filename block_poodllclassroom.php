@@ -38,22 +38,6 @@ class block_poodllclassroom extends block_base {
 
         $renderer = $this->page->get_renderer(constants::M_COMP);
 
-        //we only show full block to super people, other people just get the schoolname
-        //later we can add more stuff here
-        if (!has_capability('block/poodllclassroom:managepoodllclassroom', $this->context)) {
-            $ret=null;
-
-            $this->content = new stdClass();
-            $this->content->items = array();
-            $this->content->icons = array();
-            $this->content->footer = '';
-            $this->title = '';
-            $this->content->text = $renderer->fetch_normalpeople_block_content();
-            $ret = $this->content;
-
-            return $ret;
-        }
-
         if ($this->content !== null) {
             return $this->content;
         }
@@ -84,12 +68,8 @@ class block_poodllclassroom extends block_base {
         $bestconfig = common::fetch_best_config($instancesettings->id);
 
         //Set the school
-        $school= common::get_poodllschool_by_currentuser();
-        if($school) {
-            $this->title = $school->name;
-        }else{
-            $this->title = 'Poodll Subscriptions';
-        }
+        $this->title = 'Poodll Subscriptions';
+
 
         $this->content->text = $renderer->fetch_block_content($this->context) ;
         return $this->content  ;
