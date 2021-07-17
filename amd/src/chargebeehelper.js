@@ -17,6 +17,7 @@ define(['jquery','core/log','core/ajax'], function($, log, ajax) {
             this.instanceprops=props;
             this.changeplanclass=props.changeplanclass;
             this.siteprefix=props.siteprefix;
+            this.gocbcheckoutclass = props.gocbcheckoutclass;
             this.registercontrols();
             this.registerevents();
         },
@@ -40,9 +41,11 @@ define(['jquery','core/log','core/ajax'], function($, log, ajax) {
             //set up checkout links
             $.getScript('https://js.chargebee.com/v2/chargebee.js', function(){
                 var chargebee = Chargebee.init({'site': that.siteprefix});
-                $("." + that.changeplanclass).on("click", function() {
+                $("." + that.gocbcheckoutclass).on("click", function() {
                     event.preventDefault();
+                    var clickedthis = this;
                     var planid = $(this).data('planid');
+                    var method = $(this).data('method');//'get_checkout_existing';
                     chargebee.openCheckout({
                         hostedPage: function() {
                             // Hit your end point that returns hosted page object as response
@@ -51,7 +54,7 @@ define(['jquery','core/log','core/ajax'], function($, log, ajax) {
                             // If you want to use paypal, go cardless and plaid, pass embed parameter as false
                             // Now we can continue...
                             var promises = ajax.call([{
-                                methodname: 'block_poodllclassroom_get_checkout_existing',
+                                methodname: 'block_poodllclassroom_' + method,
                                 args: {planid: planid}
                             }]);
                             return promises[0];

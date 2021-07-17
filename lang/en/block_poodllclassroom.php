@@ -239,6 +239,12 @@ $string['donthaveaschool']='You do not yet have a school';
 $string['upstreamuserid']='Upstream User ID';
 $string['nosubs']='No subscriptions to display';
 $string['back']='Back';
+$string['addnew']='Add new';
+
+$string['checkout'] = 'Checkout.' ;
+$string['chooseplan'] = 'Choose' ;
+$string['checkoutinstructions'] = 'Choose a subscription plan from the options below. Annual and monthly payment options can be selected.' ;
+$string['youhavenoschool']='You have no school';
 
 
 

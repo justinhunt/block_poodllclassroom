@@ -7,12 +7,20 @@
  */
 
 $functions = array(
+    'block_poodllclassroom_get_checkout_new' => array(
+        'classname'   => 'block_poodllclassroom_external',
+        'methodname'  => 'get_checkout_new',
+        'description' => 'get_checkout_new',
+        'capabilities'=> 'block/poodllclassroom:usepoodllclassroom',
+        'type'        => 'write',
+        'ajax'        => true,
+    ),
 
     'block_poodllclassroom_get_checkout_existing' => array(
                 'classname'   => 'block_poodllclassroom_external',
                 'methodname'  => 'get_checkout_existing',
                 'description' => 'get_checkout_existing',
-                'capabilities'=> 'block/poodllclassroom:managepoodllclassroom',
+                'capabilities'=> 'block/poodllclassroom:usepoodllclassroom',
                 'type'        => 'write',
                 'ajax'        => true,
     ),
@@ -21,7 +29,7 @@ $functions = array(
             'classname'   => 'block_poodllclassroom_external',
             'methodname'  => 'submit_mform',
             'description' => 'submits mform.',
-            'capabilities'=> 'block/poodllclassroom:managepoodllclassroom',
+            'capabilities'=> 'block/poodllclassroom:usepoodllclassroom',
             'type'        => 'write',
             'ajax'        => true,
     ),

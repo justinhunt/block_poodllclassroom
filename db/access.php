@@ -56,6 +56,16 @@ $capabilities = array(
         )
      ),
 
+    'block/' . constants::M_NAME. ':usepoodllclassroom' => array(
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'user' => CAP_ALLOW
+        ),
+
+        'clonepermissionsfrom' => 'moodle/my:manageblocks'
+    ),
+
     'block/' . constants::M_NAME. ':manageintegration' => array(
         'riskbitmask' => RISK_SPAM | RISK_XSS,
         'captype' => 'write',

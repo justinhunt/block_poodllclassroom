@@ -45,25 +45,8 @@ $PAGE->set_pagelayout('course');
 $PAGE->set_title(get_string('pluginname', constants::M_COMP));
 $PAGE->navbar->add(get_string('pluginname', constants::M_COMP));
 
-//generally speaking the reseller is Poodll(=1),
-$reseller = common::fetch_me_reseller();
-$school=false;
-if($reseller && $reseller->resellertype == constants::M_RESELLER_THIRDPARTY) {
-    $schools = common::fetch_schools_by_reseller($reseller->id);
-    foreach ($schools as $aschool){
-        if($aschool->id==$id){
-            $school = $aschool;
-        }
-    }
-}elseif($reseller && $reseller->resellertype == constants::M_RESELLER_POODLL){
-    $school = $DB->get_record(constants::M_TABLE_SCHOOLS,array('id'=>$id));
-
-}else{
-    $school=common::get_poodllschool_by_currentuser();
-    if(!$school || $school->id != $id ){
-        $school=false;
-    }
-}
+//get the school if its truly yours, if not it never was ...
+$school = common::get_resold_or_my_school($id);
 
 //get our renderer
 $renderer = $PAGE->get_renderer(constants::M_COMP);
@@ -85,7 +68,7 @@ $subssectiondata = array('subs'=>array_values($display_subs));
 if(count($subssectiondata['subs'])<1){
     $subssectiondata['nosubs']=true;
 }
-
+$checkouturl  = new \moodle_url(constants::M_URL . '/subs/checkout.php',array());
 
 //return the page header
 echo $renderer->header();
@@ -95,6 +78,9 @@ if(true) {
 
     $content = $renderer->render_from_template('block_poodllclassroom/schoolheader',$school);
     $content .='<br>';
+
+    $checkoutbuttondata = ['school'=>$school,'subtype'=>'all', 'checkouturl'=>$checkouturl->out()];
+    $content .= $renderer->render_from_template('block_poodllclassroom/checkoutpagebutton', $checkoutbuttondata);
     $content .= $renderer->render_from_template('block_poodllclassroom/subsheader',$subssectiondata);
 
     //Platform Subs Details Section
@@ -120,17 +106,19 @@ if(true) {
     //Platform Moodle Subs Section
     if(count($moodlesubs)>0){
         $content .= $renderer->render_from_template('block_poodllclassroom/moodlesubs',
-                ['school'=>$moodlesubs[0]->school,'subs'=>$moodlesubs]);
+                ['school'=>$moodlesubs[0]->school,'subs'=>$moodlesubs, 'platform'=>constants::M_PLATFORM_MOODLE, 'checkouturl'=>$checkouturl->out()]);
     }
 
     //Platform LTI Section
     if(count($ltisubs)>0){
-        $content .= $renderer->render_from_template('block_poodllclassroom/ltisubs',['subs'=>$ltisubs]);
+        $content .= $renderer->render_from_template('block_poodllclassroom/ltisubs',
+            ['school'=>$moodlesubs[0]->school,'subs'=>$ltisubs,'platform'=>constants::M_PLATFORM_LTI,'checkouturl'=>$checkouturl->out()]);
     }
 
     //Platform Classroom Section
     if(count($classroomsubs)>0){
-        $content .= $renderer->render_from_template('block_poodllclassroom/classroomsubs',['subs'=>$classroomsubs]);
+        $content .= $renderer->render_from_template('block_poodllclassroom/classroomsubs',
+            ['school'=>$moodlesubs[0]->school,'subs'=>$classroomsubs, 'platform'=>constants::M_PLATFORM_CLASSROOM,'checkouturl'=>$checkouturl->out()]);
     }
 
     //return button

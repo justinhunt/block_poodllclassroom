@@ -552,7 +552,7 @@ class block_poodllclassroom_external extends external_api {
         // Get/check context/capability
         $context = \context_system::instance();
         self::validate_context($context);
-        require_capability('block/poodllclassroom:managepoodllclassroom', $context);
+        require_capability('block/poodllclassroom:usepoodllclassroom', $context);
 
         // We always must pass webservice params through validate_parameters.
         $params = self::validate_parameters(self::get_checkout_existing_parameters(),
@@ -581,6 +581,52 @@ class block_poodllclassroom_external extends external_api {
                 'type' => new external_value(PARAM_TEXT, 'type'),
                 'updated_at' => new external_value(PARAM_INT, 'updated at'),
                 'url' => new external_value(PARAM_TEXT, 'url'),
+        ]);
+    }
+
+    //------------ get_checkout_existing ---------------//
+    public static function get_checkout_new_parameters() {
+        return new external_function_parameters(
+            array(
+                'planid' => new external_value(PARAM_TEXT, 'The change-to plan id for this subscripton')
+            )
+        );
+    }
+
+    public static function get_checkout_new($planid) {
+
+        // Get/check context/capability
+        $context = \context_system::instance();
+        self::validate_context($context);
+        require_capability('block/poodllclassroom:usepoodllclassroom', $context);
+
+        // We always must pass webservice params through validate_parameters.
+        $params = self::validate_parameters(self::get_checkout_new_parameters(),
+            ['planid' => $planid]);
+
+        $hosted_page = common::get_checkout_new($params['planid']);
+        if($hosted_page){
+            $ret =$hosted_page->hosted_page;
+        }else{
+            $ret ='{}';
+        }
+        return $ret;
+    }
+
+    public static function get_checkout_new_returns() {
+
+        // return new external_value(PARAM_RAW);
+        return new external_single_structure([
+            'created_at' => new external_value(PARAM_INT, 'created at'),
+            'embed' => new external_value(PARAM_BOOL, 'embed' ),
+            'expires_at' => new external_value(PARAM_INT, 'expires at'),
+            'id' => new external_value(PARAM_TEXT, 'id'),
+            'object' => new external_value(PARAM_TEXT, 'object'),
+            'resource_version' => new external_value(PARAM_INT, 'resource version'),
+            'state' => new external_value(PARAM_TEXT, 'state'),
+            'type' => new external_value(PARAM_TEXT, 'type'),
+            'updated_at' => new external_value(PARAM_INT, 'updated at'),
+            'url' => new external_value(PARAM_TEXT, 'url'),
         ]);
     }
 }

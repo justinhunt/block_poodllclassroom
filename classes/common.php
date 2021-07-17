@@ -392,6 +392,25 @@ class common
         }
     }
 
+    public static function fetch_plans_by_platform($platform, $planfamily='all'){
+        global $DB;
+
+        $params = ['platform'=>$platform];
+        $families = self::fetch_planfamilies();
+        if(array_key_exists($planfamily,$families)){
+            $params['planfamily'] = $planfamily;
+        }
+        $plans = $DB->get_records(constants::M_TABLE_PLANS,$params,'price ASC') ;
+        if($plans) {
+            foreach($plans as $plan){
+                $plan->{'platform_' . $plan->platform} =true;
+            }
+            return $plans;
+        }else{
+            return [];
+        }
+    }
+
     public static function fetch_subs(){
         global $DB;
 
@@ -884,6 +903,30 @@ class common
 
     }
 
+    public static function get_resold_or_my_school($schoolid=0){
+        global $DB;
+        //generally speaking the reseller is Poodll(=1),
+        $reseller = common::fetch_me_reseller();
+        $school=false;
+        if($reseller && $reseller->resellertype == constants::M_RESELLER_THIRDPARTY) {
+            $schools = common::fetch_schools_by_reseller($reseller->id);
+            foreach ($schools as $aschool){
+                if($aschool->id==$schoolid){
+                    $school = $aschool;
+                }
+            }
+        }elseif($reseller && $reseller->resellertype == constants::M_RESELLER_POODLL){
+            $school = $DB->get_record(constants::M_TABLE_SCHOOLS,array('id'=>$schoolid));
+
+        }else{
+            $school=common::get_poodllschool_by_currentuser();
+            if(!$school || $school->id != $schoolid){
+                $school=false;
+            }
+        }
+        return $school;
+    }
+
     public static function curl_fetch($url, $postdata = false, $username='') {
         global $CFG;
 
@@ -989,5 +1032,88 @@ class common
         }
         return false;
     }
+    public static function make_upstream_user_id($userid)
+    {
+        return 'user-'.$userid.'-'.random_string(8);
+
+    }
+    public static function create_blank_school(){
+        global $USER, $DB;
+        $school = new \stdClass();
+        $school->name='unnamed school';
+        $school->ownerid = $USER->id;
+        $school->resellerid = constants::M_RESELLER_POODLL;
+        $school->upstreamownerid = self::make_upstream_user_id($USER->id);
+        $id = $DB->insert_record(constants::M_TABLE_SCHOOLS,$school);
+        if($id){
+            $school->id = $id;
+            return $school;
+        }else{
+            return false;
+        }
+
+    }
+
+    public static function get_checkout_new($planid, $schoolid=0){
+        global $USER, $CFG;
+        $plan = self::get_plan($planid);
+        if(!$plan){
+            return false;
+        }
+        $reseller = self::fetch_me_reseller();
+        $school = self::get_resold_or_my_school($schoolid);
+        if($reseller){
+            $upstreamuserid=$reseller->upstreamuserid;
+        }elseif ($school){
+            $upstreamuserid=$school->upstreamownerid;
+        }else{
+            //in this case we dont gots no school nor gots us no upstreamuserid
+            //create a school and a random upstreamid
+            $school=self::get_poodllschool_by_currentuser();
+            if(!$school){
+               $school = self::create_blank_school();
+            }
+            if($school){
+                $upstreamuserid=$school->upstreamownerid;
+            }else{
+                return false;
+            }
+        }
+
+        $schoolname=$school->name;
+        $customerid = $upstreamuserid;
+        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
+        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
+
+        if($customerid && !empty($apikey) && !empty($siteprefix)){
+            $url = "https://$siteprefix.chargebee.com/api/v2/hosted_pages/checkout_new";
+            $postdata=[];
+            $postdata['redirect_url'] = $CFG->wwwroot . '/my';
+            $postdata['cancel_url'] = $CFG->wwwroot . '/my';
+            $postdata['subscription']= array(
+                "plan_id" => $plan->upstreamplan,
+                "cf_school_name"=>$schoolname,
+            );
+            $postdata['customer']= array(
+                "id" => $upstreamuserid,
+                "email" => $USER->mail,
+                "first_name" => $USER->firstname,
+                "last_name" => $USER->lastname,
+            );
+            if($reseller){
+                $postdata['company'] = $reseller->name;
+            }else{
+                $postdata['company'] = $schoolname;
+            }
+
+            $curlresult = self::curl_fetch($url,$postdata,$apikey);
+            $jsonresult = self::make_object_from_json($curlresult);
+            if($jsonresult){
+                return $jsonresult;
+            }
+        }
+        return false;
+    }
+
 
 }//end of class

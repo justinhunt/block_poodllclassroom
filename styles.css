@@ -25,7 +25,8 @@
    /* text-align: center; */
     margin-top: 10px;
 }
-.block_poodllclassroom_changeplan_cont {
+.block_poodllclassroom_changeplan_cont,
+.block_poodllclassroom_newplan_cont {
     margin: 10px;
 }
 .block_poodllclassroom_billingheader{

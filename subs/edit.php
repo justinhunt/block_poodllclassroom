@@ -222,9 +222,13 @@ if ($editform->is_cancelled()){
         case 'school':
             //deal with URLS
             if(!empty($data->siteurl)){$data->siteurls=json_encode($data->siteurl);}
+
             if (!$data->id) {
                 $data->timemodified=time();
                 $data->timecreated=time();
+                if(empty($data->upstreamownerid) || strpos($data->upstreamownerid,'user-')===false){
+                    $data->upstreamownerid = common::make_upstream_user_id($data->ownerid);
+                }
                 $result=$DB->insert_record(constants::M_TABLE_SCHOOLS,$data);
             } else {
                 $data->timemodified=time();
