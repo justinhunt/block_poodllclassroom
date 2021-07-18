@@ -1054,15 +1054,26 @@ class common
 
     }
 
-    public static function get_checkout_new($planid, $schoolid=0){
+    public static function get_checkout_new($planid, $currency, $billinginterval, $schoolid=0){
         global $USER, $CFG;
         $plan = self::get_plan($planid);
+        switch($billinginterval){
+            case constants::M_BILLING_MONTHLY:
+                $billing='Monthly';
+                break;
+            case constants::M_BILLING_YEARLY:
+            default:
+                $billing='Yearly';
+                break;
+
+        }
         if(!$plan){
             return false;
         }
         $reseller = self::fetch_me_reseller();
         $school = self::get_resold_or_my_school($schoolid);
         if($reseller){
+            if(!$school){return false;}
             $upstreamuserid=$reseller->upstreamuserid;
         }elseif ($school){
             $upstreamuserid=$school->upstreamownerid;
@@ -1084,8 +1095,6 @@ class common
         $customerid = $upstreamuserid;
         $apikey = get_config(constants::M_COMP,'chargebeeapikey');
         $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
-        $currency = 'USD';
-        $billinginterval = 'Yearly';
 
 
         if($customerid && !empty($apikey) && !empty($siteprefix)){
@@ -1099,7 +1108,7 @@ class common
             $postdata['subscription_items']['item_price_id']=[];
             $postdata['subscription_items']['quantity']=[];
 
-            $postdata['subscription_items']['item_price_id'][0] = $plan->upstreamplan . '-' .  $currency . '-'  . $billinginterval;
+            $postdata['subscription_items']['item_price_id'][0] = $plan->upstreamplan . '-' .  $currency . '-'  . $billing;
             $postdata['subscription_items']['quantity'][0]=1;
 /*
             $postdata['subscription_items'][0]= array(

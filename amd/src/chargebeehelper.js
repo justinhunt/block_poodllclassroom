@@ -44,8 +44,11 @@ define(['jquery','core/log','core/ajax'], function($, log, ajax) {
                 $("." + that.gocbcheckoutclass).on("click", function() {
                     event.preventDefault();
                     var clickedthis = this;
+                    var currency = $(this).data('currency');
+                    var billinginterval = $(this).data('billinginterval');
                     var planid = $(this).data('planid');
-                    var method = $(this).data('method');//'get_checkout_existing';
+                    var schoolid = $(this).data('schoolid');
+                    var method = $(this).data('method');//'get_checkout_existing' or ''
                     chargebee.openCheckout({
                         hostedPage: function() {
                             // Hit your end point that returns hosted page object as response
@@ -55,7 +58,7 @@ define(['jquery','core/log','core/ajax'], function($, log, ajax) {
                             // Now we can continue...
                             var promises = ajax.call([{
                                 methodname: 'block_poodllclassroom_' + method,
-                                args: {planid: planid}
+                                args: {planid: planid, currency: currency, billinginterval: billinginterval, schoolid: schoolid}
                             }]);
                             return promises[0];
                         },

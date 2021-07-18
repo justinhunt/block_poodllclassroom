@@ -588,12 +588,15 @@ class block_poodllclassroom_external extends external_api {
     public static function get_checkout_new_parameters() {
         return new external_function_parameters(
             array(
-                'planid' => new external_value(PARAM_TEXT, 'The plan id for this subscripton')
+                'planid' => new external_value(PARAM_INT, 'The plan id for this subscription'),
+                'currency' => new external_value(PARAM_TEXT, 'The currency for this subscription'),
+                'billinginterval' => new external_value(PARAM_INT, 'The billing interval for this subscription'),
+                'schoolid' => new external_value(PARAM_INT, 'The schoolid for this subscription')
             )
         );
     }
 
-    public static function get_checkout_new($planid) {
+    public static function get_checkout_new($planid, $currency, $billinginterval,$schoolid) {
 
         // Get/check context/capability
         $context = \context_system::instance();
@@ -602,9 +605,9 @@ class block_poodllclassroom_external extends external_api {
 
         // We always must pass webservice params through validate_parameters.
         $params = self::validate_parameters(self::get_checkout_new_parameters(),
-            ['planid' => $planid]);
+            ['planid' => $planid, 'currency'=>$currency, 'billinginterval'=>$billinginterval,'schoolid'=>$schoolid]);
 
-        $hosted_page = common::get_checkout_new($params['planid']);
+        $hosted_page = common::get_checkout_new($params['planid'],$params['currency'],$params['billinginterval'], $params['schoolid']);
         if($hosted_page){
             $ret =$hosted_page->hosted_page;
         }else{
