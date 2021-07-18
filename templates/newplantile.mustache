@@ -10,7 +10,7 @@
       <div class="block_poodllclassroom_maxcourses">{{maxcourses}} {{#str}}courses, block_poodllclassroom{{/str}} </div>
     {{/platform_CLASSROOM}}
     <div class="block_poodllclassroom_description">{{description}}</div>
-   <a href="#" class="btn btn-secondary block_poodllclassroom_newplan block_poodllclassroom_gocbcheckout block_poodllclassroom_flexbox {{#disabled}}disabled{{/disabled}}" {{#selected}}tabindex="-1"{{/selected}} data-method="get_checkout_new" data-planid="{{upstreamplan}}">{{#str}}chooseplan, block_poodllclassroom{{/str}}</a>
+   <a href="#" class="btn btn-secondary block_poodllclassroom_newplan block_poodllclassroom_gocbcheckout block_poodllclassroom_flexbox {{#disabled}}disabled{{/disabled}}" {{#selected}}tabindex="-1"{{/selected}} data-method="get_checkout_new" data-planid="{{id}}">{{#str}}chooseplan, block_poodllclassroom{{/str}}</a>
     <div class="block_poodllclassroom_currentplan">{{#selected}}{{#str}}yourcurrentplan, block_poodllclassroom{{/str}}{{/selected}}</div>
     {{#platform_CLASSROOM}}
       <div class="block_poodllclassroom_ineligibleplan">{{#toomanyusers}}{{#str}}toomanyusers, block_poodllclassroom, {{usercount}}{{/str}}{{/toomanyusers}}</div>

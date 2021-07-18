@@ -1084,16 +1084,29 @@ class common
         $customerid = $upstreamuserid;
         $apikey = get_config(constants::M_COMP,'chargebeeapikey');
         $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
+        $currency = 'USD';
+        $billinginterval = 'Yearly';
+
 
         if($customerid && !empty($apikey) && !empty($siteprefix)){
-            $url = "https://$siteprefix.chargebee.com/api/v2/hosted_pages/checkout_new";
+            //$url = "https://$siteprefix.chargebee.com/api/v2/hosted_pages/checkout_new";
+            $url = "https://$siteprefix.chargebee.com/api/v2/hosted_pages/checkout_new_for_items";
+
             $postdata=[];
             $postdata['redirect_url'] = $CFG->wwwroot . '/my';
             $postdata['cancel_url'] = $CFG->wwwroot . '/my';
-            $postdata['subscription']= array(
-                "plan_id" => $plan->upstreamplan,
+            $postdata['subscription_items']=[];
+            $postdata['subscription_items']['item_price_id']=[];
+            $postdata['subscription_items']['quantity']=[];
+
+            $postdata['subscription_items']['item_price_id'][0] = $plan->upstreamplan . '-' .  $currency . '-'  . $billinginterval;
+            $postdata['subscription_items']['quantity'][0]=1;
+/*
+            $postdata['subscription_items'][0]= array(
+                "plan_id" =>
                 "cf_school_name"=>$schoolname,
             );
+*/
             $postdata['customer']= array(
                 "id" => $upstreamuserid,
                 "email" => $USER->mail,
@@ -1114,6 +1127,4 @@ class common
         }
         return false;
     }
-
-
 }//end of class
