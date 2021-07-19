@@ -10,6 +10,7 @@ namespace block_poodllclassroom\output;
 
 use \block_poodllclassroom\constants;
 use \block_poodllclassroom\common;
+use \block_poodllclassroom\chargebee;
 
 
 class renderer extends \plugin_renderer_base {
@@ -48,7 +49,7 @@ class renderer extends \plugin_renderer_base {
             $resellerheader = $this->render_from_template('block_poodllclassroom/resellerheader', $me_reseller);
             $content .= $resellerheader;
 
-            $portalurl= common::get_portalurl_by_upstreamid($me_reseller->upstreamuserid);
+            $portalurl= chargebee::get_portalurl_by_upstreamid($me_reseller->upstreamuserid);
             $options[] = array('url' => $portalurl,
                     'label' => get_string('managesubscriptions', constants::M_COMP));
 
@@ -75,7 +76,7 @@ class renderer extends \plugin_renderer_base {
 
                 $content .=   $this->render_from_template('block_poodllclassroom/schoolheader', $school);
 
-                $portalurl =common::get_portalurl_by_upstreamid($school->upstreamownerid);
+                $portalurl =chargebee::get_portalurl_by_upstreamid($school->upstreamownerid);
                 //if not reseller we just have one school, so we can edit it
                 $options[] = array('url' => $CFG->wwwroot . '/blocks/poodllclassroom/subs/editmyschool.php?id=' . $school->id,
                     'label' => get_string('editmyschool', constants::M_COMP));

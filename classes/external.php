@@ -10,6 +10,7 @@
 
 use \block_poodllclassroom\common;
 use \block_poodllclassroom\constants;
+use \block_poodllclassroom\chargebee;
 use \block_poodllclassroom\standardadaptor;
 
 class block_poodllclassroom_external extends external_api {
@@ -558,7 +559,7 @@ class block_poodllclassroom_external extends external_api {
         $params = self::validate_parameters(self::get_checkout_existing_parameters(),
                 ['planid' => $planid]);
 
-        $hosted_page = common::get_checkout_existing($params['planid']);
+        $hosted_page = chargebee::get_checkout_existing($params['planid']);
         if($hosted_page){
             $ret =$hosted_page->hosted_page;
         }else{
@@ -607,7 +608,7 @@ class block_poodllclassroom_external extends external_api {
         $params = self::validate_parameters(self::get_checkout_new_parameters(),
             ['planid' => $planid, 'currency'=>$currency, 'billinginterval'=>$billinginterval,'schoolid'=>$schoolid]);
 
-        $hosted_page = common::get_checkout_new($params['planid'],$params['currency'],$params['billinginterval'], $params['schoolid']);
+        $hosted_page = chargebee::get_checkout_new($params['planid'],$params['currency'],$params['billinginterval'], $params['schoolid']);
         if($hosted_page){
             $ret =$hosted_page->hosted_page;
         }else{

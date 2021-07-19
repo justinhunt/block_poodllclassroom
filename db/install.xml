@@ -66,10 +66,15 @@
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" />
         <FIELD NAME="schoolid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="The school id" />
 		<FIELD NAME="planid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="The poodllclassroom plan id" />
+        <FIELD NAME="payment" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="the payment amount"/>
+        <FIELD NAME="paymentcurr" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="true" DEFAULT="-" SEQUENCE="false" COMMENT="the payment currency"/>
+        <FIELD NAME="billinginterval" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="The billinginterval" />
         <FIELD NAME="upstreamsubid" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="the chargebee ID for this sub"/>
         <FIELD NAME="status" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="true" DEFAULT="-" SEQUENCE="false" COMMENT="the school status"/>
         <FIELD NAME="jsonfields" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="extra info in json."/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" />
+        <FIELD NAME="expiretime" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" />
+        <FIELD NAME="hostedpage" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="the full hosted page received from chargebee."/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>

@@ -24,6 +24,7 @@
 
 use block_poodllclassroom\constants;
 use block_poodllclassroom\common;
+use block_poodllclassroom\chargebee;
 require('../../../config.php');
 
 
@@ -50,15 +51,24 @@ $PAGE->navbar->add(get_string('pluginname', constants::M_COMP));
 $companyname = $SITE->fullname;
 
 if($state=='succeeded') {
-    $hp = common::retrieve_hosted_page($id);
+    $hp = chargebee::retrieve_hosted_page($id);
     if($hp){
         $hpstring = json_encode($hp);
         $passthroughdata = json_decode($hp->hosted_page->pass_thru_content);
         $school = common::get_resold_or_my_school($passthroughdata->schoolid);
+
         $subscription =$hp->hosted_page->content->subscription;
+        $paymentcurr = $subscription->currency_code;
+        $payment = $subscription->subscription_items[0]->unit_price;
+        $expiretime = $subscription->current_term_end;
+
         if($school) {
             $plan = common::get_plan($passthroughdata->planid);
-            common::create_poodllsub($school->id,$school->ownerid, $plan->id, $school->upstreamownerid, $subscription->id,$hpstring );
+            $billinginterval = $plan->billinginterval;
+            $json_fields = common::process_new_sub($school,$plan,$subscription);
+            common::create_poodllsub($school->id,$school->ownerid, $plan->id, $school->upstreamownerid, $subscription->id,
+                $expiretime,$payment,$paymentcurr,$billinginterval,
+                $json_fields,$hpstring );
             $ret = $hpstring;
         }else{
             $ret = "something was not right with that school ...";
