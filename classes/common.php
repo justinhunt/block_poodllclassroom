@@ -834,14 +834,16 @@ class common
         return $plan;
     }
 
-    public static function create_poodllsub($ownerid, $planid, $upstreamownerid,$upstreamsubid){
+    public static function create_poodllsub($schoolid, $ownerid, $planid, $upstreamownerid,$upstreamsubid, $jsonfields='{}'){
         global $DB;
         $newschool= new \stdClass();
+        $newschool->schoolid=$schoolid;
         $newschool->ownerid=$ownerid;
         $newschool->planid=$planid;
         $newschool->upstreamownerid=$upstreamownerid;
         $newschool->upstreamsubid=$upstreamsubid;
         $newschool->status='active';
+        $newschool->jsonfields=$jsonfields;
         $newschool->timecreated=time();
         $newschool->timemodified=time();
 
@@ -933,13 +935,18 @@ class common
         require_once($CFG->libdir . '/filelib.php');
         $curl = new \curl();
 
-        $postdatastring = http_build_query($postdata,'', '&');
+
         if(!empty($username)) {
             $curl->setopt(array('CURLOPT_HTTPAUTH'=>CURLAUTH_BASIC));
             $curl->setopt(array('CURLOPT_USERPWD'=> $username . ":"));
         }
 
-        $result = $curl->post($url, $postdatastring);
+        if($postdata) {
+            $postdatastring = http_build_query($postdata, '', '&');
+            $result = $curl->post($url, $postdatastring);
+        }else{
+            $result = $curl->get($url);
+        }
         return $result;
     }
 
@@ -1017,7 +1024,7 @@ class common
         if($customerid && !empty($apikey) && !empty($siteprefix)){
             $url = "https://$siteprefix.chargebee.com/api/v2/hosted_pages/checkout_existing";
             $postdata=[];
-            $postdata['redirect_url'] = $CFG->wwwroot . '/my';
+            $postdata['redirect_url'] = $CFG->wwwroot . constants::M_URL . '/subs/welcomeback.php';
             $postdata['cancel_url'] = $CFG->wwwroot . '/my';
             $postdata['subscription']= array(
                     "id" => $sub->upstreamsubid,
@@ -1032,6 +1039,24 @@ class common
         }
         return false;
     }
+
+    public static function retrieve_hosted_page($id){
+        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
+        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
+
+        $url = "https://$siteprefix.chargebee.com/api/v2/hosted_pages/";
+        $url .= $id;
+
+        $postdata=false;
+        $curlresult = self::curl_fetch($url,$postdata,$apikey);
+        $jsonresult = self::make_object_from_json($curlresult);
+        if($jsonresult){
+            return $jsonresult;
+        }
+        return false;
+    }
+
+
     public static function make_upstream_user_id($userid)
     {
         return 'user-'.$userid.'-'.random_string(8);
@@ -1102,7 +1127,7 @@ class common
             $url = "https://$siteprefix.chargebee.com/api/v2/hosted_pages/checkout_new_for_items";
 
             $postdata=[];
-            $postdata['redirect_url'] = $CFG->wwwroot . '/my';
+            $postdata['redirect_url'] = $CFG->wwwroot . constants::M_URL . '/subs/welcomeback.php';
             $postdata['cancel_url'] = $CFG->wwwroot . '/my';
             $postdata['subscription_items']=[];
             $postdata['subscription_items']['item_price_id']=[];
@@ -1118,7 +1143,7 @@ class common
 */
             $postdata['customer']= array(
                 "id" => $upstreamuserid,
-                "email" => $USER->mail,
+                "email" => $USER->email,
                 "first_name" => $USER->firstname,
                 "last_name" => $USER->lastname,
             );
@@ -1127,6 +1152,18 @@ class common
             }else{
                 $postdata['company'] = $schoolname;
             }
+
+            //allow offline payment
+            $postdata['allow_offline_payment_methods'] = true;
+
+            //passthrough
+            $passthrough = [];
+            $passthrough['schoolid']=$school->id;
+            $passthrough['planid']=$plan->id;
+            $passthrough['currency']=$currency;
+            $passthrough['billing']=$billing;
+            $postdata['pass_thru_content'] = json_encode($passthrough);
+
 
             $curlresult = self::curl_fetch($url,$postdata,$apikey);
             $jsonresult = self::make_object_from_json($curlresult);

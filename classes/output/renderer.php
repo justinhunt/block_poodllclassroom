@@ -103,12 +103,17 @@ class renderer extends \plugin_renderer_base {
         $display_subs = common::get_display_sub_data($extended_subs);
 
 
+
         //subs section
         $subssectiondata = array('subs'=>array_values($display_subs));
         if(count($subssectiondata['subs'])<1){
             $subssectiondata['nosubs']=true;
         }
         $content .= $this->render_from_template('block_poodllclassroom/subsheader',$subssectiondata);
+
+        //checkout button
+        $checkoutbuttondata = ['school'=>$school,'subtype'=>'all', 'checkouturl'=>$checkouturl->out()];
+        $content .= $this->render_from_template('block_poodllclassroom/checkoutpagebutton', $checkoutbuttondata);
 
         //Platform Subs Details Section
         $moodlesubs=[];
