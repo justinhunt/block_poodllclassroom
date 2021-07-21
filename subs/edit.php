@@ -44,6 +44,8 @@ $baseurl = constants::M_URL;
 $context = context_system::instance();
 require_capability('block/poodllclassroom:manageintegration', $context);
 
+$superadmin = has_capability('block/poodllclassroom:managepoodllclassroom', $context);
+
 if ($returnurl) {
     $returnurl = new moodle_url($returnurl);
 } else {
@@ -174,7 +176,7 @@ switch($type){
         $editform = new \block_poodllclassroom\local\form\editsubform();
         break;
     case 'school':
-        $editform = new \block_poodllclassroom\local\form\editschoolform();
+        $editform = new \block_poodllclassroom\local\form\editschoolform(null,['superadmin'=>$superadmin]);
         break;
     case 'reseller':
         $editform = new \block_poodllclassroom\local\form\editresellerform();
@@ -210,10 +212,28 @@ if ($editform->is_cancelled()){
             break;
         case 'reseller':
             if (!$data->id) {
+
+                $reseller = $DB->get_record(constants::M_TABLE_RESELLERS,array('userid'=>$data->userid));
+                if($reseller){
+                    redirect($returnurl,get_string('oneuseronereseller',constants::M_COMP),
+                        3,\core\output\notification::NOTIFY_WARNING);
+                }
+
                 $data->timemodified=time();
                 $data->timecreated=time();
+                $data->upstreamuserid=common::make_upstream_user_id($data->userid);
                 $result=$DB->insert_record(constants::M_TABLE_RESELLERS,$data);
             } else {
+                $reseller = $DB->get_record(constants::M_TABLE_RESELLERS,array('id'=>$data->id));
+                if(!$reseller){
+                    redirect($returnurl,get_string('cantupdatereseller',constants::M_COMP),
+                        3,\core\output\notification::NOTIFY_WARNING);
+                }
+                if(common::fetch_schools_by_reseller($data->id) && $reseller->userid != $data->userid){
+                    redirect($returnurl,get_string('cantchangereselleruserifschools',constants::M_COMP),
+                        3,\core\output\notification::NOTIFY_WARNING);
+                }
+
                 $data->timemodified=time();
                 $result = $DB->update_record(constants::M_TABLE_RESELLERS, $data);
             }
@@ -226,6 +246,22 @@ if ($editform->is_cancelled()){
             if (!$data->id) {
                 $data->timemodified=time();
                 $data->timecreated=time();
+                //we were going to allow resellers to create and edit schools, and that is this super admin thing
+                //we canned it. TODO remove from here and editschoolform
+                if(!$superadmin){
+                    $data->jsonfields='{}';
+                    $data->apiuser='';
+                    $data->apisecret='';
+                    $reseller = common::fetch_me_reseller();
+                    if($reseller) {
+                        $data->ownerid = $reseller->userid;
+                        $data->resellerid = $reseller->id;
+                        $data->upstreamownerid = $reseller->upstreamuserid;
+                    }else{
+                        $data->ownerid = $USER->id;
+                        $data->resellerid = common::fetch_poodll_resellerid();
+                    }
+                }
                 if(empty($data->upstreamownerid) || strpos($data->upstreamownerid,'user-')===false){
                     $data->upstreamownerid = common::make_upstream_user_id($data->ownerid);
                 }

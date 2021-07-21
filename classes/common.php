@@ -479,9 +479,10 @@ class common
     public static function fetch_subs_by_school($schoolid){
         global $DB;
 
-        $sql = 'SELECT sub.*, u.firstname as ownerfirstname, u.lastname as ownerlastname, "fakename" as schoolname ';
+        $sql = 'SELECT sub.*, u.firstname as ownerfirstname, u.lastname as ownerlastname, school.name as schoolname ';
         $sql .= 'FROM {'. constants::M_TABLE_SUBS .'} sub ';
-        $sql .= ' INNER JOIN {user} u ON u.id = sub.ownerid ';
+        $sql .= ' INNER JOIN {'. constants::M_TABLE_SCHOOLS .'} school ON school.id = sub.schoolid ';
+        $sql .= ' INNER JOIN {user} u ON u.id = school.ownerid ';
         $sql .= ' WHERE sub.schoolid = :schoolid ';
         $subs=$DB->get_records_sql($sql,['schoolid'=>$schoolid]);
 
@@ -490,16 +491,6 @@ class common
         }else{
             return [];
         }
-
-
-        global $DB,$USER;
-        $sql = 'SELECT sub.* ';
-        $sql .= ' FROM {'. constants::M_TABLE_SUBS .'} sub ';
-        $sql .= ' INNER JOIN {'. constants::M_TABLE_SCHOOLS .'} school ON school.id=sub.schoolid';
-        $sql .= ' WHERE school.ownerid = :userid';
-        $subs=$DB->get_records_sql($sql, array('userid'=>$USER->id));
-        return $subs;
-
     }
 
     public static function fetch_schoolsubs_by_school($schoolid){
@@ -710,6 +701,17 @@ class common
             //edit plan url
             $sub->editurl= $CFG->wwwroot . '/blocks/poodllclassroom/subs/accessportal.php?subid=' . $sub->id;
 
+            //payment
+            $amount = $sub->payment;
+            if($sub->paymentcurr!=='JPY'){
+                $amount = floatval($sub->payment) / 100;
+            }
+            $fmt = \numfmt_create( 'en_US', \NumberFormatter::CURRENCY );
+            $sub->payment_display =  \numfmt_format_currency($fmt, $amount, $sub->paymentcurr)."\n";
+
+            //expiry date
+            $sub->expiretime_display =date("Y-m-d", $sub->expiretime);
+
             //time created
             $sub->timecreated_display =date("Y-m-d H:i:s", $sub->timecreated);
         }
@@ -835,7 +837,7 @@ class common
     }
 
     public static function create_poodllsub($schoolid, $ownerid, $planid, $upstreamownerid,$upstreamsubid,
-                                            $expiretime,$payment,$paymentcurr,$billinginterval, $jsonfields='{}', $hostedpage){
+                                            $expiretime,$payment,$paymentcurr,$billinginterval, $jsonfields, $hostedpage){
         global $DB;
         $newschool= new \stdClass();
         $newschool->schoolid=$schoolid;
@@ -845,7 +847,7 @@ class common
         $newschool->upstreamsubid=$upstreamsubid;
         $newschool->status='active';
         if(is_number($expiretime)){
-            $newschool->timecreated=$expiretime;
+            $newschool->expiretime=$expiretime;
         }
         $newschool->payment=$payment;
         $newschool->paymentcurr=$paymentcurr;
@@ -930,7 +932,17 @@ class common
                 }
             }
         }elseif($reseller && $reseller->resellertype == constants::M_RESELLER_POODLL){
-            $school = $DB->get_record(constants::M_TABLE_SCHOOLS,array('id'=>$schoolid));
+            //this will fetch true poodll resold schools
+            $schools = common::fetch_schools_by_reseller($reseller->id);
+            foreach ($schools as $aschool){
+                if($aschool->id==$schoolid){
+                    $school = $aschool;
+                }
+            }
+            //this will fetch a school that Poodll admin needs to work with
+            if(!$school) {
+                $school = $DB->get_record(constants::M_TABLE_SCHOOLS, array('id' => $schoolid));
+            }
 
         }else{
             $school=common::get_poodllschool_by_currentuser();
@@ -997,19 +1009,38 @@ class common
     }
 
 
-
+    public static function fetch_poodll_resellerid(){
+        global $DB;
+        $poodllreseller = $DB->get_record(constants::M_TABLE_RESELLERS,array('resellertype'=>constants::M_RESELLER_POODLL));
+        if($poodllreseller){
+            return $poodllreseller->id;
+        }else{
+            return 0;
+        }
+    }
     public static function make_upstream_user_id($userid)
     {
         return 'user-'.$userid.'-'.random_string(8);
 
     }
-    public static function create_blank_school(){
+    public static function create_blank_school($reseller=false){
         global $USER, $DB;
         $school = new \stdClass();
         $school->name='unnamed school';
-        $school->ownerid = $USER->id;
-        $school->resellerid = constants::M_RESELLER_POODLL;
-        $school->upstreamownerid = self::make_upstream_user_id($USER->id);
+        $school->timecreated = time();
+        $school->timemodified = time();
+        $school->jsonfields = '{}';
+
+        if($reseller===false) {
+           $school->resellerid = self::fetch_poodll_resellerid();
+           $school->upstreamownerid = self::make_upstream_user_id($USER->id);
+            $school->ownerid = $USER->id;
+
+        }else{
+            $school->resellerid = $reseller->id;
+            $school->upstreamownerid = $reseller->upstreamuserid;
+            $school->ownerid = $reseller->userid;
+        }
         $id = $DB->insert_record(constants::M_TABLE_SCHOOLS,$school);
         if($id){
             $school->id = $id;

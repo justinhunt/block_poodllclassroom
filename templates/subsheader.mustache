@@ -9,9 +9,12 @@
         <tr>
             <th class="header c0 subname" style="" scope="col">{{#str}}subname, block_poodllclassroom{{/str}}</th>
             <th class="header c1 subperiod" style="" scope="col">{{#str}}subperiod, block_poodllclassroom{{/str}}</th>
-            <th class="header c2 date" style="" scope="col">{{#str}}timecreated, block_poodllclassroom{{/str}}</th>
-            <th class="header c3 edit" style="" scope="col">{{#str}}action, block_poodllclassroom{{/str}}</th>
-            <th class="header c4 lastcol renew" style="" scope="col"></th>
+            {{#show_expiretime}} <th class="header c2" style="" scope="col">{{#str}}subexpiretime, block_poodllclassroom{{/str}}</th>{{/show_expiretime}}
+            {{#show_payment}} <th class="header c3" style="" scope="col">{{#str}}subcurrency, block_poodllclassroom{{/str}}</th>{{/show_payment}}
+            {{#show_payment}} <th class="header c4" style="" scope="col">{{#str}}subpayment, block_poodllclassroom{{/str}}</th>{{/show_payment}}
+            <th class="header c5 date" style="" scope="col">{{#str}}timecreated, block_poodllclassroom{{/str}}</th>
+            <th class="header c6 edit" style="" scope="col">{{#str}}action, block_poodllclassroom{{/str}}</th>
+            <th class="header c7 lastcol renew" style="" scope="col"></th>
         </tr>
         </thead>
         <tbody>
@@ -19,7 +22,17 @@
             {{> block_poodllclassroom/subslistrow}}
         {{/subs}}
         {{#nosubs}}
-            <tr><td colspan="5">{{#str}}nosubs, block_poodllclassroom{{/str}}</td></tr>
+            {{#show_expiretime}}
+               {{#show_payment}}
+                   <tr><td colspan="8">{{#str}}nosubs, block_poodllclassroom{{/str}}</td></tr>
+               {{/show_payment}}
+               {{^show_payment}}
+                   <tr><td colspan="6">{{#str}}nosubs, block_poodllclassroom{{/str}}</td></tr>
+               {{/show_payment}}
+            {{/show_expiretime}}
+            {{^show_expiretime}}
+                <tr><td colspan="5">{{#str}}nosubs, block_poodllclassroom{{/str}}</td></tr>
+            {{/show_expiretime}}
         {{/nosubs}}
         </tbody>
     </table>

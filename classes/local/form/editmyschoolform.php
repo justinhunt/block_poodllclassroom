@@ -44,7 +44,7 @@ class editmyschoolform extends \moodleform {
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
 
-        $mform->addElement('hidden', 'type','myschool');
+        $mform->addElement('hidden', 'type','school');
         $mform->setType('type', PARAM_TEXT);
 
         $mform->addElement('text', 'name', get_string('schoolname', constants::M_COMP), array('size'=>70));

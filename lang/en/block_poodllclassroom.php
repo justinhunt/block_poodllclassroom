@@ -245,7 +245,12 @@ $string['checkout'] = 'Checkout.' ;
 $string['chooseplan'] = 'Choose' ;
 $string['checkoutinstructions'] = 'Choose a subscription plan from the options below. Annual and monthly payment options can be selected.' ;
 $string['youhavenoschool']='You have no school';
-
+$string['subexpiretime'] = 'Expiry';
+$string['subcurrency'] = 'Currency';
+$string['subpayment'] = 'Payment';
+$string['cantupdatereseller'] = 'Can not update reseller of that id';
+$string['cantchangereselleruserifschools'] = 'Can not change user of the reseller account if the reseller has schools. The upstream owner id would lose sync';
+$string['oneuseronereseller'] = 'A user can have only one reseller account';
 
 
 

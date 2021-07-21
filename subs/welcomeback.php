@@ -65,10 +65,17 @@ if($state=='succeeded') {
         if($school) {
             $plan = common::get_plan($passthroughdata->planid);
             $billinginterval = $plan->billinginterval;
-            $json_fields = common::process_new_sub($school,$plan,$subscription);
-            common::create_poodllsub($school->id,$school->ownerid, $plan->id, $school->upstreamownerid, $subscription->id,
-                $expiretime,$payment,$paymentcurr,$billinginterval,
-                $json_fields,$hpstring );
+
+            //if its a new sub create it. If we already had it. Do not create it
+            if(common::get_poodllsub_by_upstreamsubid($subscription->id)===false) {
+
+                //this is where any sub specific stuff has to happen .. eg get LTI creds, or API user and secret
+                $json_fields = common::process_new_sub($school, $plan, $subscription);
+
+                common::create_poodllsub($school->id, $school->ownerid, $plan->id, $school->upstreamownerid, $subscription->id,
+                    $expiretime, $payment, $paymentcurr, $billinginterval,
+                    $json_fields, $hpstring);
+            }
             $ret = $hpstring;
         }else{
             $ret = "something was not right with that school ...";

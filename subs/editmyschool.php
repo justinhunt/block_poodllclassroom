@@ -29,9 +29,10 @@ use block_poodllclassroom\constants;
 use block_poodllclassroom\common;
 
 $id        = optional_param('id', 0, PARAM_INT);
+$add        = optional_param('add', 0, PARAM_BOOL);
 $delete    = optional_param('delete', 0, PARAM_BOOL);
 $confirm    = optional_param('confirm', 0, PARAM_BOOL);
-$type    = optional_param('type', 'myschool', PARAM_TEXT);//school //myschool
+$type    = optional_param('type', 'school', PARAM_TEXT);//school //myschool
 $returnurl = optional_param('returnurl', '', PARAM_LOCALURL);
 
 require_login();
@@ -42,7 +43,6 @@ $baseurl = constants::M_URL;
 
 
 $context = context_system::instance();
-//require_capability('block/poodllclassroom:managepoodllclassroom', $context);
 
 if (!empty($returnurl)) {
     $returnurl = new moodle_url($returnurl);
@@ -57,6 +57,7 @@ $PAGE->set_url($baseurl);
 $PAGE->set_context($context);
 $PAGE->set_pagelayout('course');
 $renderer = $PAGE->get_renderer(constants::M_COMP);
+$reseller = common::fetch_me_reseller();
 
 $ok =false;
 $school=false;
@@ -66,13 +67,24 @@ if($id>0) {
 if($school){
     $ok=true;
 }else{
-    redirect($returnurl,get_string('donthaveaschool',constants::M_COMP),
-        3,\core\output\notification::NOTIFY_WARNING);
+    //if a reseller requested an add, then lets do that
+    if($add && $reseller) {
+        $school = common::create_blank_school($reseller);
+        if($school){
+            $backhereurl = new moodle_url($baseurl . '/subs/editmyschool.php', array('id' => $school->id, 'type'=>$type));
+            redirect($backhereurl);
+        }else {
+            redirect($returnurl);
+        }
+    //else we do not have a valid school so we can edit it ya know
+    }else{
+        redirect($returnurl, get_string('donthaveaschool', constants::M_COMP),
+            3, \core\output\notification::NOTIFY_WARNING);
+    }
 }
 if($ok){
     $ok = $school->ownerid==$USER->id;
     if(!$ok){
-        $reseller = common::fetch_me_reseller();
         if($reseller){
             $resold_schools= common::fetch_schools_by_reseller($reseller->id);
             foreach($resold_schools as $resold_school){
@@ -95,7 +107,7 @@ if(!$ok){
 if ($delete && $id) {
     $PAGE->url->param('delete', 1);
     switch($type){
-        case 'myschool':
+        case 'school':
             //there is no delete myschool (yet!!)
     }
 
@@ -103,7 +115,7 @@ if ($delete && $id) {
 
 
 switch($type){
-    case 'myschool':
+    case 'school':
         $editform = new \block_poodllclassroom\local\form\editmyschoolform();
 }
 
@@ -113,10 +125,11 @@ if ($editform->is_cancelled()){
 }else if($data = $editform->get_data()) {
     switch($type){
 
-        case 'myschool':
+        case 'school':
             $theschool = $DB->get_record(constants::M_TABLE_SCHOOLS, array('id' => $data->id));
             if($theschool && $theschool->ownerid==$USER->id && !empty($data->name)) {
                 if(!empty($data->siteurl)){$data->siteurls=json_encode($data->siteurl);}
+                $data->timemodified=time();
                 $DB->update_record(constants::M_TABLE_SCHOOLS,$data);
                 //common::set_schoolname($theschool, $data->name);
             }
@@ -130,7 +143,7 @@ if ($editform->is_cancelled()){
 
 switch($type){
 
-    case 'myschool':
+    case 'school':
 
             $usedata = new stdClass();
             $usedata->id=$school->id;

@@ -68,6 +68,9 @@ $subssectiondata = array('subs'=>array_values($display_subs));
 if(count($subssectiondata['subs'])<1){
     $subssectiondata['nosubs']=true;
 }
+$subssectiondata['show_expiretime']=true;
+$subssectiondata['show_payment']=true;
+
 $checkouturl  = new \moodle_url(constants::M_URL . '/subs/checkout.php',array());
 
 //return the page header
@@ -105,8 +108,12 @@ if(true) {
 
     //Platform Moodle Subs Section
     if(count($moodlesubs)>0){
+        $urlparams= array('id' => $moodlesubs[0]->school->id,'type'=>'school','returnurl' => $PAGE->url->out_as_local_url());
+        $theurl = new \moodle_url(constants::M_URL . '/subs/editmyschool.php', $urlparams);
+        $editschoolurl = $theurl->out();
         $content .= $renderer->render_from_template('block_poodllclassroom/moodlesubs',
-                ['school'=>$moodlesubs[0]->school,'subs'=>$moodlesubs, 'platform'=>constants::M_PLATFORM_MOODLE, 'checkouturl'=>$checkouturl->out()]);
+                ['school'=>$moodlesubs[0]->school,'subs'=>$moodlesubs,
+                    'platform'=>constants::M_PLATFORM_MOODLE, 'checkouturl'=>$checkouturl->out(), 'editschoolurl'=>$editschoolurl]);
     }
 
     //Platform LTI Section

@@ -8,7 +8,7 @@ class chargebee
 {
 
     public static function get_checkout_new($planid, $currency, $billinginterval, $schoolid=0){
-        global $USER, $CFG;
+        global $USER, $CFG, $DB;
         $plan = common::get_plan($planid);
         switch($billinginterval){
             case constants::M_BILLING_MONTHLY:
@@ -27,7 +27,16 @@ class chargebee
         $school = common::get_resold_or_my_school($schoolid);
         if($reseller){
             if(!$school){return false;}
-            $upstreamuserid=$reseller->upstreamuserid;
+            if($reseller->id === $school->resellerid) {
+                $upstreamuserid = $reseller->upstreamuserid;
+            }else{
+                $truereseller = $DB->get_record(constants::M_TABLE_RESELLERS,array('id'=>$school->resellerid));
+                if($truereseller) {
+                    $upstreamuserid = $truereseller->upstreamuserid;
+                }else{
+                    return false;
+                }
+            }
         }elseif ($school){
             $upstreamuserid=$school->upstreamownerid;
         }else{

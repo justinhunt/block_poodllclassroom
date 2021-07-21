@@ -110,6 +110,8 @@ class renderer extends \plugin_renderer_base {
         if(count($subssectiondata['subs'])<1){
             $subssectiondata['nosubs']=true;
         }
+        $subssectiondata['show_expiretime']=true;
+        $subssectiondata['show_payment']=true;
         $content .= $this->render_from_template('block_poodllclassroom/subsheader',$subssectiondata);
 
         //checkout button
@@ -698,6 +700,15 @@ class renderer extends \plugin_renderer_base {
                 get_string('addschool', constants::M_COMP), 'get');
         return $thebutton;
     }
+
+    //return a button that will allow user to add a new school
+    function fetch_addresellerschool_button(){
+        $thebutton = new \single_button(
+            new \moodle_url(constants::M_URL . '/subs/editmyschool.php',array('id'=>0,'add'=>1)),
+            get_string('addschool', constants::M_COMP), 'get');
+        return $thebutton;
+    }
+
     function fetch_addreseller_button(){
         $thebutton = new \single_button(
                 new \moodle_url(constants::M_URL . '/subs/edit.php',array('type'=>'reseller')),
@@ -781,13 +792,21 @@ class renderer extends \plugin_renderer_base {
     function fetch_schools_table($schools,$returnurl){
         global $DB;
 
+        $superadmin=false;
+        $reseller=false;
+
         //add school button
         $context = \context_system::instance();
         if(has_capability('block/poodllclassroom:manageintegration', $context)) {
             $abutton = $this->fetch_addschool_button();
             $addnewbutton = $this->render($abutton);
+            $superadmin=true;
         }else{
-            $addnewbutton ='';
+            $reseller=common::fetch_me_reseller();
+            if($reseller) {
+                $abutton = $this->fetch_addresellerschool_button();
+                $addnewbutton = $this->render($abutton);
+            }
         }
 
         $data = array();
@@ -810,15 +829,28 @@ class renderer extends \plugin_renderer_base {
                     $this->output->pix_icon('t/preview', get_string('view')),
                     array('title' => get_string('view')));
 
-            $buttons[] = \html_writer::link(new \moodle_url(constants::M_URL . '/subs/edit.php', $urlparams),
+            if($superadmin) {
+                $buttons[] = \html_writer::link(new \moodle_url(constants::M_URL . '/subs/edit.php', $urlparams),
                     $this->output->pix_icon('t/edit', get_string('edit')),
                     array('title' => get_string('edit')));
+            }elseif($reseller){
+                $buttons[] = \html_writer::link(new \moodle_url(constants::M_URL . '/subs/editmyschool.php', $urlparams),
+                    $this->output->pix_icon('t/edit', get_string('edit')),
+                    array('title' => get_string('edit')));
+            }
 
-            /* remove delete option for now */
-            $buttons[] = \html_writer::link(new \moodle_url(constants::M_URL . '/subs/edit.php',
+            if($superadmin) {
+                $buttons[] = \html_writer::link(new \moodle_url(constants::M_URL . '/subs/edit.php',
                     $urlparams + array('delete' => 1)),
                     $this->output->pix_icon('t/delete', get_string('delete')),
                     array('title' => get_string('delete')));
+            }elseif($reseller) {
+                $buttons[] = \html_writer::link(new \moodle_url(constants::M_URL . '/subs/editmyschool.php',
+                    $urlparams + array('delete' => 1)),
+                    $this->output->pix_icon('t/delete', get_string('delete')),
+                    array('title' => get_string('delete')));
+
+            }
 
 
             $fields[] = implode(' ', $buttons);

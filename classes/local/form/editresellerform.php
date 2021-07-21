@@ -60,11 +60,6 @@ class editresellerform extends \moodleform {
         $users = common::fetch_users_array();
         $mform->addElement('select', 'userid', get_string('users', constants::M_COMP), $users);
 
-        $mform->addElement('text', 'upstreamuserid', get_string('upstreamuserid', constants::M_COMP), array('size'=>70));
-        $mform->setType('upstreamuserid', PARAM_TEXT);
-        $mform->setDefault('upstreamuserid', '');
-
-
         $mform->addElement('textarea', 'jsonfields', get_string('jsonfields', constants::M_COMP), array('size'=>70));
         $mform->setType('jsonfields', PARAM_RAW);
         $mform->setDefault('jsonfields', '{}');
