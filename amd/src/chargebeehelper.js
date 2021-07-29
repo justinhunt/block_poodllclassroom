@@ -18,6 +18,7 @@ define(['jquery','core/log','core/ajax'], function($, log, ajax) {
             this.changeplanclass=props.changeplanclass;
             this.siteprefix=props.siteprefix;
             this.gocbcheckoutclass = props.gocbcheckoutclass;
+            this.gocbmanageclass = props.gocbmanageclass;
             this.registercontrols();
             this.registerevents();
         },
@@ -41,6 +42,8 @@ define(['jquery','core/log','core/ajax'], function($, log, ajax) {
             //set up checkout links
             $.getScript('https://js.chargebee.com/v2/chargebee.js', function(){
                 var chargebee = Chargebee.init({'site': that.siteprefix});
+
+                //checkout pop open
                 $("." + that.gocbcheckoutclass).on("click", function() {
                     event.preventDefault();
                     var clickedthis = this;
@@ -51,11 +54,9 @@ define(['jquery','core/log','core/ajax'], function($, log, ajax) {
                     var method = $(this).data('method');//'get_checkout_existing' or ''
                     chargebee.openCheckout({
                         hostedPage: function() {
-                            // Hit your end point that returns hosted page object as response
-                            // This sample end point will call checkout new api
+                            // Hit the end point that returns hosted page object as response
+                            // serverside we generate a hosted page object , and that auth's and provides deets for CB
                             // https://apidocs.chargebee.com/docs/api/hosted_pages#checkout_new_subscription
-                            // If you want to use paypal, go cardless and plaid, pass embed parameter as false
-                            // Now we can continue...
                             var promises = ajax.call([{
                                 methodname: 'block_poodllclassroom_' + method,
                                 args: {planid: planid, currency: currency, billinginterval: billinginterval, schoolid: schoolid}
@@ -82,11 +83,104 @@ define(['jquery','core/log','core/ajax'], function($, log, ajax) {
                             console.log(value);
                         }
                     });
-                });//on click
+                });//on checkout click
+
+                //on manage subscription click
+                $("[data-cbaction='ssp']").on("click", function() {
+                    event.preventDefault();
+                    var clickedthis = this;
+                    var upstreamownerid = $(this).data('upstreamownerid');
+                    var upstreamsubid = $(this).data('upstreamsubid');
+                    switch($(this).data('type')){
+                        case 'paymentsources':
+                            var sectiontype = Chargebee.getPortalSections().PAYMENT_SOURCES;
+                            break;
+
+                        case 'billinghistory':
+                            var sectiontype = Chargebee.getPortalSections().BILLING_HISTORY;
+                            break;
+
+                        case 'subdetails':
+                            var sectiontype = Chargebee.getPortalSections().SUBSCRIPTION_DETAILS;
+                            break;
+
+                        case 'billingaccount':
+                        default:
+                            var sectiontype = false;
+
+                    }
+                    //set the portal session within chargebee
+                    chargebee.setPortalSession(function(){
+                        var promises = ajax.call([{
+                            methodname: 'block_poodllclassroom_create_portal_session',
+                            args: {upstreamownerid: upstreamownerid}
+                        }]);
+                        return promises[0];
+                    });
+
+                    //create the portal;
+                    var cbPortal = chargebee.createChargebeePortal();
+
+                    var callbacks ={
+                        loaded: function() {
+                            console.log("manage portal opened");
+                        },
+
+                        close: function() {
+                            console.log("manage portal closed");
+                        },
+                        visit: function(setionType) {
+                            console.log("manage portal visit");
+                        },
+                        paymentSourceAdd: function() {
+                            console.log("manage portal PSA");
+                        },
+                        paymentSourceUpdate: function() {
+                            console.log("manage portal PSU");
+                        },
+                        paymentSourceRemove: function() {
+                            console.log("manage portal PSR");
+                        },
+                        subscriptionChanged: function(data) {
+                            console.log("manage portal sc");
+                        },
+                        subscriptionCustomFieldsChanged: function(data) {
+                            console.log("manage portal scfc");
+                        },
+                        subscriptionCancelled: function(data) {
+                            console.log("manage portal sub cancelled");
+                        },
+                        subscriptionPaused: function(data) {
+                            console.log("manage portal sub paused");
+                        },
+                        subscriptionPauseRemoved: function(data) {
+                            console.log("manage portal sub pause removed");
+                        },
+                        subscriptionResumed: function(data) {
+                            console.log("manage portal sub resumed");
+                        },
+                        subscriptionReactivated: function(data) {
+                            console.log("manage portal sub reactivated");
+                        }
+                    };
+                    if(sectiontype!==false) {
+                        var opts ={
+                            sectionType: sectiontype,
+                            params: {
+                                //only meaningful if we are managing a subscription
+                                subscriptionId: upstreamsubid
+                            }
+                        }
+                        cbPortal.openSection(opts, callbacks);
+                    }else{
+                        var forwardOptions={sectionType: Chargebee.getPortalSections().ACCOUNT_DETAILS};
+                       // cbPortal.open(callbacks,forwardOptions);
+                        cbPortal.open(callbacks);
+                    }
+
+                });//on manage subscription click
 
             });//end of get script
-
-
 
         }//end of reg events
     };//end of returned object

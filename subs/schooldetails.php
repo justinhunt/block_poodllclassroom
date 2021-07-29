@@ -79,6 +79,14 @@ echo $renderer->header();
 
 if(true) {
 
+    //here we set up any info we need to pass into javascript
+    $opts =Array();
+    $opts['siteprefix']= get_config(constants::M_COMP,'chargebeesiteprefix');
+    $opts['changeplanclass']=constants::M_COMP . '_changeplan';
+    $opts['gocbcheckoutclass']=constants::M_COMP . '_gocbcheckout';
+    $opts['gocbmanageclass']=constants::M_COMP . '_subsmanagelink';
+    $PAGE->requires->js_call_amd(constants::M_COMP . "/chargebeehelper", 'init', array($opts));
+
     $content = $renderer->render_from_template('block_poodllclassroom/schoolheader',$school);
     $content .='<br>';
 

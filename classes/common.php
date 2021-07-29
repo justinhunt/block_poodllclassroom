@@ -546,8 +546,9 @@ class common
     public static function fetch_resellers(){
         global $DB;
 
-        $sql = 'SELECT * ';
+        $sql = 'SELECT * , u.firstname as resellerfirstname, u.lastname as resellerlastname ';
         $sql .= 'from {'. constants::M_TABLE_RESELLERS .'} reseller ';
+        $sql .= 'INNER JOIN {user} u ON u.id = reseller.userid ';
         $resellers=$DB->get_records_sql($sql);
 
 
@@ -626,13 +627,13 @@ class common
 
     }
 
-    public static function get_usersub_by_plan($planid){
+    public static function get_usersub_by_plan($planid, $schoolid){
         global $DB,$USER;
         $sql = 'SELECT sub.* ';
         $sql .= ' FROM {'. constants::M_TABLE_SUBS .'} sub ';
         $sql .= ' INNER JOIN {'. constants::M_TABLE_SCHOOLS .'} school ON school.id=sub.schoolid';
-        $sql .= ' WHERE school.ownerid = :userid AND sub.planid = :planid ';
-        $subs=$DB->get_records_sql($sql, array('userid'=>$USER->id, 'planid'=>$planid));
+        $sql .= ' WHERE school.ownerid = :userid AND sub.planid = :planid AND school.id = :schoolid AND NOT sub.status = \'inactive\'';
+        $subs=$DB->get_records_sql($sql, array('userid'=>$USER->id, 'planid'=>$planid, 'schoolid'=>$schoolid));
         return $subs;
 
     }
@@ -697,7 +698,7 @@ class common
 
             }
             //change plan url
-            $sub->changeurl= $CFG->wwwroot . '/blocks/poodllclassroom/subs/changeplan.php?subid=' . $sub->id;
+            $sub->changeurl= $CFG->wwwroot . '/blocks/poodllclassroom/subs/managesubscription.php?subid=' . $sub->id;
             //edit plan url
             $sub->editurl= $CFG->wwwroot . '/blocks/poodllclassroom/subs/accessportal.php?subid=' . $sub->id;
 

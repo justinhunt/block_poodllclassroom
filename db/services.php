@@ -25,6 +25,15 @@ $functions = array(
                 'ajax'        => true,
     ),
 
+    'block_poodllclassroom_create_portal_session' => array(
+        'classname'   => 'block_poodllclassroom_external',
+        'methodname'  => 'create_portal_session',
+        'description' => 'create_portal_session',
+        'capabilities'=> 'block/poodllclassroom:usepoodllclassroom',
+        'type'        => 'write',
+        'ajax'        => true,
+    ),
+
     'block_poodllclassroom_submit_mform' => array(
             'classname'   => 'block_poodllclassroom_external',
             'methodname'  => 'submit_mform',

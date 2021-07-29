@@ -57,7 +57,7 @@ class chargebee
         $customerid = $upstreamuserid;
         $apikey = get_config(constants::M_COMP,'chargebeeapikey');
         $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
-
+        $resellercoupon = get_config(constants::M_COMP,'resellercoupon');
 
         if($customerid && !empty($apikey) && !empty($siteprefix)){
             //$url = "https://$siteprefix.chargebee.com/api/v2/hosted_pages/checkout_new";
@@ -93,6 +93,12 @@ class chargebee
             //allow offline payment
             $postdata['allow_offline_payment_methods'] = true;
 
+            //if is reseller, apply coupon code
+            if($reseller) {
+                $postdata['coupon_ids'] = [];
+                $postdata['coupon_ids'][] = $resellercoupon;
+            }
+
             //passthrough
             $passthrough = [];
             $passthrough['schoolid']=$school->id;
@@ -127,29 +133,88 @@ class chargebee
         return false;
     }
 
-    public static function get_checkout_existing($planid){
+    public static function get_checkout_existing($planid, $schoolid){
         global $USER, $CFG;
-        $sub = common::get_usersub_by_plan($planid);
-        $extended_sub = common::get_extended_sub_data([$sub])[0];
+        $subs = common::get_usersub_by_plan($planid, $schoolid);
+        $extended_subs = common::get_extended_sub_data($subs);
+        $extended_sub = array_shift($extended_subs);
         $schoolname=$extended_sub->school->name;
-        $customerid = $sub->upstreamownerid;
+        $customerid = $extended_sub->school->upstreamownerid;
         $apikey = get_config(constants::M_COMP,'chargebeeapikey');
         $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
+        $resellercoupon = get_config(constants::M_COMP,'resellercoupon');//POODLLSTANDARDRESELLER-98765
+        $reseller =common::fetch_me_reseller();
 
         if($customerid && !empty($apikey) && !empty($siteprefix)){
-            $url = "https://$siteprefix.chargebee.com/api/v2/hosted_pages/checkout_existing";
+            $url = "https://$siteprefix.chargebee.com/api/v2/hosted_pages/checkout_existing_for_items";
             $postdata=[];
+
+            //general
+            //allow offline payment
+            $postdata['allow_offline_payment_methods'] = true;
+
+            //if is reseller, apply coupon code
+            if($reseller) {
+                $postdata['coupon_ids'] = [];
+                $postdata['coupon_ids'][] = $resellercoupon;
+            }
+
+            //passthrough
+            $passthrough = [];
+            $passthrough['schoolid']=$schoolid;
+            $passthrough['planid']=$planid;
+            //$passthrough['currency']=$currency;
+            //$passthrough['billing']=$billing;
+            $postdata['pass_thru_content'] = json_encode($passthrough);
+
+
             $postdata['redirect_url'] = $CFG->wwwroot . constants::M_URL . '/subs/welcomeback.php';
             $postdata['cancel_url'] = $CFG->wwwroot . '/my';
-            $postdata['subscription']= array(
-                "id" => $sub->upstreamsubid,
-                "plan_id" => $sub->plan->upstreamplan,
-                "cf_school_name"=>$schoolname,
-            );
+            $postdata['subscription']=[];
+            $postdata['subscription']['id'] = $extended_sub->upstreamsubid;
+
+            $postdata['subscription_items']=[];
+            $postdata['subscription_items']['plan_id']=[];
+            $postdata['subscription_items']['cf_school_name']=[];
+
+            $postdata['subscription_items']['plan_id'][0] = $extended_sub->plan->upstreamplan;
+            $postdata['subscription_items']['cf_school_name'][0] = $schoolname;
+
             $curlresult = common::curl_fetch($url,$postdata,$apikey);
             $jsonresult = common::make_object_from_json($curlresult);
             if($jsonresult){
                 return $jsonresult;
+            }
+        }
+        return false;
+    }
+
+    public static function create_portal_session($upstreamownerid){
+        global $CFG, $USER;
+
+        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
+        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
+        //this should work because a reseller schools will have sae upstreamowner and a regular owner will have only one school
+        $school = common::get_poodllschool_by_currentuser();
+
+        if($school && !empty($apikey) && !empty($siteprefix)){
+
+            if($school->upstreamownerid !== $upstreamownerid){return false;}
+
+            $url = "https://$siteprefix.chargebee.com/api/v2/portal_sessions";
+            $postdata=[];
+            $postdata['redirect_url'] = $CFG->wwwroot . '/my';
+            $postdata['customer']= array("id" => $upstreamownerid);
+            $curlresult = common::curl_fetch($url,$postdata,$apikey);
+            $jsonresult = common::make_object_from_json($curlresult);
+            if($jsonresult){
+                if(isset($jsonresult->portal_session)) {
+                        return $jsonresult->portal_session;
+                }else{
+                    //this causes infinite redirect ...
+                    // redirect($postdata['redirect_url'],get_string('noaccessportal',constants::M_COMP));
+                    return '';
+                }
             }
         }
         return false;

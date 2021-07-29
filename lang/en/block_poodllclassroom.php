@@ -151,7 +151,7 @@ $string['deleteplanconfirm'] = 'Truly delete subscription plan?';
 $string['deleteplan'] = 'Delete Subscription Plan';
 $string['deletesubconfirm'] = 'Truly delete subscription?';
 $string['deletesub'] = 'Delete Subscription';
-$string['deleteschoolconfirm'] = 'Truly delete school?';
+$string['deleteschoolconfirm'] = 'Truly delete school: {$a}?';
 $string['deleteschool'] = 'Delete School';
 $string['company'] = 'Company';
 $string['owner'] = 'Owner';
@@ -234,6 +234,7 @@ $string['user']='User';
 $string['youcantaccessthatschool']='You can not access that school';
 $string['schooldetails']='On this page you can review the subscriptions for the school and associated credentials and access details.';
 $string['managesubscriptions']='Manage Subscriptions';
+$string['managesub']='Manage';
 $string['dontownthisschool']='You can not manage this school';
 $string['donthaveaschool']='You do not yet have a school';
 $string['upstreamuserid']='Upstream User ID';
@@ -251,6 +252,16 @@ $string['subpayment'] = 'Payment';
 $string['cantupdatereseller'] = 'Can not update reseller of that id';
 $string['cantchangereselleruserifschools'] = 'Can not change user of the reseller account if the reseller has schools. The upstream owner id would lose sync';
 $string['oneuseronereseller'] = 'A user can have only one reseller account';
+$string['badschool'] = 'That school does not look correct';
+$string['upgradesub'] = 'Upgrade';
+$string['cancelsub'] = 'Cancel';
+$string['resellercoupon'] = 'Reseller Coupon';
+$string['resellercoupon_desc'] = 'Reseller Coupon';
+$string['billingaccount'] = 'Billing Account';
+$string['billinghistory'] = 'Billing History';
+$string['paymentsources'] = 'Payment Sources';
+
+
 
 
 

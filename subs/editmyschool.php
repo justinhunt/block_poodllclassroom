@@ -108,7 +108,33 @@ if ($delete && $id) {
     $PAGE->url->param('delete', 1);
     switch($type){
         case 'school':
-            //there is no delete myschool (yet!!)
+
+            //cancel the deletion request if there exist subs using this plan
+            $subs = common::fetch_subs_by_school($id);
+            if($subs && count($subs)){
+                redirect($returnurl,get_string('existingsubsforschool',constants::M_COMP),
+                    3,\core\output\notification::NOTIFY_WARNING);
+            }
+
+            if ($confirm and confirm_sesskey()) {
+                //what to do about upstream???
+                $result=$DB->delete_records(constants::M_TABLE_SCHOOLS,array('id'=>$id));
+                redirect($returnurl);
+            }
+
+            //
+            $strheading = get_string('deleteschool', constants::M_COMP);
+            $PAGE->navbar->add($strheading);
+            $PAGE->set_title($strheading);
+            $PAGE->set_heading($SITE->fullname);
+            echo $renderer->header();
+            echo $renderer->heading($strheading);
+            $yesurl = new moodle_url($baseurl . '/subs/editmyschool.php', array('id' => $id, 'delete' => 1,'type'=>'school',
+                'confirm' => 1, 'sesskey' => sesskey(), 'returnurl' => $returnurl->out_as_local_url()));
+            $message = get_string('deleteschoolconfirm', constants::M_COMP, $school->name);
+            echo $renderer->confirm($message, $yesurl, $returnurl);
+            echo $renderer->footer();
+            die;
     }
 
 }

@@ -44,6 +44,11 @@ if ($ADMIN->fulltree) {
             get_string('chargebeesiteprefix_desc', constants::M_COMP),
             'poodll', PARAM_TEXT));
 
+    $settings->add(new admin_setting_configtext(constants::M_COMP . '/resellercoupon',
+        get_string('resellercoupon', constants::M_COMP),
+        get_string('resellercoupon_desc', constants::M_COMP),
+        '-couponcode--', PARAM_TEXT));
+
     $integrationoptions =common::fetch_integration_options();
     $settings->add(new admin_setting_configselect(constants::M_COMP . '/integration',
             get_string('integrationtype', constants::M_COMP ),

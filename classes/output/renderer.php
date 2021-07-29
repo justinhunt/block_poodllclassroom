@@ -42,6 +42,14 @@ class renderer extends \plugin_renderer_base {
                     'label'=>get_string('superadminarea',constants::M_COMP));
         }
 
+        //set up js for dropdown options
+        //here we set up any info we need to pass into javascript
+        $opts = array();
+        $opts['siteprefix'] = get_config(constants::M_COMP, 'chargebeesiteprefix');
+        $opts['newplanclass'] = constants::M_COMP . '_newplan';
+        $opts['gocbcheckoutclass'] = constants::M_COMP . '_gocbcheckout';
+        $this->page->requires->js_call_amd(constants::M_COMP . "/chargebeehelper", 'init', array($opts));
+
         //if we are a reseller we are showing reseller things and reseller options
         $me_reseller = common::fetch_me_reseller();
         if($me_reseller){
@@ -49,9 +57,12 @@ class renderer extends \plugin_renderer_base {
             $resellerheader = $this->render_from_template('block_poodllclassroom/resellerheader', $me_reseller);
             $content .= $resellerheader;
 
-            $portalurl= chargebee::get_portalurl_by_upstreamid($me_reseller->upstreamuserid);
-            $options[] = array('url' => $portalurl,
-                    'label' => get_string('managesubscriptions', constants::M_COMP));
+            $options[] = array('url'=>'#','cbaction'=>'ssp','upstreamownerid'=> $me_reseller->upstreamuserid,'type'=>'billingaccount', 'label'=>get_string('billingaccount',constants::M_COMP));
+            $options[] = array('url'=>'#','cbaction'=>'ssp','upstreamownerid'=> $me_reseller->upstreamuserid,'type'=>'billinghistory', 'label'=>get_string('billinghistory',constants::M_COMP));
+            $options[] = array('url'=>'#','cbaction'=>'ssp','upstreamownerid'=> $me_reseller->upstreamuserid,'type'=>'paymentsources', 'label'=>get_string('paymentsources',constants::M_COMP));
+
+            // $portalurl= chargebee::get_portalurl_by_upstreamid($me_reseller->upstreamuserid);
+            //$options[] = array('url' => $portalurl, 'label' => get_string('managesubscriptions', constants::M_COMP));
 
             //Build options widget
             $optionsdata['options']=$options;
@@ -75,15 +86,18 @@ class renderer extends \plugin_renderer_base {
             if($school) {
 
                 $content .=   $this->render_from_template('block_poodllclassroom/schoolheader', $school);
-
-                $portalurl =chargebee::get_portalurl_by_upstreamid($school->upstreamownerid);
                 //if not reseller we just have one school, so we can edit it
                 $options[] = array('url' => $CFG->wwwroot . '/blocks/poodllclassroom/subs/editmyschool.php?id=' . $school->id,
                     'label' => get_string('editmyschool', constants::M_COMP));
 
+                $options[] = array('url'=>'#','cbaction'=>'ssp','upstreamownerid'=> $school->upstreamownerid,'type'=>'billingaccount', 'label'=>get_string('billingaccount',constants::M_COMP));
+                $options[] = array('url'=>'#','cbaction'=>'ssp','upstreamownerid'=> $school->upstreamownerid,'type'=>'billinghistory', 'label'=>get_string('billinghistory',constants::M_COMP));
+                $options[] = array('url'=>'#','cbaction'=>'ssp','upstreamownerid'=> $school->upstreamownerid,'type'=>'paymentsources', 'label'=>get_string('paymentsources',constants::M_COMP));
+
                 //manage all our subscriptions
-                $options[] = array('url' => $portalurl,
-                    'label' => get_string('managesubscriptions', constants::M_COMP));
+                //  $portalurl =chargebee::get_portalurl_by_upstreamid($school->upstreamownerid);
+                // $options[] = array('url' => $portalurl,'label' => get_string('managesubscriptions', constants::M_COMP));
+
             }
 
 
@@ -369,10 +383,11 @@ class renderer extends \plugin_renderer_base {
 
         $monthlyplans = [];
         $yearlyplans = [];
-        $showfirst = constants::M_BILLING_MONTHLY;
+        $showfirst = constants::M_BILLING_YEARLY;
 
         foreach($plans as $plan) {
             $plan->billingintervalname=$billingintervals[$plan->billinginterval];
+            $plan->schoolid = $extendedsub->schoolid;
             //if the users current plan, and its not free/monthly, then set the active display to yeif($plan->id==$myschool->planid){
             if($plan->id == $extendedsub->planid) {
                 $plan->selected = true;
@@ -413,13 +428,18 @@ class renderer extends \plugin_renderer_base {
         $opts['siteprefix']= get_config(constants::M_COMP,'chargebeesiteprefix');
         $opts['changeplanclass']=constants::M_COMP . '_changeplan';
         $opts['gocbcheckoutclass']=constants::M_COMP . '_gocbcheckout';
+        $opts['gocbmanageclass']=constants::M_COMP . '_subsmanagelink';
         $this->page->requires->js_call_amd(constants::M_COMP . "/chargebeehelper", 'init', array($opts));
 
 
-        //togglebutton
-        $togglebutton = \html_writer::link('#',get_string('monthlyyearly',constants::M_COMP),
-                array('class' => 'btn btn-secondary monthlyyearly' ));
-        $togglediv= \html_writer::div($togglebutton,constants::M_COMP . '_monthlyyearly');
+        //toggle monthly/yearly button
+        if (count($monthlyplans) > 0){
+            $togglebutton = \html_writer::link('#', get_string('monthlyyearly', constants::M_COMP),
+                array('class' => 'btn btn-secondary monthlyyearly'));
+            $togglediv = \html_writer::div($togglebutton, constants::M_COMP . '_monthlyyearly');
+        }else{
+            $togglediv ='';
+        }
 
         //monthly plans
         $mdata =array();
@@ -814,10 +834,12 @@ class renderer extends \plugin_renderer_base {
             $fields = array();
             $fields[] = $school->id;
             $fields[] = $school->name ;
-            $fields[] = $school->ownerfirstname . ' ' . $school->ownerlastname . "($school->ownerid)";
-            $fields[] = $school->upstreamownerid;
-            $fields[] = $school->status;
-            $fields[] = $school->jsonfields;
+            if($superadmin) {
+                $fields[] = $school->ownerfirstname . ' ' . $school->ownerlastname . "($school->ownerid)";
+                $fields[] = $school->upstreamownerid;
+                $fields[] = $school->status;
+                $fields[] = $school->jsonfields;
+            }
             $fields[] = strftime('%d %b %Y', $school->timemodified);
 
             $buttons = array();
@@ -859,14 +881,18 @@ class renderer extends \plugin_renderer_base {
         }
 
         $table = new \html_table();
-        $table->head  = array(get_string('id', constants::M_COMP),
-                get_string('school', constants::M_COMP),
-                get_string('owner', constants::M_COMP),
-                get_string('upstreamownerid', constants::M_COMP),
-                get_string('status', constants::M_COMP),
-                get_string('jsonfields', constants::M_COMP),
-                get_string('lastchange', constants::M_COMP),
-                get_string('action'));
+        $table->head  = array();
+
+        $table->head[] = get_string('id', constants::M_COMP);
+        $table->head[] = get_string('school', constants::M_COMP);
+        if($superadmin) {
+            $table->head[] = get_string('owner', constants::M_COMP);
+            $table->head[] = get_string('upstreamownerid', constants::M_COMP);
+            $table->head[] = get_string('status', constants::M_COMP);
+            $table->head[] = get_string('jsonfields', constants::M_COMP);
+        }
+        $table->head[] = get_string('lastchange', constants::M_COMP);
+        $table->head[] = get_string('action');
         $table->colclasses = array('leftalign name', 'leftalign size','centeralign action');
 
         $table->id = 'schools';
@@ -894,7 +920,7 @@ class renderer extends \plugin_renderer_base {
             $fields = array();
             $fields[] = $reseller->id;
             $fields[] = $reseller->name ;
-            $fields[] = $reseller->userid;
+            $fields[] = $reseller->resellerfirstname . ' ' . $reseller->resellerlastname . "($reseller->userid)";
             $fields[] = $reseller->status;
             $fields[] = $reseller->jsonfields;
             $fields[] = strftime('%d %b %Y', $reseller->timemodified);

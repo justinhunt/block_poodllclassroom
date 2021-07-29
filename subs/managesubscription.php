@@ -32,7 +32,7 @@ $subid        = required_param('subid',  PARAM_INT);
 //set the url of the $PAGE
 //note we do this before require_login preferably
 //so Moodle will send user back here if it bounces them off to login first
-$PAGE->set_url(constants::M_URL . '/subs/changeplan.php',array('subid' => $subid));
+$PAGE->set_url(constants::M_URL . '/subs/managesubscription.php',array('subid' => $subid));
 $course = get_course(1);
 require_login($course);
 

@@ -543,12 +543,13 @@ class block_poodllclassroom_external extends external_api {
     public static function get_checkout_existing_parameters() {
         return new external_function_parameters(
                 array(
-                  'planid' => new external_value(PARAM_TEXT, 'The change-to plan id for this subscripton')
+                  'planid' => new external_value(PARAM_TEXT, 'The plan id for this subscription'),
+                  'schoolid' => new external_value(PARAM_TEXT, 'The school id for this subscription')
                 )
         );
     }
 
-    public static function get_checkout_existing($planid) {
+    public static function get_checkout_existing($planid, $schoolid) {
 
         // Get/check context/capability
         $context = \context_system::instance();
@@ -557,9 +558,9 @@ class block_poodllclassroom_external extends external_api {
 
         // We always must pass webservice params through validate_parameters.
         $params = self::validate_parameters(self::get_checkout_existing_parameters(),
-                ['planid' => $planid]);
+                ['planid' => $planid, 'schoolid' => $schoolid]);
 
-        $hosted_page = chargebee::get_checkout_existing($params['planid']);
+        $hosted_page = chargebee::get_checkout_existing($params['planid'],$params['schoolid']);
         if($hosted_page){
             $ret =$hosted_page->hosted_page;
         }else{
@@ -585,7 +586,7 @@ class block_poodllclassroom_external extends external_api {
         ]);
     }
 
-    //------------ get_checkout_existing ---------------//
+    //------------ get_checkout_new ---------------//
     public static function get_checkout_new_parameters() {
         return new external_function_parameters(
             array(
@@ -631,6 +632,50 @@ class block_poodllclassroom_external extends external_api {
             'type' => new external_value(PARAM_TEXT, 'type'),
             'updated_at' => new external_value(PARAM_INT, 'updated at'),
             'url' => new external_value(PARAM_TEXT, 'url'),
+        ]);
+    }
+
+    //------------ create_portal_session ---------------//
+    public static function create_portal_session_parameters() {
+        return new external_function_parameters(
+            array(
+                'upstreamownerid' => new external_value(PARAM_TEXT, 'The upstreamownerid'),
+            )
+        );
+    }
+
+    public static function create_portal_session($upstreamownerid) {
+
+        // Get/check context/capability
+        $context = \context_system::instance();
+        self::validate_context($context);
+        require_capability('block/poodllclassroom:usepoodllclassroom', $context);
+
+        // We always must pass webservice params through validate_parameters.
+        $params = self::validate_parameters(self::create_portal_session_parameters(),
+            ['upstreamownerid' => $upstreamownerid]);
+
+        $portal_session = chargebee::create_portal_session($params['upstreamownerid']);
+        if($portal_session){
+            $ret =$portal_session;
+        }else{
+            $ret ='{}';
+        }
+        return $ret;
+    }
+
+    public static function create_portal_session_returns() {
+
+        // return new external_value(PARAM_RAW);
+        return new external_single_structure([
+            'id' => new external_value(PARAM_TEXT, 'id'),
+            'token' => new external_value(PARAM_TEXT, 'token'),
+            'access_url' => new external_value(PARAM_URL, 'url'),
+            'status' => new external_value(PARAM_TEXT, 'status'),
+            'created_at' => new external_value(PARAM_INT, 'created at'),
+            'expires_at' => new external_value(PARAM_INT, 'expires at'),
+            'object' => new external_value(PARAM_TEXT, 'object'),
+            'customer_id' => new external_value(PARAM_TEXT, 'customer id')
         ]);
     }
 }
