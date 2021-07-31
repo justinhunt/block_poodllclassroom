@@ -543,13 +543,14 @@ class block_poodllclassroom_external extends external_api {
     public static function get_checkout_existing_parameters() {
         return new external_function_parameters(
                 array(
-                  'planid' => new external_value(PARAM_TEXT, 'The plan id for this subscription'),
-                  'schoolid' => new external_value(PARAM_TEXT, 'The school id for this subscription')
+                  'planid' => new external_value(PARAM_TEXT, 'The plan id '),
+                  'schoolid' => new external_value(PARAM_TEXT, 'The school id '),
+                  'currentsubid' => new external_value(PARAM_INT, 'The current sub id ')
                 )
         );
     }
 
-    public static function get_checkout_existing($planid, $schoolid) {
+    public static function get_checkout_existing($planid, $schoolid, $currentsubid) {
 
         // Get/check context/capability
         $context = \context_system::instance();
@@ -558,9 +559,9 @@ class block_poodllclassroom_external extends external_api {
 
         // We always must pass webservice params through validate_parameters.
         $params = self::validate_parameters(self::get_checkout_existing_parameters(),
-                ['planid' => $planid, 'schoolid' => $schoolid]);
+                ['planid' => $planid, 'schoolid' => $schoolid, 'currentsubid' => $currentsubid]);
 
-        $hosted_page = chargebee::get_checkout_existing($params['planid'],$params['schoolid']);
+        $hosted_page = chargebee::get_checkout_existing($params['planid'],$params['schoolid'],$params['currentsubid']);
         if($hosted_page){
             $ret =$hosted_page->hosted_page;
         }else{

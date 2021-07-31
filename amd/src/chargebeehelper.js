@@ -51,6 +51,7 @@ define(['jquery','core/log','core/ajax'], function($, log, ajax) {
                     var billinginterval = $(this).data('billinginterval');
                     var planid = $(this).data('planid');
                     var schoolid = $(this).data('schoolid');
+                    var currentsubid = $(this).data('currentsubid');
                     var method = $(this).data('method');//'get_checkout_existing' or ''
                     chargebee.openCheckout({
                         hostedPage: function() {
@@ -59,7 +60,7 @@ define(['jquery','core/log','core/ajax'], function($, log, ajax) {
                             // https://apidocs.chargebee.com/docs/api/hosted_pages#checkout_new_subscription
                             var promises = ajax.call([{
                                 methodname: 'block_poodllclassroom_' + method,
-                                args: {planid: planid, currency: currency, billinginterval: billinginterval, schoolid: schoolid}
+                                args: {planid: planid, currency: currency, billinginterval: billinginterval, schoolid: schoolid, currentsubid: currentsubid }
                             }]);
                             return promises[0];
                         },

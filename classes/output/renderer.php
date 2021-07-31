@@ -52,15 +52,16 @@ class renderer extends \plugin_renderer_base {
 
         //if we are a reseller we are showing reseller things and reseller options
         $me_reseller = common::fetch_me_reseller();
-        if($me_reseller){
+        if($me_reseller && $me_reseller->resellertype==constants::M_RESELLER_THIRDPARTY){
             //fetch reseller header
             $resellerheader = $this->render_from_template('block_poodllclassroom/resellerheader', $me_reseller);
             $content .= $resellerheader;
-
-            $options[] = array('url'=>'#','cbaction'=>'ssp','upstreamownerid'=> $me_reseller->upstreamuserid,'type'=>'billingaccount', 'label'=>get_string('billingaccount',constants::M_COMP));
-            $options[] = array('url'=>'#','cbaction'=>'ssp','upstreamownerid'=> $me_reseller->upstreamuserid,'type'=>'billinghistory', 'label'=>get_string('billinghistory',constants::M_COMP));
-            $options[] = array('url'=>'#','cbaction'=>'ssp','upstreamownerid'=> $me_reseller->upstreamuserid,'type'=>'paymentsources', 'label'=>get_string('paymentsources',constants::M_COMP));
-
+            $subs = common::fetch_subs_by_user($me_reseller->userid);
+            if($subs) {
+                $options[] = array('url' => '#', 'cbaction' => 'ssp', 'upstreamownerid' => $me_reseller->upstreamuserid, 'type' => 'billingaccount', 'label' => get_string('billingaccount', constants::M_COMP));
+                $options[] = array('url' => '#', 'cbaction' => 'ssp', 'upstreamownerid' => $me_reseller->upstreamuserid, 'type' => 'billinghistory', 'label' => get_string('billinghistory', constants::M_COMP));
+                $options[] = array('url' => '#', 'cbaction' => 'ssp', 'upstreamownerid' => $me_reseller->upstreamuserid, 'type' => 'paymentsources', 'label' => get_string('paymentsources', constants::M_COMP));
+            }
             // $portalurl= chargebee::get_portalurl_by_upstreamid($me_reseller->upstreamuserid);
             //$options[] = array('url' => $portalurl, 'label' => get_string('managesubscriptions', constants::M_COMP));
 
@@ -82,18 +83,23 @@ class renderer extends \plugin_renderer_base {
         }else{
 
             $school = common::get_poodllschool_by_currentuser();
+            //if no school, we better make one quick
+            if(!$school) {
+                $school = common::create_blank_school();
+            }
+
             //if we do not have a school we can not show subs or school options
             if($school) {
-
                 $content .=   $this->render_from_template('block_poodllclassroom/schoolheader', $school);
                 //if not reseller we just have one school, so we can edit it
                 $options[] = array('url' => $CFG->wwwroot . '/blocks/poodllclassroom/subs/editmyschool.php?id=' . $school->id,
                     'label' => get_string('editmyschool', constants::M_COMP));
-
-                $options[] = array('url'=>'#','cbaction'=>'ssp','upstreamownerid'=> $school->upstreamownerid,'type'=>'billingaccount', 'label'=>get_string('billingaccount',constants::M_COMP));
-                $options[] = array('url'=>'#','cbaction'=>'ssp','upstreamownerid'=> $school->upstreamownerid,'type'=>'billinghistory', 'label'=>get_string('billinghistory',constants::M_COMP));
-                $options[] = array('url'=>'#','cbaction'=>'ssp','upstreamownerid'=> $school->upstreamownerid,'type'=>'paymentsources', 'label'=>get_string('paymentsources',constants::M_COMP));
-
+                $subs = common::fetch_subs_by_school($school->id);
+                if($subs) {
+                    $options[] = array('url' => '#', 'cbaction' => 'ssp', 'upstreamownerid' => $school->upstreamownerid, 'type' => 'billingaccount', 'label' => get_string('billingaccount', constants::M_COMP));
+                    $options[] = array('url' => '#', 'cbaction' => 'ssp', 'upstreamownerid' => $school->upstreamownerid, 'type' => 'billinghistory', 'label' => get_string('billinghistory', constants::M_COMP));
+                    $options[] = array('url' => '#', 'cbaction' => 'ssp', 'upstreamownerid' => $school->upstreamownerid, 'type' => 'paymentsources', 'label' => get_string('paymentsources', constants::M_COMP));
+                }
                 //manage all our subscriptions
                 //  $portalurl =chargebee::get_portalurl_by_upstreamid($school->upstreamownerid);
                 // $options[] = array('url' => $portalurl,'label' => get_string('managesubscriptions', constants::M_COMP));
@@ -291,11 +297,15 @@ class renderer extends \plugin_renderer_base {
         $billingintervals = common::fetch_billingintervals();
         $plans = common::fetch_plans_by_platform($platform, $planfamily);
 
+        //get subs for the school
+        $subs = common::fetch_subs_by_school($school->id);
+
         $usercount = 0;
         $coursecount = 0;
 
         $monthlyplans = [];
         $yearlyplans = [];
+        $freeplans = [];
         $showfirst = constants::M_BILLING_YEARLY;
 
         foreach ($plans as $plan) {
@@ -312,8 +322,7 @@ class renderer extends \plugin_renderer_base {
                     $yearlyplans[] = $plan;
                     break;
                 case constants::M_BILLING_FREE:
-                    $monthlyplans[] = $plan;
-                    $yearlyplans[] = $plan;
+                    $freeplans[] = $plan;
                     break;
 
             }
@@ -336,12 +345,28 @@ class renderer extends \plugin_renderer_base {
             $togglediv ='';
         }
 
+        //free plans
+        $mdata =array();
+        foreach($freeplans as $freeplan){
+            foreach($subs as $sub){
+                if($freeplan->id == $sub->planid){
+                    $freeplan->alreadytaken=true;
+                }
+            }
+        }
+        $mdata['plans']=$freeplans;
+        $mdata['display']='';
+        $mdata['billinginterval']='Monthly';
+        $mdata['currency']='USD';
+        $mdata['billingintervallabel']=get_string('freetrial',constants::M_COMP);
+        $freely = $this->render_from_template('block_poodllclassroom/freeplancontainer', $mdata);
+
         //monthly plans
         $mdata =array();
         $mdata['plans']=$monthlyplans;
         $mdata['display']=($showfirst==constants::M_BILLING_MONTHLY) ? '' : 'block_poodllclassroom_hidden';
         $mdata['billinginterval']='Monthly';
-        $ydata['currency']='USD';
+        $mdata['currency']='USD';
         $mdata['billingintervallabel']=get_string('monthly',constants::M_COMP);
         $monthly = $this->render_from_template('block_poodllclassroom/newplancontainer', $mdata);
 
@@ -355,7 +380,7 @@ class renderer extends \plugin_renderer_base {
         $yearly = $this->render_from_template('block_poodllclassroom/newplancontainer', $ydata);
 
 
-        return $togglediv . $monthly . $yearly;
+        return $freely .$togglediv . $monthly . $yearly;
 
     }
 
@@ -388,6 +413,7 @@ class renderer extends \plugin_renderer_base {
         foreach($plans as $plan) {
             $plan->billingintervalname=$billingintervals[$plan->billinginterval];
             $plan->schoolid = $extendedsub->schoolid;
+            $plan->currentsubid=$extendedsub->id;
             //if the users current plan, and its not free/monthly, then set the active display to yeif($plan->id==$myschool->planid){
             if($plan->id == $extendedsub->planid) {
                 $plan->selected = true;
@@ -416,8 +442,8 @@ class renderer extends \plugin_renderer_base {
                     $yearlyplans[] = $plan;
                     break;
                 case constants::M_BILLING_FREE:
-                    $monthlyplans[] = $plan;
-                    $yearlyplans[] = $plan;
+                    //$monthlyplans[] = $plan;
+                   // $yearlyplans[] = $plan;
                     break;
 
             }
@@ -921,7 +947,7 @@ class renderer extends \plugin_renderer_base {
             $fields[] = $reseller->id;
             $fields[] = $reseller->name ;
             $fields[] = $reseller->resellerfirstname . ' ' . $reseller->resellerlastname . "($reseller->userid)";
-            $fields[] = $reseller->status;
+            $fields[] = $reseller->upstreamuserid;
             $fields[] = $reseller->jsonfields;
             $fields[] = strftime('%d %b %Y', $reseller->timemodified);
 
@@ -953,7 +979,7 @@ class renderer extends \plugin_renderer_base {
         $table->head  = array(get_string('id', constants::M_COMP),
                 get_string('reseller', constants::M_COMP),
                 get_string('user', constants::M_COMP),
-                get_string('status', constants::M_COMP),
+                get_string('upstreamowner', constants::M_COMP),
                 get_string('jsonfields', constants::M_COMP),
                 get_string('lastchange', constants::M_COMP),
                 get_string('action'));

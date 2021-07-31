@@ -244,7 +244,7 @@ $string['addnew']='Add new';
 
 $string['checkout'] = 'Checkout.' ;
 $string['chooseplan'] = 'Choose' ;
-$string['checkoutinstructions'] = 'Choose a subscription plan from the options below. Annual and monthly payment options can be selected.' ;
+$string['checkoutinstructions'] = 'Choose a subscription plan from the options below. ' ;
 $string['youhavenoschool']='You have no school';
 $string['subexpiretime'] = 'Expiry';
 $string['subcurrency'] = 'Currency';
@@ -260,6 +260,8 @@ $string['resellercoupon_desc'] = 'Reseller Coupon';
 $string['billingaccount'] = 'Billing Account';
 $string['billinghistory'] = 'Billing History';
 $string['paymentsources'] = 'Payment Sources';
+$string['freetrial'] = 'Free Trial';
+$string['alreadytaken'] = 'Already Subscribed';
 
 
 

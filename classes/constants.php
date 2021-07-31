@@ -44,6 +44,7 @@ const M_TABLE_PLANS = 'block_poodllclassroom_plan';
 const M_TABLE_SUBS = 'block_poodllclassroom_sub';
 const M_TABLE_SCHOOLS = 'block_poodllclassroom_school';
 const M_TABLE_RESELLERS = 'block_poodllclassroom_seller';
+const M_TABLE_USERS = 'block_poodllclassroom_user';
 
 const M_INTEGRATION_POODLLNET = 'poodllnet';
 const M_INTEGRATION_CLOUDPOODLL = 'cloudpoodll';

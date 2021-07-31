@@ -227,7 +227,7 @@ if ($editform->is_cancelled()){
 
                 $data->timemodified=time();
                 $data->timecreated=time();
-                $data->upstreamuserid=common::make_upstream_user_id($data->userid);
+                $data->upstreamuserid=common::fetch_upstream_user_id($data->userid);
                 $result=$DB->insert_record(constants::M_TABLE_RESELLERS,$data);
             } else {
                 $reseller = $DB->get_record(constants::M_TABLE_RESELLERS,array('id'=>$data->id));
@@ -269,7 +269,7 @@ if ($editform->is_cancelled()){
                     }
                 }
                 if(empty($data->upstreamownerid) || strpos($data->upstreamownerid,'user-')===false){
-                    $data->upstreamownerid = common::make_upstream_user_id($data->ownerid);
+                    $data->upstreamownerid = common::fetch_upstream_user_id($data->ownerid);
                 }
                 $result=$DB->insert_record(constants::M_TABLE_SCHOOLS,$data);
             } else {

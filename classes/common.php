@@ -18,6 +18,8 @@ namespace block_poodllclassroom;
 
 use block_poodllclassroom\constants;
 
+
+
 defined('MOODLE_INTERNAL') || die();
 
 
@@ -441,6 +443,13 @@ class common
         }
     }
 
+    public static function fetch_extended_sub($subid){
+        global $DB;
+        $sub = $DB->get_record(constants::M_TABLE_SUBS,array('id'=>$subid));
+        $ext_subs = self::get_extended_sub_data([$sub]);
+        return array_shift($ext_subs);
+    }
+
     public static function fetch_subs_by_user($userid){
         global $DB;
 
@@ -546,7 +555,7 @@ class common
     public static function fetch_resellers(){
         global $DB;
 
-        $sql = 'SELECT * , u.firstname as resellerfirstname, u.lastname as resellerlastname ';
+        $sql = 'SELECT reseller.* , u.firstname as resellerfirstname, u.lastname as resellerlastname ';
         $sql .= 'from {'. constants::M_TABLE_RESELLERS .'} reseller ';
         $sql .= 'INNER JOIN {user} u ON u.id = reseller.userid ';
         $resellers=$DB->get_records_sql($sql);
@@ -638,6 +647,7 @@ class common
 
     }
 
+
     //this will be weird in the case of a reseller who may have more than one school. check for that before getting here
     public static function get_poodllschool_by_currentuser(){
         global $DB,$USER;
@@ -698,7 +708,7 @@ class common
 
             }
             //change plan url
-            $sub->changeurl= $CFG->wwwroot . '/blocks/poodllclassroom/subs/managesubscription.php?subid=' . $sub->id;
+            $sub->changeurl= $CFG->wwwroot . '/blocks/poodllclassroom/subs/changesubscription.php?subid=' . $sub->id;
             //edit plan url
             $sub->editurl= $CFG->wwwroot . '/blocks/poodllclassroom/subs/accessportal.php?subid=' . $sub->id;
 
@@ -1019,10 +1029,20 @@ class common
             return 0;
         }
     }
-    public static function make_upstream_user_id($userid)
+    public static function fetch_upstream_user_id($userid)
     {
-        return 'user-'.$userid.'-'.random_string(8);
-
+        global $DB;
+        $classroomuser = $DB->get_record(constants::M_TABLE_USERS,array('userid'=>$userid));
+        if(!$classroomuser) {
+            $upstreamuserid = 'user-' . $userid . '-' . random_string(8);
+            $classroomuser=new \stdClass();
+            $classroomuser->userid=$userid;
+            $classroomuser->upstreamuserid=$upstreamuserid;
+            $classroomuser->status='-';
+            $classroomuser->timecreated=time();
+            $DB->insert_record(constants::M_TABLE_USERS,$classroomuser);
+        }
+        return $classroomuser->upstreamuserid;
     }
     public static function create_blank_school($reseller=false){
         global $USER, $DB;
@@ -1034,7 +1054,7 @@ class common
 
         if($reseller===false) {
            $school->resellerid = self::fetch_poodll_resellerid();
-           $school->upstreamownerid = self::make_upstream_user_id($USER->id);
+           $school->upstreamownerid = self::fetch_upstream_user_id($USER->id);
             $school->ownerid = $USER->id;
 
         }else{

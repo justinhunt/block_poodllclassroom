@@ -70,6 +70,9 @@ class chargebee
             $postdata['subscription_items']['item_price_id']=[];
             $postdata['subscription_items']['quantity']=[];
 
+            //hacky way to make sure free trials all use monthly plans (though they show in yearly)
+            if(strpos($plan->upstreamplan,'Trial')>0){$billing='Monthly';}
+
             $postdata['subscription_items']['item_price_id'][0] = $plan->upstreamplan . '-' .  $currency . '-'  . $billing;
             $postdata['subscription_items']['quantity'][0]=1;
             /*
@@ -91,7 +94,7 @@ class chargebee
             }
 
             //allow offline payment
-            $postdata['allow_offline_payment_methods'] = true;
+            $postdata['allow_offline_payment_methods'] = 'true';
 
             //if is reseller, apply coupon code
             if($reseller) {
@@ -133,13 +136,24 @@ class chargebee
         return false;
     }
 
-    public static function get_checkout_existing($planid, $schoolid){
+    public static function get_checkout_existing($planid, $schoolid, $currentsubid){
         global $USER, $CFG;
-        $subs = common::get_usersub_by_plan($planid, $schoolid);
-        $extended_subs = common::get_extended_sub_data($subs);
-        $extended_sub = array_shift($extended_subs);
-        $schoolname=$extended_sub->school->name;
-        $customerid = $extended_sub->school->upstreamownerid;
+
+        $current_sub = common::fetch_extended_sub($currentsubid);
+        $schoolname=$current_sub->school->name;
+        $customerid = $current_sub->school->upstreamownerid;
+        $plan = common::get_plan($planid);
+
+        switch($plan->billinginterval){
+            case constants::M_BILLING_MONTHLY:
+                $billing='Monthly';
+                break;
+            case constants::M_BILLING_YEARLY:
+            default:
+                $billing='Yearly';
+                break;
+        }
+
         $apikey = get_config(constants::M_COMP,'chargebeeapikey');
         $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
         $resellercoupon = get_config(constants::M_COMP,'resellercoupon');//POODLLSTANDARDRESELLER-98765
@@ -151,7 +165,7 @@ class chargebee
 
             //general
             //allow offline payment
-            $postdata['allow_offline_payment_methods'] = true;
+            $postdata['allow_offline_payment_methods'] = 'true';
 
             //if is reseller, apply coupon code
             if($reseller) {
@@ -166,19 +180,24 @@ class chargebee
             //$passthrough['currency']=$currency;
             //$passthrough['billing']=$billing;
             $postdata['pass_thru_content'] = json_encode($passthrough);
-
+            $postdata['replace_items_list'] = 'true';
 
             $postdata['redirect_url'] = $CFG->wwwroot . constants::M_URL . '/subs/welcomeback.php';
             $postdata['cancel_url'] = $CFG->wwwroot . '/my';
             $postdata['subscription']=[];
-            $postdata['subscription']['id'] = $extended_sub->upstreamsubid;
+            $postdata['subscription']['id'] = $current_sub->upstreamsubid;
 
             $postdata['subscription_items']=[];
             $postdata['subscription_items']['plan_id']=[];
             $postdata['subscription_items']['cf_school_name']=[];
 
-            $postdata['subscription_items']['plan_id'][0] = $extended_sub->plan->upstreamplan;
+            $postdata['pass_thru_content'] = json_encode($passthrough);
+
+            $postdata['subscription_items']['plan_id'][0] = $plan->upstreamplan;
             $postdata['subscription_items']['cf_school_name'][0] = $schoolname;
+
+            $postdata['subscription_items']['item_price_id'][0] = $plan->upstreamplan . '-' .  $current_sub->paymentcurr . '-'  . $billing;
+            $postdata['subscription_items']['quantity'][0]=1;
 
             $curlresult = common::curl_fetch($url,$postdata,$apikey);
             $jsonresult = common::make_object_from_json($curlresult);

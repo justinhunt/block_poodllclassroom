@@ -67,7 +67,8 @@ if($state=='succeeded') {
             $billinginterval = $plan->billinginterval;
 
             //if its a new sub create it. If we already had it. Do not create it
-            if(common::get_poodllsub_by_upstreamsubid($subscription->id)===false) {
+            $poodllsub=common::get_poodllsub_by_upstreamsubid($subscription->id);
+            if($poodllsub===false) {
 
                 //this is where any sub specific stuff has to happen .. eg get LTI creds, or API user and secret
                 $json_fields = common::process_new_sub($school, $plan, $subscription);
@@ -75,6 +76,12 @@ if($state=='succeeded') {
                 common::create_poodllsub($school->id, $school->ownerid, $plan->id, $school->upstreamownerid, $subscription->id,
                     $expiretime, $payment, $paymentcurr, $billinginterval,
                     $json_fields, $hpstring);
+
+            //if its an existing sub ... update it
+            }else{
+                //WHAT TO DO HERE??? If they downgrade till next time? upgrade?
+                //IN the interests of getting this out the door. Lets hide the changesub link for now
+                //do some update with $poodllsub
             }
             $ret = $hpstring;
         }else{
