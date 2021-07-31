@@ -73,9 +73,9 @@ if($state=='succeeded') {
                 //this is where any sub specific stuff has to happen .. eg get LTI creds, or API user and secret
                 $json_fields = common::process_new_sub($school, $plan, $subscription);
 
-                common::create_poodllsub($school->id, $school->ownerid, $plan->id, $school->upstreamownerid, $subscription->id,
+                common::create_poodllsub($school->id, $school->ownerid, $plan->id, $school->upstreamownerid,
                     $expiretime, $payment, $paymentcurr, $billinginterval,
-                    $json_fields, $hpstring);
+                    $json_fields, $subscription,$hpstring);
 
             //if its an existing sub ... update it
             }else{

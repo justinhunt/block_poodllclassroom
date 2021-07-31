@@ -19,7 +19,6 @@ namespace block_poodllclassroom;
 use block_poodllclassroom\constants;
 
 
-
 defined('MOODLE_INTERNAL') || die();
 
 
@@ -720,6 +719,22 @@ class common
             $fmt = \numfmt_create( 'en_US', \NumberFormatter::CURRENCY );
             $sub->payment_display =  \numfmt_format_currency($fmt, $amount, $sub->paymentcurr)."\n";
 
+            //status
+            switch($sub->status){
+                case constants::M_STATUS_PAYMENTDUE:
+                    $sub->status_display=get_string('paymentdue',constants::M_COMP);
+                    break;
+                case constants::M_STATUS_INACTIVE:
+                    $sub->status_display=get_string('inactive',constants::M_COMP);
+                    break;
+                case constants::M_STATUS_ACTIVE:
+                    $sub->status_display=get_string('active',constants::M_COMP);
+                    break;
+                case constants::M_STATUS_NONE:
+                default:
+                    $sub->status_display='-';
+            }
+
             //expiry date
             $sub->expiretime_display =date("Y-m-d", $sub->expiretime);
 
@@ -847,33 +862,88 @@ class common
         return $plan;
     }
 
-    public static function create_poodllsub($schoolid, $ownerid, $planid, $upstreamownerid,$upstreamsubid,
-                                            $expiretime,$payment,$paymentcurr,$billinginterval, $jsonfields, $hostedpage){
+    public static function create_poodllsub($schoolid, $ownerid, $planid, $upstreamownerid,
+                                            $expiretime,$payment,$paymentcurr,$billinginterval, $jsonfields, $upstreamsub, $hostedpage){
         global $DB;
-        $newschool= new \stdClass();
-        $newschool->schoolid=$schoolid;
-        $newschool->ownerid=$ownerid;
-        $newschool->planid=$planid;
-        $newschool->upstreamownerid=$upstreamownerid;
-        $newschool->upstreamsubid=$upstreamsubid;
-        $newschool->status='active';
-        if(is_number($expiretime)){
-            $newschool->expiretime=$expiretime;
+        $newsub= new \stdClass();
+        $newsub->schoolid=$schoolid;
+        $newsub->ownerid=$ownerid;
+        $newsub->planid=$planid;
+        $newsub->upstreamownerid=$upstreamownerid;
+        $newsub->upstreamsubid=$upstreamsub->id;
+        if($upstreamsub->due_invoices_count>0){
+            $newsub->status=constants::M_STATUS_PAYMENTDUE;
+        }else{
+            $newsub->status=constants::M_STATUS_ACTIVE;
         }
-        $newschool->payment=$payment;
-        $newschool->paymentcurr=$paymentcurr;
-        $newschool->billinginterval=$billinginterval;
-        $newschool->timecreated=time();
-        $newschool->jsonfields=$jsonfields;
-        $newschool->hostedpage=json_encode($hostedpage);
-        $newschool->timemodified=time();
+        
+        if(is_number($expiretime)){
+            $newsub->expiretime=$expiretime;
+        }
+        $newsub->payment=$payment;
+        $newsub->paymentcurr=$paymentcurr;
+        $newsub->billinginterval=$billinginterval;
+        $newsub->timecreated=time();
+        $newsub->jsonfields=$jsonfields;
+        $newsub->hostedpage=json_encode($hostedpage);
+        $newsub->timemodified=time();
 
-        $subid = $DB->insert_record(constants::M_TABLE_SUBS,$newschool);
+        $subid = $DB->insert_record(constants::M_TABLE_SUBS,$newsub);
         return $subid;
     }
 
+    public static function update_poodllsub($upstreamsub,$poodllsub){
+        global $DB;
+
+        $update=false;
+        if($poodllsub->paymentcurr != $upstreamsub->currency_code){
+            $poodllsub->paymentcurr = $upstreamsub->currency_code;
+            $update=true;
+        }
+        if($poodllsub->payment != $upstreamsub->subscription_items[0]->unit_price){
+            $poodllsub->payment = $upstreamsub->subscription_items[0]->unit_price;
+            $update=true;
+        }
+
+        $jsonobj= json_decode($poodllsub->jsonfields);
+        if(!isset($jsonobj->due_invoices_count) || $jsonobj->due_invoices_count != $upstreamsub->due_invoices_count){
+            $jsonobj->due_invoices_count = $upstreamsub->due_invoices_count;
+            if( $upstreamsub->due_invoices_count==0 && $poodllsub->status==constants::M_STATUS_PAYMENTDUE){
+                $poodllsub->status=constants::M_STATUS_ACTIVE;
+            }elseif( $upstreamsub->due_invoices_count>0 && $poodllsub->status!=constants::M_STATUS_PAYMENTDUE){
+                $poodllsub->status=constants::M_STATUS_PAYMENTDUE;
+            }
+            $update=true;
+        }
+        if(!isset($jsonobj->has_scheduled_changes) || $jsonobj->has_scheduled_changes != $upstreamsub->has_scheduled_changes){
+            $jsonobj->has_scheduled_changes = $upstreamsub->has_scheduled_changes;
+            $update=true;
+        }
+        $poodllsub->jsonfields = json_encode($jsonobj);
+
+        if($poodllsub->expiretime != $upstreamsub->current_term_end){
+            $poodllsub->expiretime = $upstreamsub->current_term_end;
+            $update=true;
+        }else{
+            if($poodllsub->expiretime <time()){
+                 if($poodllsub->status==constants::M_STATUS_ACTIVE){
+                     $poodllsub->status=constants::M_STATUS_INACTIVE;
+                     $update=true;
+                 }
+            }
+        }
+
+        if($update){
+            $poodllsub->timemodified=time();
+            $DB->update_record(constants::M_TABLE_SUBS,$poodllsub);
+        }
+    }
+
     public static function process_new_sub($school, $plan,$subscription){
-        return '{}';
+        $obj = new \stdClass();
+        $obj->due_invoices_count = $subscription->due_invoices_count;
+        $obj->has_scheduled_changes= $subscription->has_scheduled_changes;
+        return json_encode($obj);
     }
 
     public static function create_blankplan($upstreamplanid){
@@ -1038,7 +1108,7 @@ class common
             $classroomuser=new \stdClass();
             $classroomuser->userid=$userid;
             $classroomuser->upstreamuserid=$upstreamuserid;
-            $classroomuser->status='-';
+            $classroomuser->status=constants::M_STATUS_ACTIVE;
             $classroomuser->timecreated=time();
             $DB->insert_record(constants::M_TABLE_USERS,$classroomuser);
         }
@@ -1069,6 +1139,17 @@ class common
         }else{
             return false;
         }
+    }
 
+    public static function do_sync_subs($trace)
+    {
+        global $DB;
+        $syncsubs = $DB->get_records_sql("SELECT * from {" . constants::M_TABLE_SUBS . "} WHERE (expiretime < :now AND status = :activestatus) OR status = :paymentduestatus" ,
+            array('now'=>time(),'activestatus'=>constants::M_STATUS_ACTIVE,'paymentduestatus'=>constants::M_STATUS_PAYMENTDUE));
+        $trace->output('chargebee syncing: ' . count($syncsubs));
+        foreach($syncsubs as $poodllsub){
+            $trace->output('syncing:' . $poodllsub->upstreamsubid);
+            chargebee::sync_sub($poodllsub);
+        }
     }
 }//end of class

@@ -132,6 +132,7 @@ class renderer extends \plugin_renderer_base {
         }
         $subssectiondata['show_expiretime']=true;
         $subssectiondata['show_payment']=true;
+        $subssectiondata['show_status']=true;
         $content .= $this->render_from_template('block_poodllclassroom/subsheader',$subssectiondata);
 
         //checkout button

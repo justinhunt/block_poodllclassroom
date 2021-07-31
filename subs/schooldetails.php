@@ -70,6 +70,7 @@ if(count($subssectiondata['subs'])<1){
 }
 $subssectiondata['show_expiretime']=true;
 $subssectiondata['show_payment']=true;
+$subssectiondata['show_status']=true;
 
 $checkouturl  = new \moodle_url(constants::M_URL . '/subs/checkout.php',array());
 

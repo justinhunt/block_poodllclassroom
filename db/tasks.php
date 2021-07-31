@@ -28,5 +28,13 @@ use block_poodllclassroom\constants;
 defined('MOODLE_INTERNAL') || die();
 
 $tasks = array(
-
+    array(
+        'classname' => constants::M_COMP . '\task\chargebeesync',
+        'blocking' => 0,
+        'minute' => '*',
+        'hour' => '7',
+        'day' => '*',
+        'month' => '*',
+        'dayofweek' => '*'
+    )
 );

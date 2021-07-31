@@ -268,5 +268,20 @@ class chargebee
         return false;
     }
 
+    public static function sync_sub($poodllsub){
+        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
+        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
 
+        $url = "https://$siteprefix.chargebee.com/api/v2/subscriptions/";
+        $url .= $poodllsub->upstreamsubid;
+
+        $postdata=false;
+        $curlresult = common::curl_fetch($url,$postdata,$apikey);
+        $jsonresult = common::make_object_from_json($curlresult);
+        if($jsonresult){
+            if($jsonresult->subscription){
+                common::update_poodllsub($jsonresult->subscription,$poodllsub);
+            }
+        }
+    }
 }

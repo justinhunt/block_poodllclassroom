@@ -262,8 +262,9 @@ $string['billinghistory'] = 'Billing History';
 $string['paymentsources'] = 'Payment Sources';
 $string['freetrial'] = 'Free Trial';
 $string['alreadytaken'] = 'Already Subscribed';
-
-
-
-
+$string['paymentdue'] = 'Payment Due';
+$string['active'] = 'Active';
+$string['inactive'] = 'Inactive';
+$string['status'] = 'Status';
+$string['chargebeesync_task'] = 'Chargebee Sync';
 

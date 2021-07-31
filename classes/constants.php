@@ -60,4 +60,9 @@ const M_PLATFORM_CLASSROOM = 'CLASSROOM';
 const M_RESELLER_THIRDPARTY =0;
 const M_RESELLER_POODLL =1;
 
+const M_STATUS_NONE = '-';
+const M_STATUS_ACTIVE = 'active';
+const M_STATUS_PAYMENTDUE = 'paymentdue';
+const M_STATUS_INACTIVE = 'inactive';
+
 }
