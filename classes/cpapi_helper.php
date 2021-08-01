@@ -80,7 +80,7 @@ class cpapi_helper {
 
         //Just could NOT get POST to work ....WTF
         $method = 'GET';
-        $cpapi_url = get_config(constants::M_COMP,'cpapiurl') . "/webservice/rest/server.php";
+        $cpapi_url = get_config(constants::M_COMP,'cpapihost') . "/webservice/rest/server.php";
         $cpapi_token = get_config(constants::M_COMP,'cpapitoken');
 
         $params=array();

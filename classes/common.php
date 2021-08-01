@@ -1132,6 +1132,9 @@ class common
             $school->upstreamownerid = $reseller->upstreamuserid;
             $school->ownerid = $reseller->userid;
         }
+
+        //make the school over at cpapi
+
         $id = $DB->insert_record(constants::M_TABLE_SCHOOLS,$school);
         if($id){
             $school->id = $id;

@@ -157,7 +157,12 @@ if ($editform->is_cancelled()){
                 if(!empty($data->siteurl)){$data->siteurls=json_encode($data->siteurl);}
                 $data->timemodified=time();
                 $DB->update_record(constants::M_TABLE_SCHOOLS,$data);
-                //common::set_schoolname($theschool, $data->name);
+                //update entry on cpapi too
+                $url1=''; $url2=''; $url3=''; $url4=''; $url5='';
+                list($url1,$url2,$url3,$url4,$url5) = $data->siteurl;
+               // \block_poodllclassroom\cpapi_helper::update_cpapi_sites($theschool->apiuser,$url1,$url2,$url3,$url4,$url5);
+                \block_poodllclassroom\cpapi_helper::update_cpapi_sites($USER->username,$url1,$url2,$url3,$url4,$url5);
+
             }
     }
 
