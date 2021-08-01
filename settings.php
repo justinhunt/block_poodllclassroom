@@ -55,4 +55,23 @@ if ($ADMIN->fulltree) {
             get_string('integrationtype_desc', constants::M_COMP ),
             constants::M_INTEGRATION_POODLLNET, $integrationoptions));
 
+    $settings->add(new admin_setting_configtext(constants::M_COMP . '/cpapihost',
+            get_string('cpapihost', constants::M_COMP),
+            get_string('cpapihost_desc', constants::M_COMP),
+            '-cpapihost--', PARAM_TEXT));
+
+    $settings->add(new admin_setting_configtext(constants::M_COMP . '/cpapitoken',
+            get_string('cpapitoken', constants::M_COMP),
+            get_string('cpapitoken_desc', constants::M_COMP),
+            '-capitoken--', PARAM_TEXT));
+
+    $settings->add(new admin_setting_configtext(constants::M_COMP . '/ltihost',
+            get_string('ltihost', constants::M_COMP),
+            get_string('ltihost_desc', constants::M_COMP),
+            '-ltihost--', PARAM_TEXT));
+
+    $settings->add(new admin_setting_configtext(constants::M_COMP . '/ltitoken',
+            get_string('ltitoken', constants::M_COMP),
+            get_string('ltitoken_desc', constants::M_COMP),
+            '-ltitoken--', PARAM_TEXT));
 }

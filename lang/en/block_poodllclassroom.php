@@ -267,4 +267,14 @@ $string['active'] = 'Active';
 $string['inactive'] = 'Inactive';
 $string['status'] = 'Status';
 $string['chargebeesync_task'] = 'Chargebee Sync';
+$string['ltihost'] = 'LTI host';
+$string['ltihost_desc'] = 'The LTI host URL';
+$string['ltitoken'] = 'LTI token';
+$string['ltitoken_desc'] = 'The LTI web services token';
+$string['cpapihost'] = 'CPAPI host';
+$string['cpapihost_desc'] = 'The CPAPI host URL';
+$string['cpapitoken'] = 'CPAPI token';
+$string['cpapitoken_desc'] = 'The CPAPI web services token';
+
+
 
