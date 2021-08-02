@@ -102,6 +102,11 @@ class chargebee
                 $postdata['coupon_ids'][] = $resellercoupon;
             }
 
+            //customfields
+            $postdata['subscription']=[];
+            $postdata['subscription']['cf_schoolid']=$school->id;
+            $postdata['subscription']['cf_planid']=$plan->id;
+
             //passthrough
             $passthrough = [];
             $passthrough['schoolid']=$school->id;
@@ -133,6 +138,81 @@ class chargebee
         if($jsonresult){
             return $jsonresult;
         }
+        return false;
+    }
+
+    public static function retrieve_process_events($trace){
+        global $DB;
+
+        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
+        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
+
+        $url = "https://$siteprefix.chargebee.com/api/v2/events/";
+
+        $lastevents=$DB->get_records(constants::M_TABLE_EVENTS, null,'occurredat DESC','occurredat', 0,1);
+        if($lastevents){
+            $lastevent = array_shift($lastevents);
+            $lastoccurredat = $lastevent->occurredat;
+        }else{
+            //just so we dont get a universe of old test subs
+            $lastoccurredat = 1627626055;
+        }
+        $trace->output("cbsync:: looking for new subscriptions since:" . $lastoccurredat);
+
+        $postdata=[];
+        $postdata['event_type[in]'] = '["subscription_created"]';
+        $postdata['occurred_at[after]'] = ''  . $lastoccurredat;
+        //this is a GET request
+        $qstring= http_build_query($postdata,"",'&');
+        $url=$url.='?' . $qstring;
+        $curlresult = common::curl_fetch($url,false,$apikey);
+
+
+        $eventslist = common::make_object_from_json($curlresult);
+        if(!$eventslist || !isset($eventslist->list) ||  count($eventslist->list) ==0){
+            $trace->output("cbsync:: no new subs");
+            return false;
+        }
+        $trace->output("cbsync:: " . count($eventslist->list) . " new subs");
+        foreach($eventslist->list as $eventcontainer) {
+            $theevent=$eventcontainer->event;
+            if ($theevent && isset($theevent->occurred_at)) {
+                $trace->output("cbsync:: processing sub event: " . $theevent->id);
+                $pevent = new \stdClass();
+                $pevent->timecreated = time();
+                $pevent->timecreated = time();
+                $pevent->occurredat = $theevent->occurred_at;
+                $pevent->upstreamid = $theevent->id;
+                $pevent->type = $theevent->event_type;
+                $pevent->content = json_encode($theevent->content);
+                if (strpos($pevent->type, 'subscription_') === 0) {
+                    $principal = 'subscription';
+                } else {
+                    $principal = 'other';
+                }
+                switch ($principal) {
+                    case "subscription":
+                        $pevent->typeid = $theevent->content->subscription->id;
+                        break;
+                    case "other":
+                    default:
+                        $pevent->typeid = 0;
+                }
+                $pevent->id = $DB->insert_record(constants::M_TABLE_EVENTS, $pevent);
+
+                switch ($pevent->type) {
+                    case 'subscription_created':
+                        //dont create a subscription twice, that would be bad ...
+                        $poodllsub = common::get_poodllsub_by_upstreamsubid($theevent->content->subscription->id);
+                        if ($poodllsub == false) {
+                            common::create_poodll_sub($theevent->content->subscription);
+                        }
+                        break;
+                    default:
+                        //do nothing
+                }//end of switch
+            }//end of is valid event
+        }//end of events list loop
         return false;
     }
 
@@ -198,6 +278,11 @@ class chargebee
 
             $postdata['subscription_items']['item_price_id'][0] = $plan->upstreamplan . '-' .  $current_sub->paymentcurr . '-'  . $billing;
             $postdata['subscription_items']['quantity'][0]=1;
+
+            //custom_fields
+            $postdata['subscription']=[];
+            $postdata['subscription']['cf_schoolid']==$schoolid;
+            $postdata['subscription']['cf_planid']=$plan->id;
 
             $curlresult = common::curl_fetch($url,$postdata,$apikey);
             $jsonresult = common::make_object_from_json($curlresult);
@@ -280,7 +365,7 @@ class chargebee
         $jsonresult = common::make_object_from_json($curlresult);
         if($jsonresult){
             if($jsonresult->subscription){
-                common::update_poodllsub($jsonresult->subscription,$poodllsub);
+                common::update_poodll_sub($jsonresult->subscription,$poodllsub);
             }
         }
     }

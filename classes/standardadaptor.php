@@ -215,7 +215,7 @@ class standardadaptor
 
 
         $newuserid=1;
-        $school = common::create_poodllsub($newuserid, $plan->id,
+        $school = common::create_poodll_sub($newuserid, $plan->id,
                 $params['upstreamownerid'],$params['upstreamsubid']);
 
         if($newuserid) {

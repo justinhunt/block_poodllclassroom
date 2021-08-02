@@ -42,9 +42,7 @@ $baseurl = constants::M_URL;
 
 
 $context = context_system::instance();
-require_capability('block/poodllclassroom:manageintegration', $context);
-
-$superadmin = has_capability('block/poodllclassroom:managepoodllclassroom', $context);
+require_capability('block/poodllclassroom:managepoodllclassroom', $context);
 
 if ($returnurl) {
     $returnurl = new moodle_url($returnurl);
@@ -182,7 +180,7 @@ switch($type){
         $editform = new \block_poodllclassroom\local\form\editsubform();
         break;
     case 'school':
-        $editform = new \block_poodllclassroom\local\form\editschoolform(null,['superadmin'=>$superadmin]);
+        $editform = new \block_poodllclassroom\local\form\editschoolform(null,['superadmin'=>true]);
         break;
     case 'reseller':
         $editform = new \block_poodllclassroom\local\form\editresellerform();
@@ -248,33 +246,35 @@ if ($editform->is_cancelled()){
         case 'school':
             //deal with URLS
             if(!empty($data->siteurl)){$data->siteurls=json_encode($data->siteurl);}
-
             if (!$data->id) {
-                $data->timemodified=time();
-                $data->timecreated=time();
-                //we were going to allow resellers to create and edit schools, and that is this super admin thing
-                //we canned it. TODO remove from here and editschoolform
-                if(!$superadmin){
-                    $data->jsonfields='{}';
-                    $data->apiuser='';
-                    $data->apisecret='';
-                    $reseller = common::fetch_me_reseller();
-                    if($reseller) {
-                        $data->ownerid = $reseller->userid;
-                        $data->resellerid = $reseller->id;
-                        $data->upstreamownerid = $reseller->upstreamuserid;
-                    }else{
-                        $data->ownerid = $USER->id;
-                        $data->resellerid = common::fetch_poodll_resellerid();
-                    }
+
+                $reseller = common::fetch_me_reseller($data->ownerid);
+                if($reseller){
+                    $school = common::create_blank_school($data->ownerid,$reseller,$data->name);
+                }else{
+                    $school = common::create_blank_school($data->ownerid);
                 }
-                if(empty($data->upstreamownerid) || strpos($data->upstreamownerid,'user-')===false){
-                    $data->upstreamownerid = common::fetch_upstream_user_id($data->ownerid);
+                if(!empty($data->siteurl)){
+
+                    $DB->update_record(constants::M_TABLE_SCHOOLS,$data);
+                    $url1=''; $url2=''; $url3=''; $url4=''; $url5='';
+                    list($url1,$url2,$url3,$url4,$url5) = $data->siteurl;
+                    common::update_cpapi_sites($school->apiuser,$url1,$url2,$url3,$url4,$url5);
                 }
-                $result=$DB->insert_record(constants::M_TABLE_SCHOOLS,$data);
+
+
             } else {
                 $data->timemodified=time();
+                if(!empty($data->siteurl)){$data->siteurls=json_encode($data->siteurl);}
+                $data->timemodified=time();
                 $result = $DB->update_record(constants::M_TABLE_SCHOOLS, $data);
+                //update entry on cpapi too
+                $url1=''; $url2=''; $url3=''; $url4=''; $url5='';
+                list($url1,$url2,$url3,$url4,$url5) = $data->siteurl;
+                common::update_cpapi_sites($data->apiuser,$url1,$url2,$url3,$url4,$url5);
+                $owner =$DB->get_record('user', array('id' => $data->ownerid));
+                common::update_cpapi_userdeets($data->apiuser,$owner->firstname,$owner->lastname,$owner->email);
+
             }
             break;
         case 'mysub':

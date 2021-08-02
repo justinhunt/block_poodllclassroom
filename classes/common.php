@@ -584,10 +584,10 @@ class common
         return $ret;
     }
 
-    public static function fetch_me_reseller(){
+    public static function fetch_me_reseller($userid=false){
         global $DB,$USER;
-
-        $reseller=$DB->get_record(constants::M_TABLE_RESELLERS, ['userid'=>$USER->id]);
+        if($userid==false){$userid=$USER->id;}
+        $reseller=$DB->get_record(constants::M_TABLE_RESELLERS, ['userid'=>$userid]);
         return $reseller;
     }
 
@@ -880,37 +880,61 @@ class common
         return $plan;
     }
 
-    public static function create_poodllsub($schoolid, $ownerid, $planid, $upstreamownerid,
-                                            $expiretime,$payment,$paymentcurr,$billinginterval, $jsonfields, $upstreamsub, $hostedpage){
+    public static function create_poodll_sub($subscription){
         global $DB;
+
+        //set up our school
+        $school=false;
+        if(isset($subscription->cf_schoolid)) {
+            $school=$DB->get_record(constants::M_TABLE_SCHOOLS,array('id'=>$subscription->cf_schoolid));
+        }
+        if(!$school){
+            return false;
+        }
+
+        //set up our plan
+        $plan = false;
+        if(isset($subscription->cf_planid)) {
+            $plan = self::get_plan($subscription->cf_planid);
+        }else{
+            $plan = self::fetch_poodllplan_from_upstreamplan($subscription->plan_id);
+        }
+        if(!$plan){
+            return false;
+        }
+
+
         $newsub= new \stdClass();
-        $newsub->schoolid=$schoolid;
-        $newsub->ownerid=$ownerid;
-        $newsub->planid=$planid;
-        $newsub->upstreamownerid=$upstreamownerid;
-        $newsub->upstreamsubid=$upstreamsub->id;
-        if($upstreamsub->due_invoices_count>0){
+        $newsub->schoolid=$school->id;
+        $newsub->planid=$plan->id;
+        $newsub->upstreamownerid=$school->upstreamownerid;
+        $newsub->upstreamsubid=$subscription->id;
+        if($subscription->due_invoices_count>0){
             $newsub->status=constants::M_STATUS_PAYMENTDUE;
         }else{
             $newsub->status=constants::M_STATUS_ACTIVE;
         }
         
-        if(is_number($expiretime)){
-            $newsub->expiretime=$expiretime;
+        if(is_number($subscription->current_term_end)){
+            $newsub->expiretime=$subscription->current_term_end;
         }
-        $newsub->payment=$payment;
-        $newsub->paymentcurr=$paymentcurr;
-        $newsub->billinginterval=$billinginterval;
+        $newsub->payment= $subscription->subscription_items[0]->unit_price;
+        $newsub->paymentcurr=$subscription->currency_code;
+        $newsub->billinginterval=$plan->billinginterval;
         $newsub->timecreated=time();
+
+        //this is where any sub specific stuff has to happen .. eg get LTI creds, or API user and secret
+        $jsonfields = self::process_new_sub($school, $plan, $subscription);
+
         $newsub->jsonfields=$jsonfields;
-        $newsub->hostedpage=json_encode($hostedpage);
+        $newsub->hostedpage=json_encode($subscription);
         $newsub->timemodified=time();
 
         $subid = $DB->insert_record(constants::M_TABLE_SUBS,$newsub);
         return $subid;
     }
 
-    public static function update_poodllsub($upstreamsub,$poodllsub){
+    public static function update_poodll_sub($upstreamsub, $poodllsub){
         global $DB;
 
         $update=false;
@@ -1133,7 +1157,7 @@ class common
         return $classroomuser->upstreamuserid;
     }
 
-    public static function create_blank_school($reseller=false, $schoolname=false){
+    public static function create_blank_school($ownerid=false,$reseller=false, $schoolname=false){
         global $USER, $DB;
         $school = new \stdClass();
         $school->timecreated = time();
@@ -1143,8 +1167,11 @@ class common
         if($reseller===false) {
            $school->resellerid = self::fetch_poodll_resellerid();
            $school->upstreamownerid = self::fetch_upstream_user_id($USER->id);
-            $school->ownerid = $USER->id;
-
+            if($ownerid==false){
+                $school->ownerid = $USER->id;
+            }else{
+                $school->ownerid = $ownerid;
+            }
         }else{
             $school->resellerid = $reseller->id;
             $school->upstreamownerid = $reseller->upstreamuserid;
@@ -1158,7 +1185,6 @@ class common
         }else{
             $school->name =$schoolname;
         }
-
 
         //make the school user over at cpapi ..
         $apiuserseed = "0123456789ABCDEF" . mt_rand(100, 99999);

@@ -164,7 +164,7 @@ if ($editform->is_cancelled()){
                 // \block_poodllclassroom\cpapi_helper::update_cpapi_sites($USER->username,$url1,$url2,$url3,$url4,$url5);
 
                 common::update_cpapi_sites($theschool->apiuser,$url1,$url2,$url3,$url4,$url5);
-                common::update_cpapi_userdeets($theschool->apiuser,$owner->firstname,$owner->lastname,$owner->email);
+                common::update_cpapi_userdeets($theschool->apiuser,$USER->firstname,$USER->lastname,$USER->email);
 
             }
     }

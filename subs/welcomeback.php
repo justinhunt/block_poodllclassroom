@@ -28,8 +28,8 @@ use block_poodllclassroom\chargebee;
 require('../../../config.php');
 
 
-$id        = required_param('id',  PARAM_TEXT);
-$state       = required_param('state',  PARAM_TEXT);
+$id        = optional_param('id','' , PARAM_TEXT);
+$state       = optional_param('state', '', PARAM_TEXT);
 
 //set the url of the $PAGE
 //note we do this before require_login preferably
@@ -53,40 +53,27 @@ $companyname = $SITE->fullname;
 if($state=='succeeded') {
     $hp = chargebee::retrieve_hosted_page($id);
     if($hp){
-        $hpstring = json_encode($hp);
-        $passthroughdata = json_decode($hp->hosted_page->pass_thru_content);
-        $school = common::get_resold_or_my_school($passthroughdata->schoolid);
 
         $subscription =$hp->hosted_page->content->subscription;
-        $paymentcurr = $subscription->currency_code;
-        $payment = $subscription->subscription_items[0]->unit_price;
-        $expiretime = $subscription->current_term_end;
 
-        if($school) {
-            $plan = common::get_plan($passthroughdata->planid);
-            $billinginterval = $plan->billinginterval;
+        //if its a new sub create it. If we already had it. Do not create it
+        $poodllsub=common::get_poodllsub_by_upstreamsubid($subscription->id);
+        if($poodllsub===false) {
 
-            //if its a new sub create it. If we already had it. Do not create it
-            $poodllsub=common::get_poodllsub_by_upstreamsubid($subscription->id);
-            if($poodllsub===false) {
+           $ret = common::create_poodll_sub( $subscription);
+           if(!$ret){
+               $ret = "something was not right with that school ...";
+           }
 
-                //this is where any sub specific stuff has to happen .. eg get LTI creds, or API user and secret
-                $json_fields = common::process_new_sub($school, $plan, $subscription);
-
-                common::create_poodllsub($school->id, $school->ownerid, $plan->id, $school->upstreamownerid,
-                    $expiretime, $payment, $paymentcurr, $billinginterval,
-                    $json_fields, $subscription,$hpstring);
-
-            //if its an existing sub ... update it
-            }else{
-                //WHAT TO DO HERE??? If they downgrade till next time? upgrade?
-                //IN the interests of getting this out the door. Lets hide the changesub link for now
-                //do some update with $poodllsub
-            }
-            $ret = $hpstring;
+        //if its an existing sub ... update it
         }else{
-            $ret = "something was not right with that school ...";
+            //WHAT TO DO HERE??? If they downgrade till next time? upgrade?
+            //IN the interests of getting this out the door. Lets hide the changesub link for now
+            //do some update with $poodllsub
+            $ret = "That was an update, not sure about that";
         }
+        $ret = "That worked";
+
     }else{
         $ret = "rubbish hosted page";
     }
@@ -99,8 +86,6 @@ if($state=='succeeded') {
 
 //get our renderer
 $renderer = $PAGE->get_renderer(constants::M_COMP);
-
-
 
 echo $renderer->header();
 echo $renderer->heading($companyname);
