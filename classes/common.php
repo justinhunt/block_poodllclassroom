@@ -591,6 +591,24 @@ class common
         return $reseller;
     }
 
+
+    public static function fetch_school_and_owner($schoolid){
+        global $DB;
+
+        $sql = 'SELECT school.*, u.firstname as ownerfirstname, u.lastname as ownerlastname ';
+        $sql .= 'from {'. constants::M_TABLE_SCHOOLS .'} school ';
+        $sql .= 'INNER JOIN {user} u ON u.id = school.ownerid ';
+        $sql .= 'WHERE school.id = :id ';
+        $schools=$DB->get_records_sql($sql, ['id'=>$schoolid]);
+
+
+        if($schools && count($schools)>0) {
+            return array_shift($schools);
+        }else{
+            return false;
+        }
+    }
+
     public static function fetch_schools_by_reseller($resellerid){
         global $DB;
 
@@ -1114,10 +1132,10 @@ class common
         }
         return $classroomuser->upstreamuserid;
     }
-    public static function create_blank_school($reseller=false){
+
+    public static function create_blank_school($reseller=false, $schoolname=false){
         global $USER, $DB;
         $school = new \stdClass();
-        $school->name='unnamed school';
         $school->timecreated = time();
         $school->timemodified = time();
         $school->jsonfields = '{}';
@@ -1133,8 +1151,39 @@ class common
             $school->ownerid = $reseller->userid;
         }
 
-        //make the school over at cpapi
+        //school name
+        $owner = $DB->get_record('user',array('id'=>$school->ownerid));
+        if($schoolname===false){
+            $school->name= $owner->firstname . ' ' . $owner->lastname  .  ' ' .' school';
+        }else{
+            $school->name =$schoolname;
+        }
 
+
+        //make the school user over at cpapi ..
+        $apiuserseed = "0123456789ABCDEF" . mt_rand(100, 99999);
+        $apisecretseed = "0123456789ABCDEF" . mt_rand(100, 99999);
+        $user_already_exists=true;
+        $trycount=0;
+        while($user_already_exists && $trycount<15) {
+            $apiusername = str_shuffle($apiuserseed);
+            $apisecret = str_shuffle($apisecretseed);
+            $trycount++;
+            $user_already_exists = self::exists_cpapi_user($apiusername);
+        }
+
+        //if we get a name clash 15 times we are stuck somehow, so cancel
+        if($user_already_exists){return false;}
+
+        //create user
+        $ret = self::create_cpapi_user($apiusername,
+                $apisecret,
+                $owner->firstname,
+                $owner->lastname,
+                $owner->email);
+
+        $school->apiuser=$apiusername;
+        $school->apisecret=$apisecret;
         $id = $DB->insert_record(constants::M_TABLE_SCHOOLS,$school);
         if($id){
             $school->id = $id;
@@ -1147,12 +1196,155 @@ class common
     public static function do_sync_subs($trace)
     {
         global $DB;
+        //sync subs that appear to have expired or have a payment due
         $syncsubs = $DB->get_records_sql("SELECT * from {" . constants::M_TABLE_SUBS . "} WHERE (expiretime < :now AND status = :activestatus) OR status = :paymentduestatus" ,
             array('now'=>time(),'activestatus'=>constants::M_STATUS_ACTIVE,'paymentduestatus'=>constants::M_STATUS_PAYMENTDUE));
+
+
         $trace->output('chargebee syncing: ' . count($syncsubs));
         foreach($syncsubs as $poodllsub){
             $trace->output('syncing:' . $poodllsub->upstreamsubid);
             chargebee::sync_sub($poodllsub);
         }
     }
+
+    public static function exists_cpapi_user($username){
+
+        //sanitize username
+        $username = strtolower($username);
+        $ret = cpapi_helper::get_moodle_users($username);
+        $exists =false;
+        if($ret && property_exists($ret,'users')){
+            if(count($ret->users)>0){
+                //$user =$ret->users[0];
+                $exists =true;
+            }
+        }
+        return $exists;
+
+    }
+
+    /*
+ * Create a new standard user on cloud poodll com, and by extension trigger creation of cpapi user
+ */
+    public static function create_cpapi_user($username,$password,$firstname,$lastname,$email){
+
+
+        //sanitize username
+        $username = strtolower($username);
+        $ret = cpapi_helper::make_moodle_user($username,
+                $password,
+                $firstname,
+                $lastname,
+                $email);
+        return $ret;
+    }
+
+
+    /*
+    * Update user with CPAPI specifics
+    */
+    public static function update_cpapi_userdeets($username, $firstname,$lastname, $email){
+
+        //sanitize username
+        $username = strtolower($username);
+
+        //update the user
+        $ret = cpapi_helper::update_cpapi_user($username,
+                $firstname,
+                $lastname,
+                $email,
+                0,
+                0,
+                0,
+                0,
+                0
+        );
+        return $ret;
+    }
+
+    /*
+     * Update user with CPAPI specifics
+     */
+    public static function update_cpapi_fulluser($username, $firstname,$lastname, $email,
+            $expiretime=0, $subscriptionid=0, $transactionid=0,
+            $accesskeyid='',$accesskeysecret=''){
+
+        //sanitize username
+        $username = strtolower($username);
+
+        //update the user
+        $expiry = strtotime($expiretime);
+        $ret = cpapi_helper::update_cpapi_user($username,
+                $firstname,
+                $lastname,
+                $email,
+                $expiry,
+                $subscriptionid,
+                $transactionid,
+                $accesskeyid,
+                $accesskeysecret
+        );
+        return $ret;
+    }
+
+    /*
+     * Reset and return the user's API secret
+     */
+    public static function reset_cpapi_secret($userid, $username,$currentsecret){
+        $ch = new cpapi_helper();
+        $secret ="";
+
+        //sanitize username
+        $username = strtolower($username);
+
+        $ret = cpapi_helper::reset_cpapi_secret($username,$currentsecret);
+        if ($ret && property_exists($ret,'returnCode') && $ret->returnCode==0) {
+            $secret = $ret->returnMessage;
+            poodll_write_secret_locally($userid,$secret);
+            poodll_log('updated cpapi secret:\r\n');
+        }else{
+            poodll_log('did not update cpapi secret:\r\n');
+        }
+        return $secret;
+    }
+
+
+
+
+    /*
+     * Set/update the user's registered sites
+     */
+    public static function update_cpapi_sites($username, $url1, $url2, $url3, $url4, $url5){
+
+        //check for blacklisted URL
+        $blacklist =['XXXXSITE.edu.vn'];
+        foreach($blacklist as $badurl){
+            if(!empty($url1) && strpos($url1,$badurl)>0) {
+                $url1= '';
+            }
+            if(!empty($url2) && strpos($url2,$badurl)>0) {
+                $url2= '';
+            }
+            if(!empty($url3) && strpos($url3,$badurl)>0) {
+                $url3= '';
+            }
+            if(!empty($url4) && strpos($url4,$badurl)>0) {
+                $url4= '';
+            }
+            if(!empty($url5) && strpos($url5,$badurl)>0) {
+                $url5= '';
+            }
+        }
+
+
+        //sanitize username
+        $username = strtolower($username);
+        $ret = cpapi_helper::update_cpapi_sites($username,$url1,$url2,$url3,$url4,$url5);
+        return $ret;
+    }
+
+
+
+
 }//end of class

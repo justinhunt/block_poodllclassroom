@@ -69,7 +69,7 @@ if($school){
 }else{
     //if a reseller requested an add, then lets do that
     if($add && $reseller) {
-        $school = common::create_blank_school($reseller);
+        $school = common::create_blank_school($reseller, $reseller->name . ' school');
         if($school){
             $backhereurl = new moodle_url($baseurl . '/subs/editmyschool.php', array('id' => $school->id, 'type'=>$type));
             redirect($backhereurl);
@@ -161,7 +161,10 @@ if ($editform->is_cancelled()){
                 $url1=''; $url2=''; $url3=''; $url4=''; $url5='';
                 list($url1,$url2,$url3,$url4,$url5) = $data->siteurl;
                // \block_poodllclassroom\cpapi_helper::update_cpapi_sites($theschool->apiuser,$url1,$url2,$url3,$url4,$url5);
-                \block_poodllclassroom\cpapi_helper::update_cpapi_sites($USER->username,$url1,$url2,$url3,$url4,$url5);
+                // \block_poodllclassroom\cpapi_helper::update_cpapi_sites($USER->username,$url1,$url2,$url3,$url4,$url5);
+
+                common::update_cpapi_sites($theschool->apiuser,$url1,$url2,$url3,$url4,$url5);
+                common::update_cpapi_userdeets($theschool->apiuser,$owner->firstname,$owner->lastname,$owner->email);
 
             }
     }
