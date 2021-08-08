@@ -73,6 +73,9 @@ $subssectiondata['show_payment']=true;
 $subssectiondata['show_status']=true;
 
 $checkouturl  = new \moodle_url(constants::M_URL . '/subs/checkout.php',array());
+$checkoutbuttondata = ['school'=>$school,'subtype'=>'all', 'checkouturl'=>$checkouturl->out()];
+$checkoutbutton = $renderer->render_from_template('block_poodllclassroom/checkoutpagebutton', $checkoutbuttondata);
+$subssectiondata['checkoutbutton']=$checkoutbutton ;
 
 //return the page header
 echo $renderer->header();
@@ -91,8 +94,7 @@ if(true) {
     $content = $renderer->render_from_template('block_poodllclassroom/schoolheader',$school);
     $content .='<br>';
 
-    $checkoutbuttondata = ['school'=>$school,'subtype'=>'all', 'checkouturl'=>$checkouturl->out()];
-    $content .= $renderer->render_from_template('block_poodllclassroom/checkoutpagebutton', $checkoutbuttondata);
+
     $content .= $renderer->render_from_template('block_poodllclassroom/subsheader',$subssectiondata);
 
     //Platform Subs Details Section

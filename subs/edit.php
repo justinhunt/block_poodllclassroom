@@ -252,7 +252,7 @@ if ($editform->is_cancelled()){
                 if($reseller){
                     $school = common::create_blank_school($data->ownerid,$reseller,$data->name);
                 }else{
-                    $school = common::create_blank_school($data->ownerid);
+                    $school = common::create_blank_school($data->ownerid, false,$data->name);
                 }
                 if(!empty($data->siteurl)){
 

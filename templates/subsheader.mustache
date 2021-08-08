@@ -4,12 +4,13 @@
 </div>
 <div id="block_poodllclassroom_subslist_cont" class="block_poodllclassroom_subslist_cont" style="display: {{display}};">
     <h3 class="block_poodllclassroom_allschoolsubs">{{#str}}allschoolsubs, block_poodllclassroom{{/str}}</h3>
+    {{{checkoutbutton}}}
     <table class="generaltable block_poodllclassroom_subslist_table" id="{{tableid}}">
         <thead>
         <tr>
             <th class="header c0 subname" style="" scope="col">{{#str}}subname, block_poodllclassroom{{/str}}</th>
             <th class="header c1 subperiod" style="" scope="col">{{#str}}subperiod, block_poodllclassroom{{/str}}</th>
-            {{#show_expiretime}} <th class="header c2" style="" scope="col">{{#str}}subexpiretime, block_poodllclassroom{{/str}}</th>{{/show_expiretime}}
+            {{#show_expiretime}} <th class="header c2" style="" scope="col">{{#str}}subrenewexpiretime, block_poodllclassroom{{/str}}</th>{{/show_expiretime}}
             {{#show_payment}} <th class="header c3" style="" scope="col">{{#str}}subcurrency, block_poodllclassroom{{/str}}</th>{{/show_payment}}
             {{#show_payment}} <th class="header c4" style="" scope="col">{{#str}}subpayment, block_poodllclassroom{{/str}}</th>{{/show_payment}}
             {{#show_status}} <th class="header c5" style="" scope="col">{{#str}}status, block_poodllclassroom{{/str}}</th>{{/show_status}}

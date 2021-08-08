@@ -141,7 +141,7 @@ class chargebee
         return false;
     }
 
-    public static function retrieve_process_events($trace){
+    public static function retrieve_process_events($trace=false){
         global $DB;
 
         $apikey = get_config(constants::M_COMP,'chargebeeapikey');
@@ -157,7 +157,9 @@ class chargebee
             //just so we dont get a universe of old test subs
             $lastoccurredat = 1627626055;
         }
-        $trace->output("cbsync:: looking for new subscriptions since:" . $lastoccurredat);
+        if($trace) {
+            $trace->output("cbsync:: looking for new subscriptions since:" . $lastoccurredat);
+        }
 
         $postdata=[];
         $postdata['event_type[in]'] = '["subscription_created"]';
@@ -170,14 +172,20 @@ class chargebee
 
         $eventslist = common::make_object_from_json($curlresult);
         if(!$eventslist || !isset($eventslist->list) ||  count($eventslist->list) ==0){
-            $trace->output("cbsync:: no new subs");
+            if($trace) {
+                $trace->output("cbsync:: no new subs");
+            }
             return false;
         }
-        $trace->output("cbsync:: " . count($eventslist->list) . " new subs");
+        if($trace) {
+            $trace->output("cbsync:: " . count($eventslist->list) . " new subs");
+        }
         foreach($eventslist->list as $eventcontainer) {
             $theevent=$eventcontainer->event;
             if ($theevent && isset($theevent->occurred_at)) {
-                $trace->output("cbsync:: processing sub event: " . $theevent->id);
+                if($trace) {
+                    $trace->output("cbsync:: processing sub event: " . $theevent->id);
+                }
                 $pevent = new \stdClass();
                 $pevent->timecreated = time();
                 $pevent->timecreated = time();

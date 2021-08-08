@@ -130,14 +130,18 @@ class renderer extends \plugin_renderer_base {
         if(count($subssectiondata['subs'])<1){
             $subssectiondata['nosubs']=true;
         }
-        $subssectiondata['show_expiretime']=true;
-        $subssectiondata['show_payment']=true;
-        $subssectiondata['show_status']=true;
-        $content .= $this->render_from_template('block_poodllclassroom/subsheader',$subssectiondata);
 
         //checkout button
         $checkoutbuttondata = ['school'=>$school,'subtype'=>'all', 'checkouturl'=>$checkouturl->out()];
-        $content .= $this->render_from_template('block_poodllclassroom/checkoutpagebutton', $checkoutbuttondata);
+        $checkoutbutton = $this->render_from_template('block_poodllclassroom/checkoutpagebutton', $checkoutbuttondata);
+
+        $subssectiondata['show_expiretime']=true;
+        $subssectiondata['show_payment']=true;
+        $subssectiondata['show_status']=true;
+        $subssectiondata['checkoutbutton']=$checkoutbutton;
+        $content .= $this->render_from_template('block_poodllclassroom/subsheader',$subssectiondata);
+
+
 
         //Platform Subs Details Section
         $moodlesubs=[];
@@ -293,6 +297,8 @@ class renderer extends \plugin_renderer_base {
             return $ret;
 
         }
+        $platform = strtoupper($platform);
+        $planfamily = strtoupper($planfamily);
 
         //get plans
         $billingintervals = common::fetch_billingintervals();
@@ -373,12 +379,35 @@ class renderer extends \plugin_renderer_base {
 
         //yearly plans
         $ydata =array();
-        $ydata['plans']=$yearlyplans;
         $ydata['display']=($showfirst==constants::M_BILLING_YEARLY) ? '' : 'block_poodllclassroom_hidden';
         $ydata['billinginterval']='Yearly';
         $ydata['currency']='USD';
         $ydata['billingintervallabel']=get_string('yearly',constants::M_COMP);
-        $yearly = $this->render_from_template('block_poodllclassroom/newplancontainer', $ydata);
+        if($platform==constants::M_PLATFORM_MOODLE && $planfamily=='ALL'){
+            $langplans=[];
+            $mediaplans=[];
+            $essentialsplans=[];
+            foreach($yearlyplans as $theplan){
+                switch($theplan->planfamily){
+                    case constants::M_FAMILY_LANG:
+                        $langplans[]=$theplan;
+                        break;
+                    case constants::M_FAMILY_MEDIA:
+                        $mediaplans[]=$theplan;
+                        break;
+                    case constants::M_FAMILY_ESSENTIALS:
+                        $essentialsplans[]=$theplan;
+                        break;
+                }
+            }
+            if(count($mediaplans)>0){$ydata['mediaplans']=$mediaplans;}
+            if(count($langplans)>0){$ydata['langplans']=$langplans;}
+            if(count($essentialsplans)>0){$ydata['essentialsplans']=$essentialsplans;}
+            $yearly = $this->render_from_template('block_poodllclassroom/moodleplanscontainer', $ydata);
+        }else {
+            $ydata['plans']=$yearlyplans;
+            $yearly = $this->render_from_template('block_poodllclassroom/newplancontainer', $ydata);
+        }
 
 
         return $freely .$togglediv . $monthly . $yearly;
@@ -722,7 +751,7 @@ class renderer extends \plugin_renderer_base {
                 get_string('action'));
         $table->colclasses = array('leftalign name', 'leftalign size','centeralign action');
 
-        $table->id = 'subs';
+        $table->id = constants::M_ID_PLANSTABLE;
         $table->attributes['class'] = 'admintable generaltable';
         $table->data  = $data;
 
@@ -825,7 +854,7 @@ class renderer extends \plugin_renderer_base {
                 get_string('action'));
         $table->colclasses = array('leftalign name', 'leftalign size','centeralign action');
 
-        $table->id = 'subs';
+        $table->id = constants::M_ID_SUBSTABLE;
         $table->attributes['class'] = 'admintable generaltable';
         $table->data  = $data;
 
@@ -922,7 +951,7 @@ class renderer extends \plugin_renderer_base {
         $table->head[] = get_string('action');
         $table->colclasses = array('leftalign name', 'leftalign size','centeralign action');
 
-        $table->id = 'schools';
+        $table->id = constants::M_ID_SCHOOLSTABLE;
         $table->attributes['class'] = 'admintable generaltable';
         $table->data  = $data;
 
@@ -986,7 +1015,7 @@ class renderer extends \plugin_renderer_base {
                 get_string('action'));
         $table->colclasses = array('leftalign name', 'leftalign size','centeralign action');
 
-        $table->id = 'schools';
+        $table->id = constants::M_ID_RESELLERTABLE;
         $table->attributes['class'] = 'admintable generaltable';
         $table->data  = $data;
 

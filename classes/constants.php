@@ -20,6 +20,11 @@ const M_CLASS='block_poodllclassroom';
 const M_HOOKCOUNT =5;
 const M_CLASS_USERLIST ='block_poodllclassroom_userlist_cont';
 
+const M_ID_SCHOOLSTABLE = 'schoolstable';
+const M_ID_PLANSTABLE ='planstable';
+const M_ID_RESELLERTABLE='resellertable';
+const M_ID_SUBSTABLE='substable';
+
 const SETTING_NONE ='none';
 const SETTING_MICROSOFTAUTH ='microsoftauth';
 const SETTING_GOOGLEAUTH ='googleauth';
@@ -65,5 +70,12 @@ const M_STATUS_NONE = '-';
 const M_STATUS_ACTIVE = 'active';
 const M_STATUS_PAYMENTDUE = 'paymentdue';
 const M_STATUS_INACTIVE = 'inactive';
+
+const M_FAMILY_ESSENTIALS = 'M_ESSENT';
+const M_FAMILY_LANG = 'M_LANG';
+const M_FAMILY_MEDIA = 'M_MEDIA';
+const M_FAMILY_LTI = 'LTI_STANDARD';
+const M_FAMILY_CLASSROOM = 'CLASSROOM';
+
 
 }

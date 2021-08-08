@@ -41,7 +41,7 @@ class editresellerform extends \moodleform {
     public function definition() {
         $mform = $this->_form;
 
-        $mform->addElement('header', 'typeheading', get_string('editschool', constants::M_COMP));
+        $mform->addElement('header', 'typeheading', get_string('editreseller', constants::M_COMP));
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);

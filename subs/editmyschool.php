@@ -69,7 +69,7 @@ if($school){
 }else{
     //if a reseller requested an add, then lets do that
     if($add && $reseller) {
-        $school = common::create_blank_school($reseller, $reseller->name . ' school');
+        $school = common::create_blank_school(false, $reseller, $reseller->name . ' school');
         if($school){
             $backhereurl = new moodle_url($baseurl . '/subs/editmyschool.php', array('id' => $school->id, 'type'=>$type));
             redirect($backhereurl);

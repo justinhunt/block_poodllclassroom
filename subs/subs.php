@@ -34,6 +34,9 @@ $course = get_course(1);
 require_login($course);
 
 
+//datatables css
+$PAGE->requires->css(new \moodle_url('https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css'));
+
 $context = context_system::instance();
 $PAGE->set_context($context);
 $PAGE->set_heading($SITE->fullname);
@@ -46,7 +49,7 @@ $ok = has_capability('block/poodllclassroom:manageintegration', $context);
 $resellers=common::fetch_resellers();
 $plans=common::fetch_plans();
 $schools=common::fetch_schools();
-$subs=common::fetch_subs_for_all_users();
+// $subs=common::fetch_subs_for_all_users();
 
 //get our renderer
 $renderer = $PAGE->get_renderer(constants::M_COMP);
@@ -59,10 +62,22 @@ if($ok) {
     //plans
     $planstable = $renderer->fetch_plans_table($plans);
     echo $planstable;
+    //set up datatables
+    $planstableprops = new \stdClass();
+    $p_opts = Array();
+    $p_opts['tableid'] = constants::M_ID_PLANSTABLE;
+    $p_opts['tableprops'] = $planstableprops;
+    $PAGE->requires->js_call_amd(constants::M_COMP . "/datatables", 'init', array($p_opts));
 
     //resellers
     $resellerstable = $renderer->fetch_resellers_table($resellers);
     echo $resellerstable;
+    //set up datatables
+    $rtableprops = new \stdClass();
+    $r_opts = Array();
+    $r_opts['tableid'] = constants::M_ID_RESELLERTABLE;
+    $r_opts['tableprops'] = $planstableprops;
+    $PAGE->requires->js_call_amd(constants::M_COMP . "/datatables", 'init', array($r_opts));
 
     //schools
     $params=[];
@@ -70,9 +85,17 @@ if($ok) {
     $schoolstable = $renderer->fetch_schools_table($schools,$returnurl);
     echo $schoolstable;
 
+    //set up datatables
+    $schoolstableprops = new \stdClass();
+    $s_opts = Array();
+    $s_opts['tableid'] = constants::M_ID_SCHOOLSTABLE;
+    $s_opts['tableprops'] = $schoolstableprops;
+    $PAGE->requires->js_call_amd(constants::M_COMP . "/datatables", 'init', array($s_opts));
+
+
     //subs
-    $substable = $renderer->fetch_subs_table($subs);
-    echo $substable;
+   // $substable = $renderer->fetch_subs_table($subs);
+   // echo $substable;
 
 }else{
     echo  get_string('nopermission', constants::M_COMP);

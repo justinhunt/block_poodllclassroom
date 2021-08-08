@@ -319,11 +319,11 @@ class common
     }
 
     public static function fetch_planfamilies(){
-        return array('CLASSROOM'=>'CLASSROOM',
-                'LTI_STANDARD'=>'LTI_STANDARD',
-                'M_LANG'=>'M_LANG',
-                'M_MEDIA'=>'M_MEDIA',
-                'M_ESSENT'=>'M_ESSENT');
+        return array(constants::M_FAMILY_CLASSROOM=>constants::M_FAMILY_CLASSROOM,
+            constants::M_FAMILY_LTI=>constants::M_FAMILY_LTI,
+            constants::M_FAMILY_LANG=>constants::M_FAMILY_LANG,
+            constants::M_FAMILY_MEDIA=>constants::M_FAMILY_MEDIA,
+                constants::M_FAMILY_ESSENTIALS=>constants::M_FAMILY_ESSENTIALS);
     }
 
     public static function fetch_platforms(){
@@ -393,7 +393,7 @@ class common
         }
     }
 
-    public static function fetch_plans_by_platform($platform, $planfamily='all'){
+    public static function fetch_plans_by_platform($platform, $planfamily='ALL'){
         global $DB;
 
         $params = ['platform'=>$platform];

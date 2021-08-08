@@ -1,0 +1,19 @@
+<div class="block_poodllclassroom_billingheader {{billinginterval}} {{display}}"><h3>{{billingintervallabel}}</h3></div>
+<h4>{{#str}}mediaplans, block_poodllclassroom{{/str}}</h4>
+<div id="block_poodllclassroom_mediaplans_cont" class="block_poodllclassroom_moodleplans_cont center block_poodllclassroom_flexbox {{billinginterval}} {{display}}">
+    {{#mediaplans}}
+            {{> block_poodllclassroom/newplantile}}
+    {{/mediaplans}}
+</div>
+<h4>{{#str}}langplans, block_poodllclassroom{{/str}}</h4>
+<div id="block_poodllclassroom_langplans_cont" class="block_poodllclassroom_moodleplans_cont center block_poodllclassroom_flexbox {{billinginterval}} {{display}}">
+    {{#langplans}}
+        {{> block_poodllclassroom/newplantile}}
+    {{/langplans}}
+</div>
+<h4>{{#str}}essentialsplans, block_poodllclassroom{{/str}}</h4>
+<div id="block_poodllclassroom_essentialsplans_cont" class="block_poodllclassroom_moodleplans_cont center block_poodllclassroom_flexbox {{billinginterval}} {{display}}">
+    {{#essentialsplans}}
+        {{> block_poodllclassroom/newplantile}}
+    {{/essentialsplans}}
+</div>

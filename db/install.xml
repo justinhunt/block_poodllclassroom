@@ -18,6 +18,7 @@
         <FIELD NAME="description" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Short description of plan."/>
         <FIELD NAME="jsonfields" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="extra info in json."/>
         <FIELD NAME="upstreamplan" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="true" DEFAULT="-" SEQUENCE="false" COMMENT="the key that links plan with gateway plan"/>
+        <FIELD NAME="poodllplanid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="poodllplanid"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>

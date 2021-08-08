@@ -275,6 +275,17 @@ $string['cpapihost'] = 'CPAPI host';
 $string['cpapihost_desc'] = 'The CPAPI host URL';
 $string['cpapitoken'] = 'CPAPI token';
 $string['cpapitoken_desc'] = 'The CPAPI web services token';
+$string['subrenewtime'] = 'Renews';
+$string['subrenewexpiretime'] = 'Renews/Expires';
+$string['editsitedetails'] = ' - Edit site details -';
+$string['essentialsplans'] = 'Poodll Essentials (Poodll Media + Poodll Languages)';
+$string['mediaplans'] = 'Poodll Media';
+$string['langplans'] = 'Poodll Languages';
+$string['editreseller'] = 'Edit Reseller';
+$string['poodllplanid'] = 'Poodll Plan ID';
+
+
+
 
 
 

@@ -72,6 +72,9 @@ class editplanform extends \moodleform {
         $mform->addElement('text', 'upstreamplan', get_string('upstreamplan', constants::M_COMP), array());
         $mform->setType('upstreamplan', PARAM_TEXT);
 
+        $mform->addElement('text', 'poodllplanid', get_string('poodllplanid', constants::M_COMP), array());
+        $mform->setType('poodllplanid', PARAM_INT);
+
         $mform->addElement('text', 'price', get_string('price', constants::M_COMP), array());
         $mform->setType('price', PARAM_TEXT);
 

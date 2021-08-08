@@ -38,6 +38,11 @@ $PAGE->set_url(constants::M_URL . '/subs/welcomeback.php',array('id' => $id,'sta
 $course = get_course(1);
 require_login($course);
 
+//There is a hosted page bug. So if they get here lets just run the retrieve events thingy and move on:
+chargebee::retrieve_process_events();
+redirect($CFG->wwwroot . '/my');
+// nothing beyond here will currently happen ....
+
 
 $context = context_system::instance();
 $PAGE->set_context($context);
