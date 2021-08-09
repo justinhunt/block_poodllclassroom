@@ -55,6 +55,7 @@ class chargebee
 
         $schoolname=$school->name;
         $customerid = $upstreamuserid;
+        $schoolowner = $DB->get_record('user', array('id'=>$school->ownerid));
         $apikey = get_config(constants::M_COMP,'chargebeeapikey');
         $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
         $resellercoupon = get_config(constants::M_COMP,'resellercoupon');
@@ -83,9 +84,9 @@ class chargebee
             */
             $postdata['customer']= array(
                 "id" => $upstreamuserid,
-                "email" => $USER->email,
-                "first_name" => $USER->firstname,
-                "last_name" => $USER->lastname,
+                "email" => $schoolowner->email,
+                "first_name" => $schoolowner->firstname,
+                "last_name" => $schoolowner->lastname,
             );
             if($reseller){
                 $postdata['company'] = $reseller->name;
@@ -213,7 +214,7 @@ class chargebee
                         //dont create a subscription twice, that would be bad ...
                         $poodllsub = common::get_poodllsub_by_upstreamsubid($theevent->content->subscription->id);
                         if ($poodllsub == false) {
-                            common::create_poodll_sub($theevent->content->subscription);
+                            common::create_poodll_sub($theevent->content);
                         }
                         break;
                     default:
@@ -301,11 +302,14 @@ class chargebee
         return false;
     }
 
+    //NB an admin can not currently "manage" another users subscription via the portal. It will fail at get_poodllschool_by_currentuser
+    //admins should manage over at chargebee. But they can create subs and plans and schools here on moodle
     public static function create_portal_session($upstreamownerid){
         global $CFG, $USER;
 
         $apikey = get_config(constants::M_COMP,'chargebeeapikey');
         $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
+
         //this should work because a reseller schools will have sae upstreamowner and a regular owner will have only one school
         $school = common::get_poodllschool_by_currentuser();
 

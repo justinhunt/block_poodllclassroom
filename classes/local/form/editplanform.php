@@ -78,6 +78,11 @@ class editplanform extends \moodleform {
         $mform->addElement('text', 'price', get_string('price', constants::M_COMP), array());
         $mform->setType('price', PARAM_TEXT);
 
+        $options = common::fetch_truefalse();
+        $mform->addElement('select', 'showcheckout', get_string('showcheckout', constants::M_COMP), $options);
+        $mform->setType('showcheckout', PARAM_INT);
+        $mform->setDefault('showcheckout', 1);
+
         //plan families
         $planfamilies = common::fetch_planfamilies();
         $mform->addElement('select', 'planfamily', get_string('planfamily', constants::M_COMP), $planfamilies);

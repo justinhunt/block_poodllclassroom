@@ -312,6 +312,11 @@ class common
 
 
 
+    public static function fetch_truefalse(){
+        return array(0=>get_string('false',constants::M_COMP),
+            1=>get_string('true',constants::M_COMP));
+    }
+
     public static function fetch_billingintervals(){
         return array(constants::M_BILLING_YEARLY=>get_string('yearly',constants::M_COMP),
                 constants::M_BILLING_MONTHLY=>get_string('monthly',constants::M_COMP),
@@ -323,7 +328,12 @@ class common
             constants::M_FAMILY_LTI=>constants::M_FAMILY_LTI,
             constants::M_FAMILY_LANG=>constants::M_FAMILY_LANG,
             constants::M_FAMILY_MEDIA=>constants::M_FAMILY_MEDIA,
-                constants::M_FAMILY_ESSENTIALS=>constants::M_FAMILY_ESSENTIALS);
+            constants::M_FAMILY_ESSENTIALS=>constants::M_FAMILY_ESSENTIALS,
+            constants::M_FAMILY_EC =>constants::M_FAMILY_EC,
+            constants::M_FAMILY_API =>constants::M_FAMILY_API ,
+            constants::M_FAMILY_STANDALONE =>constants::M_FAMILY_STANDALONE,
+            constants::M_FAMILY_LEGACY =>constants::M_FAMILY_LEGACY
+            );
     }
 
     public static function fetch_platforms(){
@@ -393,13 +403,16 @@ class common
         }
     }
 
-    public static function fetch_plans_by_platform($platform, $planfamily='ALL'){
+    public static function fetch_plans_by_platform($platform, $planfamily='ALL', $onlyvisibleplans=false){
         global $DB;
 
         $params = ['platform'=>$platform];
         $families = self::fetch_planfamilies();
         if(array_key_exists($planfamily,$families)){
             $params['planfamily'] = $planfamily;
+        }
+        if($onlyvisibleplans){
+            $params['showcheckout'] = 1;
         }
         $plans = $DB->get_records(constants::M_TABLE_PLANS,$params,'price ASC') ;
         if($plans) {
@@ -880,9 +893,11 @@ class common
         return $plan;
     }
 
-    public static function create_poodll_sub($subscription){
+    public static function create_poodll_sub($eventcontent){
         global $DB;
 
+        $subscription = $eventcontent->subscription;
+        $invoice = $eventcontent->invoice;
         //set up our school
         $school=false;
         if(isset($subscription->cf_schoolid)) {
@@ -918,8 +933,8 @@ class common
         if(is_number($subscription->current_term_end)){
             $newsub->expiretime=$subscription->current_term_end;
         }
-        $newsub->payment= $subscription->subscription_items[0]->unit_price;
-        $newsub->paymentcurr=$subscription->currency_code;
+        $newsub->payment= $invoice->amount_paid;
+        $newsub->paymentcurr=$invoice->currency_code;
         $newsub->billinginterval=$plan->billinginterval;
         $newsub->timecreated=time();
 
@@ -942,8 +957,8 @@ class common
             $poodllsub->paymentcurr = $upstreamsub->currency_code;
             $update=true;
         }
-        if($poodllsub->payment != $upstreamsub->subscription_items[0]->unit_price){
-            $poodllsub->payment = $upstreamsub->subscription_items[0]->unit_price;
+        if($poodllsub->payment != $upstreamsub->total_dues){
+            $poodllsub->payment =$upstreamsub->total_dues;
             $update=true;
         }
 

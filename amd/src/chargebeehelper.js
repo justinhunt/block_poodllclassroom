@@ -130,7 +130,7 @@ define(['jquery','core/log','core/ajax'], function($, log, ajax) {
                         close: function() {
                             console.log("manage portal closed");
                         },
-                        visit: function(setionType) {
+                        visit: function(sectionType) {
                             console.log("manage portal visit");
                         },
                         paymentSourceAdd: function() {

@@ -302,7 +302,8 @@ class renderer extends \plugin_renderer_base {
 
         //get plans
         $billingintervals = common::fetch_billingintervals();
-        $plans = common::fetch_plans_by_platform($platform, $planfamily);
+        $onlyvisibleplans = true;
+        $plans = common::fetch_plans_by_platform($platform, $planfamily,$onlyvisibleplans);
 
         //get subs for the school
         $subs = common::fetch_subs_by_school($school->id);

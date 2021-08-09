@@ -283,7 +283,9 @@ $string['mediaplans'] = 'Poodll Media';
 $string['langplans'] = 'Poodll Languages';
 $string['editreseller'] = 'Edit Reseller';
 $string['poodllplanid'] = 'Poodll Plan ID';
-
+$string['false'] = 'false';
+$string['true'] = 'true';
+$string['showcheckout'] = 'Show in checkout';
 
 
 
