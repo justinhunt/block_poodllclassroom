@@ -286,6 +286,12 @@ $string['poodllplanid'] = 'Poodll Plan ID';
 $string['false'] = 'false';
 $string['true'] = 'true';
 $string['showcheckout'] = 'Show in checkout';
+$string['syncoptions'] = 'Sync Options';
+$string['syncoptions_instructions'] = 'Use the sync options to fill up Poodll Classroom with one or all subs from Chargebee. Events wont fire here, so its just syncing.';
+$string['syncsubs'] = 'Sync Subs';
+$string['syncschools'] = 'Sync Schools';
+$string['syncpage'] = 'Sync Subs and Schools';
+
 
 
 

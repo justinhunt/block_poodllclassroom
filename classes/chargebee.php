@@ -315,7 +315,10 @@ class chargebee
 
         if($school && !empty($apikey) && !empty($siteprefix)){
 
-            if($school->upstreamownerid !== $upstreamownerid){return false;}
+            if($school->upstreamownerid !== $upstreamownerid){
+                error_log("upstream owner for school : $school->id  $school->upstreamownerid != $upstreamownerid");
+                return false;
+            }
 
             $url = "https://$siteprefix.chargebee.com/api/v2/portal_sessions";
             $postdata=[];

@@ -1025,4 +1025,24 @@ class renderer extends \plugin_renderer_base {
         return   $heading  . $this->render($addbutton) .  \html_writer::table($table);
 
     }
+
+    function fetch_sync_options(){//add school button
+        $context = \context_system::instance();
+        if(!has_capability('block/poodllclassroom:manageintegration', $context)) {
+            return "";
+        }
+
+        $schoolsbutton = new \single_button(
+            new \moodle_url(constants::M_URL . '/subs/sync.php',array('type'=>'schools')),
+            get_string('syncschools', constants::M_COMP), 'get');
+        $subsbutton =  new \single_button(
+            new \moodle_url(constants::M_URL . '/subs/sync.php',array('type'=>'subs')),
+            get_string('syncsubs', constants::M_COMP), 'get');
+
+        //return add button and table
+        $heading = $this->output->heading(get_string('syncoptions',constants::M_COMP),3);
+        $heading .= \html_writer::div(get_string('syncoptions_instructions',constants::M_COMP));
+        return $heading  . $this->render($schoolsbutton) .  $this->render($subsbutton);
+
+    }
 }

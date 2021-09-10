@@ -97,6 +97,12 @@ if($ok) {
    // $substable = $renderer->fetch_subs_table($subs);
    // echo $substable;
 
+    //Sync Options
+    $syncOptions = $renderer->fetch_sync_options();
+    echo $syncOptions;
+
+
+
 }else{
     echo  get_string('nopermission', constants::M_COMP);
 }
