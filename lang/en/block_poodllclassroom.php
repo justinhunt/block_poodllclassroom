@@ -291,6 +291,9 @@ $string['syncoptions_instructions'] = 'Use the sync options to fill up Poodll Cl
 $string['syncsubs'] = 'Sync Subs';
 $string['syncschools'] = 'Sync Schools';
 $string['syncpage'] = 'Sync Subs and Schools';
+$string['syncschoolform'] = 'Sync Single School';
+$string['upstreamschoolid'] = 'Upstream School ID';
+
 
 
 

@@ -65,11 +65,22 @@ if(!$ok) {
 
 switch($type) {
     case "schools":
-        echo "SCHOOOLS";
+        $syncschoolform = new \block_poodllclassroom\local\form\syncschoolform();
+        if ($syncschoolform->is_cancelled()){
+            redirect($returnurl);
+        }else if($data = $syncschoolform->get_data()) {
+
+        }else{
+
+        }
+
+
         break;
     case "subs":
-        echo "SUUUBS";
+        $syncsubform = new \block_poodllclassroom\local\form\syncsubform();
         break;
 }
+
+
 
 echo $renderer->footer();

@@ -1031,6 +1031,17 @@ class common
 
     }
 
+    public static function get_school_by_upstreamownerid($upstreamownerid){
+        global $DB;
+        $schools = $DB->get_records(constants::M_TABLE_SCHOOLS,array('upstreamownerid'=>$upstreamownerid));
+        if($schools) {
+            return $schools;
+        }else{
+            return false;
+        }
+
+    }
+
     public static function get_schoolname_by_sub($sub){
         global $DB;
         $school = $DB->get_record(constants::M_TABLE_SCHOOLS,array('id'=>$sub->schoolid));
@@ -1144,6 +1155,100 @@ class common
             $customerid = $sub->school->reseller->upstreamuserid;
         }
         return chargebee::get_portalurl_by_upstreamid($customerid);
+    }
+
+    public static function create_school_from_upstreamid($upstreamownerid){
+        global $CFG, $DB;
+
+        //do we already gots one like dis one, return
+        $existing_schools = self::get_school_by_upstreamownerid($upstreamownerid);
+        if($existing_schools  && !empty($existing_schools )){
+            return false;
+        }
+
+        //fetch user, if no user then ... out of here man
+        $upstream_user = chargebee::fetch_chargebee_user($upstreamownerid);
+        if(!$upstream_user){
+            return false;
+        }
+
+        //at this point we have an upstream user and a new school to make ..
+        //if user already exists here .. someone has some explaining to do. Lets check by email ...
+        $existing_user = $DB->get_record('user'.array('email'=>$upstream_user->email));
+        if($existing_user){
+            return false;
+        }
+
+        //OK we are ready to get started  ... but first we need to pick up our API user and secret from the user/secret dump
+        //need to connect (while its still current .... ) to livewww DB on this server and search wp_usermeta and search:
+        // user_id + mepr_api_secret + mepr_organisation_name + mepr_contact_phone
+        // wp_users ID user_login (API user) and user_email
+
+
+        $school = new \stdClass();
+        $school->timecreated = time();
+        $school->timemodified = time();
+        $school->jsonfields = '{}';
+
+        if($reseller===false) {
+            $school->resellerid = self::fetch_poodll_resellerid();
+            $school->upstreamownerid = self::fetch_upstream_user_id($USER->id);
+            if($ownerid==false){
+                $school->ownerid = $USER->id;
+            }else{
+                $school->ownerid = $ownerid;
+            }
+        }else{
+            $school->resellerid = $reseller->id;
+            $school->upstreamownerid = $reseller->upstreamuserid;
+            $school->ownerid = $reseller->userid;
+        }
+
+        //school name
+        $owner = $DB->get_record('user',array('id'=>$school->ownerid));
+        if($schoolname===false){
+            $school->name= $owner->firstname . ' ' . $owner->lastname  .  ' ' .' school';
+        }else{
+            $school->name =$schoolname;
+        }
+
+        //make the school user over at cpapi ..
+        $apiuserseed = "0123456789ABCDEF" . mt_rand(100, 99999);
+        $apisecretseed = "0123456789ABCDEF" . mt_rand(100, 99999);
+        $user_already_exists=true;
+        $trycount=0;
+        while($user_already_exists && $trycount<15) {
+            $apiusername = str_shuffle($apiuserseed);
+            $apisecret = str_shuffle($apisecretseed);
+            $trycount++;
+            $user_already_exists = self::exists_cpapi_user($apiusername);
+        }
+
+        //if we get a name clash 15 times we are stuck somehow, so cancel
+        if($user_already_exists){return false;}
+
+        //create user
+        $ret = self::create_cpapi_user($apiusername,
+            $apisecret,
+            $owner->firstname,
+            $owner->lastname,
+            $owner->email);
+
+        $school->apiuser=$apiusername;
+        $school->apisecret=$apisecret;
+        $id = $DB->insert_record(constants::M_TABLE_SCHOOLS,$school);
+        if($id){
+            $school->id = $id;
+            return $school;
+        }else{
+            return false;
+        }
+
+    }
+
+    public static function create_sub_from_upstreamid($upstreamsubid){
+        global $CFG;
+        $upstream_sub = chargebee::fetch_chargebee_sub($upstreamsubid);
     }
 
 

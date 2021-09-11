@@ -384,4 +384,38 @@ class chargebee
             }
         }
     }
+
+    public static function fetch_chargebee_user($upstreamuserid){
+        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
+        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
+
+        $url = "https://$siteprefix.chargebee.com/api/v2/subscriptions/";
+        $url .= $upstreamuserid;
+
+        $postdata=false;
+        $curlresult = common::curl_fetch($url,$postdata,$apikey);
+        $jsonresult = common::make_object_from_json($curlresult);
+        if($jsonresult) {
+            return $jsonresult;
+        }else{
+            return false;
+        }
+    }
+
+    public static function fetch_chargebee_sub($upstreamsubid){
+        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
+        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
+
+        $url = "https://$siteprefix.chargebee.com/api/v2/subscriptions/";
+        $url .= $upstreamsubid;
+
+        $postdata=false;
+        $curlresult = common::curl_fetch($url,$postdata,$apikey);
+        $jsonresult = common::make_object_from_json($curlresult);
+        if($jsonresult) {
+            return $jsonresult;
+        }else{
+            return false;
+        }
+    }
 }
