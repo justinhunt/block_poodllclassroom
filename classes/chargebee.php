@@ -214,6 +214,9 @@ class chargebee
                         //dont create a subscription twice, that would be bad ...
                         $poodllsub = common::get_poodllsub_by_upstreamsubid($theevent->content->subscription->id);
                         if ($poodllsub == false) {
+                            //lets create the school. IF it already exists, nothing bad will happen
+                            $ret = common::create_school_from_upstreamid($theevent->content->subscription->customer_id);
+
                             $subscription = $theevent->content->subscription;
                             $invoice = $theevent->content->invoice;
                             common::create_poodll_sub($subscription,$invoice->currency_code,$invoice->amount_paid);

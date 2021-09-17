@@ -1227,7 +1227,7 @@ class common
                while( $row = $result->fetch_assoc()) {
                    switch ($row['meta_key']) {
                        case 'mepr_api_secret':
-                           $ret['apiuser'] = $row['user_login'];
+                           $ret['apiusername'] = $row['user_login'];
                            $ret['apisecret'] = $row['meta_value'];
                            $ret['success'] = true;
                            break;
@@ -1301,18 +1301,29 @@ class common
         // user_id + mepr_api_secret + mepr_organisation_name + mepr_contact_phone
         // wp_users ID user_login (API user) and user_email
         $legacyuser = self::fetch_legacydeets_for_user($upstream_user->customer->email);
-
-        if($legacyuser && $legacyuser['success'] && !empty($legacyuser['apiuser'])){
+        if($legacyuser && $legacyuser['success'] && !empty($legacyuser['apiusername'])){
             $legacyuser['siteurls']=[];
             if(!empty($legacyuser['siteurl1'])){$legacyuser['siteurls'][]=$legacyuser['siteurl1'];}
             if(!empty($legacyuser['siteur2'])){$legacyuser['siteurls'][]=$legacyuser['siteurl2'];}
             if(!empty($legacyuser['siteurl3'])){$legacyuser['siteurls'][]=$legacyuser['siteurl3'];}
             if(!empty($legacyuser['siteurl4'])){$legacyuser['siteurls'][]=$legacyuser['siteurl4'];}
             if(!empty($legacyuser['siteurl5'])){$legacyuser['siteurls'][]=$legacyuser['siteurl5'];}
+
+        //if there is no existing user in the live user dump, lets create one
         }else{
-            $ret['success']=false;
-            $ret['message']='could not fetch a legacy user for: ' .$upstream_user->customer->email;
-            return $ret;
+            //lets create a user
+            //create user
+            $legacyuser = self::create_cpapi_user(
+                    $upstream_user->customer->first_name,
+                    $upstream_user->customer->last_name,
+                    $upstream_user->customer->email);
+
+
+            if(!$legacyuser || empty($legacyuser['apiuser'])) {
+                $ret['success'] = false;
+                $ret['message'] = 'could not fetch nor create a legacy user for: ' . $upstream_user->customer->email;
+                return $ret;
+            }
         }
         //$legacyuser  as ['success'=>true] ['apiuser'=>''] ['apisecret'=>'']['schoolname'=>'']['phone'=>'']
         //print_r($legacyuser );
@@ -1322,7 +1333,7 @@ class common
         $newuser['firstnamephonetic']=$upstream_user->customer->first_name;
         $newuser['lastname']=$upstream_user->customer->last_name;
         $newuser['firstnamephonetic']=$upstream_user->customer->last_name;
-        $newuser['username']=$legacyuser['apiuser'];
+        $newuser['username']=$legacyuser['apiusername'];
         $newuser['auth']='manual';
         $newuser['password']='IH@ve1999b!guc@tsonmyhat';
         $newuser['email']=$upstream_user->customer->email;
@@ -1336,7 +1347,7 @@ class common
             $school->resellerid = self::fetch_poodll_resellerid();
             $school->upstreamownerid = $upstreamownerid;
             $school->ownerid =  $user['id'];
-            $school->apiuser=$legacyuser['apiuser'];
+            $school->apiuser=$legacyuser['apiusername'];
             $school->apisecret=$legacyuser['apisecret'];
             $school->siteurls=json_encode($legacyuser['siteurls']);
             if(!empty($legacyuser['schoolname'])){
@@ -1449,30 +1460,14 @@ class common
             $school->name =$schoolname;
         }
 
-        //make the school user over at cpapi ..
-        $apiuserseed = "0123456789ABCDEF" . mt_rand(100, 99999);
-        $apisecretseed = "0123456789ABCDEF" . mt_rand(100, 99999);
-        $user_already_exists=true;
-        $trycount=0;
-        while($user_already_exists && $trycount<15) {
-            $apiusername = str_shuffle($apiuserseed);
-            $apisecret = str_shuffle($apisecretseed);
-            $trycount++;
-            $user_already_exists = self::exists_cpapi_user($apiusername);
-        }
-
-        //if we get a name clash 15 times we are stuck somehow, so cancel
-        if($user_already_exists){return false;}
-
         //create user
-        $ret = self::create_cpapi_user($apiusername,
-                $apisecret,
+        $ret = self::create_cpapi_user(
                 $owner->firstname,
                 $owner->lastname,
                 $owner->email);
 
-        $school->apiuser=$apiusername;
-        $school->apisecret=$apisecret;
+        $school->apiuser=$ret['apiusername'];
+        $school->apisecret=$ret['apisecret'];
         $id = $DB->insert_record(constants::M_TABLE_SCHOOLS,$school);
         if($id){
             $school->id = $id;
@@ -1516,16 +1511,43 @@ class common
     /*
  * Create a new standard user on cloud poodll com, and by extension trigger creation of cpapi user
  */
-    public static function create_cpapi_user($username,$password,$firstname,$lastname,$email){
+    public static function create_cpapi_user($firstname,$lastname,$email,$apiusername=''){
+
+       //seeds
+        $apiuserseed = "0123456789ABCDEF" . mt_rand(100, 99999);
+        $apisecretseed = "0123456789ABCDEF" . mt_rand(100, 99999);
+
+        //$api secret
+        $apisecret = str_shuffle($apisecretseed);
+
+        //use the passed in API username or make a new one
+        if(!empty($username)){
+            $user_already_exists = self::exists_cpapi_user($apiusername);
+        }else{
+            $user_already_exists=true;
+        }
+
+        $trycount=0;
+        while($user_already_exists && $trycount<15) {
+            $apiusername = str_shuffle($apiuserseed);
+            $trycount++;
+            $user_already_exists = self::exists_cpapi_user($apiusername);
+        }
+
+        //if we get a name clash 15 times we are stuck somehow, so cancel
+        if($user_already_exists){return false;}
 
 
         //sanitize username
-        $username = strtolower($username);
-        $ret = cpapi_helper::make_moodle_user($username,
-                $password,
+        $username = strtolower($apiusername);
+        $ret = cpapi_helper::make_moodle_user($apiusername,
+                $apisecret,
                 $firstname,
                 $lastname,
                 $email);
+        $ret['apiusername']=$apiusername;
+        $ret['apisecret']=$apisecret;
+        $ret['siteurls']=[];
         return $ret;
     }
 

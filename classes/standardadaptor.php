@@ -193,7 +193,7 @@ class standardadaptor
 
 
 
-        //if we alredy have this poodllschol then we just need to update to the new plan
+        //if we already have this poodllschool then we just need to update to the new plan
         //Its unclear yet if that will happen here in this call, or another one
         $poodllschool =common::get_poodllsub_by_upstreamsubid($params['upstreamsubid']);
         if($poodllschool){
