@@ -64,8 +64,9 @@ if($state=='succeeded') {
         //if its a new sub create it. If we already had it. Do not create it
         $poodllsub=common::get_poodllsub_by_upstreamsubid($subscription->id);
         if($poodllsub===false) {
-
-           $ret = common::create_poodll_sub( $subscription);
+            $currency_code= $subscription->currency_code;
+            $amount_paid= $subscription->subscription_items[0]->amount;
+           $ret = common::create_poodll_sub( $subscription,$currency_code,$amount_paid);
            if(!$ret){
                $ret = "something was not right with that school ...";
            }

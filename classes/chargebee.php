@@ -214,7 +214,9 @@ class chargebee
                         //dont create a subscription twice, that would be bad ...
                         $poodllsub = common::get_poodllsub_by_upstreamsubid($theevent->content->subscription->id);
                         if ($poodllsub == false) {
-                            common::create_poodll_sub($theevent->content);
+                            $subscription = $theevent->content->subscription;
+                            $invoice = $theevent->content->invoice;
+                            common::create_poodll_sub($subscription,$invoice->currency_code,$invoice->amount_paid);
                         }
                         break;
                     default:
@@ -389,16 +391,80 @@ class chargebee
         $apikey = get_config(constants::M_COMP,'chargebeeapikey');
         $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
 
-        $url = "https://$siteprefix.chargebee.com/api/v2/subscriptions/";
+        $url = "https://$siteprefix.chargebee.com/api/v2/customers/";
         $url .= $upstreamuserid;
 
         $postdata=false;
         $curlresult = common::curl_fetch($url,$postdata,$apikey);
-        $jsonresult = common::make_object_from_json($curlresult);
-        if($jsonresult) {
-            return $jsonresult;
+        $upstream_user = common::make_object_from_json($curlresult);
+        if($upstream_user
+            && !(isset($upstream_user->http_status_code) && $upstream_user->http_status_code==404)
+            && isset($upstream_user->customer)) {
+            return $upstream_user;
         }else{
             return false;
+        }
+    }
+
+    public static function fetch_allchargebee_userids($offset=false){
+        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
+        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
+        $userids=[];
+        $url = "https://$siteprefix.chargebee.com/api/v2/customers/";
+
+        $postdata=[];
+        $postdata['limit'] =100;
+        if($offset){
+            $postdata['offset']= $offset;
+        }
+
+        $forceget=true;
+        $curlresult = common::curl_fetch($url,$postdata,$apikey, $forceget);
+        $upstream_users = common::make_object_from_json($curlresult);
+        if($upstream_users
+            && !(isset($upstream_users->http_status_code) && $upstream_users->http_status_code==404)
+            && isset($upstream_users->list)) {
+
+            foreach($upstream_users->list as $listitem){
+                $userids[]=$listitem->customer->id;
+            }
+            if(isset($upstream_users->next_offset)){
+                $userids = array_merge($userids , self::fetch_allchargebee_userids($upstream_users->next_offset));
+            }
+            return $userids;
+        }else{
+            return [];
+        }
+    }
+
+    public static function fetch_allchargebee_subids($offset=false){
+        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
+        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
+        $subids=[];
+        $url = "https://$siteprefix.chargebee.com/api/v2/subscriptions/";
+
+        $postdata=[];
+        $postdata['limit'] =10;
+        if($offset){
+            $postdata['offset']= $offset;
+        }
+
+        $forceget=true;
+        $curlresult = common::curl_fetch($url,$postdata,$apikey, $forceget);
+        $upstream_subs = common::make_object_from_json($curlresult);
+        if($upstream_subs
+            && !(isset($upstream_subs->http_status_code) && $upstream_subs->http_status_code==404)
+            && isset($upstream_subs->list)) {
+
+            foreach($upstream_subs->list as $listitem){
+                $subids[]=$listitem->subscription->id;
+            }
+            if(isset($upstream_subs->next_offset)){
+                $subids = array_merge($subids , self::fetch_allchargebee_subids($upstream_subs->next_offset));
+            }
+            return $subids;
+        }else{
+            return [];
         }
     }
 

@@ -21,6 +21,8 @@ use block_poodllclassroom\constants;
 
 defined('MOODLE_INTERNAL') || die();
 
+require_once("$CFG->dirroot/user/externallib.php");
+
 
 /**
  *
@@ -893,15 +895,25 @@ class common
         return $plan;
     }
 
-    public static function create_poodll_sub($eventcontent){
+    public static function create_poodll_sub($subscription, $currency_code, $amount_paid, $upstreamownerid=false){
+        // public static function create_poodll_sub($eventcontent){
+        //$subscription = $eventcontent->subscription;
+        //$invoice = $eventcontent->invoice;
+       // $invoice->amount_paid;
+       //$invoice->currency_code;
+
         global $DB;
 
-        $subscription = $eventcontent->subscription;
-        $invoice = $eventcontent->invoice;
+
         //set up our school
         $school=false;
         if(isset($subscription->cf_schoolid)) {
             $school=$DB->get_record(constants::M_TABLE_SCHOOLS,array('id'=>$subscription->cf_schoolid));
+        }elseif($upstreamownerid){
+            $schools = self::get_school_by_upstreamownerid($upstreamownerid);
+            if(count($schools)==1){
+                $school = array_shift($schools);
+            }
         }
         if(!$school){
             return false;
@@ -912,7 +924,13 @@ class common
         if(isset($subscription->cf_planid)) {
             $plan = self::get_plan($subscription->cf_planid);
         }else{
-            $plan = self::fetch_poodllplan_from_upstreamplan($subscription->plan_id);
+            if(isset($subscription->plan_id)){
+                $plan_id = $subscription->plan_id;
+            }else{
+                $plan_id = $subscription->subscription_items[0]->item_price_id;
+                $plan_id = str_replace('-USD-Yearly','',$plan_id);
+            }
+            $plan = self::fetch_poodllplan_from_upstreamplan($plan_id);
         }
         if(!$plan){
             return false;
@@ -933,8 +951,8 @@ class common
         if(is_number($subscription->current_term_end)){
             $newsub->expiretime=$subscription->current_term_end;
         }
-        $newsub->payment= $invoice->amount_paid;
-        $newsub->paymentcurr=$invoice->currency_code;
+        $newsub->payment= $amount_paid;
+        $newsub->paymentcurr=$currency_code;
         $newsub->billinginterval=$plan->billinginterval;
         $newsub->timecreated=time();
 
@@ -1102,12 +1120,11 @@ class common
         return $school;
     }
 
-    public static function curl_fetch($url, $postdata = false, $username='') {
+    public static function curl_fetch($url, $postdata = false, $username='', $forceget=false) {
         global $CFG;
 
         require_once($CFG->libdir . '/filelib.php');
         $curl = new \curl();
-
 
         if(!empty($username)) {
             $curl->setopt(array('CURLOPT_HTTPAUTH'=>CURLAUTH_BASIC));
@@ -1116,7 +1133,12 @@ class common
 
         if($postdata) {
             $postdatastring = http_build_query($postdata, '', '&');
-            $result = $curl->post($url, $postdatastring);
+            if($forceget){
+                $result = $curl->get($url, $postdata);
+            }else{
+                $result = $curl->post($url, $postdatastring);
+            }
+
         }else{
             $result = $curl->get($url);
         }
@@ -1157,98 +1179,219 @@ class common
         return chargebee::get_portalurl_by_upstreamid($customerid);
     }
 
+    public static function poodll_reginald_fetch_connection(){
+        global $CFG;
+
+        $servername =  $CFG->reginald_servername;// reginald_creds::POODLL_MYSQL_SERVERNAME;
+        $dbname = $CFG->reginald_dbname;//reginald_creds::POODLL_MYSQL_DBNAME;
+        $username =  $CFG->reginald_username; //reginald_creds::POODLL_MYSQL_USERNAME;
+        $password = $CFG->reginald_password; //reginald_creds::POODLL_MYSQL_PASSWORD;
+
+        // Create connection
+        $conn = new \mysqli($servername, $username, $password, $dbname);
+        $conn->set_charset("utf8");
+        // Check connection
+        if ($conn->connect_errno) {
+            error_log("Connection failed: " . $conn->connect_error);
+            return false;
+        }else{
+            return $conn;
+        }
+    }
+
+    public static function fetch_legacydeets_for_user($email){
+        $ret['apiuser'] = '';
+        $ret['apisecret'] = '';
+        $ret['schoolname'] = '';
+        $ret['phone'] = '';
+        $ret['siteurl1'] = '';
+        $ret['siteurl2'] = '';
+        $ret['siteurl3'] = '';
+        $ret['siteurl4'] = '';
+        $ret['siteurl5'] = '';
+        $ret['success']=false;
+
+        // Create connection
+        $conn = self::poodll_reginald_fetch_connection();
+        if(!$conn){return $ret;}
+
+        //prepare sql statment
+        $sql = "SELECT um.user_id, u.user_login, um.meta_key,  um.meta_value
+                FROM wp_usermeta um INNER JOIN wp_users u ON u.id = um.user_id
+                WHERE u.user_email = '" . $email . "'" ;
+        //if no problem
+        if ($result = $conn->query($sql)) {
+            //if we got results
+            if ($result->num_rows > 0) {
+                //loop through results
+               while( $row = $result->fetch_assoc()) {
+                   switch ($row['meta_key']) {
+                       case 'mepr_api_secret':
+                           $ret['apiuser'] = $row['user_login'];
+                           $ret['apisecret'] = $row['meta_value'];
+                           $ret['success'] = true;
+                           break;
+                       case 'mepr_organisation_name':
+                           $ret['schoolname'] = $row['meta_value'];
+                           break;
+                       case 'mepr_contact_phone':
+                           $ret['phone'] = $row['meta_value'];
+                           break;
+                       case 'mepr_moodle_site_url_1':
+                           $ret['siteurl1'] = $row['meta_value'];
+                           break;
+                       case 'mepr_moodle_site_url_2':
+                           $ret['siteurl2'] = $row['meta_value'];
+                           break;
+                       case 'mepr_moodle_site_url_3':
+                           $ret['siteurl3'] = $row['meta_value'];
+                           break;
+                       case 'mepr_moodle_site_url_4':
+                           $ret['siteurl4'] = $row['meta_value'];
+                           break;
+                       case 'mepr_moodle_site_url_5':
+                           $ret['siteurl5'] = $row['meta_value'];
+                           break;
+                   }//end of switch case
+               }//end of loop rows
+            }//end of num_rows
+        }//end of if result
+        return $ret;
+    }
+
     public static function create_school_from_upstreamid($upstreamownerid){
         global $CFG, $DB;
+        $ret=[];
+        $ret['id']=$upstreamownerid;
+        $ret['success']=true;
+        $ret['message']='';
 
         //do we already gots one like dis one, return
         $existing_schools = self::get_school_by_upstreamownerid($upstreamownerid);
         if($existing_schools  && !empty($existing_schools )){
-            return false;
+            $ret['success']=false;
+            $ret['message']='We already have that school:';
+            foreach($existing_schools as $school){
+                $ret['message'] .= $school->name . ' ';
+            }
+            return $ret;
         }
 
         //fetch user, if no user then ... out of here man
         $upstream_user = chargebee::fetch_chargebee_user($upstreamownerid);
-        if(!$upstream_user){
-            return false;
+        //upstream_user->customer has first_name / last_name /email / company /
+        if(!$upstream_user || !isset($upstream_user->customer) || !isset($upstream_user->customer->email) ){
+            $ret['success']=false;
+            $ret['message']='No valid chargebee user of that ID found: ' . $upstreamownerid;
+            return $ret;
         }
 
         //at this point we have an upstream user and a new school to make ..
+        //ftg_1982@hotmail.com user
         //if user already exists here .. someone has some explaining to do. Lets check by email ...
-        $existing_user = $DB->get_record('user'.array('email'=>$upstream_user->email));
+        $existing_user = $DB->get_record('user', array('email'=>$upstream_user->customer->email));
         if($existing_user){
-            return false;
+            $ret['success']=false;
+            $ret['message']='We already have a moodle user with that email here: ' . $upstream_user->customer->email;
+            return $ret;
         }
 
         //OK we are ready to get started  ... but first we need to pick up our API user and secret from the user/secret dump
         //need to connect (while its still current .... ) to livewww DB on this server and search wp_usermeta and search:
         // user_id + mepr_api_secret + mepr_organisation_name + mepr_contact_phone
         // wp_users ID user_login (API user) and user_email
+        $legacyuser = self::fetch_legacydeets_for_user($upstream_user->customer->email);
 
+        if($legacyuser && $legacyuser['success'] && !empty($legacyuser['apiuser'])){
+            $legacyuser['siteurls']=[];
+            if(!empty($legacyuser['siteurl1'])){$legacyuser['siteurls'][]=$legacyuser['siteurl1'];}
+            if(!empty($legacyuser['siteur2'])){$legacyuser['siteurls'][]=$legacyuser['siteurl2'];}
+            if(!empty($legacyuser['siteurl3'])){$legacyuser['siteurls'][]=$legacyuser['siteurl3'];}
+            if(!empty($legacyuser['siteurl4'])){$legacyuser['siteurls'][]=$legacyuser['siteurl4'];}
+            if(!empty($legacyuser['siteurl5'])){$legacyuser['siteurls'][]=$legacyuser['siteurl5'];}
+        }else{
+            $ret['success']=false;
+            $ret['message']='could not fetch a legacy user for: ' .$upstream_user->customer->email;
+            return $ret;
+        }
+        //$legacyuser  as ['success'=>true] ['apiuser'=>''] ['apisecret'=>'']['schoolname'=>'']['phone'=>'']
+        //print_r($legacyuser );
 
-        $school = new \stdClass();
-        $school->timecreated = time();
-        $school->timemodified = time();
-        $school->jsonfields = '{}';
-
-        if($reseller===false) {
+        $newuser=[];
+        $newuser['firstname']=$upstream_user->customer->first_name;
+        $newuser['firstnamephonetic']=$upstream_user->customer->first_name;
+        $newuser['lastname']=$upstream_user->customer->last_name;
+        $newuser['firstnamephonetic']=$upstream_user->customer->last_name;
+        $newuser['username']=$legacyuser['apiuser'];
+        $newuser['auth']='manual';
+        $newuser['password']='IH@ve1999b!guc@tsonmyhat';
+        $newuser['email']=$upstream_user->customer->email;
+        $users = \core_user_external::create_users([$newuser]);
+        if($users && count($users)==1){
+            $user = array_shift($users);
+            $school = new \stdClass();
+            $school->timecreated = time();
+            $school->timemodified = time();
+            $school->jsonfields = '{}';
             $school->resellerid = self::fetch_poodll_resellerid();
-            $school->upstreamownerid = self::fetch_upstream_user_id($USER->id);
-            if($ownerid==false){
-                $school->ownerid = $USER->id;
+            $school->upstreamownerid = $upstreamownerid;
+            $school->ownerid =  $user['id'];
+            $school->apiuser=$legacyuser['apiuser'];
+            $school->apisecret=$legacyuser['apisecret'];
+            $school->siteurls=json_encode($legacyuser['siteurls']);
+            if(!empty($legacyuser['schoolname'])){
+                $school->name=$legacyuser['schoolname'];
             }else{
-                $school->ownerid = $ownerid;
+                $school->name= $upstream_user->customer->first_name . ' ' . $upstream_user->customer->last_name  .  ' ' .' school';
             }
+            $id = $DB->insert_record(constants::M_TABLE_SCHOOLS,$school);
+            //if we could not create a school, yay, else return false
+            if($id){
+                $school->id = $id;
+                $ret['message']= "created: " . $school->name;
+                return $ret;//$school;
+            }else{
+                $ret['success']=false;
+                $ret['message']='We failed to create the school for some reason';
+                return $ret;
+            }
+        //if we could not create a Moodle user we have failed and return false
         }else{
-            $school->resellerid = $reseller->id;
-            $school->upstreamownerid = $reseller->upstreamuserid;
-            $school->ownerid = $reseller->userid;
+            $ret['success']=false;
+            $ret['message']='We failed to create a Moodle user for some reason';
+            return $ret;
         }
-
-        //school name
-        $owner = $DB->get_record('user',array('id'=>$school->ownerid));
-        if($schoolname===false){
-            $school->name= $owner->firstname . ' ' . $owner->lastname  .  ' ' .' school';
-        }else{
-            $school->name =$schoolname;
-        }
-
-        //make the school user over at cpapi ..
-        $apiuserseed = "0123456789ABCDEF" . mt_rand(100, 99999);
-        $apisecretseed = "0123456789ABCDEF" . mt_rand(100, 99999);
-        $user_already_exists=true;
-        $trycount=0;
-        while($user_already_exists && $trycount<15) {
-            $apiusername = str_shuffle($apiuserseed);
-            $apisecret = str_shuffle($apisecretseed);
-            $trycount++;
-            $user_already_exists = self::exists_cpapi_user($apiusername);
-        }
-
-        //if we get a name clash 15 times we are stuck somehow, so cancel
-        if($user_already_exists){return false;}
-
-        //create user
-        $ret = self::create_cpapi_user($apiusername,
-            $apisecret,
-            $owner->firstname,
-            $owner->lastname,
-            $owner->email);
-
-        $school->apiuser=$apiusername;
-        $school->apisecret=$apisecret;
-        $id = $DB->insert_record(constants::M_TABLE_SCHOOLS,$school);
-        if($id){
-            $school->id = $id;
-            return $school;
-        }else{
-            return false;
-        }
-
     }
 
     public static function create_sub_from_upstreamid($upstreamsubid){
         global $CFG;
+        //dont create a subscription twice, that would be bad ...
+        $poodllsub = common::get_poodllsub_by_upstreamsubid($upstreamsubid);
+        if($poodllsub){
+            $ret['success']=false;
+            $ret['message']='We already have that sub: ' .$upstreamsubid ;
+            return $ret;
+        }
         $upstream_sub = chargebee::fetch_chargebee_sub($upstreamsubid);
+        if($upstream_sub && isset($upstream_sub->subscription)) {
+            $customer =$upstream_sub->customer;
+            $currency_code = $upstream_sub->subscription->currency_code;
+            $amount_paid = $upstream_sub->subscription->subscription_items[0]->amount;
+            $newsubid = self::create_poodll_sub($upstream_sub->subscription, $currency_code, $amount_paid,$customer->id);
+            if($newsubid ){
+                $ret['success']=true;
+                $ret['message']='Created local sub(' . $newsubid  . ') from: ' .$upstreamsubid ;
+                return $ret;
+            }else{
+                $ret['success']=false;
+                $ret['message']='We failed to write that sub locally: ' .$upstreamsubid ;
+                return $ret;
+            }
+        }else{
+            $ret['success']=false;
+            $ret['message']='cloud not fetch that sub from upstream: ' .$upstreamsubid ;
+            return $ret;
+        }
     }
 
 
@@ -1489,8 +1632,5 @@ class common
         $ret = cpapi_helper::update_cpapi_sites($username,$url1,$url2,$url3,$url4,$url5);
         return $ret;
     }
-
-
-
 
 }//end of class

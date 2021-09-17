@@ -293,6 +293,11 @@ $string['syncschools'] = 'Sync Schools';
 $string['syncpage'] = 'Sync Subs and Schools';
 $string['syncschoolform'] = 'Sync Single School';
 $string['upstreamschoolid'] = 'Upstream School ID';
+$string['syncallschools'] = 'Sync All Schools';
+$string['syncsubform'] = 'Sync Single Sub';
+$string['syncallsubs'] = 'Sync All Subs';
+
+
 
 
 

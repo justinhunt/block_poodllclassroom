@@ -36,18 +36,18 @@ require_once($CFG->dirroot.'/lib/formslib.php');
 
 
 
-class syncschoolform extends \moodleform {
+class syncsubform extends \moodleform {
 
     public function definition()
     {
         $mform = $this->_form;
 
-        $mform->addElement('header', 'syncschoolheading', get_string('syncschoolform', constants::M_COMP));
+        $mform->addElement('header', 'syncsubheading', get_string('syncsubform', constants::M_COMP));
 
-        $mform->addElement('text', 'upstreamschoolid', get_string('upstreamschoolid', constants::M_COMP), array('size' => 70));
-        $mform->setType('upstreamschoolid', PARAM_TEXT);
-        $mform->setDefault('name', '-- ?? --');
-
+        $mform->addElement('text', 'upstreamsubid', get_string('upstreamsubid', constants::M_COMP), array('size' => 70));
+        $mform->setType('upstreamsubid', PARAM_TEXT);
+        $mform->addElement('hidden', 'type', 'subs');
+        $mform->setType('type', PARAM_TEXT);
         //add the action buttons
         $this->add_action_buttons(get_string('cancel'), get_string('save', constants::M_COMP));
 

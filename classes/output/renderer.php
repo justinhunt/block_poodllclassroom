@@ -1042,6 +1042,8 @@ class renderer extends \plugin_renderer_base {
         //return add button and table
         $heading = $this->output->heading(get_string('syncoptions',constants::M_COMP),3);
         $heading .= \html_writer::div(get_string('syncoptions_instructions',constants::M_COMP));
+
+
         return $heading  . $this->render($schoolsbutton) .  $this->render($subsbutton);
 
     }
