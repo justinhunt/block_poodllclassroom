@@ -71,6 +71,16 @@ class cpapi_helper {
         return $result;
     }
 
+    public static function fetch_usage_data($username){
+        $params=[];
+        $params['username']=$username;
+        $result = self::curl_wrap('local_cpapi_fetch_user_report',$params);
+        if(!$result || !isset($result->returnMessage) || !($usagedata=json_decode($result->returnMessage))){
+            return false;
+        }else{
+            return $usagedata;
+        }
+    }
 
     public static  function curl_wrap($functionname, $data) {
 

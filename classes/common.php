@@ -1200,6 +1200,7 @@ class common
     }
 
     public static function fetch_legacydeets_for_user($email){
+        $ret=[];
         $ret['apiuser'] = '';
         $ret['apisecret'] = '';
         $ret['schoolname'] = '';
@@ -1545,9 +1546,9 @@ class common
                 $firstname,
                 $lastname,
                 $email);
-        $ret['apiusername']=$apiusername;
-        $ret['apisecret']=$apisecret;
-        $ret['siteurls']=[];
+        $ret->apiusername=$apiusername;
+        $ret->apisecret=$apisecret;
+        $ret->siteurls=[];
         return $ret;
     }
 
