@@ -1025,10 +1025,10 @@ class common
                 $accesskeyid='xxxxxx';
                 $accesskeysecret='yyyyyy';
                 $subscriptionid = $plan->poodllplanid; //this is the numeric id .. of the old memberpress system which cloudpoodll still keys on
-                $transactionid = $subscription->id;
+                $transactionid = 999;//$subscription->id would be the one, but its int only at this stage
                 $expiretime=$subscription->current_term_end;
                 $theuser = $DB->get_record('user', array('id'=>$school->ownerid));
-                cpapi_helper::update_cpapi_user($username,$theuser->firstname,$theuser->lastname,
+                $ret = cpapi_helper::update_cpapi_user($username,$theuser->firstname,$theuser->lastname,$theuser->email,
                     $expiretime,$subscriptionid,$transactionid,$accesskeyid,$accesskeysecret);
                 break;
             default:
