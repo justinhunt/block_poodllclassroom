@@ -1318,6 +1318,9 @@ class common
                     $upstream_user->customer->first_name,
                     $upstream_user->customer->last_name,
                     $upstream_user->customer->email);
+            if($legacyuser){
+                $legacyuser=(array)$legacyuser;
+            }
 
 
             if(!$legacyuser || empty($legacyuser['apiuser'])) {
