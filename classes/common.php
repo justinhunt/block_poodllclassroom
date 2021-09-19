@@ -896,17 +896,12 @@ class common
     }
 
     public static function create_poodll_sub($subscription, $currency_code, $amount_paid, $upstreamownerid=false){
-        // public static function create_poodll_sub($eventcontent){
-        //$subscription = $eventcontent->subscription;
-        //$invoice = $eventcontent->invoice;
-       // $invoice->amount_paid;
-       //$invoice->currency_code;
 
         global $DB;
 
-
         //set up our school
         $school=false;
+        //we append this to get checkout existing, probably wont come in here, unless something went weird at hostedpage welcome back
         if(isset($subscription->cf_schoolid)) {
             $school=$DB->get_record(constants::M_TABLE_SCHOOLS,array('id'=>$subscription->cf_schoolid));
         }elseif($upstreamownerid){
@@ -921,6 +916,7 @@ class common
 
         //set up our plan
         $plan = false;
+        //we append this to get checkout existing, probably wont come in here, unless something went weird at hostedpage welcome back
         if(isset($subscription->cf_planid)) {
             $plan = self::get_plan($subscription->cf_planid);
         }else{
@@ -928,7 +924,9 @@ class common
                 $plan_id = $subscription->plan_id;
             }else{
                 $plan_id = $subscription->subscription_items[0]->item_price_id;
+                //remove any appended price plan IDs
                 $plan_id = str_replace('-USD-Yearly','',$plan_id);
+                $plan_id = str_replace('-USD-Monthly','',$plan_id);
             }
             $plan = self::fetch_poodllplan_from_upstreamplan($plan_id);
         }
@@ -1015,9 +1013,27 @@ class common
     }
 
     public static function process_new_sub($school, $plan,$subscription){
+        global $DB;
+
         $obj = new \stdClass();
         $obj->due_invoices_count = $subscription->due_invoices_count;
         $obj->has_scheduled_changes= $subscription->has_scheduled_changes;
+
+        switch($plan->platform){
+            case constants::M_PLATFORM_MOODLE:
+                $username = strtolower($school->apiuser);
+                $accesskeyid='xxxxxx';
+                $accesskeysecret='yyyyyy';
+                $subscriptionid = $plan->poodllplanid; //this is the numeric id .. of the old memberpress system which cloudpoodll still keys on
+                $transactionid = $subscription->id;
+                $expiretime=$subscription->current_term_end;
+                $theuser = $DB->get_record('user', array('id'=>$school->ownerid));
+                cpapi_helper::update_cpapi_user($username,$theuser->firstname,$theuser->lastname,
+                    $expiretime,$subscriptionid,$transactionid,$accesskeyid,$accesskeysecret);
+                break;
+            default:
+        }
+
         return json_encode($obj);
     }
 
@@ -1228,7 +1244,7 @@ class common
                while( $row = $result->fetch_assoc()) {
                    switch ($row['meta_key']) {
                        case 'mepr_api_secret':
-                           $ret['apiusername'] = $row['user_login'];
+                           $ret['apiuser'] = $row['user_login'];
                            $ret['apisecret'] = $row['meta_value'];
                            $ret['success'] = true;
                            break;
@@ -1302,7 +1318,7 @@ class common
         // user_id + mepr_api_secret + mepr_organisation_name + mepr_contact_phone
         // wp_users ID user_login (API user) and user_email
         $legacyuser = self::fetch_legacydeets_for_user($upstream_user->customer->email);
-        if($legacyuser && $legacyuser['success'] && !empty($legacyuser['apiusername'])){
+        if($legacyuser && $legacyuser['success'] && !empty($legacyuser['apiuser'])){
             $legacyuser['siteurls']=[];
             if(!empty($legacyuser['siteurl1'])){$legacyuser['siteurls'][]=$legacyuser['siteurl1'];}
             if(!empty($legacyuser['siteur2'])){$legacyuser['siteurls'][]=$legacyuser['siteurl2'];}
@@ -1314,7 +1330,7 @@ class common
         }else{
             //lets create a user
             //create user
-            $legacyuser = self::create_cpapi_user(
+            $legacyuser = cpapi_helper::create_cpapi_user(
                     $upstream_user->customer->first_name,
                     $upstream_user->customer->last_name,
                     $upstream_user->customer->email);
@@ -1337,7 +1353,7 @@ class common
         $newuser['firstnamephonetic']=$upstream_user->customer->first_name;
         $newuser['lastname']=$upstream_user->customer->last_name;
         $newuser['firstnamephonetic']=$upstream_user->customer->last_name;
-        $newuser['username']=$legacyuser['apiusername'];
+        $newuser['username']=strtolower($legacyuser['apiuser']);
         $newuser['auth']='manual';
         $newuser['password']='IH@ve1999b!guc@tsonmyhat';
         $newuser['email']=$upstream_user->customer->email;
@@ -1351,7 +1367,7 @@ class common
             $school->resellerid = self::fetch_poodll_resellerid();
             $school->upstreamownerid = $upstreamownerid;
             $school->ownerid =  $user['id'];
-            $school->apiuser=$legacyuser['apiusername'];
+            $school->apiuser=$legacyuser['apiuser'];
             $school->apisecret=$legacyuser['apisecret'];
             $school->siteurls=json_encode($legacyuser['siteurls']);
             if(!empty($legacyuser['schoolname'])){
@@ -1465,7 +1481,7 @@ class common
         }
 
         //create user
-        $ret = self::create_cpapi_user(
+        $ret = cpapi_helper::create_cpapi_user(
                 $owner->firstname,
                 $owner->lastname,
                 $owner->email);
@@ -1495,168 +1511,4 @@ class common
             chargebee::sync_sub($poodllsub);
         }
     }
-
-    public static function exists_cpapi_user($username){
-
-        //sanitize username
-        $username = strtolower($username);
-        $ret = cpapi_helper::get_moodle_users($username);
-        $exists =false;
-        if($ret && property_exists($ret,'users')){
-            if(count($ret->users)>0){
-                //$user =$ret->users[0];
-                $exists =true;
-            }
-        }
-        return $exists;
-
-    }
-
-    /*
- * Create a new standard user on cloud poodll com, and by extension trigger creation of cpapi user
- */
-    public static function create_cpapi_user($firstname,$lastname,$email,$apiusername=''){
-
-       //seeds
-        $apiuserseed = "0123456789ABCDEF" . mt_rand(100, 99999);
-        $apisecretseed = "0123456789ABCDEF" . mt_rand(100, 99999);
-
-        //$api secret
-        $apisecret = str_shuffle($apisecretseed);
-
-        //use the passed in API username or make a new one
-        if(!empty($username)){
-            $user_already_exists = self::exists_cpapi_user($apiusername);
-        }else{
-            $user_already_exists=true;
-        }
-
-        $trycount=0;
-        while($user_already_exists && $trycount<15) {
-            $apiusername = str_shuffle($apiuserseed);
-            $trycount++;
-            $user_already_exists = self::exists_cpapi_user($apiusername);
-        }
-
-        //if we get a name clash 15 times we are stuck somehow, so cancel
-        if($user_already_exists){return false;}
-
-
-        //sanitize username
-        $username = strtolower($apiusername);
-        $ret = cpapi_helper::make_moodle_user($apiusername,
-                $apisecret,
-                $firstname,
-                $lastname,
-                $email);
-        $ret->apiusername=$apiusername;
-        $ret->apisecret=$apisecret;
-        $ret->siteurls=[];
-        return $ret;
-    }
-
-
-    /*
-    * Update user with CPAPI specifics
-    */
-    public static function update_cpapi_userdeets($username, $firstname,$lastname, $email){
-
-        //sanitize username
-        $username = strtolower($username);
-
-        //update the user
-        $ret = cpapi_helper::update_cpapi_user($username,
-                $firstname,
-                $lastname,
-                $email,
-                0,
-                0,
-                0,
-                0,
-                0
-        );
-        return $ret;
-    }
-
-    /*
-     * Update user with CPAPI specifics
-     */
-    public static function update_cpapi_fulluser($username, $firstname,$lastname, $email,
-            $expiretime=0, $subscriptionid=0, $transactionid=0,
-            $accesskeyid='',$accesskeysecret=''){
-
-        //sanitize username
-        $username = strtolower($username);
-
-        //update the user
-        $expiry = strtotime($expiretime);
-        $ret = cpapi_helper::update_cpapi_user($username,
-                $firstname,
-                $lastname,
-                $email,
-                $expiry,
-                $subscriptionid,
-                $transactionid,
-                $accesskeyid,
-                $accesskeysecret
-        );
-        return $ret;
-    }
-
-    /*
-     * Reset and return the user's API secret
-     */
-    public static function reset_cpapi_secret($userid, $username,$currentsecret){
-        $ch = new cpapi_helper();
-        $secret ="";
-
-        //sanitize username
-        $username = strtolower($username);
-
-        $ret = cpapi_helper::reset_cpapi_secret($username,$currentsecret);
-        if ($ret && property_exists($ret,'returnCode') && $ret->returnCode==0) {
-            $secret = $ret->returnMessage;
-            poodll_write_secret_locally($userid,$secret);
-            poodll_log('updated cpapi secret:\r\n');
-        }else{
-            poodll_log('did not update cpapi secret:\r\n');
-        }
-        return $secret;
-    }
-
-
-
-
-    /*
-     * Set/update the user's registered sites
-     */
-    public static function update_cpapi_sites($username, $url1, $url2, $url3, $url4, $url5){
-
-        //check for blacklisted URL
-        $blacklist =['XXXXSITE.edu.vn'];
-        foreach($blacklist as $badurl){
-            if(!empty($url1) && strpos($url1,$badurl)>0) {
-                $url1= '';
-            }
-            if(!empty($url2) && strpos($url2,$badurl)>0) {
-                $url2= '';
-            }
-            if(!empty($url3) && strpos($url3,$badurl)>0) {
-                $url3= '';
-            }
-            if(!empty($url4) && strpos($url4,$badurl)>0) {
-                $url4= '';
-            }
-            if(!empty($url5) && strpos($url5,$badurl)>0) {
-                $url5= '';
-            }
-        }
-
-
-        //sanitize username
-        $username = strtolower($username);
-        $ret = cpapi_helper::update_cpapi_sites($username,$url1,$url2,$url3,$url4,$url5);
-        return $ret;
-    }
-
 }//end of class

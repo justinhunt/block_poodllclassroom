@@ -218,8 +218,10 @@ class chargebee
                             $ret = common::create_school_from_upstreamid($theevent->content->subscription->customer_id);
 
                             $subscription = $theevent->content->subscription;
-                            $invoice = $theevent->content->invoice;
-                            common::create_poodll_sub($subscription,$invoice->currency_code,$invoice->amount_paid);
+                            $currency_code = $subscription->currency_code;
+                            $amount_paid = $subscription->subscription_items[0]->amount;
+
+                            common::create_poodll_sub($subscription,$currency_code,$amount_paid,$theevent->content->subscription->customer_id );
                         }
                         break;
                     default:

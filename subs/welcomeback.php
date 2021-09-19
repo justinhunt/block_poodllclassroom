@@ -66,7 +66,7 @@ if($state=='succeeded') {
         if($poodllsub===false) {
             $currency_code= $subscription->currency_code;
             $amount_paid= $subscription->subscription_items[0]->amount;
-           $ret = common::create_poodll_sub( $subscription,$currency_code,$amount_paid);
+           $ret = common::create_poodll_sub( $subscription,$currency_code,$amount_paid,$subscription->customer_id);
            if(!$ret){
                $ret = "something was not right with that school ...";
            }

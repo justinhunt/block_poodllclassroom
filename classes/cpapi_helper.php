@@ -29,8 +29,8 @@ class cpapi_helper {
         return $result;
     }
 
-    public static  function update_cpapi_user($username, $firstname, $lastname, $email, $expiredate,
-            $subscriptionid, $transactionid,$accesskeyid,$accesskeysecret){
+    public static  function update_cpapi_user($username, $firstname, $lastname, $email, $expiredate=0,
+            $subscriptionid=0, $transactionid=0,$accesskeyid=0,$accesskeysecret=0){
 
         $senddata = array();
         $senddata['username'] =$username;
@@ -47,7 +47,32 @@ class cpapi_helper {
         return $result;
     }
 
-    public static  function update_cpapi_sites($username, $url1,$url2, $url3, $url4, $url5){
+    public static function update_cpapi_sites($username, $url1,$url2, $url3, $url4, $url5){
+
+
+        //check for blacklisted URL
+        $blacklist =['XXXXSITE.edu.vn'];
+        foreach($blacklist as $badurl){
+            if(!empty($url1) && strpos($url1,$badurl)>0) {
+                $url1= '';
+            }
+            if(!empty($url2) && strpos($url2,$badurl)>0) {
+                $url2= '';
+            }
+            if(!empty($url3) && strpos($url3,$badurl)>0) {
+                $url3= '';
+            }
+            if(!empty($url4) && strpos($url4,$badurl)>0) {
+                $url4= '';
+            }
+            if(!empty($url5) && strpos($url5,$badurl)>0) {
+                $url5= '';
+            }
+        }
+
+
+        //sanitize username
+        $username = strtolower($username);
 
         $senddata = array();
         $senddata['username'] =$username;
@@ -59,6 +84,64 @@ class cpapi_helper {
         $result =self::curl_wrap('local_cpapi_update_cpapi_sites',$senddata);
 
         return $result;
+    }
+
+    public static function exists_cpapi_user($username){
+
+        //sanitize username
+        $username = strtolower($username);
+        $ret = cpapi_helper::get_moodle_users($username);
+        $exists =false;
+        if($ret && property_exists($ret,'users')){
+            if(count($ret->users)>0){
+                //$user =$ret->users[0];
+                $exists =true;
+            }
+        }
+        return $exists;
+
+    }
+
+    /*
+* Create a new standard user on cloud poodll com
+*/
+    public static function create_cpapi_user($firstname,$lastname,$email,$apiusername=''){
+
+        //seeds
+        $apiuserseed = "0123456789ABCDEF" . mt_rand(100, 99999);
+        $apisecretseed = "0123456789ABCDEF" . mt_rand(100, 99999);
+
+        //$api secret
+        $apisecret = str_shuffle($apisecretseed);
+
+        //use the passed in API username or make a new one
+        if(!empty($username)){
+            $user_already_exists = self::exists_cpapi_user($apiusername);
+        }else{
+            $user_already_exists=true;
+        }
+
+        $trycount=0;
+        while($user_already_exists && $trycount<15) {
+            $apiusername = str_shuffle($apiuserseed);
+            $trycount++;
+            $user_already_exists = self::exists_cpapi_user($apiusername);
+        }
+
+        //if we get a name clash 15 times we are stuck somehow, so cancel
+        if($user_already_exists){return false;}
+
+        //sanitize username
+        $apiusername = strtolower($apiusername);
+        $ret = self::make_moodle_user($apiusername,
+            $apisecret,
+            $firstname,
+            $lastname,
+            $email);
+        $ret->apiusername=$apiusername;
+        $ret->apisecret=$apisecret;
+        $ret->siteurls=[];
+        return $ret;
     }
 
     public static  function reset_cpapi_secret($username,$currentsecret){
@@ -81,6 +164,7 @@ class cpapi_helper {
             return $usagedata;
         }
     }
+
 
     public static  function curl_wrap($functionname, $data) {
 

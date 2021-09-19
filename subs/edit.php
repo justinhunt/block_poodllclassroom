@@ -27,6 +27,7 @@ require('../../../config.php');
 
 use block_poodllclassroom\constants;
 use block_poodllclassroom\common;
+use block_poodllclassroom\cpapi_helper;
 
 $id        = optional_param('id', 0, PARAM_INT);
 $delete    = optional_param('delete', 0, PARAM_BOOL);
@@ -259,7 +260,7 @@ if ($editform->is_cancelled()){
                     $DB->update_record(constants::M_TABLE_SCHOOLS,$data);
                     $url1=''; $url2=''; $url3=''; $url4=''; $url5='';
                     list($url1,$url2,$url3,$url4,$url5) = $data->siteurl;
-                    common::update_cpapi_sites($school->apiuser,$url1,$url2,$url3,$url4,$url5);
+                    cpapi_helper::update_cpapi_sites($school->apiuser,$url1,$url2,$url3,$url4,$url5);
                 }
 
 
@@ -271,10 +272,10 @@ if ($editform->is_cancelled()){
                 //update entry on cpapi too
                 $url1=''; $url2=''; $url3=''; $url4=''; $url5='';
                 list($url1,$url2,$url3,$url4,$url5) = $data->siteurl;
-                common::update_cpapi_sites($data->apiuser,$url1,$url2,$url3,$url4,$url5);
+                cpapi_helper::update_cpapi_sites($data->apiuser,$url1,$url2,$url3,$url4,$url5);
                 $owner =$DB->get_record('user', array('id' => $data->ownerid));
-                common::update_cpapi_userdeets($data->apiuser,$owner->firstname,$owner->lastname,$owner->email);
-
+                $cpapi_username=strtolower($data->apiuser);
+                cpapi_helper::update_cpapi_user($cpapi_username,$owner->firstname,$owner->lastname,$owner->email);
             }
             break;
         case 'mysub':

@@ -27,6 +27,7 @@ require('../../../config.php');
 
 use block_poodllclassroom\constants;
 use block_poodllclassroom\common;
+use block_poodllclassroom\cpapi_helper;
 
 $id        = optional_param('id', 0, PARAM_INT);
 $add        = optional_param('add', 0, PARAM_BOOL);
@@ -163,16 +164,14 @@ if ($editform->is_cancelled()){
                // \block_poodllclassroom\cpapi_helper::update_cpapi_sites($theschool->apiuser,$url1,$url2,$url3,$url4,$url5);
                 // \block_poodllclassroom\cpapi_helper::update_cpapi_sites($USER->username,$url1,$url2,$url3,$url4,$url5);
 
-                common::update_cpapi_sites($theschool->apiuser,$url1,$url2,$url3,$url4,$url5);
-                common::update_cpapi_userdeets($theschool->apiuser,$USER->firstname,$USER->lastname,$USER->email);
-
+                cpapi_helper::update_cpapi_sites($theschool->apiuser,$url1,$url2,$url3,$url4,$url5);
+                $cpapi_username=strtolower($data->apiuser);
+                cpapi_helper::update_cpapi_user($cpapi_username,$USER->firstname,$USER->lastname,$USER->email);
             }
     }
 
-
     // Redirect to where we were before.
     redirect($returnurl);
-
 }
 
 switch($type){
