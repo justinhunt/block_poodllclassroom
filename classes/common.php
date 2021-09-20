@@ -957,7 +957,7 @@ class common
         //this is where any sub specific stuff has to happen .. eg get LTI creds, or API user and secret
 
         //Disable while we import from CB
-        //     $jsonfields = self::process_new_sub($school, $plan, $subscription);
+        $jsonfields = self::process_new_sub($school, $plan, $subscription);
 
         $newsub->jsonfields=$jsonfields;
         $newsub->hostedpage=json_encode($subscription);
@@ -1379,9 +1379,16 @@ class common
         $newuser['firstnamephonetic']=$upstream_user->customer->last_name;
         $newuser['username']=strtolower($legacyuser['apiuser']);
         $newuser['auth']='manual';
-        $newuser['password']='IH@ve1999b!guc@tsonmyhat';
+
+        //either create a password or set a bogus one to be changed
+        $newuser['create_password']=true;
+       //$newuser['password']='IH@ve1999b!guc@tsonmyhat';
+
         $newuser['email']=$upstream_user->customer->email;
+
+        // go here and follow the white rabbit setnew_password_and_mail for a strategy to get old users onto new platform
         $users = \core_user_external::create_users([$newuser]);
+
         if($users && count($users)==1){
             $user = array_shift($users);
             $school = new \stdClass();
