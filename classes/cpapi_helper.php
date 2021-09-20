@@ -144,6 +144,7 @@ class cpapi_helper {
             $ret=$ret[0];
         }
         $ret->apiusername=$apiusername;
+        $ret->apiuser=$apiusername;
         $ret->apisecret=$apisecret;
         $ret->siteurls=[];
         return $ret;
