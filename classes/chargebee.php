@@ -72,7 +72,7 @@ class chargebee
             $postdata['subscription_items']['quantity']=[];
 
             //hacky way to make sure free trials all use monthly plans (though they show in yearly)
-            if(strpos($plan->upstreamplan,'Trial')>0){$billing='Monthly';}
+            if(strpos(strtolower($plan->upstreamplan),'trial')>0){$billing='Monthly';}
 
             $postdata['subscription_items']['item_price_id'][0] = $plan->upstreamplan . '-' .  $currency . '-'  . $billing;
             $postdata['subscription_items']['quantity'][0]=1;

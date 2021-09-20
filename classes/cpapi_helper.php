@@ -109,13 +109,15 @@ class cpapi_helper {
 
         //seeds
         $apiuserseed = "0123456789ABCDEF" . mt_rand(100, 99999);
-        $apisecretseed = "0123456789ABCDEF" . mt_rand(100, 99999);
+        $apisecretseed = "0123456789ABCDEF" . mt_rand(10, 99);
+        $apiextraseed = "-@!#$%&=*+";
+        $apilowerseed = "abcdefghijklmnopqrstuvwxyz";
 
         //$api secret
-        $apisecret = str_shuffle($apisecretseed);
+        $apisecret = str_shuffle($apisecretseed . substr(str_shuffle($apiextraseed),0,2) . substr(str_shuffle($apilowerseed),0,2));
 
         //use the passed in API username or make a new one
-        if(!empty($username)){
+        if(!empty($apiusername)){
             $user_already_exists = self::exists_cpapi_user($apiusername);
         }else{
             $user_already_exists=true;
@@ -138,6 +140,9 @@ class cpapi_helper {
             $firstname,
             $lastname,
             $email);
+        if(is_array($ret)){
+            $ret=$ret[0];
+        }
         $ret->apiusername=$apiusername;
         $ret->apisecret=$apisecret;
         $ret->siteurls=[];

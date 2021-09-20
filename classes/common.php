@@ -906,7 +906,7 @@ class common
             $school=$DB->get_record(constants::M_TABLE_SCHOOLS,array('id'=>$subscription->cf_schoolid));
         }elseif($upstreamownerid){
             $schools = self::get_school_by_upstreamownerid($upstreamownerid);
-            if(count($schools)==1){
+            if( $schools && count($schools)==1){
                 $school = array_shift($schools);
             }
         }
@@ -955,7 +955,9 @@ class common
         $newsub->timecreated=time();
 
         //this is where any sub specific stuff has to happen .. eg get LTI creds, or API user and secret
-        $jsonfields = self::process_new_sub($school, $plan, $subscription);
+
+        //Disable while we import from CB
+        //     $jsonfields = self::process_new_sub($school, $plan, $subscription);
 
         $newsub->jsonfields=$jsonfields;
         $newsub->hostedpage=json_encode($subscription);
@@ -1057,6 +1059,17 @@ class common
     public static function get_school_by_sub($sub){
         global $DB;
         $school = $DB->get_record(constants::M_TABLE_SCHOOLS,array('id'=>$sub->schoolid));
+        if($school) {
+            return $school;
+        }else{
+            return false;
+        }
+
+    }
+
+    public static function get_school_by_owner($user){
+        global $DB;
+        $school = $DB->get_record(constants::M_TABLE_SCHOOLS,array('ownerid'=>$user->id));
         if($school) {
             return $school;
         }else{
@@ -1308,8 +1321,19 @@ class common
         //if user already exists here .. someone has some explaining to do. Lets check by email ...
         $existing_user = $DB->get_record('user', array('email'=>$upstream_user->customer->email));
         if($existing_user){
-            $ret['success']=false;
-            $ret['message']='We already have a moodle user with that email here: ' . $upstream_user->customer->email;
+            //in this scenario we have a user on our system with the customer email,
+            // but we do not have a school with the users upstream id
+            //do we have a school for this user? if so it was created locally and no upstream id associated yet
+           $school = self::get_school_by_owner($existing_user);
+           if($school && (empty($school->upstreamownerid) ||$school->upstreamownerid=="unspecified" )){
+               $school->upstreamownerid=$upstreamownerid;
+               $ret['success'] = $DB->update_record(constants::M_TABLE_SCHOOLS,$school);
+               $ret['message'] = 'Attempted update of user school with upstreamid: ' . $upstream_user->customer->email;
+
+           }else {
+               $ret['success'] = false;
+               $ret['message'] = 'We already have a moodle user with that email here: ' . $upstream_user->customer->email;
+           }
             return $ret;
         }
 
@@ -1335,7 +1359,7 @@ class common
                     $upstream_user->customer->last_name,
                     $upstream_user->customer->email);
             if($legacyuser){
-                $legacyuser=(array)$legacyuser;
+                $legacyuser=get_object_vars($legacyuser);
             }
 
 
@@ -1470,10 +1494,16 @@ class common
             $school->resellerid = $reseller->id;
             $school->upstreamownerid = $reseller->upstreamuserid;
             $school->ownerid = $reseller->userid;
+
         }
 
         //school name
         $owner = $DB->get_record('user',array('id'=>$school->ownerid));
+        if($reseller!==false) {
+            $cpapiemail = str_replace('@','_' . time() . '@' ,$owner->email);
+        }else{
+            $cpapiemail =$owner->email;
+        }
         if($schoolname===false){
             $school->name= $owner->firstname . ' ' . $owner->lastname  .  ' ' .' school';
         }else{
@@ -1482,16 +1512,20 @@ class common
 
         //create user
         $ret = cpapi_helper::create_cpapi_user(
-                $owner->firstname,
-                $owner->lastname,
-                $owner->email);
-        $ret=array($ret);
-        $school->apiuser=$ret['apiusername'];
-        $school->apisecret=$ret['apisecret'];
-        $id = $DB->insert_record(constants::M_TABLE_SCHOOLS,$school);
-        if($id){
-            $school->id = $id;
-            return $school;
+            $owner->firstname ,
+            $owner->lastname,
+            $cpapiemail);
+        $ret=get_object_vars($ret);
+        if(array_key_exists('apiusername',$ret)) {
+            $school->apiuser = $ret['apiusername'];
+            $school->apisecret = $ret['apisecret'];
+            $id = $DB->insert_record(constants::M_TABLE_SCHOOLS, $school);
+            if ($id) {
+                $school->id = $id;
+                return $school;
+            } else {
+                return false;
+            }
         }else{
             return false;
         }
