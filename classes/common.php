@@ -1376,7 +1376,8 @@ class common
         $newuser['firstname']=$upstream_user->customer->first_name;
         $newuser['firstnamephonetic']=$upstream_user->customer->first_name;
         $newuser['lastname']=$upstream_user->customer->last_name;
-        $newuser['firstnamephonetic']=$upstream_user->customer->last_name;
+        $newuser['lastnamephonetic']=$upstream_user->customer->last_name;
+        $newuser['alternatename'] = $upstream_user->customer->last_name . ' ' . $upstream_user->customer->first_name;
         $newuser['username']=strtolower($legacyuser['apiuser']);
         $newuser['auth']='manual';
 
