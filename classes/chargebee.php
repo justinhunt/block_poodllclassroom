@@ -216,12 +216,26 @@ class chargebee
                         if ($poodllsub == false) {
                             //lets create the school. IF it already exists, nothing bad will happen
                             $ret = common::create_school_from_upstreamid($theevent->content->subscription->customer_id);
+                            if($trace && $ret){
+                                $trace->output("cbsync:: create school from upstreamid: " . $ret['message']);
+                            }
 
                             $subscription = $theevent->content->subscription;
                             $currency_code = $subscription->currency_code;
                             $amount_paid = $subscription->subscription_items[0]->amount;
 
-                            common::create_poodll_sub($subscription,$currency_code,$amount_paid,$theevent->content->subscription->customer_id );
+                            $subid = common::create_poodll_sub($subscription,$currency_code,$amount_paid,$theevent->content->subscription->customer_id );
+                            if($trace){
+                                if($subid) {
+                                    $trace->output("cbsync:: create sub: " . $subid);
+                                }else{
+                                    $trace->output("cbsync:: failed to create sub");
+                                }
+                            }
+                        }else{
+                            if($trace){
+                                $trace->output("cbsync:: pre existing sub.. do no more: " . $theevent->content->subscription->id);
+                            }
                         }
                         break;
                     default:

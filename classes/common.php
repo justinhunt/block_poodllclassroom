@@ -1294,7 +1294,7 @@ class common
         $ret=[];
         $ret['id']=$upstreamownerid;
         $ret['success']=true;
-        $ret['message']='';
+        $ret['message']='OK';
 
         //do we already gots one like dis one, return
         $existing_schools = self::get_school_by_upstreamownerid($upstreamownerid);
