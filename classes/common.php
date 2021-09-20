@@ -1485,7 +1485,7 @@ class common
                 $owner->firstname,
                 $owner->lastname,
                 $owner->email);
-
+        $ret=array($ret);
         $school->apiuser=$ret['apiusername'];
         $school->apisecret=$ret['apisecret'];
         $id = $DB->insert_record(constants::M_TABLE_SCHOOLS,$school);
