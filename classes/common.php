@@ -1381,7 +1381,7 @@ class common
         $newuser['auth']='manual';
 
         //either create a password or set a bogus one to be changed
-        $newuser['create_password']=true;
+        $newuser['createpassword']=true;
        //$newuser['password']='IH@ve1999b!guc@tsonmyhat';
 
         $newuser['email']=$upstream_user->customer->email;
