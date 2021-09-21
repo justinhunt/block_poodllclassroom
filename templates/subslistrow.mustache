@@ -11,7 +11,7 @@
             <!-- a href="{{{editurl}}}" class="block_poodllclassroom_userenewlink" data-id="{{id}}" data-name="{{subname}}" data-type="edit">{{#str}}edit, block_poodllclassroom{{/str}}</a> -->
         {{/isresold}}
         <a class="block_poodllclassroom_renewlink block_poodllclassroom_gocbcheckout" data-method='get_checkout_existing' data-planid="{{plan.id}}" data-schoolid="{{school.id}}"
-           data-currency="{{USD}}" data-currentsubid="{{id}}"  data-billinginterval="{{plan.billinginterval}}"  href="#">{{#str}}renewnow, block_poodllclassroom{{/str}}</a>
+           data-currency="{{paymentcurr}}" data-currentsubid="{{id}}"  data-billinginterval="{{plan.billinginterval}}"  href="#">{{#str}}renewnow, block_poodllclassroom{{/str}}</a>
     </td>
     <td class="itemedit cell c8 lastcol" style="">
        <!-- <a class="block_poodllclassroom_subseditlink" data-cbaction='none' data-id="{{id}}" data-type="change" href="{{{changeurl}}}">{{#str}}upgradesub, block_poodllclassroom{{/str}}</a> -->
