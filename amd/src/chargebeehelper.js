@@ -53,6 +53,15 @@ define(['jquery','core/log','core/ajax'], function($, log, ajax) {
                     var schoolid = $(this).data('schoolid');
                     var currentsubid = $(this).data('currentsubid');
                     var method = $(this).data('method');//'get_checkout_existing' or ''
+                    var methodargs = {planid: planid, schoolid: schoolid, currentsubid: currentsubid };
+                    switch(method){
+                        case  "get_checkout_new":
+                            methodargs.currency=currency;
+                            methodargs.billinginterval=billinginterval;
+                            break;
+                        case "get_checkout_existing":
+                        default:
+                    }
                     chargebee.openCheckout({
                         hostedPage: function() {
                             // Hit the end point that returns hosted page object as response
@@ -60,7 +69,7 @@ define(['jquery','core/log','core/ajax'], function($, log, ajax) {
                             // https://apidocs.chargebee.com/docs/api/hosted_pages#checkout_new_subscription
                             var promises = ajax.call([{
                                 methodname: 'block_poodllclassroom_' + method,
-                                args: {planid: planid, currency: currency, billinginterval: billinginterval, schoolid: schoolid, currentsubid: currentsubid }
+                                args: methodargs
                             }]);
                             return promises[0];
                         },

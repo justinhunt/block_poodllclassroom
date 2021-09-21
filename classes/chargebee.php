@@ -163,7 +163,7 @@ class chargebee
         }
 
         $postdata=[];
-        $postdata['event_type[in]'] = '["subscription_created"]';
+        $postdata['event_type[in]'] = '["subscription_created","subscription_changed"]';
         $postdata['occurred_at[after]'] = ''  . $lastoccurredat;
         //this is a GET request
         $qstring= http_build_query($postdata,"",'&');
@@ -238,6 +238,30 @@ class chargebee
                             }
                         }
                         break;
+                    case 'subscription_changed':
+                        //dont create a subscription twice, that would be bad ...
+                        $poodllsub = common::get_poodllsub_by_upstreamsubid($theevent->content->subscription->id);
+                        if ($poodllsub != false) {
+                            if($trace){
+                                $trace->output("cbsync:: sub changed but we have no record of it upstreamsubid: " . $theevent->content->subscription->id);
+                            }
+
+                            $upstreamsub = $theevent->content->subscription;
+                            $subid = common::update_poodllsub_from_upstream($poodllsub,$upstreamsub);
+                            //_poodll_sub($subscription,$currency_code,$amount_paid,$theevent->content->subscription->customer_id );
+                            if($trace){
+                                if($subid) {
+                                    $trace->output("cbsync:: updated poodll sub: " . $poodllsub->id);
+                                }else{
+                                    $trace->output("cbsync:: failed to update poodll sub: " . $poodllsub->id);
+                                }
+                            }
+                        }else{
+                            if($trace){
+                                $trace->output("cbsync:: no pre-existing poodll sub matchin upstream sub: " . $theevent->content->subscription->id);
+                            }
+                        }
+                        break;
                     default:
                         //do nothing
                 }//end of switch
@@ -256,6 +280,7 @@ class chargebee
 
         switch($plan->billinginterval){
             case constants::M_BILLING_MONTHLY:
+            case constants::M_BILLING_FREE:
                 $billing='Monthly';
                 break;
             case constants::M_BILLING_YEARLY:
@@ -310,9 +335,9 @@ class chargebee
             $postdata['subscription_items']['quantity'][0]=1;
 
             //custom_fields
-            $postdata['subscription']=[];
-            $postdata['subscription']['cf_schoolid']==$schoolid;
-            $postdata['subscription']['cf_planid']=$plan->id;
+          //  $postdata['subscription']=[];
+           // $postdata['subscription']['cf_schoolid']==$schoolid;
+           // $postdata['subscription']['cf_planid']=$plan->id;
 
             $curlresult = common::curl_fetch($url,$postdata,$apikey);
             $jsonresult = common::make_object_from_json($curlresult);

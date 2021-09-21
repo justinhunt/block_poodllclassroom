@@ -799,18 +799,40 @@ class common
         return $DB->get_record(constants::M_TABLE_SUBS,array('upstreamsubid'=>$upstreamsubid));
     }
 
-    public static function update_poodllsub_from_upstream($sub, $upstreamplanid){
+    public static function update_poodllsub_from_upstream($poodllsub,$upstreamsub){
         global $DB;
         $ret = false;
+        $upstreamplanid = common::fetch_upstreamplanid_from_upstreamsub($upstreamsub);
         $plan = self::fetch_poodllplan_from_upstreamplan($upstreamplanid);
-        if($plan) {
-            $ret= $DB->update_record(constants::M_TABLE_SUBS, array('id' => $sub->id, 'planid' => $plan->id, 'status'=>'active'));
-            $owner = $DB->get_record('user',array('id'=>$sub->ownerid));
-            if($ret && $owner && $owner->suspended){
-               $ret= $DB->update_record('user', array('id' => $owner->id, 'suspended' => 0));
+        if($plan && $poodllsub && $upstreamsub) {
+
+            $poodllsub->planid = $plan->id;
+
+            if ($upstreamsub->due_invoices_count > 0) {
+                $poodllsub->status = constants::M_STATUS_PAYMENTDUE;
+            } else {
+                $poodllsub->status = constants::M_STATUS_ACTIVE;
             }
+
+            if (is_number($upstreamsub->current_term_end)) {
+                $poodllsub->expiretime = $upstreamsub->current_term_end;
+            }
+            $poodllsub->payment = $upstreamsub->subscription_items[0]->amount;
+            $poodllsub->paymentcurr = $upstreamsub->currency_code;
+            $poodllsub->billinginterval = $plan->billinginterval;
+            $poodllsub->timemodified = time();
+
+            //this is where any sub specific stuff has to happen .. eg get LTI creds, or API user and secret
+
+            //Disable while we import from CB
+            $jsonfields = self::process_updated_sub($poodllsub, $upstreamsub, $plan);
+
+            $poodllsub->jsonfields = $jsonfields;
+            $poodllsub->hostedpage = json_encode($upstreamsub);
+
+            $ret = $DB->update_record(constants::M_TABLE_SUBS, $poodllsub);
         }
-        return $ret;
+        return $ret ? $poodllsub->id : false;
     }
 
     public static function pause_poodllsub($sub){
@@ -923,10 +945,7 @@ class common
             if(isset($subscription->plan_id)){
                 $plan_id = $subscription->plan_id;
             }else{
-                $plan_id = $subscription->subscription_items[0]->item_price_id;
-                //remove any appended price plan IDs
-                $plan_id = str_replace('-USD-Yearly','',$plan_id);
-                $plan_id = str_replace('-USD-Monthly','',$plan_id);
+                $plan_id = self::fetch_upstreamplanid_from_upstreamsub($subscription);
             }
             $plan = self::fetch_poodllplan_from_upstreamplan($plan_id);
         }
@@ -1037,6 +1056,39 @@ class common
         }
 
         return json_encode($obj);
+    }
+
+    public static function process_updated_sub($poodllsub,$upstreamsub,$plan){
+        global $DB;
+
+        $school = self::get_school_by_sub($poodllsub);
+        switch($plan->platform){
+            case constants::M_PLATFORM_MOODLE:
+                $username = strtolower($school->apiuser);
+                $accesskeyid='xxxxxx';
+                $accesskeysecret='yyyyyy';
+                $subscriptionid = $plan->poodllplanid; //this is the numeric id .. of the old memberpress system which cloudpoodll still keys on
+                $transactionid = 999;//$subscription->id would be the one, but its int only at this stage
+                $expiretime=$upstreamsub->current_term_end;
+                $theuser = $DB->get_record('user', array('id'=>$school->ownerid));
+                $ret = cpapi_helper::update_cpapi_user($username,$theuser->firstname,$theuser->lastname,$theuser->email,
+                    $expiretime,$subscriptionid,$transactionid,$accesskeyid,$accesskeysecret);
+                break;
+            default:
+        }
+
+        $obj = new \stdClass();
+        $obj->due_invoices_count = $upstreamsub->due_invoices_count;
+        $obj->has_scheduled_changes= $upstreamsub->has_scheduled_changes;
+        return json_encode($obj);
+    }
+
+    public static function fetch_upstreamplanid_from_upstreamsub($subscription){
+        $plan_id = $subscription->subscription_items[0]->item_price_id;
+        //remove any appended price plan IDs
+        $plan_id = str_replace('-USD-Yearly','',$plan_id);
+        $plan_id = str_replace('-USD-Monthly','',$plan_id);
+        return $plan_id;
     }
 
     public static function create_blankplan($upstreamplanid){
