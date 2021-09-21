@@ -3,18 +3,32 @@
         <h3 class="block_poodllclassroom_subslist_title">{{#str}}moodlesubs, block_poodllclassroom{{/str}}</h3>
         <div>School Name: {{school.name}}</div>
         {{#school.siteurls}}
-            <div>Site URL: {{.}}</div>
+        <div class="bpc_moodlesubsrow">
+            <div class="bpc_col-1">Site URL:</div> <div class="bpc_col-2">{{.}}</div>
+        </div>
         {{/school.siteurls}}
         {{^school.siteurls}}
-            {{#str}}nositeurls, block_poodllclassroom{{/str}}
+        <div class="bpc_moodlesubsrow">
+            <div class="bpc_col-nourls">
+                 {{#str}}nositeurls, block_poodllclassroom{{/str}}
+            </div>
+        </div>
         {{/school.siteurls}}
-
-        <div id="{{school.apiuser}}_user">API User: {{school.apiuser}}</div>
-        <div id="{{school.apiuser}}_secret">API Secret: {{school.apisecret}}</div>
-        <a class="btn btn-info poodllclassroom_clipboardbutton" data-clipboard-action="copy" data-clipboard-target="#{{school.apiuser}}_secret">Copy</a>
+    <div class="bpc_moodlesubsrow">
+            <div class="bpc_col-1 ">API User:</div>
+            <div class="bpc_col-2 " id="{{school.apiuser}}_user" data-clipboard-text="{{school.apiuser}}">{{school.apiuser}}</div>
+            <div class="bpc_col-3 "><a class="btn btn-info poodllclassroom_clipboardbutton" data-clipboard-action="copy" data-clipboard-target="#{{school.apiuser}}_user">Copy</a></div>
+            <div class="bpc_col-4 bpc_copied" style="display: none">copied!</div>
+    </div>
+    <div class="bpc_moodlesubsrow">
+            <div class="bpc_col-1  schoollabel">API Secret:</div>
+            <div class="bpc_col-2 " id="{{school.apiuser}}_secret" data-clipboard-text="{{school.apisecret}}">{{school.apisecret}}</div>
+            <div class="bpc_col-3 "><a class="btn btn-info poodllclassroom_clipboardbutton" data-clipboard-action="copy" data-clipboard-target="#{{school.apiuser}}_secret">Copy</a></div>
+            <div class="bpc_col-4 bpc_copied" style="display: none">copied!</div>
+      </div>
 
 <hr>
-        <a href="{{{editschoolurl}}}">{{#str}}editsitedetails, block_poodllclassroom{{/str}}</a>
+        <a class="btn btn-primary" href="{{{editschoolurl}}}">{{#str}}editsitedetails, block_poodllclassroom{{/str}}</a>
 
 </div>
 <hr>

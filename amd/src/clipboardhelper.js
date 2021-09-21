@@ -1,5 +1,5 @@
 /* jshint ignore:start */
-define(['jquery','core/log','block_poodllclassroom/clipboard'], function($, log, ajax,clipboard) {
+define(['jquery','core/log','block_poodllclassroom/clipboard'], function($, log, clipboard) {
 
     "use strict";
     log.debug('clipboard helper: initialising');
@@ -13,8 +13,17 @@ define(['jquery','core/log','block_poodllclassroom/clipboard'], function($, log,
 
         registerevents: function() {
             var that = this;
-            debugger;
             var cj = new clipboard('.poodllclassroom_clipboardbutton');
+
+            cj.on('success', function (e) {
+
+                var copied = $(e.trigger).parent().parent().find('.bpc_copied');
+                copied.show();
+
+              //  e.clearSelection();
+            });
+
+
         }//end of reg events
     };//end of returned object
 });//total end

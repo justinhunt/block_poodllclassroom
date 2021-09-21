@@ -60,3 +60,29 @@
     margin-right: 10px;
     margin-bottom: 10px;
 }
+.bpc_moodlesubsrow {
+    display: flex;
+    margin-top: 10px;
+}
+.bpc_col-nourls {
+    padding: 7px;
+    border: 1px solid red;
+    min-width: 200px;
+}
+.bpc_col-1 {
+    padding: 7px;
+    border: 1px solid grey;
+    min-width: 100px;
+}
+.bpc_col-2 {
+    padding: 7px;
+    border: 1px solid grey;
+    min-width: 350px;
+}
+.bpc_col-3 {
+    padding: 7px;
+    border: 1px solid grey;
+}
+.bpc_col-4 {
+    padding: 7px;
+}
