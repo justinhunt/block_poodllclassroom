@@ -49,6 +49,9 @@ class renderer extends \plugin_renderer_base {
         $opts['newplanclass'] = constants::M_COMP . '_newplan';
         $opts['gocbcheckoutclass'] = constants::M_COMP . '_gocbcheckout';
         $this->page->requires->js_call_amd(constants::M_COMP . "/chargebeehelper", 'init', array($opts));
+        //clipboard copy thingy
+        $clipboardopts = array();
+        $this->page->requires->js_call_amd(constants::M_COMP . "/clipboardhelper", 'init', array($clipboardopts));
 
         //if we are a reseller we are showing reseller things and reseller options
         $me_reseller = common::fetch_me_reseller();
@@ -186,99 +189,6 @@ class renderer extends \plugin_renderer_base {
 
         return $content;
 
-        //this is the old create-manage course / user code
-
-        $contextid = $context->id;
-        $content = "";
-
-        //userlist
-        //if we have items, show em. Data tables will make it pretty
-        //Prepare datatable(before header printed)
-        $usertableid = '' . constants::M_CLASS_USERLIST . '_' . '_opts_9999';
-        $this->setup_datatables($usertableid,count($users));
-
-        //This is all the info we pass to javascript
-        //we need to write it to html so we do not clog the JS. ( moodle complains  )
-        $subsinfo = common::get_poodllsubs_by_currentuser();
-        if(!$subsinfo){
-            $subinfo = '';
-        }else{
-            $subinfo= array_shift($subsinfo);
-        }
-        $schoolplan = common::get_plan($subinfo->planid);
-        $blockopts=array('modulecssclass' => 'block_poodllclassroom',
-                'contextid'=>$contextid,
-                'tableid'=>$usertableid,
-                'subinfo'=>$subinfo,
-                'schoolplan'=>$schoolplan);
-        $jsonstring = json_encode($blockopts);
-        $propsid = 'propsid_' . \html_writer::random_id();
-        $blockopts_html =
-                \html_writer::tag('input', '', array('id' => $propsid, 'type' => 'hidden', 'value' => $jsonstring));
-        // we tag the html element that we stashed the props in with an id, and just pass that id to js
-        //js will pull the props from DOM and recreate the props data object
-        $props = array('id'=>$propsid);
-        $this->page->requires->js_call_amd(constants::M_COMP . "/blockcontroller", 'init', array($props));
-
-
-
-        $title = get_string('createcourse',constants::M_COMP);
-
-        $containertag = 'createcourse';
-        $amodalcontainer = $this->fetch_modalcontainer($title,$content,$containertag);
-
-        $createuserbutton = $this->js_trigger_button('createuser', true,
-                get_string('createuserstart',constants::M_COMP), 'btn-primary');
-
-        $uploaduserbutton = $this->js_trigger_button('uploaduser', true,
-                get_string('uploaduserstart',constants::M_COMP), 'btn-primary');
-
-        $createcoursebutton = $this->js_trigger_button('createcourse', true,
-                get_string('createcoursestart',constants::M_COMP), 'btn-primary');
-
-        //courses section
-        $coursesectiondata=array('label'=>get_string('courses',constants::M_COMP));
-        $content .= $this->render_from_template('block_poodllclassroom/sectionheader', $coursesectiondata);
-        $content .=  $maxcourseslabel . $createcoursebutton . '<br>';
-
-        $courselistvisible=false;
-        if($courses) {
-            $courselistvisible = true;
-        }else{
-            $courses=[];
-        }
-        $content .= $this->create_course_list($courses,$courselistvisible);
-        $content .= $this->no_courses(!$courselistvisible);
-        $content .= '<hr>';
-
-        //user section
-        $usersectiondata=array('label'=>get_string('users',constants::M_COMP));
-        $content .= $this->render_from_template('block_poodllclassroom/sectionheader', $usersectiondata);
-        $userheaderdata=array('maxuserslabel'=>$maxuserslabel,'createuserbutton'=>$createuserbutton,'uploaduserbutton'=>$uploaduserbutton );
-        $content .= $this->render_from_template('block_poodllclassroom/userheader', $userheaderdata);
-
-
-        $userlistvisible=false;
-        if($users) {
-            $userlistvisible = true;
-        }else{
-            $users=[];
-        }
-
-        $content .= $this->create_user_list($users,$usertableid, $userlistvisible);
-        $content .= $this->no_users(! $userlistvisible);
-
-        //max labels
-        $maxusers = $schoolplan ? $schoolplan->maxusers : 0;
-        $maxcourses = $schoolplan ? $schoolplan->maxcourses : 0;
-        $maxcourseslabel = get_string('maximumcourses',constants::M_COMP,$maxcourses);
-        $maxuserslabel = get_string('maximumusers',constants::M_COMP,$maxusers);
-
-        //initialise content
-        $content =  $blockopts_html  . $optionsdropdown;
-
-         $content .= $amodalcontainer;
-         return $content;
 
     }
 

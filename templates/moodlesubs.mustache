@@ -9,9 +9,11 @@
             {{#str}}nositeurls, block_poodllclassroom{{/str}}
         {{/school.siteurls}}
 
-        <div>API User: {{school.apiuser}}</div>
-        <div>API Secret: {{school.apisecret}}</div>
-        <hr>
+        <div id="{{school.apiuser}}_user">API User: {{school.apiuser}}</div>
+        <div id="{{school.apiuser}}_secret">API Secret: {{school.apisecret}}</div>
+        <a class="btn btn-info poodllclassroom_clipboardbutton" data-clipboard-action="copy" data-clipboard-target="#{{school.apiuser}}_secret">Copy</a>
+
+<hr>
         <a href="{{{editschoolurl}}}">{{#str}}editsitedetails, block_poodllclassroom{{/str}}</a>
 
 </div>

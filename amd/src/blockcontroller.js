@@ -1,6 +1,8 @@
 define(['jquery','core/config','core/log','core/ajax','core/templates','core/modal_factory','core/str','core/modal_events',
-    'block_poodllclassroom/dialogs','block_poodllclassroom/datatables','block_poodllclassroom/modalformhelper','block_poodllclassroom/modaldeletehelper','core/notification'],
-    function($,cfg,log,Ajax, templates, ModalFactory, str, ModalEvents,  dialogs, datatables, mfh, mdh, notification) {
+    'block_poodllclassroom/dialogs','block_poodllclassroom/datatables','block_poodllclassroom/modalformhelper',
+        'block_poodllclassroom/modaldeletehelper','core/notification'],
+    function($,cfg,log,Ajax, templates, ModalFactory, str,
+             ModalEvents,  dialogs, datatables, mfh, mdh, notification) {
     "use strict"; // jshint ;_;
 
     log.debug('blockcontroller: initialising');

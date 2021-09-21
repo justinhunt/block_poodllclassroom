@@ -90,6 +90,9 @@ if(true) {
     $opts['gocbcheckoutclass']=constants::M_COMP . '_gocbcheckout';
     $opts['gocbmanageclass']=constants::M_COMP . '_subsmanagelink';
     $PAGE->requires->js_call_amd(constants::M_COMP . "/chargebeehelper", 'init', array($opts));
+    //clipboard copy thingy
+    $clipboardopts = array();
+    $PAGE->requires->js_call_amd(constants::M_COMP . "/clipboardhelper", 'init', array($clipboardopts));
 
     $content = $renderer->render_from_template('block_poodllclassroom/schoolheader',$school);
     $content .='<br>';
