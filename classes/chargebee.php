@@ -66,7 +66,7 @@ class chargebee
 
             $postdata=[];
             $postdata['redirect_url'] = $CFG->wwwroot . constants::M_URL . '/subs/welcomeback.php';
-            $postdata['cancel_url'] = $CFG->wwwroot . '/my';
+            $postdata['cancel_url'] = $CFG->wwwroot . '/my/';
             $postdata['subscription_items']=[];
             $postdata['subscription_items']['item_price_id']=[];
             $postdata['subscription_items']['quantity']=[];
@@ -293,7 +293,7 @@ class chargebee
             $postdata['replace_items_list'] = 'true';
 
             $postdata['redirect_url'] = $CFG->wwwroot . constants::M_URL . '/subs/welcomeback.php';
-            $postdata['cancel_url'] = $CFG->wwwroot . '/my';
+            $postdata['cancel_url'] = $CFG->wwwroot . '/my/';
             $postdata['subscription']=[];
             $postdata['subscription']['id'] = $current_sub->upstreamsubid;
 
@@ -343,7 +343,7 @@ class chargebee
 
             $url = "https://$siteprefix.chargebee.com/api/v2/portal_sessions";
             $postdata=[];
-            $postdata['redirect_url'] = $CFG->wwwroot . '/my';
+            $postdata['redirect_url'] = $CFG->wwwroot . '/my/';
             $postdata['customer']= array("id" => $upstreamownerid);
             $curlresult = common::curl_fetch($url,$postdata,$apikey);
             $jsonresult = common::make_object_from_json($curlresult);
@@ -369,7 +369,7 @@ class chargebee
         if($upstreamid && !empty($apikey) && !empty($siteprefix)){
             $url = "https://$siteprefix.chargebee.com/api/v2/portal_sessions";
             $postdata=[];
-            $postdata['redirect_url'] = $CFG->wwwroot . '/my';
+            $postdata['redirect_url'] = $CFG->wwwroot . '/my/';
             $postdata['customer']= array("id" => $upstreamid);
             $curlresult = common::curl_fetch($url,$postdata,$apikey);
             $jsonresult = common::make_object_from_json($curlresult);

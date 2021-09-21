@@ -83,9 +83,9 @@ if(has_capability('block/poodllclassroom:manageintegration', $context)) {
 
 
     } else {
-        redirect($CFG->wwwroot . '/my', 'There is no such reseller');
+        redirect($CFG->wwwroot . '/my/', 'There is no such reseller');
     }
 }else {
-    redirect($CFG->wwwroot . '/my', get_string('nopermission', constants::M_COMP));
+    redirect($CFG->wwwroot . '/my/', get_string('nopermission', constants::M_COMP));
 }
 

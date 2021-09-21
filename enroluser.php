@@ -55,7 +55,7 @@ $PAGE->set_title($linktext);
 // Set the page heading.
 $PAGE->set_heading(get_string('myhome') . " - $linktext");
 if (empty($CFG->defaulthomepage)) {
-    $PAGE->navbar->add(get_string('dashboard', 'block_iomad_company_admin'), new moodle_url($CFG->wwwroot . '/my'));
+    $PAGE->navbar->add(get_string('dashboard', 'block_iomad_company_admin'), new moodle_url($CFG->wwwroot . '/my/'));
 }
 
 // get output renderer
@@ -105,7 +105,7 @@ if ( $usersform->is_cancelled() ||
     if ($returnurl) {
         redirect($returnurl);
     } else {
-        redirect(new moodle_url('/my'));
+        redirect(new moodle_url('/my/'));
     }
 } else {
 
@@ -121,7 +121,7 @@ if ( $usersform->is_cancelled() ||
     echo html_writer::end_tag('div');
 
     //return to top button
-    $returnbutton = \html_writer::link('/my',get_string('returntotop',constants::M_COMP),
+    $returnbutton = \html_writer::link('/my/',get_string('returntotop',constants::M_COMP),
             array('class' => 'btn btn-secondary' ));
     $returndiv= \html_writer::div($returnbutton,constants::M_COMP . '_returntotop');
     echo $returndiv;

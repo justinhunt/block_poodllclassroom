@@ -48,7 +48,7 @@ $context = context_system::instance();
 if (!empty($returnurl)) {
     $returnurl = new moodle_url($returnurl);
 } else {
-    $returnurl = new moodle_url($CFG->wwwroot . '/my', array());
+    $returnurl = new moodle_url($CFG->wwwroot . '/my/', array());
 }
 
 
@@ -99,7 +99,7 @@ if($ok){
 }
 if(!$ok){
     //we dont have ownership of this school so cancel out of here
-    $returnurl=$CFG->wwwroot . '/my';
+    $returnurl=$CFG->wwwroot . '/my/';
     redirect($returnurl,get_string('dontownthisschool',constants::M_COMP),
             3,\core\output\notification::NOTIFY_WARNING);
 }

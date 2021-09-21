@@ -73,7 +73,7 @@ class renderer extends \plugin_renderer_base {
             //display schools
             $resold_schools = common::fetch_schools_by_reseller($me_reseller->id);
             $params=[];
-            $returnurl = new \moodle_url( $CFG->wwwroot . '/my', $params);
+            $returnurl = new \moodle_url( $CFG->wwwroot . '/my/', $params);
             $schoolstable = $this->fetch_schools_table($resold_schools,$returnurl);
             $content .=  $schoolstable;
 
