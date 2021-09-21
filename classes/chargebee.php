@@ -179,13 +179,13 @@ class chargebee
             return false;
         }
         if($trace) {
-            $trace->output("cbsync:: " . count($eventslist->list) . " new subs");
+            $trace->output("cbsync:: " . count($eventslist->list) . " new or changed subs");
         }
         foreach($eventslist->list as $eventcontainer) {
             $theevent=$eventcontainer->event;
             if ($theevent && isset($theevent->occurred_at)) {
                 if($trace) {
-                    $trace->output("cbsync:: processing sub event: " . $theevent->id);
+                    $trace->output("cbsync:: processing a sub event: " . $theevent->id);
                 }
                 $pevent = new \stdClass();
                 $pevent->timecreated = time();
@@ -211,6 +211,11 @@ class chargebee
 
                 switch ($pevent->type) {
                     case 'subscription_created':
+
+                        if($trace) {
+                            $trace->output("cbsync:: processing sub created event: " . $theevent->id);
+                        }
+
                         //dont create a subscription twice, that would be bad ...
                         $poodllsub = common::get_poodllsub_by_upstreamsubid($theevent->content->subscription->id);
                         if ($poodllsub == false) {
@@ -239,6 +244,10 @@ class chargebee
                         }
                         break;
                     case 'subscription_changed':
+                        if($trace) {
+                            $trace->output("cbsync:: processing sub changed event: " . $theevent->id);
+                        }
+
                         //dont create a subscription twice, that would be bad ...
                         $poodllsub = common::get_poodllsub_by_upstreamsubid($theevent->content->subscription->id);
                         if ($poodllsub != false) {
@@ -248,7 +257,7 @@ class chargebee
 
                             $upstreamsub = $theevent->content->subscription;
                             $subid = common::update_poodllsub_from_upstream($poodllsub,$upstreamsub);
-                            //_poodll_sub($subscription,$currency_code,$amount_paid,$theevent->content->subscription->customer_id );
+
                             if($trace){
                                 if($subid) {
                                     $trace->output("cbsync:: updated poodll sub: " . $poodllsub->id);

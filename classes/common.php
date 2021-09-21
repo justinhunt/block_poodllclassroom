@@ -734,6 +734,7 @@ class common
                     break;
                 case constants::M_BILLING_FREE:
                     $sub->plan->period_display=get_string('free',constants::M_COMP);
+                    $sub->free=true;
                     break;
                 default:
                     $sub->plan->period_display='';
