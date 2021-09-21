@@ -1,18 +1,19 @@
 <tr id="block_poodllclassroom_subs_row_{{id}}" class="block_poodllclassroom_subs_row" data-id="{{id}}">
     <td class="itemid cell c0" style="">{{plan.name}}</td>
     <td class="itemname cell c1" style="">{{plan.period_display}}</td>
-    {{#expiretime_display}} <td class="itemdate cell c2" style="">{{expiretime_display}}</td>{{/expiretime_display}}
     {{#paymentcurr}} <td class="itemcurrency cell c3" style="">{{paymentcurr}}</td>{{/paymentcurr}}
     {{#payment_display}} <td class="itempayment cell c4" style="">{{payment_display}}</td>{{/payment_display}}
     {{#status_display}} <td class="itemstatus cell c5" style="">{{status_display}}</td>{{/status_display}}
     <td class="itemdate cell c6" style="">{{timecreated_display}}</td>
-    <td class="itemedit cell c7" style="">
-       <!-- <a class="block_poodllclassroom_subseditlink" data-cbaction='none' data-id="{{id}}" data-type="change" href="{{{changeurl}}}">{{#str}}upgradesub, block_poodllclassroom{{/str}}</a> -->
-        <a class="block_poodllclassroom_subsmanagelink" data-cbaction='ssp' data-id="{{id}}" data-upstreamsubid="{{upstreamsubid}}" data-upstreamownerid="{{school.upstreamownerid}}" data-type="subdetails" href="#">{{#str}}managesub, block_poodllclassroom{{/str}}</a>
-    </td>
-    <td class="renew cell c8 lastcol" style="">
+    {{#expiretime_display}} <td class="itemdate cell c2" style="">{{expiretime_display}}</td>{{/expiretime_display}}
+    <td class="renew cell c7" style="">
         {{^isresold}}
             <!-- a href="{{{editurl}}}" class="block_poodllclassroom_userenewlink" data-id="{{id}}" data-name="{{subname}}" data-type="edit">{{#str}}edit, block_poodllclassroom{{/str}}</a> -->
         {{/isresold}}
+         <a class="block_poodllclassroom_renewlink" href="#">{{#str}}renewnow, block_poodllclassroom{{/str}}</a>
+    </td>
+    <td class="itemedit cell c8 lastcol" style="">
+       <!-- <a class="block_poodllclassroom_subseditlink" data-cbaction='none' data-id="{{id}}" data-type="change" href="{{{changeurl}}}">{{#str}}upgradesub, block_poodllclassroom{{/str}}</a> -->
+        <a class="block_poodllclassroom_subsmanagelink" data-cbaction='ssp' data-id="{{id}}" data-upstreamsubid="{{upstreamsubid}}" data-upstreamownerid="{{school.upstreamownerid}}" data-type="subdetails" href="#">{{#str}}managesub, block_poodllclassroom{{/str}}</a>
     </td>
 </tr>
