@@ -216,6 +216,7 @@ $string['subname'] = 'Subscription';
 $string['subperiod'] = 'Period';
 $string['cancel'] = 'cancel';
 $string['renew'] = 'renew';
+$string['renewnow'] = 'Renew';
 $string['change'] = 'change';
 $string['noaccessportal'] = 'Unable to access portal';
 $string['siteurl']='Site URL {$a}';
