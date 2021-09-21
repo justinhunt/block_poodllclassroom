@@ -125,7 +125,7 @@ class cpapi_helper {
     public static function create_cpapi_user($firstname,$lastname,$email,$apiusername=''){
 
         //seeds
-        $apiuserseed = "0123456789ABCDEF" . mt_rand(100, 99999);
+        $apiuserseed = "0123456789ghjklm" . mt_rand(100, 99999);
         $apisecretseed = "0123456789ABCDEF" . mt_rand(10, 99);
         $apiextraseed = "-@!#$%&=*+";
         $apilowerseed = "abcdefghijklmnopqrstuvwxyz";
@@ -143,7 +143,8 @@ class cpapi_helper {
             }else {
                 $apiusername = $email;
             }
-                $user_already_exists = self::exists_cpapi_user($apiusername);
+            $apiusername = preg_replace('/[^a-z0-9]+/', '_', strtolower($apiusername ));
+            $user_already_exists = self::exists_cpapi_user($apiusername);
 
         }
 
