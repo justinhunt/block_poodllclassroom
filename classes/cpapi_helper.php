@@ -102,6 +102,23 @@ class cpapi_helper {
 
     }
 
+    public static function create_random_apiuser(){
+        //seeds
+        $apiuserseed = "0123456789ABCDEF" . mt_rand(100, 99999);
+        return str_shuffle($apiuserseed);
+    }
+
+    public static function create_random_apisecret(){
+        //seeds
+        $apisecretseed = "0123456789ABCDEF" . mt_rand(10, 99);
+        $apiextraseed = "-@!#$%&=*+";
+        $apilowerseed = "abcdefghijklmnopqrstuvwxyz";
+
+        //$api secret
+        return str_shuffle($apisecretseed . substr(str_shuffle($apiextraseed),0,2) . substr(str_shuffle($apilowerseed),0,2));
+
+    }
+
     /*
 * Create a new standard user on cloud poodll com
 */
@@ -120,7 +137,14 @@ class cpapi_helper {
         if(!empty($apiusername)){
             $user_already_exists = self::exists_cpapi_user($apiusername);
         }else{
-            $user_already_exists=true;
+            $emailbits = explode('@',$email);
+            if($emailbits && count($emailbits)>1) {
+                $apiusername = $emailbits[0];
+            }else {
+                $apiusername = $email;
+            }
+                $user_already_exists = self::exists_cpapi_user($apiusername);
+
         }
 
         $trycount=0;

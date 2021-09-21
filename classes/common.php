@@ -1509,8 +1509,10 @@ class common
         $owner = $DB->get_record('user',array('id'=>$school->ownerid));
         if($reseller!==false) {
             $cpapiemail = str_replace('@','_' . time() . '@' ,$owner->email);
+            $cpapiusername = cpapi_helper::create_random_apiuser();
         }else{
             $cpapiemail =$owner->email;
+            $cpapiusername ='';
         }
         if($schoolname===false){
             $school->name= $owner->firstname . ' ' . $owner->lastname  .  ' ' .' school';
@@ -1522,7 +1524,8 @@ class common
         $ret = cpapi_helper::create_cpapi_user(
             $owner->firstname ,
             $owner->lastname,
-            $cpapiemail);
+            $cpapiemail,
+            $cpapiusername);
         $ret=get_object_vars($ret);
         if(array_key_exists('apiusername',$ret)) {
             $school->apiuser = $ret['apiusername'];
