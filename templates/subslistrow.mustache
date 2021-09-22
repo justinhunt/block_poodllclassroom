@@ -6,17 +6,14 @@
     {{#status_display}} <td class="itemstatus cell c5" style="">{{status_display}}</td>{{/status_display}}
     <td class="itemdate cell c6" style="">{{timecreated_display}}</td>
     {{#expiretime_display}} <td class="itemdate cell c2" style="">{{expiretime_display}}</td>{{/expiretime_display}}
-    <td class="renew cell c7" style="">
-        {{^isresold}}
-            <!-- a href="{{{editurl}}}" class="block_poodllclassroom_userenewlink" data-id="{{id}}" data-name="{{subname}}" data-type="edit">{{#str}}edit, block_poodllclassroom{{/str}}</a> -->
-        {{/isresold}}
-    {{^free}}
+    <td class="itemedit cell c7" style="">
+        <!-- <a class="block_poodllclassroom_subseditlink" data-cbaction='none' data-id="{{id}}" data-type="change" href="{{{changeurl}}}">{{#str}}upgradesub, block_poodllclassroom{{/str}}</a> -->
+        <a class="block_poodllclassroom_subsmanagelink" data-cbaction='ssp' data-id="{{id}}" data-upstreamsubid="{{upstreamsubid}}" data-upstreamownerid="{{school.upstreamownerid}}" data-type="subdetails" href="#">{{#str}}managesub, block_poodllclassroom{{/str}}</a>
+    </td>
+    <td class="renew cell c8 lastcol" style="">
+    {{#oldnotfreecondition_free}}
         <a class="block_poodllclassroom_renewlink block_poodllclassroom_gocbcheckout" data-method='get_checkout_existing' data-planid="{{plan.id}}" data-schoolid="{{school.id}}"
            data-currency="{{paymentcurr}}" data-currentsubid="{{id}}"  data-billinginterval="{{plan.billinginterval}}"  href="#">{{#str}}renewnow, block_poodllclassroom{{/str}}</a>
-    {{/free}}
-    </td>
-    <td class="itemedit cell c8 lastcol" style="">
-       <!-- <a class="block_poodllclassroom_subseditlink" data-cbaction='none' data-id="{{id}}" data-type="change" href="{{{changeurl}}}">{{#str}}upgradesub, block_poodllclassroom{{/str}}</a> -->
-        <a class="block_poodllclassroom_subsmanagelink" data-cbaction='ssp' data-id="{{id}}" data-upstreamsubid="{{upstreamsubid}}" data-upstreamownerid="{{school.upstreamownerid}}" data-type="subdetails" href="#">{{#str}}managesub, block_poodllclassroom{{/str}}</a>
+    {{/oldnotfreecondition_free}}
     </td>
 </tr>
