@@ -1407,10 +1407,12 @@ class common
         }else{
             //lets create a user
             //create user
+            $apiusername  =cpapi_helper::create_random_apiuser();
             $legacyuser = cpapi_helper::create_cpapi_user(
                     $upstream_user->customer->first_name,
                     $upstream_user->customer->last_name,
-                    $upstream_user->customer->email);
+                    $upstream_user->customer->email,
+                    $apiusername );
             if($legacyuser){
                 $legacyuser=get_object_vars($legacyuser);
             }
@@ -1565,7 +1567,7 @@ class common
             $cpapiusername = cpapi_helper::create_random_apiuser();
         }else{
             $cpapiemail =$owner->email;
-            $cpapiusername ='';
+            $cpapiusername = cpapi_helper::create_random_apiuser();
         }
         if($schoolname===false){
             $school->name= $owner->firstname . ' ' . $owner->lastname  .  ' ' .' school';

@@ -24,6 +24,7 @@
 
 use block_poodllclassroom\constants;
 use block_poodllclassroom\common;
+use block_poodllclassroom\cpapi_helper;
 require('../../../config.php');
 
 $id = optional_param('id', 0, PARAM_INT);
@@ -128,6 +129,13 @@ if(true) {
         $content .= $renderer->render_from_template('block_poodllclassroom/moodlesubs',
                 ['school'=>$moodlesubs[0]->school,'subs'=>$moodlesubs,
                     'platform'=>constants::M_PLATFORM_MOODLE, 'checkouturl'=>$checkouturl->out(), 'editschoolurl'=>$editschoolurl]);
+
+        $schoolusagedata = cpapi_helper::fetch_usage_data($moodlesubs[0]->school->apiuser);
+        if($schoolusagedata) {
+            $content .=  $renderer->display_usage_report($schoolusagedata);
+        }else{
+            echo 'no user data';
+        }
     }
 
     //Platform LTI Section

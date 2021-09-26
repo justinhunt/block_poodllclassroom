@@ -83,21 +83,22 @@ if($school){
             3, \core\output\notification::NOTIFY_WARNING);
     }
 }
+$caneditthisschool=false;
 if($ok){
-    $ok = $school->ownerid==$USER->id;
-    if(!$ok){
+    $caneditthisschool = $school->ownerid==$USER->id;
+    if(!$caneditthisschool){
         if($reseller){
             $resold_schools= common::fetch_schools_by_reseller($reseller->id);
             foreach($resold_schools as $resold_school){
                 if($school->id==$resold_school->id){
-                    $ok=true;
+                    $caneditthisschool=true;
                     break;
                 }
             }
         }
     }
 }
-if(!$ok){
+if(!$caneditthisschool){
     //we dont have ownership of this school so cancel out of here
     $returnurl=$CFG->wwwroot . '/my/';
     redirect($returnurl,get_string('dontownthisschool',constants::M_COMP),
@@ -154,19 +155,29 @@ if ($editform->is_cancelled()){
 
         case 'school':
             $theschool = $DB->get_record(constants::M_TABLE_SCHOOLS, array('id' => $data->id));
-            if($theschool && $theschool->ownerid==$USER->id && !empty($data->name)) {
-                if(!empty($data->siteurl)){$data->siteurls=json_encode($data->siteurl);}
-                $data->timemodified=time();
-                $DB->update_record(constants::M_TABLE_SCHOOLS,$data);
-                //update entry on cpapi too
-                $url1=''; $url2=''; $url3=''; $url4=''; $url5='';
-                list($url1,$url2,$url3,$url4,$url5) = $data->siteurl;
-               // \block_poodllclassroom\cpapi_helper::update_cpapi_sites($theschool->apiuser,$url1,$url2,$url3,$url4,$url5);
-                // \block_poodllclassroom\cpapi_helper::update_cpapi_sites($USER->username,$url1,$url2,$url3,$url4,$url5);
+            if($theschool && !empty($data->name)) {
+                if ($theschool->ownerid == $USER->id || $caneditthisschool) {
 
-                $cpapi_username=strtolower($theschool->apiuser);
-                cpapi_helper::update_cpapi_sites($cpapi_username,$url1,$url2,$url3,$url4,$url5);
-                cpapi_helper::update_cpapi_user($cpapi_username,$USER->firstname,$USER->lastname,$USER->email);
+                    if (!empty($data->siteurl)) {
+                        $data->siteurls = json_encode($data->siteurl);
+
+                        $data->timemodified = time();
+                        $DB->update_record(constants::M_TABLE_SCHOOLS, $data);
+                        //update entry on cpapi too
+                        $url1 = '';
+                        $url2 = '';
+                        $url3 = '';
+                        $url4 = '';
+                        $url5 = '';
+                        list($url1, $url2, $url3, $url4, $url5) = $data->siteurl;
+                        // \block_poodllclassroom\cpapi_helper::update_cpapi_sites($theschool->apiuser,$url1,$url2,$url3,$url4,$url5);
+                        // \block_poodllclassroom\cpapi_helper::update_cpapi_sites($USER->username,$url1,$url2,$url3,$url4,$url5);
+
+                        $cpapi_username = strtolower($theschool->apiuser);
+                        cpapi_helper::update_cpapi_sites($cpapi_username, $url1, $url2, $url3, $url4, $url5);
+                        cpapi_helper::update_cpapi_user($cpapi_username, $USER->firstname, $USER->lastname, $USER->email);
+                    }
+                }
             }
     }
 
@@ -200,6 +211,6 @@ $PAGE->navbar->add($strheading);
 
 echo $renderer->header();
 echo $renderer->heading($strheading);
-echo $editform->display();
+$editform->display();
 echo $renderer->footer();
 

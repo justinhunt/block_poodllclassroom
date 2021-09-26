@@ -1112,16 +1112,19 @@ class renderer extends \plugin_renderer_base {
             }
         }//end of if usersubs details
 
-        echo $this->output->render_from_template('block_poodllclassroom/usagereport', $reportdata);
+        //build html to return
+        $ret = $this->output->render_from_template('block_poodllclassroom/usagereport', $reportdata);
 
         if ($reportdata['subscription_check'] == true){
             $plugin_types = new \core\chart_series('Plugin Usage', array_values($plugin_types_arr));
             $pchart = new \core\chart_pie();
             $pchart->add_series($plugin_types);
             $pchart->set_labels(array_keys($plugin_types_arr));
-            echo $this->output->heading(get_string('per_plugin', 'filter_poodll'), 4);
-            echo $this->output->render($pchart);
+            $ret .= $this->output->heading(get_string('per_plugin', 'filter_poodll'), 4);
+            $ret .= $this->output->render($pchart);
         }
+
+        return $ret;
     }
 
     /*

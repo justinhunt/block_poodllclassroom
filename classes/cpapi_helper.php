@@ -230,13 +230,22 @@ class cpapi_helper {
     //this is our helper
     //we use curl to fetch transcripts from AWS and Tokens from cloudpoodll
     //this is our helper
-    public static function curl_fetch($url, $postdata = false) {
+    public static function curl_fetch($url, $postdata = false, $forceget=false) {
         global $CFG;
 
         require_once($CFG->libdir . '/filelib.php');
         $curl = new \curl();
-        // $curl->setopt(array('CURLOPT_ENCODING' => ""));
-        $result = $curl->get($url, $postdata);
+        if($postdata) {
+            $postdatastring = http_build_query($postdata, '', '&');
+            if($forceget){
+                $result = $curl->get($url, $postdata);
+            }else{
+                $result = $curl->post($url, $postdatastring);
+            }
+
+        }else{
+            $result = $curl->get($url);
+        }
         return $result;
     }
 
