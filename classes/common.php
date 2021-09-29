@@ -937,6 +937,12 @@ class common
             return false;
         }
 
+        //In the case of a future sub we need to add total_dues and current_term_end fields
+        //its a bit hokey
+        if($subscription->status=='future'){
+            $subscription = self::add_fields_to_future_sub($subscription);
+        }
+
         //set up our plan
         $plan = false;
         //we append this to get checkout existing, probably wont come in here, unless something went weird at hostedpage welcome back
@@ -966,7 +972,7 @@ class common
             $newsub->status=constants::M_STATUS_ACTIVE;
         }
         
-        if(is_number($subscription->current_term_end)){
+        if(isset($subscription->current_term_end) && is_number($subscription->current_term_end)){
             $newsub->expiretime=$subscription->current_term_end;
         }
         $newsub->payment= $amount_paid;
@@ -987,10 +993,30 @@ class common
         return $subid;
     }
 
+    public static function add_fields_to_future_sub($upstreamsub){
+        if($upstreamsub->status!='future'){
+            return $upstreamsub;
+        }
+        if(!isset($upstreamsub->total_dues) ||!is_numeric($upstreamsub->total_dues)){
+            $upstreamsub->total_dues=$upstreamsub->subscription_items[0]->amount;
+        }
+        if(!isset($upstreamsub->current_term_end) ||!is_numeric($upstreamsub->current_term_end)){
+            $upstreamsub->current_term_end=$upstreamsub->next_billing_at + YEARSECS;
+        }
+        return $upstreamsub;
+    }
+
     public static function update_poodll_sub($upstreamsub, $poodllsub){
         global $DB;
 
         $update=false;
+
+        //In the case of a future sub we need to add total_dues and current_term_end fields
+        //its a bit hokey
+        if($upstreamsub->status=='future'){
+            $upstreamsub = self::add_fields_to_future_sub($upstreamsub);
+        }
+
         if($poodllsub->paymentcurr != $upstreamsub->currency_code){
             $poodllsub->paymentcurr = $upstreamsub->currency_code;
             $update=true;
