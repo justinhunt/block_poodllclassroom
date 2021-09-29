@@ -163,7 +163,7 @@ class chargebee
         }
 
         $postdata=[];
-        $postdata['event_type[in]'] = '["subscription_created","subscription_changed"]';
+        $postdata['event_type[in]'] = '["subscription_created","subscription_changed","subscription_renewed"]';
         $postdata['occurred_at[after]'] = ''  . $lastoccurredat;
         //this is a GET request
         $qstring= http_build_query($postdata,"",'&');
@@ -211,6 +211,7 @@ class chargebee
 
                 switch ($pevent->type) {
                     case 'subscription_created':
+                    case 'subscription_renewed':
 
                         if($trace) {
                             $trace->output("cbsync:: processing sub created event: " . $theevent->id);
