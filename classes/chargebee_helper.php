@@ -9,6 +9,11 @@ class chargebee_helper
 
     public static function get_checkout_new($planid, $currency, $billinginterval, $schoolid=0, $startdate=0){
         global $USER, $CFG, $DB;
+
+        $ret = [];
+        $ret['success']=true;
+        $ret['payload']='';
+
         $plan = common::get_plan($planid);
         switch($billinginterval){
             case constants::M_BILLING_MONTHLY:
@@ -20,13 +25,21 @@ class chargebee_helper
                 break;
 
         }
+
         if(!$plan){
-            return false;
+            $ret['success']=false;
+            $ret['payload']='No plan of that id could be found:' . $planid;
+            return  $ret;
         }
+
         $reseller = common::fetch_me_reseller();
         $school = common::get_resold_or_my_school($schoolid);
         if($reseller){
-            if(!$school){return false;}
+            if(!$school){
+                    $ret['success']=false;
+                    $ret['payload']='Got reseller but could not get school of that id:' . $schoolid;
+                    return  $ret;
+            }
             if($reseller->id === $school->resellerid) {
                 $upstreamuserid = $reseller->upstreamuserid;
             }else{
@@ -34,7 +47,9 @@ class chargebee_helper
                 if($truereseller) {
                     $upstreamuserid = $truereseller->upstreamuserid;
                 }else{
-                    return false;
+                        $ret['success']=false;
+                        $ret['payload']='Not a true reseller. ID: ' .$school->resellerid ;
+                        return  $ret;
                 }
             }
         }elseif ($school){
@@ -49,7 +64,9 @@ class chargebee_helper
             if($school){
                 $upstreamuserid=$school->upstreamownerid;
             }else{
-                return false;
+                $ret['success']=false;
+                $ret['payload']='We could not get a schools and we could not create a school. all over.' ;
+                return  $ret;
             }
         }
 
@@ -120,10 +137,14 @@ class chargebee_helper
             $curlresult = common::curl_fetch($url,$postdata,$apikey);
             $jsonresult = common::make_object_from_json($curlresult);
             if($jsonresult){
-                return $jsonresult;
+                $ret['success']=true;
+                $ret['payload']=$jsonresult ;
+                return  $ret;
             }
         }
-        return false;
+        $ret['success']=false;
+        $ret['payload']='Customer ID, SitePrefix or API Key wrong';
+        return  $ret;
     }
 
     public static function retrieve_hosted_page($id){

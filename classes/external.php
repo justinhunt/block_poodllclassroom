@@ -610,13 +610,21 @@ class block_poodllclassroom_external extends external_api {
         $params = self::validate_parameters(self::get_checkout_new_parameters(),
             ['planid' => $planid, 'currency'=>$currency, 'billinginterval'=>$billinginterval,'schoolid'=>$schoolid]);
 
-        $hosted_page = chargebee_helper::get_checkout_new($params['planid'],$params['currency'],$params['billinginterval'], $params['schoolid']);
-        if($hosted_page){
-            $ret =$hosted_page->hosted_page;
+        $ret = chargebee_helper::get_checkout_new($params['planid'],$params['currency'],$params['billinginterval'], $params['schoolid']);
+        if(!$ret){return "Failed to get hosted page for unknown reason.";}
+
+        if( $ret['success']) {
+            $hosted_page = $ret['payload'];
+            if ($hosted_page) {
+                $result = $hosted_page->hosted_page;
+            } else {
+                $result = 'hosted page was not correct';
+            }
         }else{
-            $ret ='{}';
+            //in this case there should be some information about what went wrong
+            $result =  $ret['payload'];
         }
-        return $ret;
+        return $result;
     }
 
     public static function get_checkout_new_returns() {
