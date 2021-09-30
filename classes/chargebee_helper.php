@@ -136,9 +136,13 @@ class chargebee_helper
 
             $curlresult = common::curl_fetch($url,$postdata,$apikey);
             $jsonresult = common::make_object_from_json($curlresult);
-            if($jsonresult){
+            if($jsonresult && isset($jsonresult->hosted_page)){
                 $ret['success']=true;
                 $ret['payload']=$jsonresult ;
+                return  $ret;
+            }else{
+                $ret['success']=true;
+                $ret['payload']=$curlresult;
                 return  $ret;
             }
         }
