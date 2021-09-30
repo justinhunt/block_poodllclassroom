@@ -39,17 +39,18 @@ $course = get_course(1);
 require_login($course);
 
 //There is a hosted page bug. So if they get here lets just run the retrieve events thingy and move on:
-chargebee_helper::retrieve_process_events();
-redirect($CFG->wwwroot . '/my/');
+//chargebee_helper::retrieve_process_events();
+//redirect($CFG->wwwroot . '/my/');
 // nothing beyond here will currently happen ....
 
-
+/*
 $context = context_system::instance();
 $PAGE->set_context($context);
 $PAGE->set_heading($SITE->fullname);
 $PAGE->set_pagelayout('course');
 $PAGE->set_title(get_string('pluginname', constants::M_COMP));
 $PAGE->navbar->add(get_string('pluginname', constants::M_COMP));
+*/
 
 //company name
 //Set the companyid
@@ -81,19 +82,21 @@ if($state=='succeeded') {
         $ret = "That worked";
 
     }else{
-        $ret = "rubbish hosted page";
+        $ret = "that hosted page failed";
     }
 
 }else{
-    $ret = "nah no good. state was ...: " . $state;
+    $ret = "nah no good. the redirected state was ...: " . $state;
 }
 
-
+redirect($CFG->wwwroot . '/my/');
 
 //get our renderer
+/*
 $renderer = $PAGE->get_renderer(constants::M_COMP);
 
 echo $renderer->header();
 echo $renderer->heading($companyname);
 echo $ret;
 echo $renderer->footer();
+*/
