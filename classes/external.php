@@ -10,7 +10,7 @@
 
 use \block_poodllclassroom\common;
 use \block_poodllclassroom\constants;
-use \block_poodllclassroom\chargebee;
+use \block_poodllclassroom\chargebee_helper;
 use \block_poodllclassroom\standardadaptor;
 
 class block_poodllclassroom_external extends external_api {
@@ -561,7 +561,7 @@ class block_poodllclassroom_external extends external_api {
         $params = self::validate_parameters(self::get_checkout_existing_parameters(),
                 ['planid' => $planid, 'schoolid' => $schoolid, 'currentsubid' => $currentsubid]);
 
-        $hosted_page = chargebee::get_checkout_existing($params['planid'],$params['schoolid'],$params['currentsubid']);
+        $hosted_page = chargebee_helper::get_checkout_existing($params['planid'],$params['schoolid'],$params['currentsubid']);
         if($hosted_page){
             $ret =$hosted_page->hosted_page;
         }else{
@@ -610,7 +610,7 @@ class block_poodllclassroom_external extends external_api {
         $params = self::validate_parameters(self::get_checkout_new_parameters(),
             ['planid' => $planid, 'currency'=>$currency, 'billinginterval'=>$billinginterval,'schoolid'=>$schoolid]);
 
-        $hosted_page = chargebee::get_checkout_new($params['planid'],$params['currency'],$params['billinginterval'], $params['schoolid']);
+        $hosted_page = chargebee_helper::get_checkout_new($params['planid'],$params['currency'],$params['billinginterval'], $params['schoolid']);
         if($hosted_page){
             $ret =$hosted_page->hosted_page;
         }else{
@@ -656,7 +656,7 @@ class block_poodllclassroom_external extends external_api {
         $params = self::validate_parameters(self::create_portal_session_parameters(),
             ['upstreamownerid' => $upstreamownerid]);
 
-        $portal_session = chargebee::create_portal_session($params['upstreamownerid']);
+        $portal_session = chargebee_helper::create_portal_session($params['upstreamownerid']);
         if($portal_session){
             $ret =$portal_session;
         }else{

@@ -11,6 +11,10 @@ namespace block_poodllclassroom;
 class cpapi_helper {
 
     public static function make_moodle_user($username, $password,$firstname,$lastname,$email){
+
+        $adminconfig = get_config(constants::M_COMP);
+        if(!$adminconfig->enablecpapievents){return false;}
+
         $oneuser=array('username'=>$username,
                 'password'=>$password,
                 'email'=>$email,
@@ -32,6 +36,9 @@ class cpapi_helper {
     public static  function update_cpapi_user($username, $firstname, $lastname, $email, $expiredate=0,
             $subscriptionid=0, $transactionid=0,$accesskeyid=0,$accesskeysecret=0){
 
+        $adminconfig = get_config(constants::M_COMP);
+        if(!$adminconfig->enablecpapievents){return false;}
+
         $senddata = array();
         $senddata['username'] =$username;
         $senddata['firstname'] = $firstname;
@@ -48,6 +55,9 @@ class cpapi_helper {
     }
 
     public static function update_cpapi_sites($username, $url1,$url2, $url3, $url4, $url5){
+
+        $adminconfig = get_config(constants::M_COMP);
+        if(!$adminconfig->enablecpapievents){return false;}
 
 
         //check for blacklisted URL
@@ -124,6 +134,9 @@ class cpapi_helper {
 */
     public static function create_cpapi_user($firstname,$lastname,$email,$apiusername=''){
 
+        $adminconfig = get_config(constants::M_COMP);
+        if(!$adminconfig->enablecpapievents){return false;}
+
         //seeds
         $apiuserseed = "0123456789ghjklm" . mt_rand(100, 99999);
         $apisecretseed = "0123456789ABCDEF" . mt_rand(10, 99);
@@ -176,6 +189,9 @@ class cpapi_helper {
     }
 
     public static  function reset_cpapi_secret($username,$currentsecret){
+
+        $adminconfig = get_config(constants::M_COMP);
+        if(!$adminconfig->enablecpapievents){return '';}
 
         $senddata = array();
         $senddata['username'] =$username;

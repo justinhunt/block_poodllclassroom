@@ -10,7 +10,7 @@ namespace block_poodllclassroom\output;
 
 use \block_poodllclassroom\constants;
 use \block_poodllclassroom\common;
-use \block_poodllclassroom\chargebee;
+use \block_poodllclassroom\chargebee_helper;
 
 
 class renderer extends \plugin_renderer_base {

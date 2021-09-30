@@ -1284,7 +1284,7 @@ class common
         }else{
             $customerid = $sub->school->reseller->upstreamuserid;
         }
-        return chargebee::get_portalurl_by_upstreamid($customerid);
+        return chargebee_helper::get_portalurl_by_upstreamid($customerid);
     }
 
     public static function poodll_reginald_fetch_connection(){
@@ -1387,7 +1387,7 @@ class common
         }
 
         //fetch user, if no user then ... out of here man
-        $upstream_user = chargebee::fetch_chargebee_user($upstreamownerid);
+        $upstream_user = chargebee_helper::fetch_chargebee_user($upstreamownerid);
         //upstream_user->customer has first_name / last_name /email / company /
         if(!$upstream_user || !isset($upstream_user->customer) || !isset($upstream_user->customer->email) ){
             $ret['success']=false;
@@ -1422,7 +1422,8 @@ class common
         // wp_users ID user_login (API user) and user_email
         $legacyuser = self::fetch_legacydeets_for_user($upstream_user->customer->email);
         if($legacyuser && $legacyuser['success'] && !empty($legacyuser['apiuser'])){
-            $legacyuser['siteurls']=[];
+            $adminconfig = get_config(constants::M_COMP);
+            if(!$adminconfig->enablecpapievents){return false;}
             if(!empty($legacyuser['siteurl1'])){$legacyuser['siteurls'][]=$legacyuser['siteurl1'];}
             if(!empty($legacyuser['siteur2'])){$legacyuser['siteurls'][]=$legacyuser['siteurl2'];}
             if(!empty($legacyuser['siteurl3'])){$legacyuser['siteurls'][]=$legacyuser['siteurl3'];}
@@ -1430,24 +1431,36 @@ class common
             if(!empty($legacyuser['siteurl5'])){$legacyuser['siteurls'][]=$legacyuser['siteurl5'];}
 
         //if there is no existing user in the live user dump, lets create one
-        }else{
-            //lets create a user
-            //create user
-            $apiusername  =cpapi_helper::create_random_apiuser();
-            $legacyuser = cpapi_helper::create_cpapi_user(
+        }else {
+            //if we have disabled comunicationa with cpapi (for testing etc) .. create bogus deets
+            $adminconfig = get_config(constants::M_COMP);
+            if (!$adminconfig->enablecpapievents) {
+                $legacyuser = [];
+                $legacyuser['apiuser'] = 'bogus' . cpapi_helper::create_random_apiuser();
+                $legacyuser['apiusername'] = $legacyuser['apiuser'];
+                $legacyuser['apisecret'] = $legacyuser['apiuser'];
+                $legacyuser['siteurls'] = [];
+
+                //otherwise connect and create a real user
+            } else {
+                //lets create a user
+                //create user
+                $apiusername = cpapi_helper::create_random_apiuser();
+                $legacyuser = cpapi_helper::create_cpapi_user(
                     $upstream_user->customer->first_name,
                     $upstream_user->customer->last_name,
                     $upstream_user->customer->email,
-                    $apiusername );
-            if($legacyuser){
-                $legacyuser=get_object_vars($legacyuser);
-            }
+                    $apiusername);
+                if ($legacyuser) {
+                    $legacyuser = get_object_vars($legacyuser);
+                }
 
-
-            if(!$legacyuser || empty($legacyuser['apiuser'])) {
-                $ret['success'] = false;
-                $ret['message'] = 'could not fetch nor create a legacy user for: ' . $upstream_user->customer->email;
-                return $ret;
+                //if that failed lets leave
+                if (!$legacyuser || empty($legacyuser['apiuser'])) {
+                    $ret['success'] = false;
+                    $ret['message'] = 'could not fetch nor create a legacy user for: ' . $upstream_user->customer->email;
+                    return $ret;
+                }
             }
         }
         //$legacyuser  as ['success'=>true] ['apiuser'=>''] ['apisecret'=>'']['schoolname'=>'']['phone'=>'']
@@ -1516,7 +1529,7 @@ class common
             $ret['message']='We already have that sub: ' .$upstreamsubid ;
             return $ret;
         }
-        $upstream_sub = chargebee::fetch_chargebee_sub($upstreamsubid);
+        $upstream_sub = chargebee_helper::fetch_chargebee_sub($upstreamsubid);
         if($upstream_sub && isset($upstream_sub->subscription)) {
             $customer =$upstream_sub->customer;
             $currency_code = $upstream_sub->subscription->currency_code;
@@ -1607,6 +1620,7 @@ class common
             $owner->lastname,
             $cpapiemail,
             $cpapiusername);
+        if(!$ret){return false;}
         $ret=get_object_vars($ret);
         if(array_key_exists('apiusername',$ret)) {
             $school->apiuser = $ret['apiusername'];
@@ -1634,7 +1648,7 @@ class common
         $trace->output('chargebee syncing: ' . count($syncsubs));
         foreach($syncsubs as $poodllsub){
             $trace->output('syncing:' . $poodllsub->upstreamsubid);
-            chargebee::sync_sub($poodllsub);
+            chargebee_helper::sync_sub($poodllsub);
         }
     }
 }//end of class

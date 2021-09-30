@@ -42,7 +42,7 @@ class chargebeesync extends \core\task\scheduled_task {
 		$trace = new \text_progress_trace();
 		$trace->output('running the chargebee sync task now');
          \block_poodllclassroom\common::do_sync_subs($trace);
-         \block_poodllclassroom\chargebee::retrieve_process_events($trace);
+         \block_poodllclassroom\chargebee_helper::retrieve_process_events($trace);
 	}
 
 }

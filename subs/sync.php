@@ -98,7 +98,7 @@ switch($type) {
     case "allschools":
         $successmessages=[];
         $failmessages=[];
-        $allchargebeeusers = \block_poodllclassroom\chargebee::fetch_allchargebee_userids();
+        $allchargebeeusers = \block_poodllclassroom\chargebee_helper::fetch_allchargebee_userids();
         if($allchargebeeusers && count( $allchargebeeusers)>0){
             foreach($allchargebeeusers as $cbuserid){
                // echo $cbuserid . ' ';
@@ -158,7 +158,7 @@ switch($type) {
     case "allsubs":
         $successmessages=[];
         $failmessages=[];
-        $allchargebeesubs = \block_poodllclassroom\chargebee::fetch_allchargebee_subids();
+        $allchargebeesubs = \block_poodllclassroom\chargebee_helper::fetch_allchargebee_subids();
         if($allchargebeesubs && count( $allchargebeesubs)>0){
 
             foreach($allchargebeesubs as $cbsubid){

@@ -24,7 +24,7 @@
 
 use block_poodllclassroom\constants;
 use block_poodllclassroom\common;
-use block_poodllclassroom\chargebee;
+use block_poodllclassroom\chargebee_helper;
 require('../../../config.php');
 
 
@@ -39,7 +39,7 @@ $course = get_course(1);
 require_login($course);
 
 //There is a hosted page bug. So if they get here lets just run the retrieve events thingy and move on:
-chargebee::retrieve_process_events();
+chargebee_helper::retrieve_process_events();
 redirect($CFG->wwwroot . '/my/');
 // nothing beyond here will currently happen ....
 
@@ -56,7 +56,7 @@ $PAGE->navbar->add(get_string('pluginname', constants::M_COMP));
 $companyname = $SITE->fullname;
 
 if($state=='succeeded') {
-    $hp = chargebee::retrieve_hosted_page($id);
+    $hp = chargebee_helper::retrieve_hosted_page($id);
     if($hp){
 
         $subscription =$hp->hosted_page->content->subscription;

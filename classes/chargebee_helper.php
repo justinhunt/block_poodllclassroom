@@ -4,7 +4,7 @@
 namespace block_poodllclassroom;
 
 
-class chargebee
+class chargebee_helper
 {
 
     public static function get_checkout_new($planid, $currency, $billinginterval, $schoolid=0, $startdate=0){
