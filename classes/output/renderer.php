@@ -1120,7 +1120,7 @@ class renderer extends \plugin_renderer_base {
             $pchart = new \core\chart_pie();
             $pchart->add_series($plugin_types);
             $pchart->set_labels(array_keys($plugin_types_arr));
-            $ret .= $this->output->heading(get_string('per_plugin', 'filter_poodll'), 4);
+            $ret .= $this->output->heading(get_string('per_plugin', constants::M_COMP), 4);
             $ret .= $this->output->render($pchart);
         }
 

@@ -350,7 +350,7 @@ $string['enablecpapievents'] = 'Enable CPAPI events';
 $string['enablecpapievents_desc'] = 'If disabled, then events will not be sent to the Cloud Poodll Server for creating users, or updating sites.';
 
 
-
+$string['per_plugin'] = 'Per Plugin';
 
 
 
