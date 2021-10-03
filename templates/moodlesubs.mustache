@@ -7,13 +7,6 @@
             <div class="bpc_col-1">Site URL:</div> <div class="bpc_col-2">{{.}}</div>
         </div>
         {{/school.siteurls}}
-        {{^school.siteurls}}
-        <div class="bpc_moodlesubsrow">
-            <div class="bpc_col-nourls">
-                 {{#str}}nositeurls, block_poodllclassroom{{/str}}
-            </div>
-        </div>
-        {{/school.siteurls}}
     <div class="bpc_moodlesubsrow">
             <div class="bpc_col-1 ">API User:</div>
             <div class="bpc_col-2 " id="{{school.apiuser}}_user" data-clipboard-text="{{school.apiuser}}">{{school.apiuser}}</div>
@@ -26,6 +19,13 @@
             <div class="bpc_col-3 "><a class="btn btn-info poodllclassroom_clipboardbutton" data-clipboard-action="copy" data-clipboard-target="#{{school.apiuser}}_secret">Copy</a></div>
             <div class="bpc_col-4 bpc_copied" style="display: none">copied!</div>
       </div>
+    {{^school.siteurls}}
+        <div class="bpc_moodlesubsrow">
+            <div class="bpc_col-nourls">
+                {{#str}}nositeurls, block_poodllclassroom{{/str}}
+            </div>
+        </div>
+    {{/school.siteurls}}
 
 <hr>
         <a class="btn btn-primary" href="{{{editschoolurl}}}">{{#str}}editsitedetails, block_poodllclassroom{{/str}}</a>

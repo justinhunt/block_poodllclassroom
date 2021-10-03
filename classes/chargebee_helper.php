@@ -269,16 +269,77 @@ class chargebee_helper
                             }
                         }
                         break;
+                    case 'subscription_cancelled':
+
+                        if($trace) {
+                            $trace->output("cbsync:: processing sub cancelled event: " . $theevent->id);
+                        }
+
+                        //dont create a subscription twice, that would be bad ...
+                        $poodllsub = common::get_poodllsub_by_upstreamsubid($theevent->content->subscription->id);
+                        if ($poodllsub == false) {
+                            if($trace) {
+                                $trace->output("cbsync:: No sub of that ID found locally. Nothing to cancel: " . $theevent->id);
+                            }
+                        }else{
+
+
+                            $upstreamsub = $theevent->content->subscription;
+
+                            //we set the expire date to today if the sub has not been paid
+                            if((isset($upstreamsub->cancel_reason))){
+                                $upstreamsub->current_term_end=time();
+                                $trace->output("cbsync:: appears to be a failure to pay, set expiry to today: " . $upstreamsub->cancel_reason);
+                            }
+
+                            $subid = common::update_poodllsub_from_upstream($poodllsub,$upstreamsub);
+                            if($trace){
+                                if($subid) {
+                                    $trace->output("cbsync:: cancelled sub: " . $subid);
+                                }else{
+                                    $trace->output("cbsync:: failed to cancel sub");
+                                }
+                            }
+                        }
+                        break;
+
+                    case 'subscription_reactivated':
+
+                        if($trace) {
+                            $trace->output("cbsync:: reactivating sub cevent: " . $theevent->id);
+                        }
+
+                        //dont create a subscription twice, that would be bad ...
+                        $poodllsub = common::get_poodllsub_by_upstreamsubid($theevent->content->subscription->id);
+                        if ($poodllsub == false) {
+                            if($trace) {
+                                $trace->output("cbsync:: No sub of that ID found locally. Nothing to re-activate: " . $theevent->id);
+                            }
+                        }else{
+
+
+                            $upstreamsub = $theevent->content->subscription;
+                            $subid = common::update_poodllsub_from_upstream($poodllsub,$upstreamsub);
+                            if($trace){
+                                if($subid) {
+                                    $trace->output("cbsync:: reactivated sub: " . $subid);
+                                }else{
+                                    $trace->output("cbsync:: failed to reactivate sub");
+                                }
+                            }
+                        }
+                        break;
+
                     case 'subscription_changed':
                         if($trace) {
                             $trace->output("cbsync:: processing sub changed event: " . $theevent->id);
                         }
 
-                        //dont create a subscription twice, that would be bad ...
+                        //only change an existing subscription twice
                         $poodllsub = common::get_poodllsub_by_upstreamsubid($theevent->content->subscription->id);
                         if ($poodllsub != false) {
                             if($trace){
-                                $trace->output("cbsync:: sub changed but we have no record of it upstreamsubid: " . $theevent->content->subscription->id);
+                                $trace->output("cbsync:: updating upstreamsub: " . $theevent->content->subscription->id);
                             }
 
                             $upstreamsub = $theevent->content->subscription;
@@ -293,7 +354,7 @@ class chargebee_helper
                             }
                         }else{
                             if($trace){
-                                $trace->output("cbsync:: no pre-existing poodll sub matchin upstream sub: " . $theevent->content->subscription->id);
+                                $trace->output("cbsync:: no pre-existing poodll sub matching upstream sub: " . $theevent->content->subscription->id);
                             }
                         }
                         break;

@@ -836,77 +836,7 @@ class common
         return $ret ? $poodllsub->id : false;
     }
 
-    public static function pause_poodllsub($sub){
-        global $DB;
-        $ret = self::suspend_sub($sub);
-        if($ret){
-            $ret = $DB->update_record(constants::M_TABLE_SUBS,
-                    array('id' => $sub->id, 'status' => 'paused','timemodified'=>time()));
-        }
 
-        return $ret;
-    }
-
-    public static function resume_poodllsub($sub){
-        global $DB;
-        $ret = self::unsuspend_sub($sub);
-        if($ret){
-            $ret = $DB->update_record(constants::M_TABLE_SUBS,
-                    array('id' => $sub->id, 'status' => 'active','timemodified'=>time()));
-        }
-
-        return $ret;
-    }
-
-    public static function reactivate_poodllsub($sub){
-        global $DB;
-        $ret = self::unsuspend_sub($sub);
-        if($ret){
-            $ret = $DB->update_record(constants::M_TABLE_SUBS,
-                    array('id' => $sub->id, 'status' => 'active','timemodified'=>time()));
-        }
-
-        return $ret;
-    }
-
-    //TO DO what to do here?
-    public static function activate_poodllsub($sub){
-        global $DB;
-
-        $ret = self::unsuspend_sub($sub);
-        if($ret){
-            $ret = $DB->update_record(constants::M_TABLE_SUBS,
-                    array('id' => $sub->id, 'status' => 'active','timemodified'=>time()));
-        }
-
-        return $ret;
-    }
-
-
-    public static function cancel_poodllsub($sub){
-        global $DB;
-
-        $ret = self::suspend_sub($sub);
-        if($ret){
-            $ret = $DB->update_record(constants::M_TABLE_SUBS,
-                    array('id' => $sub->id, 'status' => 'cancelled','timemodified'=>time()));
-        }
-
-        return $ret;
-    }
-
-    public static function suspend_sub($sub){
-        global $USER;
-
-
-        return true;
-    }
-
-    public static function unsuspend_sub($sub){
-        global $USER;
-
-        return true;
-    }
 
     //if we have a sale we need to keep the data and deal with any fallout if the plan had no matching pclassroom equiv.
     public static function fetch_poodllplan_from_upstreamplan($upstreamplanid){
