@@ -38,7 +38,7 @@ $PAGE->set_url(constants::M_URL . '/subs/welcomeback.php',array('id' => $id,'sta
 $course = get_course(1);
 require_login($course);
 
-//There is a hosted page bug. So if they get here lets just run the retrieve events thingy and move on:
+//There was a hosted page bug. So if they got here we just ran the retrieve events thingy and move on:
 //chargebee_helper::retrieve_process_events();
 //redirect($CFG->wwwroot . '/my/');
 // nothing beyond here will currently happen ....
@@ -69,7 +69,7 @@ if($state=='succeeded') {
             $amount_paid= $subscription->subscription_items[0]->amount;
            $ret = common::create_poodll_sub( $subscription,$currency_code,$amount_paid,$subscription->customer_id);
            if(!$ret){
-               $ret = "something was not right with that school ...";
+               $ret = get_string('unabletocreatesub',constants::M_COMP);
            }
 
         //if its an existing sub ... update it
@@ -79,17 +79,17 @@ if($state=='succeeded') {
             //do some update with $poodllsub
             $ret = "That was an update, not sure about that";
         }
-        $ret = "That worked";
+        $ret = get_string('createdsub',constants::M_COMP);
 
     }else{
-        $ret = "that hosted page failed";
+        $ret = get_string('unabletoverifysub',constants::M_COMP);
     }
 
 }else{
-    $ret = "nah no good. the redirected state was ...: " . $state;
+    $ret = get_string('unknowncbstatus',constants::M_COMP,$state);
 }
 
-redirect($CFG->wwwroot . '/my/');
+redirect($CFG->wwwroot . '/my/',$ret);
 
 //get our renderer
 /*

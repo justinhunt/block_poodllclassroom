@@ -291,7 +291,7 @@ $string['false'] = 'false';
 $string['true'] = 'true';
 $string['showcheckout'] = 'Show in checkout';
 $string['syncoptions'] = 'Sync Options';
-$string['syncoptions_instructions'] = 'Use the sync options to fill up Poodll Classroom with one or all subs from Chargebee. Events wont fire here, so its just syncing.';
+$string['syncoptions_instructions'] = 'Use the sync options to fill up Poodll Classroom with one or all subs from Chargebee. Events shouldnt fire here, so its just syncing. To be safe disable events in the block admin settings';
 $string['syncsubs'] = 'Sync Subs';
 $string['syncschools'] = 'Sync Schools';
 $string['syncpage'] = 'Sync Subs and Schools';
@@ -353,6 +353,11 @@ $string['enablecpapievents_desc'] = 'If disabled, then events will not be sent t
 
 $string['per_plugin'] = 'Per Plugin';
 $string['nousagedata'] = 'No usage data available.<br>';
+
+$string['unabletocreatesub'] = 'Unable to create subscription.';
+$string['unabletoverifysub'] = 'Unable to verify the created subscription.';
+$string['createdsub'] = 'Successfully created new subscription. Thanks!';
+$string['unknowncbstatus'] = 'Received unknown status: {$a}';
 
 
 

@@ -908,7 +908,12 @@ class common
         $newsub->payment= $amount_paid;
         $newsub->paymentcurr=$currency_code;
         $newsub->billinginterval=$plan->billinginterval;
-        $newsub->timecreated=time();
+        if(isset($subscription->created_at)){
+            $newsub->timecreated=$subscription->created_at;
+        }else{
+            $newsub->timecreated=time();
+        }
+
 
         //this is where any sub specific stuff has to happen .. eg get LTI creds, or API user and secret
 
