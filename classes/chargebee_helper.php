@@ -188,7 +188,7 @@ class chargebee_helper
         }
 
         $postdata=[];
-        $postdata['event_type[in]'] = '["subscription_created","subscription_changed","subscription_renewed"]';
+        $postdata['event_type[in]'] = '["subscription_created","subscription_changed","subscription_renewed","subscription_cancelled"]';
         $postdata['occurred_at[after]'] = ''  . $lastoccurredat;
         //this is a GET request
         $qstring= http_build_query($postdata,"",'&');

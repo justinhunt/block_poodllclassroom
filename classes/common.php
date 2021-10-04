@@ -1405,6 +1405,12 @@ class common
         $newuser['username']=strtolower($legacyuser['apiuser']);
         $newuser['auth']='manual';
 
+        //its unlikely the username exists, but in the odd case (or in the test site case where cpapi and poodllclassroom are same) we use the email
+        $usernameexists = $DB->get_record('user', array('username'=> $newuser['username']));
+        if($usernameexists) {
+            $newuser['username'] = $newuser['username'] . '0000';
+        }
+
         //either create a password or set a bogus one to be changed
         $newuser['createpassword']=true;
        //$newuser['password']='IH@ve1999b!guc@tsonmyhat';

@@ -134,7 +134,7 @@ if(true) {
         if($schoolusagedata) {
             $content .=  $renderer->display_usage_report($schoolusagedata);
         }else{
-            echo 'no user data';
+            $content .=   get_string('nousagedata', constants::M_COMP);
         }
     }
 

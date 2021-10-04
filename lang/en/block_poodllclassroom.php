@@ -32,6 +32,7 @@ $string['poodllclassroom:addinstance'] = 'Add a Poodll Classroom block';
 $string['poodllclassroom:myaddinstance'] = 'Add Poodll Classroom block to my moodle';
 $string['poodllclassroom:managesite'] = 'Manage poodll member site';
 $string['poodllclassroom:managepoodllclassroom'] = 'Manage poodll classroom';
+$string['poodllclassroom:usepoodllclassroom'] = 'Manage poodll classroom';
 
 $string['pluginname'] = 'Poodll Classroom';
 $string['welcomeuser'] = 'Welcome {$a->firstname} {$a->lastname}';
@@ -235,7 +236,7 @@ $string['resellertype']='Reseller Type';
 $string['addreseller']='Add Reseller';
 $string['user']='User';
 $string['youcantaccessthatschool']='You can not access that school';
-$string['schooldetails']='On this page you can review the subscriptions for the school and associated credentials and access details.';
+$string['schooldetails']='On this page you can review the subscriptions for the school, register site URLs and manage billing. Use the "manage subscription" link to update payment details or cancel the subscription. Use the "account options" dropdown to access your billing history. Add new subscriptions to your account using the "Add new" button.';
 $string['managesubscriptions']='Manage Subscriptions';
 $string['managesub']='Manage';
 $string['dontownthisschool']='You can not manage this school';
@@ -351,6 +352,7 @@ $string['enablecpapievents_desc'] = 'If disabled, then events will not be sent t
 
 
 $string['per_plugin'] = 'Per Plugin';
+$string['nousagedata'] = 'No usage data available.<br>';
 
 
 
