@@ -300,6 +300,7 @@ class renderer extends \plugin_renderer_base {
             $langplans=[];
             $mediaplans=[];
             $essentialsplans=[];
+            $englishcentralplans=[];
             foreach($yearlyplans as $theplan){
                 switch($theplan->planfamily){
                     case constants::M_FAMILY_LANG:
@@ -311,11 +312,15 @@ class renderer extends \plugin_renderer_base {
                     case constants::M_FAMILY_ESSENTIALS:
                         $essentialsplans[]=$theplan;
                         break;
+                    case constants::M_FAMILY_EC:
+                        $englishcentralplans[]=$theplan;
+                        break;
                 }
             }
             if(count($mediaplans)>0){$ydata['mediaplans']=$mediaplans;}
             if(count($langplans)>0){$ydata['langplans']=$langplans;}
             if(count($essentialsplans)>0){$ydata['essentialsplans']=$essentialsplans;}
+            if(count($englishcentralplans)>0){$ydata['englishcentralplans']=$englishcentralplans;}
             $yearly = $this->render_from_template('block_poodllclassroom/moodleplanscontainer', $ydata);
         }else {
             $ydata['plans']=$yearlyplans;

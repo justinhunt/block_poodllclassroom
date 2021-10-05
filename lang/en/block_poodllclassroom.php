@@ -245,6 +245,7 @@ $string['upstreamuserid']='Upstream User ID';
 $string['nosubs']='No subscriptions to display';
 $string['back']='Back';
 $string['addnew']='Add new';
+$string['addnewsubscription']='Add new subscription';
 
 $string['checkout'] = 'Checkout.' ;
 $string['chooseplan'] = 'Choose' ;
@@ -283,6 +284,7 @@ $string['subrenewtime'] = 'Renews';
 $string['subrenewexpiretime'] = 'Renews/Expires';
 $string['editsitedetails'] = ' - Edit site details -';
 $string['essentialsplans'] = 'Poodll Essentials (Poodll Media + Poodll Languages)';
+$string['englishcentralplans'] = 'Poodll EnglishCentral';
 $string['mediaplans'] = 'Poodll Media';
 $string['langplans'] = 'Poodll Languages';
 $string['editreseller'] = 'Edit Reseller';
