@@ -95,8 +95,10 @@ class renderer extends \plugin_renderer_base {
             if($school) {
                 $content .=   $this->render_from_template('block_poodllclassroom/schoolheader', $school);
                 //if not reseller we just have one school, so we can edit it
+                /*
                 $options[] = array('url' => $CFG->wwwroot . '/blocks/poodllclassroom/subs/editmyschool.php?id=' . $school->id,
                     'label' => get_string('editmyschool', constants::M_COMP));
+                */
                 $subs = common::fetch_subs_by_school($school->id);
                 if($subs) {
                     $options[] = array('url' => '#', 'cbaction' => 'ssp', 'upstreamownerid' => $school->upstreamownerid, 'type' => 'billingaccount', 'label' => get_string('billingaccount', constants::M_COMP));
