@@ -867,10 +867,9 @@ class common
             return false;
         }
 
-        //In the case of a future sub we need to add total_dues and current_term_end fields
-        //its a bit hokey
-        if($subscription->status=='future'){
-            $subscription = self::add_fields_to_future_sub($subscription);
+        //Only some subs have total=dues nd current term end. often buried in items. here we fetch them
+        if(!isset($subscription->total_dues) || !isset($subscription->current_term_end)){
+            $subscription = self::add_fields_to_sub($subscription);
         }
 
         //set up our plan
@@ -928,23 +927,8 @@ class common
         return $subid;
     }
 
-    public static function add_fields_to_future_sub($upstreamsub){
-        if($upstreamsub->status!='future'){
-            return $upstreamsub;
-        }
-        if(!isset($upstreamsub->total_dues) ||!is_numeric($upstreamsub->total_dues)){
-            $upstreamsub->total_dues=$upstreamsub->subscription_items[0]->amount;
-        }
-        if(!isset($upstreamsub->current_term_end) ||!is_numeric($upstreamsub->current_term_end)){
-            $upstreamsub->current_term_end=$upstreamsub->next_billing_at + YEARSECS;
-        }
-        return $upstreamsub;
-    }
+    public static function add_fields_to_sub($upstreamsub){
 
-    public static function add_fields_to_cancelled_sub($upstreamsub){
-        if($upstreamsub->status!='cancelled'){
-            return $upstreamsub;
-        }
         if(!isset($upstreamsub->total_dues) ||!is_numeric($upstreamsub->total_dues)){
             $upstreamsub->total_dues=$upstreamsub->subscription_items[0]->amount;
         }
@@ -959,13 +943,9 @@ class common
 
         $update=false;
 
-        //In the case of a future sub we need to add total_dues and current_term_end fields
-        //its a bit hokey
-        if($upstreamsub->status=='future'){
-            $upstreamsub = self::add_fields_to_future_sub($upstreamsub);
-        }
-        if($upstreamsub->status=='cancelled'){
-            $upstreamsub = self::add_fields_to_cancelled_sub($upstreamsub);
+        //Only some subs have total=dues nd current term end. often buried in items. here we fetch them
+        if(!isset($upstreamsub->total_dues) || !isset($upstreamsub->current_term_end)){
+            $upstreamsub = self::add_fields_to_sub($upstreamsub);
         }
 
         if($poodllsub->paymentcurr != $upstreamsub->currency_code){
