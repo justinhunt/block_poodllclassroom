@@ -941,6 +941,19 @@ class common
         return $upstreamsub;
     }
 
+    public static function add_fields_to_cancelled_sub($upstreamsub){
+        if($upstreamsub->status!='cancelled'){
+            return $upstreamsub;
+        }
+        if(!isset($upstreamsub->total_dues) ||!is_numeric($upstreamsub->total_dues)){
+            $upstreamsub->total_dues=$upstreamsub->subscription_items[0]->amount;
+        }
+        if(!isset($upstreamsub->current_term_end) ||!is_numeric($upstreamsub->current_term_end)){
+            $upstreamsub->current_term_end=$upstreamsub->next_billing_at + YEARSECS;
+        }
+        return $upstreamsub;
+    }
+
     public static function update_poodll_sub($upstreamsub, $poodllsub){
         global $DB;
 
@@ -950,6 +963,9 @@ class common
         //its a bit hokey
         if($upstreamsub->status=='future'){
             $upstreamsub = self::add_fields_to_future_sub($upstreamsub);
+        }
+        if($upstreamsub->status=='cancelled'){
+            $upstreamsub = self::add_fields_to_cancelled_sub($upstreamsub);
         }
 
         if($poodllsub->paymentcurr != $upstreamsub->currency_code){
