@@ -100,9 +100,6 @@ switch($type) {
         $failmessages=[];
         $allchargebeeusers = \block_poodllclassroom\chargebee_helper::fetch_allchargebee_userids();
 
-        echo $renderer->header();
-        echo $renderer->heading( get_string('syncpage', constants::M_COMP),2);
-
         if($allchargebeeusers && count( $allchargebeeusers)>0){
             foreach($allchargebeeusers as $cbuserid){
                 //fire stop while testing
@@ -111,22 +108,23 @@ switch($type) {
                 $ret =  common::create_school_from_upstreamid($cbuserid);
                 if($ret && $ret['success']){
                     $successmessages[] = $ret["message"];
-                    echo 'success:' . $ret["message"] . '<br>';
                 }else{
                     $failmessages[]  = $ret["message"];
-                    echo 'failure:' . $ret["message"] . '<br>';
                 }
 
             }
         }
 
+        echo $renderer->header();
+        echo $renderer->heading( get_string('syncpage', constants::M_COMP),2);
+
         echo "success=" . count($successmessages) . '<br>';
         echo "fail=" . count($failmessages) . '<br>';
         foreach($successmessages as $sm){
-           // echo $sm . '<br>';
+            echo $sm . '<br>';
         }
         foreach($failmessages as $fm){
-          //  echo $fm . '<br>';
+            echo $fm . '<br>';
         }
         echo $renderer->footer();
 
@@ -167,8 +165,7 @@ switch($type) {
         $failmessages=[];
         $allchargebeesubs = \block_poodllclassroom\chargebee_helper::fetch_allchargebee_subids();
 
-        echo $renderer->header();
-        echo $renderer->heading( get_string('syncpage', constants::M_COMP),2);
+
 
         if($allchargebeesubs && count( $allchargebeesubs)>0){
 
@@ -179,23 +176,24 @@ switch($type) {
                 $ret =  common::create_sub_from_upstreamid($cbsubid);
                 if($ret && $ret['success']){
                     $successmessages[] = $ret["message"];
-                    echo 'success:' . $ret["message"] . '<br>';
                 }else{
                     $failmessages[]  = $ret["message"];
-                    echo 'failure:' . $ret["message"] . '<br>';
                 }
 
             }
         }
 
+        echo $renderer->header();
+        echo $renderer->heading( get_string('syncpage', constants::M_COMP),2);
+
         echo "success=" . count($successmessages) . '<br>';
         echo "fail=" . count($failmessages) . '<br>';
 
         foreach($successmessages as $sm){
-          //  echo $sm . '<br>';
+            echo $sm . '<br>';
         }
         foreach($failmessages as $fm){
-          //  echo $fm . '<br>';
+            echo $fm . '<br>';
         }
         echo $renderer->footer();
 
