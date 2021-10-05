@@ -98,6 +98,11 @@ switch($type) {
     case "allschools":
         $successmessages=[];
         $failmessages=[];
+
+        echo $renderer->header();
+        echo $renderer->heading( get_string('syncpage', constants::M_COMP),2);
+
+
         $allchargebeeusers = \block_poodllclassroom\chargebee_helper::fetch_allchargebee_userids();
 
         if($allchargebeeusers && count( $allchargebeeusers)>0){
@@ -115,8 +120,7 @@ switch($type) {
             }
         }
 
-        echo $renderer->header();
-        echo $renderer->heading( get_string('syncpage', constants::M_COMP),2);
+
 
         echo "success=" . count($successmessages) . '<br>';
         echo "fail=" . count($failmessages) . '<br>';
@@ -163,10 +167,12 @@ switch($type) {
     case "allsubs":
         $successmessages=[];
         $failmessages=[];
+
+        echo $renderer->header();
+        echo $renderer->heading( get_string('syncpage', constants::M_COMP),2);
+
+
         $allchargebeesubs = \block_poodllclassroom\chargebee_helper::fetch_allchargebee_subids();
-
-
-
         if($allchargebeesubs && count( $allchargebeesubs)>0){
 
             foreach($allchargebeesubs as $cbsubid){
@@ -183,8 +189,7 @@ switch($type) {
             }
         }
 
-        echo $renderer->header();
-        echo $renderer->heading( get_string('syncpage', constants::M_COMP),2);
+
 
         echo "success=" . count($successmessages) . '<br>';
         echo "fail=" . count($failmessages) . '<br>';
