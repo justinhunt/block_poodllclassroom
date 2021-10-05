@@ -962,6 +962,7 @@ class common
         }
 
         $jsonobj= json_decode($poodllsub->jsonfields);
+        if(!$jsonobj){$jsonobj = new \stdClass();}
         if(!isset($jsonobj->due_invoices_count) || $jsonobj->due_invoices_count != $upstreamsub->due_invoices_count){
             $jsonobj->due_invoices_count = $upstreamsub->due_invoices_count;
             if( $upstreamsub->due_invoices_count==0 && $poodllsub->status==constants::M_STATUS_PAYMENTDUE){
