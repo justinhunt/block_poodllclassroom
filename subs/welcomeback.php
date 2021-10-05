@@ -70,6 +70,10 @@ if($state=='succeeded') {
            $ret = common::create_poodll_sub( $subscription,$currency_code,$amount_paid,$subscription->customer_id);
            if(!$ret){
                $ret = get_string('unabletocreatesub',constants::M_COMP);
+               redirect($CFG->wwwroot . '/my/',$ret,3, \core\output\notification::NOTIFY_WARNING);
+           }else{
+               $ret = get_string('createdsub',constants::M_COMP);
+               redirect($CFG->wwwroot . '/my/',$ret);
            }
 
         //if its an existing sub ... update it
@@ -78,15 +82,19 @@ if($state=='succeeded') {
             //IN the interests of getting this out the door. Lets hide the changesub link for now
             //do some update with $poodllsub
             $ret = "That was an update, not sure about that";
+            redirect($CFG->wwwroot . '/my/',$ret);
         }
         $ret = get_string('createdsub',constants::M_COMP);
+        redirect($CFG->wwwroot . '/my/',$ret);
 
     }else{
         $ret = get_string('unabletoverifysub',constants::M_COMP);
+        redirect($CFG->wwwroot . '/my/',$ret,3, \core\output\notification::NOTIFY_WARNING);
     }
 
 }else{
     $ret = get_string('unknowncbstatus',constants::M_COMP,$state);
+    redirect($CFG->wwwroot . '/my/',$ret,3, \core\output\notification::NOTIFY_WARNING);
 }
 
 redirect($CFG->wwwroot . '/my/',$ret);

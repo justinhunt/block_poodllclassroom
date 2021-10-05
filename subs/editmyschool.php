@@ -75,7 +75,8 @@ if($school){
             $backhereurl = new moodle_url($baseurl . '/subs/editmyschool.php', array('id' => $school->id, 'type'=>$type));
             redirect($backhereurl);
         }else {
-            redirect($returnurl);
+            redirect($returnurl,get_string('could not create school', constants::M_COMP),
+                3, \core\output\notification::NOTIFY_WARNING);
         }
     //else we do not have a valid school so we can edit it ya know
     }else{

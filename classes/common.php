@@ -1358,7 +1358,6 @@ class common
         $legacyuser = self::fetch_legacydeets_for_user($upstream_user->customer->email);
         if($legacyuser && $legacyuser['success'] && !empty($legacyuser['apiuser'])){
             $adminconfig = get_config(constants::M_COMP);
-            if(!$adminconfig->enablecpapievents){return false;}
             if(!empty($legacyuser['siteurl1'])){$legacyuser['siteurls'][]=$legacyuser['siteurl1'];}
             if(!empty($legacyuser['siteur2'])){$legacyuser['siteurls'][]=$legacyuser['siteurl2'];}
             if(!empty($legacyuser['siteurl3'])){$legacyuser['siteurls'][]=$legacyuser['siteurl3'];}
