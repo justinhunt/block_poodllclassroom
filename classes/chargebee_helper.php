@@ -239,10 +239,10 @@ class chargebee_helper
                     case 'subscription_renewed':
 
                         if($trace) {
-                            $trace->output("cbsync:: processing sub created event: " . $theevent->id);
+                            $trace->output("cbsync:: processing ". $pevent->type . " event: " . $theevent->id);
                         }
 
-                        //dont create a subscription twice, that would be bad ...
+                        //create a sub
                         $poodllsub = common::get_poodllsub_by_upstreamsubid($theevent->content->subscription->id);
                         if ($poodllsub == false) {
                             //lets create the school. IF it already exists, nothing bad will happen
@@ -263,9 +263,17 @@ class chargebee_helper
                                     $trace->output("cbsync:: failed to create sub");
                                 }
                             }
+
+                         ///renew a sub
                         }else{
+                            $subscription = $theevent->content->subscription;
+                            $subid = common::update_poodllsub_from_upstream($poodllsub,$subscription);
                             if($trace){
-                                $trace->output("cbsync:: pre existing sub.. do no more: " . $theevent->content->subscription->id);
+                                if($subid) {
+                                    $trace->output("cbsync:: renewed sub: " . $subid);
+                                }else{
+                                    $trace->output("cbsync:: failed to renew sub");
+                                }
                             }
                         }
                         break;

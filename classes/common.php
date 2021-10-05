@@ -989,6 +989,9 @@ class common
         if($update){
             $poodllsub->timemodified=time();
             $DB->update_record(constants::M_TABLE_SUBS,$poodllsub);
+
+            //Disable while we import from CB
+            $jsonfields = self::process_new_sub($school, $plan, $subscription);
         }
     }
 
