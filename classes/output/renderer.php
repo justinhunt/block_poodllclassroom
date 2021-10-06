@@ -963,13 +963,16 @@ class renderer extends \plugin_renderer_base {
         $eventrunnerbutton =  new \single_button(
             new \moodle_url(constants::M_URL . '/subs/eventrunner.php',array()),
             get_string('eventrunner', constants::M_COMP), 'get');
+        $siteurlsbutton =  new \single_button(
+            new \moodle_url(constants::M_URL . '/subs/sync.php',array('type'=>'siteurls')),
+            get_string('siteurls', constants::M_COMP), 'get');
 
         //return add button and table
         $heading = $this->output->heading(get_string('syncoptions',constants::M_COMP),3);
         $heading .= \html_writer::div(get_string('syncoptions_instructions',constants::M_COMP));
 
 
-        return $heading  . $this->render($schoolsbutton) .  $this->render($subsbutton) . $this->render($eventrunnerbutton);
+        return $heading  . $this->render($schoolsbutton) .  $this->render($subsbutton) . $this->render($eventrunnerbutton) . $this->render($siteurlsbutton);
 
     }
 

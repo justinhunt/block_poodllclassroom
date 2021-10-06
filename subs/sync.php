@@ -134,6 +134,75 @@ switch($type) {
 
         break;
 
+    case "siteurls":
+        $siteurlsform = new \block_poodllclassroom\local\form\siteurlsform();
+        if ($siteurlsform->is_cancelled()){
+            redirect($returnurl);
+        }else if($data = $siteurlsform->get_data()) {
+            $ret =  common::sync_siteurls_from_upstreamid($data->upstreamschoolid);
+            if(!$ret || !$ret['success']){
+                redirect($returnurl, $ret["message"] );
+            }else{
+                redirect($returnurl, $ret["message"] );
+            }
+        }else{
+            echo $renderer->header();
+            echo $renderer->heading( get_string('syncpage', constants::M_COMP),2);
+            $siteurlsform->display();
+            echo "<br>----------------------------<br>";
+            echo "<br>Push the doomsday button below to sync all site urls....<br>";
+            //$allsync_buttons
+            $allsiteurlsbutton = new \single_button(
+                new \moodle_url(constants::M_URL . '/subs/sync.php',array('type'=>'allsiteurls')),
+                get_string('syncallsiteurls', constants::M_COMP), 'get');
+            echo "<br>----------------------------<br>";
+            echo $renderer->render($allsiteurlsbutton);
+
+            echo $renderer->footer();
+            return;
+        }
+        break;
+
+    case "allsiteurls":
+        $successmessages=[];
+        $failmessages=[];
+
+        echo $renderer->header();
+        echo $renderer->heading( get_string('syncpage', constants::M_COMP),2);
+
+
+        $allchargebeeusers = \block_poodllclassroom\chargebee_helper::fetch_allchargebee_userids();
+
+        if($allchargebeeusers && count( $allchargebeeusers)>0){
+            foreach($allchargebeeusers as $cbuserid){
+                //fire stop while testing
+                // if((count($successmessages) + count($failmessages)) > 5){ break;}
+
+                $ret =  common::sync_siteurls_from_upstreamid($cbuserid);
+                if($ret && $ret['success']){
+                    $successmessages[] = $ret["message"];
+                }else{
+                    $failmessages[]  = $ret["message"];
+                }
+
+            }
+        }
+
+
+
+        echo "success=" . count($successmessages) . '<br>';
+        echo "fail=" . count($failmessages) . '<br>';
+        foreach($successmessages as $sm){
+            echo $sm . '<br>';
+        }
+        foreach($failmessages as $fm){
+            echo $fm . '<br>';
+        }
+        echo $renderer->footer();
+
+        break;
+
+
     case "subs":
         $syncsubform = new \block_poodllclassroom\local\form\syncsubform();
         if ($syncsubform->is_cancelled()){

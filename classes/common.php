@@ -1303,6 +1303,92 @@ class common
         return $ret;
     }
 
+    public static function sync_siteurls_from_upstreamid($upstreamownerid){
+        global $CFG, $DB;
+        $ret=[];
+        $ret['id']=$upstreamownerid;
+        $ret['success']=true;
+        $ret['message']='OK';
+
+        //do we already gots one like dis one, return
+        $existing_schools = self::get_school_by_upstreamownerid($upstreamownerid);
+        if(!$existing_schools ){
+            $ret['success']=false;
+            $ret['message']='We dont have that school:';
+            return $ret;
+        }
+        $school=array_shift($existing_schools );
+
+        //fetch user, if no user then ... out of here man
+        $upstream_user = chargebee_helper::fetch_chargebee_user($upstreamownerid);
+        //upstream_user->customer has first_name / last_name /email / company /
+        if(!$upstream_user || !isset($upstream_user->customer) || !isset($upstream_user->customer->email) ){
+            $ret['success']=false;
+            $ret['message']='No valid chargebee user of that ID found: ' . $upstreamownerid;
+            return $ret;
+        }
+
+        //We should have this user
+        $existing_user = $DB->get_record('user', array('email'=>$upstream_user->customer->email));
+        if(!$existing_user){
+                $ret['success'] = false;
+                $ret['message'] = 'We DONT already have a moodle user with that email here: ' . $upstream_user->customer->email;
+            return $ret;
+        }
+
+        //OK we are ready to get started  ... but first we need to pick up our API user and secret from the user/secret dump
+        //need to connect (while its still current .... ) to livewww DB on this server and search wp_usermeta and search:
+        // user_id + mepr_api_secret + mepr_organisation_name + mepr_contact_phone
+        // wp_users ID user_login (API user) and user_email
+
+        $legacyuser = self::fetch_legacydeets_for_user($upstream_user->customer->email);
+        if($legacyuser && $legacyuser['success'] && !empty($legacyuser['apiuser'])){
+            if(!empty($legacyuser['siteurl1'])){$legacyuser['siteurls'][]=$legacyuser['siteurl1'];}
+            if(!empty($legacyuser['siteurl2'])){$legacyuser['siteurls'][]=$legacyuser['siteurl2'];}
+            if(!empty($legacyuser['siteurl3'])){$legacyuser['siteurls'][]=$legacyuser['siteurl3'];}
+            if(!empty($legacyuser['siteurl4'])){$legacyuser['siteurls'][]=$legacyuser['siteurl4'];}
+            if(!empty($legacyuser['siteurl5'])){$legacyuser['siteurls'][]=$legacyuser['siteurl5'];}
+
+            //if there is no existing user in the live user dump, lets create one
+        }else {
+            $ret['success'] = false;
+            $ret['message'] = 'could not fetch a legacy user for: ' . $upstream_user->customer->email;
+            return $ret;
+
+        }
+
+        //in this case we are patching up a situation where URL2 was not imported correctly
+       if(!empty($legacyuser['siteurl2'])) {
+           $theurls = json_decode($school->siteurls);
+           if(is_array($theurls)){
+               if(!in_array($legacyuser['siteurl2'],$theurls)){
+                   $theurls[] = $legacyuser['siteurl2'];
+                   $newurls = json_encode($theurls);
+
+                   $dbret = $DB->update_record(constants::M_TABLE_SCHOOLS, array('id'=>$school->id,'siteurls'=>$newurls));
+                   if($dbret) {
+                       $ret['success'] = true;
+                       $ret['message'] = 'YES!!! We updated one site url';
+                       return $ret;
+                   }
+               }
+           }else{
+               $ret['success']=false;
+               $ret['message']='We had nothing to do here';
+               return $ret;
+           }
+       }else{
+           $ret['success']=false;
+           $ret['message']='Site URL2 was empty';
+           return $ret;
+       }
+        $ret['success']=false;
+        $ret['message']='ended with nothing, possibly a DB error';
+        return $ret;
+
+    }
+
+
     public static function create_school_from_upstreamid($upstreamownerid){
         global $CFG, $DB;
         $ret=[];
@@ -1359,7 +1445,7 @@ class common
         if($legacyuser && $legacyuser['success'] && !empty($legacyuser['apiuser'])){
             $adminconfig = get_config(constants::M_COMP);
             if(!empty($legacyuser['siteurl1'])){$legacyuser['siteurls'][]=$legacyuser['siteurl1'];}
-            if(!empty($legacyuser['siteur2'])){$legacyuser['siteurls'][]=$legacyuser['siteurl2'];}
+            if(!empty($legacyuser['siteurl2'])){$legacyuser['siteurls'][]=$legacyuser['siteurl2'];}
             if(!empty($legacyuser['siteurl3'])){$legacyuser['siteurls'][]=$legacyuser['siteurl3'];}
             if(!empty($legacyuser['siteurl4'])){$legacyuser['siteurls'][]=$legacyuser['siteurl4'];}
             if(!empty($legacyuser['siteurl5'])){$legacyuser['siteurls'][]=$legacyuser['siteurl5'];}

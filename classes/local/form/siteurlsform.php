@@ -36,18 +36,17 @@ require_once($CFG->dirroot.'/lib/formslib.php');
 
 
 
-class syncschoolform extends \moodleform {
+class siteurlsform extends \moodleform {
 
     public function definition()
     {
         $mform = $this->_form;
 
-        $mform->addElement('header', 'syncschoolheading', get_string('syncschoolform', constants::M_COMP));
+        $mform->addElement('header', 'siteurlsheading', get_string('siteurlsform', constants::M_COMP));
 
         $mform->addElement('text', 'upstreamschoolid', get_string('upstreamschoolid', constants::M_COMP), array('size' => 70));
         $mform->setType('upstreamschoolid', PARAM_TEXT);
-        $mform->setDefault('name', '-- ?? --');
-        $mform->addElement('hidden', 'type', 'schools');
+        $mform->addElement('hidden', 'type', 'siteurls');
         $mform->setType('type', PARAM_TEXT);
 
         //add the action buttons
