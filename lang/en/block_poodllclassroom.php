@@ -362,6 +362,13 @@ $string['createdsub'] = 'Successfully created new subscription. Thanks!';
 $string['unknowncbstatus'] = 'Received unknown status: {$a}';
 
 $string['entercreditcard']="Update Credit Card Details";
+$string['eventrunnerpage']="Event Runner";
+$string['eventrunnerheading']="Event Runner";
+$string['eventrunnerform']="Event Runner Form";
+$string['eventid']="Event ID";
+$string['eventid']="Event ID";
+
+
 
 
 

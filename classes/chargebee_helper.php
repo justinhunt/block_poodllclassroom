@@ -167,7 +167,7 @@ class chargebee_helper
         return false;
     }
 
-    public static function retrieve_process_events($trace=false){
+    public static function retrieve_process_recent_events($trace=false){
         global $DB;
 
         $apikey = get_config(constants::M_COMP,'chargebeeapikey');
@@ -208,170 +208,242 @@ class chargebee_helper
         }
         foreach($eventslist->list as $eventcontainer) {
             $theevent=$eventcontainer->event;
-            if ($theevent && isset($theevent->occurred_at)) {
-                if($trace) {
-                    $trace->output("cbsync:: processing a sub event: " . $theevent->id);
-                }
-                $pevent = new \stdClass();
-                $pevent->timecreated = time();
-                $pevent->timecreated = time();
-                $pevent->occurredat = $theevent->occurred_at;
-                $pevent->upstreamid = $theevent->id;
-                $pevent->type = $theevent->event_type;
-                $pevent->content = json_encode($theevent->content);
-                if (strpos($pevent->type, 'subscription_') === 0) {
-                    $principal = 'subscription';
-                } else {
-                    $principal = 'other';
-                }
-                switch ($principal) {
-                    case "subscription":
-                        $pevent->typeid = $theevent->content->subscription->id;
-                        break;
-                    case "other":
-                    default:
-                        $pevent->typeid = 0;
-                }
-                $pevent->id = $DB->insert_record(constants::M_TABLE_EVENTS, $pevent);
+            self::process_one_event($theevent, $trace);
 
-                switch ($pevent->type) {
-                    case 'subscription_created':
-                    case 'subscription_renewed':
-
-                        if($trace) {
-                            $trace->output("cbsync:: processing ". $pevent->type . " event: " . $theevent->id);
-                        }
-
-                        //create a sub
-                        $poodllsub = common::get_poodllsub_by_upstreamsubid($theevent->content->subscription->id);
-                        if ($poodllsub == false) {
-                            //lets create the school. IF it already exists, nothing bad will happen
-                            $ret = common::create_school_from_upstreamid($theevent->content->subscription->customer_id);
-                            if($trace && $ret){
-                                $trace->output("cbsync:: create school from upstreamid: " . $ret['message']);
-                            }
-
-                            $subscription = $theevent->content->subscription;
-                            $currency_code = $subscription->currency_code;
-                            $amount_paid = $subscription->subscription_items[0]->amount;
-
-                            $subid = common::create_poodll_sub($subscription,$currency_code,$amount_paid,$theevent->content->subscription->customer_id );
-                            if($trace){
-                                if($subid) {
-                                    $trace->output("cbsync:: create sub: " . $subid);
-                                }else{
-                                    $trace->output("cbsync:: failed to create sub");
-                                }
-                            }
-
-                         ///renew a sub
-                        }else{
-                            $subscription = $theevent->content->subscription;
-                            $subid = common::update_poodllsub_from_upstream($poodllsub,$subscription);
-                            if($trace){
-                                if($subid) {
-                                    $trace->output("cbsync:: renewed sub: " . $subid);
-                                }else{
-                                    $trace->output("cbsync:: failed to renew sub");
-                                }
-                            }
-                        }
-                        break;
-                    case 'subscription_cancelled':
-
-                        if($trace) {
-                            $trace->output("cbsync:: processing sub cancelled event: " . $theevent->id);
-                        }
-
-                        //dont create a subscription twice, that would be bad ...
-                        $poodllsub = common::get_poodllsub_by_upstreamsubid($theevent->content->subscription->id);
-                        if ($poodllsub == false) {
-                            if($trace) {
-                                $trace->output("cbsync:: No sub of that ID found locally. Nothing to cancel: " . $theevent->id);
-                            }
-                        }else{
-
-
-                            $upstreamsub = $theevent->content->subscription;
-
-                            //we set the expire date to today if the sub has not been paid
-                            if((isset($upstreamsub->cancel_reason))){
-                                $upstreamsub->current_term_end=time();
-                                $trace->output("cbsync:: appears to be a failure to pay, set expiry to today: " . $upstreamsub->cancel_reason);
-                            }
-
-                            $subid = common::update_poodllsub_from_upstream($poodllsub,$upstreamsub);
-                            if($trace){
-                                if($subid) {
-                                    $trace->output("cbsync:: cancelled sub: " . $subid);
-                                }else{
-                                    $trace->output("cbsync:: failed to cancel sub");
-                                }
-                            }
-                        }
-                        break;
-
-                    case 'subscription_reactivated':
-
-                        if($trace) {
-                            $trace->output("cbsync:: reactivating sub cevent: " . $theevent->id);
-                        }
-
-                        //dont create a subscription twice, that would be bad ...
-                        $poodllsub = common::get_poodllsub_by_upstreamsubid($theevent->content->subscription->id);
-                        if ($poodllsub == false) {
-                            if($trace) {
-                                $trace->output("cbsync:: No sub of that ID found locally. Nothing to re-activate: " . $theevent->id);
-                            }
-                        }else{
-
-
-                            $upstreamsub = $theevent->content->subscription;
-                            $subid = common::update_poodllsub_from_upstream($poodllsub,$upstreamsub);
-                            if($trace){
-                                if($subid) {
-                                    $trace->output("cbsync:: reactivated sub: " . $subid);
-                                }else{
-                                    $trace->output("cbsync:: failed to reactivate sub");
-                                }
-                            }
-                        }
-                        break;
-
-                    case 'subscription_changed':
-                        if($trace) {
-                            $trace->output("cbsync:: processing sub changed event: " . $theevent->id);
-                        }
-
-                        //only change an existing subscription twice
-                        $poodllsub = common::get_poodllsub_by_upstreamsubid($theevent->content->subscription->id);
-                        if ($poodllsub != false) {
-                            if($trace){
-                                $trace->output("cbsync:: updating upstreamsub: " . $theevent->content->subscription->id);
-                            }
-
-                            $upstreamsub = $theevent->content->subscription;
-                            $subid = common::update_poodllsub_from_upstream($poodllsub,$upstreamsub);
-
-                            if($trace){
-                                if($subid) {
-                                    $trace->output("cbsync:: updated poodll sub: " . $poodllsub->id);
-                                }else{
-                                    $trace->output("cbsync:: failed to update poodll sub: " . $poodllsub->id);
-                                }
-                            }
-                        }else{
-                            if($trace){
-                                $trace->output("cbsync:: no pre-existing poodll sub matching upstream sub: " . $theevent->content->subscription->id);
-                            }
-                        }
-                        break;
-                    default:
-                        //do nothing
-                }//end of switch
-            }//end of is valid event
         }//end of events list loop
         return false;
+    }
+
+    public static function retrieve_process_one_event($eventid, $trace=false){
+        global $DB;
+
+        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
+        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
+
+        $url = "https://$siteprefix.chargebee.com/api/v2/events/";
+        $url .= $eventid;
+
+        //this is a GET request
+        $forceget=true;
+        $curlresult = common::curl_fetch($url,false,$apikey,$forceget);
+
+        $event = common::make_object_from_json($curlresult);
+        if(!$event){
+            $message = "single event:: failed to retrieve event or invalid";
+            if($trace) {
+                $trace->output($message);
+                return false;
+            }else{
+                return $message;
+            }
+        }
+
+        if(!isset($event->event->event_type)){
+            $message = "single event:: event is invalid";
+            if($trace) {
+                $trace->output($message);
+                return false;
+            }else{
+                return $message;
+            }
+        }
+
+        switch ($event->event->event_type){
+            case 'subscription_created':
+            case 'subscription_reactivated':
+            case 'subscription_renewed':
+            case 'subscription_cancelled':
+            case 'subscription_changed':
+                break;
+            default:
+                $message = "single event:: event type cannot be processed: " . $event->event->event_type;
+                if($trace) {
+                    $trace->output($message);
+                    return false;
+                }else{
+                    return $message;
+                }
+        }
+
+        $theevent=$event->event;
+        self::process_one_event($theevent, $trace);
+
+        return 'that possibly worked';
+    }
+
+    public static function process_one_event($theevent, $trace=false){
+        global $DB;
+
+        if ($theevent && isset($theevent->occurred_at)) {
+            if($trace) {
+                $trace->output("cbsync:: processing a sub event: " . $theevent->id);
+            }
+            $pevent = new \stdClass();
+            $pevent->timecreated = time();
+            $pevent->timecreated = time();
+            $pevent->occurredat = $theevent->occurred_at;
+            $pevent->upstreamid = $theevent->id;
+            $pevent->type = $theevent->event_type;
+            $pevent->content = json_encode($theevent->content);
+            if (strpos($pevent->type, 'subscription_') === 0) {
+                $principal = 'subscription';
+            } else {
+                $principal = 'other';
+            }
+            switch ($principal) {
+                case "subscription":
+                    $pevent->typeid = $theevent->content->subscription->id;
+                    break;
+                case "other":
+                default:
+                    $pevent->typeid = 0;
+            }
+
+            //we do not want to add old events on the events table again, because we use that to know which are the most recent events
+            //so if the event exists we are being asked to re- run it. Lets just do that
+            $event_already_processed = $DB->get_record(constants::M_TABLE_EVENTS,array('upstreamid'=>$theevent->id));
+            if($event_already_processed ){
+                $pevent->id = $event_already_processed->id;
+            }else{
+                $pevent->id = $DB->insert_record(constants::M_TABLE_EVENTS, $pevent);
+            }
+
+            switch ($pevent->type) {
+                case 'subscription_created':
+                case 'subscription_renewed':
+
+                    if($trace) {
+                        $trace->output("cbsync:: processing ". $pevent->type . " event: " . $theevent->id);
+                    }
+
+                    //create a sub
+                    $poodllsub = common::get_poodllsub_by_upstreamsubid($theevent->content->subscription->id);
+                    if ($poodllsub == false) {
+                        //lets create the school. IF it already exists, nothing bad will happen
+                        $ret = common::create_school_from_upstreamid($theevent->content->subscription->customer_id);
+                        if($trace && $ret){
+                            $trace->output("cbsync:: create school from upstreamid: " . $ret['message']);
+                        }
+
+                        $subscription = $theevent->content->subscription;
+                        $currency_code = $subscription->currency_code;
+                        $amount_paid = $subscription->subscription_items[0]->amount;
+
+                        $subid = common::create_poodll_sub($subscription,$currency_code,$amount_paid,$theevent->content->subscription->customer_id );
+                        if($trace){
+                            if($subid) {
+                                $trace->output("cbsync:: create sub: " . $subid);
+                            }else{
+                                $trace->output("cbsync:: failed to create sub");
+                            }
+                        }
+
+                        ///renew a sub
+                    }else{
+                        $subscription = $theevent->content->subscription;
+                        $subid = common::update_poodllsub_from_upstream($poodllsub,$subscription);
+                        if($trace){
+                            if($subid) {
+                                $trace->output("cbsync:: renewed sub: " . $subid);
+                            }else{
+                                $trace->output("cbsync:: failed to renew sub");
+                            }
+                        }
+                    }
+                    break;
+                case 'subscription_cancelled':
+
+                    if($trace) {
+                        $trace->output("cbsync:: processing sub cancelled event: " . $theevent->id);
+                    }
+
+                    //dont create a subscription twice, that would be bad ...
+                    $poodllsub = common::get_poodllsub_by_upstreamsubid($theevent->content->subscription->id);
+                    if ($poodllsub == false) {
+                        if($trace) {
+                            $trace->output("cbsync:: No sub of that ID found locally. Nothing to cancel: " . $theevent->id);
+                        }
+                    }else{
+
+
+                        $upstreamsub = $theevent->content->subscription;
+
+                        //we set the expire date to today if the sub has not been paid
+                        if((isset($upstreamsub->cancel_reason))){
+                            $upstreamsub->current_term_end=time();
+                            $trace->output("cbsync:: appears to be a failure to pay, set expiry to today: " . $upstreamsub->cancel_reason);
+                        }
+
+                        $subid = common::update_poodllsub_from_upstream($poodllsub,$upstreamsub);
+                        if($trace){
+                            if($subid) {
+                                $trace->output("cbsync:: cancelled sub: " . $subid);
+                            }else{
+                                $trace->output("cbsync:: failed to cancel sub");
+                            }
+                        }
+                    }
+                    break;
+
+                case 'subscription_reactivated':
+
+                    if($trace) {
+                        $trace->output("cbsync:: reactivating sub cevent: " . $theevent->id);
+                    }
+
+                    //dont create a subscription twice, that would be bad ...
+                    $poodllsub = common::get_poodllsub_by_upstreamsubid($theevent->content->subscription->id);
+                    if ($poodllsub == false) {
+                        if($trace) {
+                            $trace->output("cbsync:: No sub of that ID found locally. Nothing to re-activate: " . $theevent->id);
+                        }
+                    }else{
+
+
+                        $upstreamsub = $theevent->content->subscription;
+                        $subid = common::update_poodllsub_from_upstream($poodllsub,$upstreamsub);
+                        if($trace){
+                            if($subid) {
+                                $trace->output("cbsync:: reactivated sub: " . $subid);
+                            }else{
+                                $trace->output("cbsync:: failed to reactivate sub");
+                            }
+                        }
+                    }
+                    break;
+
+                case 'subscription_changed':
+                    if($trace) {
+                        $trace->output("cbsync:: processing sub changed event: " . $theevent->id);
+                    }
+
+                    //only change an existing subscription twice
+                    $poodllsub = common::get_poodllsub_by_upstreamsubid($theevent->content->subscription->id);
+                    if ($poodllsub != false) {
+                        if($trace){
+                            $trace->output("cbsync:: updating upstreamsub: " . $theevent->content->subscription->id);
+                        }
+
+                        $upstreamsub = $theevent->content->subscription;
+                        $subid = common::update_poodllsub_from_upstream($poodllsub,$upstreamsub);
+
+                        if($trace){
+                            if($subid) {
+                                $trace->output("cbsync:: updated poodll sub: " . $poodllsub->id);
+                            }else{
+                                $trace->output("cbsync:: failed to update poodll sub: " . $poodllsub->id);
+                            }
+                        }
+                    }else{
+                        if($trace){
+                            $trace->output("cbsync:: no pre-existing poodll sub matching upstream sub: " . $theevent->content->subscription->id);
+                        }
+                    }
+                    break;
+                default:
+                    //do nothing
+            }//end of switch
+        }//end of is valid event
     }
 
     public static function get_checkout_existing($planid, $schoolid, $currentsubid){
