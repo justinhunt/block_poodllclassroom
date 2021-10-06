@@ -98,8 +98,8 @@ if($ok) {
    // echo $substable;
 
     //Sync Options
-    $syncOptions = $renderer->fetch_sync_options();
-    echo $syncOptions;
+    $otherOptions = $renderer->fetch_other_options();
+    echo $otherOptions;
 
 
 

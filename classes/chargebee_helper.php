@@ -188,7 +188,7 @@ class chargebee_helper
         }
 
         $postdata=[];
-        $postdata['event_type[in]'] = '["subscription_created","subscription_changed","subscription_renewed","subscription_cancelled","subscription_reactivated"]';
+        $postdata['event_type[in]'] = '["subscription_created","subscription_changed","subscription_renewed","subscription_cancelled","subscription_reactivated","subscription_deleted"]';
         $postdata['occurred_at[after]'] = ''  . $lastoccurredat;
         //this is a GET request
         $qstring= http_build_query($postdata,"",'&');
@@ -254,6 +254,7 @@ class chargebee_helper
             case 'subscription_renewed':
             case 'subscription_cancelled':
             case 'subscription_changed':
+            case 'subscription_deleted':
                 break;
             default:
                 $message = "single event:: event type cannot be processed: " . $event->event->event_type;
@@ -432,6 +433,33 @@ class chargebee_helper
                                 $trace->output("cbsync:: updated poodll sub: " . $poodllsub->id);
                             }else{
                                 $trace->output("cbsync:: failed to update poodll sub: " . $poodllsub->id);
+                            }
+                        }
+                    }else{
+                        if($trace){
+                            $trace->output("cbsync:: no pre-existing poodll sub matching upstream sub: " . $theevent->content->subscription->id);
+                        }
+                    }
+                    break;
+                case 'subscription_deleted':
+                    if($trace) {
+                        $trace->output("cbsync:: processing sub deleted event: " . $theevent->id);
+                    }
+
+                    //only change an existing subscription twice
+                    $poodllsub = common::get_poodllsub_by_upstreamsubid($theevent->content->subscription->id);
+                    if ($poodllsub != false) {
+                        if($trace){
+                            $trace->output("cbsync:: deleting upstreamsub: " . $theevent->content->subscription->id);
+                        }
+
+                        $ret = $DB->delete_records(constants::M_TABLE_SUBS,array('id'=>$poodllsub->id));
+
+                        if($trace){
+                            if($ret) {
+                                $trace->output("cbsync:: deleted poodll sub: " . $poodllsub->id);
+                            }else{
+                                $trace->output("cbsync:: failed to delete poodll sub: " . $poodllsub->id);
                             }
                         }
                     }else{

@@ -948,7 +948,7 @@ class renderer extends \plugin_renderer_base {
 
     }
 
-    function fetch_sync_options(){//add school button
+    function fetch_other_options(){//add school button
         $context = \context_system::instance();
         if(!has_capability('block/poodllclassroom:manageintegration', $context)) {
             return "";
@@ -960,13 +960,16 @@ class renderer extends \plugin_renderer_base {
         $subsbutton =  new \single_button(
             new \moodle_url(constants::M_URL . '/subs/sync.php',array('type'=>'subs')),
             get_string('syncsubs', constants::M_COMP), 'get');
+        $eventrunnerbutton =  new \single_button(
+            new \moodle_url(constants::M_URL . '/subs/eventrunner.php',array()),
+            get_string('eventrunner', constants::M_COMP), 'get');
 
         //return add button and table
         $heading = $this->output->heading(get_string('syncoptions',constants::M_COMP),3);
         $heading .= \html_writer::div(get_string('syncoptions_instructions',constants::M_COMP));
 
 
-        return $heading  . $this->render($schoolsbutton) .  $this->render($subsbutton);
+        return $heading  . $this->render($schoolsbutton) .  $this->render($subsbutton) . $this->render($eventrunnerbutton);
 
     }
 
