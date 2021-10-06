@@ -103,7 +103,12 @@ class renderer extends \plugin_renderer_base {
                 if($subs) {
                     $options[] = array('url' => '#', 'cbaction' => 'ssp', 'upstreamownerid' => $school->upstreamownerid, 'type' => 'billingaccount', 'label' => get_string('billingaccount', constants::M_COMP));
                     $options[] = array('url' => '#', 'cbaction' => 'ssp', 'upstreamownerid' => $school->upstreamownerid, 'type' => 'billinghistory', 'label' => get_string('billinghistory', constants::M_COMP));
-                    $options[] = array('url' => '#', 'cbaction' => 'ssp', 'upstreamownerid' => $school->upstreamownerid, 'type' => 'paymentsources', 'label' => get_string('paymentsources', constants::M_COMP));
+
+                    //we need to highlight, initially, the need to set a credit card. To bring that up a new button level we create a handle for our mustache button as well as set it in theopptions dropdown
+                    $paymentsources = array('url' => '#', 'cbaction' => 'ssp', 'upstreamownerid' => $school->upstreamownerid, 'type' => 'paymentsources', 'label' => get_string('paymentsources', constants::M_COMP));
+                    $optionsdata['paymentsources']=$paymentsources;
+
+                    $options[] = $paymentsources;
                 }
                 //manage all our subscriptions
                 //  $portalurl =chargebee::get_portalurl_by_upstreamid($school->upstreamownerid);

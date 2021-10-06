@@ -361,6 +361,8 @@ $string['unabletoverifysub'] = 'Unable to verify the created subscription.';
 $string['createdsub'] = 'Successfully created new subscription. Thanks!';
 $string['unknowncbstatus'] = 'Received unknown status: {$a}';
 
+$string['entercreditcard']="Update Credit Card Details";
+
 
 
 
