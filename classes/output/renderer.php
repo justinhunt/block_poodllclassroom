@@ -11,6 +11,7 @@ namespace block_poodllclassroom\output;
 use \block_poodllclassroom\constants;
 use \block_poodllclassroom\common;
 use \block_poodllclassroom\chargebee_helper;
+use \block_poodllclassroom\cpapi_helper;
 
 
 class renderer extends \plugin_renderer_base {
@@ -178,6 +179,13 @@ class renderer extends \plugin_renderer_base {
             $editschoolurl =  $CFG->wwwroot . '/blocks/poodllclassroom/subs/editmyschool.php?id='. $school->id;
             $content .= $this->render_from_template('block_poodllclassroom/moodlesubs',
                     ['school'=>$moodlesubs[0]->school,'subs'=>$moodlesubs, 'editschoolurl'=>$editschoolurl,'subtype'=>'moodle', 'checkouturl'=>$checkouturl->out()]);
+
+            $schoolusagedata = cpapi_helper::fetch_usage_data($moodlesubs[0]->school->apiuser);
+            if($schoolusagedata) {
+                $content .=  $this->display_usage_report($schoolusagedata);
+            }else{
+                $content .=   get_string('nousagedata', constants::M_COMP);
+            }
         }
 
         //Platform LTI Section
