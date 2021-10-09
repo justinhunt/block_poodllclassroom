@@ -89,3 +89,6 @@
 .block_poodllclassroom_options {
     margin-top: 10px;
 }
+span.block_poodllclassroom_paymentdue {
+    color: red;
+}
