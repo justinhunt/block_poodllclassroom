@@ -268,8 +268,17 @@ $string['paymentsources'] = 'Payment Methods';
 $string['freetrial'] = 'Free Trial';
 $string['alreadytaken'] = 'Already Subscribed';
 $string['paymentdue'] = 'Payment Due';
-$string['active'] = 'Active';
-$string['inactive'] = 'Inactive';
+$string['willcancel'] = 'Scheduled to Cancel';
+$string['subwillchange'] = 'Changing to: {$a->planname}({$a->payment_display})';
+
+$string['nopaymentdue'] = 'Up to date';
+$string['active_status'] = 'Active';
+$string['future_status'] = 'Active';
+$string['paused_status'] = 'Active';
+$string['nonrenewing_status'] = 'Active';
+$string['cancelled_status'] = 'Active';
+$string['intrial_status'] = 'Active';
+
 $string['status'] = 'Status';
 $string['chargebeesync_task'] = 'Chargebee Sync';
 $string['ltihost'] = 'LTI host';

@@ -68,8 +68,13 @@ const M_RESELLER_POODLL =1;
 
 const M_STATUS_NONE = '-';
 const M_STATUS_ACTIVE = 'active';
-const M_STATUS_PAYMENTDUE = 'paymentdue';
-const M_STATUS_INACTIVE = 'inactive';
+const M_STATUS_PAYMENTDUE = 'paymentdue'; //not used
+const M_STATUS_INACTIVE = 'inactive'; //not used
+const M_STATUS_CANCELLED = 'cancelled';
+const M_STATUS_PAUSED = 'paused';
+const M_STATUS_NONRENEWING = 'non_renewing';
+const M_STATUS_FUTURE = 'future';
+const M_STATUS_IN_TRIAL = 'in_trial';
 
 const M_FAMILY_ESSENTIALS = 'M_ESSENT';
 const M_FAMILY_LANG = 'M_LANG';

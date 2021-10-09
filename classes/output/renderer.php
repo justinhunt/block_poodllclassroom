@@ -25,7 +25,7 @@ class renderer extends \plugin_renderer_base {
     }
 
     function fetch_block_content($context, $users=false, $courses=false){
-        global $CFG;
+        global $CFG, $USER;
 
         //is this right?
         $context = \context_system::instance();
@@ -130,7 +130,7 @@ class renderer extends \plugin_renderer_base {
         $checkouturl  = new \moodle_url(constants::M_URL . '/subs/checkout.php',array());
 
         //Gather subs info
-        $subs = common::get_poodllsubs_by_currentuser();
+        $subs =  common::fetch_subs_by_user($USER->id);  //common::get_poodllsubs_by_currentuser();
         $extended_subs = common::get_extended_sub_data($subs);
         $display_subs = common::get_display_sub_data($extended_subs);
 

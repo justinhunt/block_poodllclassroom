@@ -474,9 +474,15 @@ class common
         $sql .= 'WHERE u.id = :userid ';
         $subs=$DB->get_records_sql($sql,array('userid'=>$userid));
 
-
         if($subs) {
-            return $subs;
+            $merged_subs =[];
+            foreach($subs as $sub){
+                $merged_sub= common::merge_poodll_upstream_sub($sub);
+                if($merged_sub) {
+                    $merged_subs[] = $merged_sub;
+                }
+            }
+            return $merged_subs;
         }else{
             return [];
         }
@@ -510,27 +516,60 @@ class common
         $subs=$DB->get_records_sql($sql,['schoolid'=>$schoolid]);
 
         if($subs) {
-            return $subs;
+            $merged_subs =[];
+            foreach($subs as $sub){
+                $merged_sub= common::merge_poodll_upstream_sub($sub);
+                if($merged_sub) {
+                    $merged_subs[] = $merged_sub;
+                }
+            }
+            return $merged_subs;
         }else{
             return [];
         }
     }
 
-    public static function fetch_schoolsubs_by_school($schoolid){
-        global $DB;
+    //Here we merge the upstream and local sub into one object
+    //we also sync the local sub with the remote one and save it. But the real point is that we only use
+    //fresh info from upstream, not sync'd data. We ought to complete remove fields from subs table apart from id, upstreamsubid and planid
+    //thats a bit scarey because occasionally we do an "all subs" call and in future might want to report. So we sync it but try to only use fresh data
+    public static function merge_poodll_upstream_sub($poodllsub){
 
-        global $DB,$USER;
-        $sql = 'SELECT sub.* ';
-        $sql .= ' FROM {'. constants::M_TABLE_SUBS .'} sub ';
-        $sql .= ' INNER JOIN {'. constants::M_TABLE_SCHOOLS .'} school ON school.id=sub.schoolid';
-        $sql .= ' WHERE school.id = :schoolid';
-        $subs=$DB->get_records_sql($sql, array('schoolid'=>$schoolid));
+        $upstream = chargebee_helper::fetch_chargebee_sub($poodllsub->upstreamsubid);
+        $upstreamsub=$upstream->subscription;
+       // $upstreamuser=$upstream->customer;
+        $poodllsub= self::update_poodllsub_from_upstream($poodllsub, $upstreamsub);
 
-        if($subs) {
-            return $subs;
-        }else{
-            return [];
+        //add Poodll Sub Fields to Upstream Sub (for display ultimately)
+        $upstreamsub->upstreamsubid = $upstreamsub->id;
+        $upstreamsub->id = $poodllsub->id;
+        $upstreamsub->schoolid = $poodllsub->schoolid;
+        $upstreamsub->payment = $poodllsub->payment;
+        $upstreamsub->paymentcurr = $poodllsub->paymentcurr;
+        $upstreamsub->billinginterval = $poodllsub->billinginterval;
+        $upstreamsub->expiretime = $poodllsub->expiretime;
+        $upstreamsub->planid = $poodllsub->planid;
+        $upstreamsub->jsonfields = $poodllsub->jsonfields;
+        $upstreamsub->timecreated = $poodllsub->timecreated;
+        $upstreamsub->timemodified = $poodllsub->timemodified;
+
+
+        if($upstreamsub->has_scheduled_changes){
+            $upstreamsub->scheduled_sub= new \stdClass();
+            $scheduled=chargebee_helper::fetch_scheduled_chargebee_sub($poodllsub->upstreamsubid);
+            $scheduled_sub=$scheduled->subscription;
+            //$scheduled_user=$scheduled->customer;
+           //get the new payment amount
+            $upstreamsub->scheduled_sub->payment = $scheduled_sub->subscription_items[0]->amount;
+            //get our plan
+            $scheduledplanid = common::fetch_upstreamplanid_from_upstreamsub($scheduled_sub);
+            $poodllplan = self::fetch_poodllplan_from_upstreamplan($scheduledplanid );
+            $upstreamsub->scheduled_sub->planname = $poodllplan->name;
+            //get our billing unit
+            $upstreamsub->scheduled_sub->billinginterval = $poodllplan->billinginterval;
         }
+
+        return $upstreamsub;
 
     }
 
@@ -657,7 +696,8 @@ class common
         }
     }
 
-    public static function get_poodllsubs_by_currentuser(){
+    //TO DO: remove this , no longer used
+    public static function xxget_poodllsubs_by_currentuser(){
         global $DB,$USER;
         $sql = 'SELECT sub.* ';
         $sql .= ' FROM {'. constants::M_TABLE_SUBS .'} sub ';
@@ -755,18 +795,69 @@ class common
 
             //status
             switch($sub->status){
-                case constants::M_STATUS_PAYMENTDUE:
-                    $sub->status_display=get_string('paymentdue',constants::M_COMP);
-                    break;
-                case constants::M_STATUS_INACTIVE:
-                    $sub->status_display=get_string('inactive',constants::M_COMP);
-                    break;
+
                 case constants::M_STATUS_ACTIVE:
-                    $sub->status_display=get_string('active',constants::M_COMP);
+                    $sub->status_display=get_string('active_status',constants::M_COMP);
+                    break;
+                case constants::M_STATUS_FUTURE:
+                    $sub->status_display=get_string('future_status',constants::M_COMP);
+                    break;
+                case constants::M_STATUS_IN_TRIAL:
+                    $sub->status_display=get_string('intrial_status',constants::M_COMP);
+                    break;
+                case constants::M_STATUS_NONRENEWING:
+                    $sub->status_display=get_string('nonrenewing_status',constants::M_COMP);
+                    break;
+                case constants::M_STATUS_PAUSED:
+                    $sub->status_display=get_string('paused_status',constants::M_COMP);
+                    break;
+                case constants::M_STATUS_CANCELLED:
+                    $sub->status_display=get_string('cancelled_status',constants::M_COMP);
                     break;
                 case constants::M_STATUS_NONE:
                 default:
                     $sub->status_display='-';
+            }
+
+            if(isset($sub->due_invoices_count) && $sub->due_invoices_count>0){
+                $sub->status_display .= '<br><span class="block_poodllclassroom_paymentdue">' . get_string('paymentdue',constants::M_COMP) .'</span>';
+            }
+
+            if(isset($sub->cancel_schedule_created_at)){
+                $sub->status_display .= '<br><span class="block_poodllclassroom_willcancel">' . get_string('willcancel',constants::M_COMP) .'</span>';
+            }
+            if(isset($sub->scheduled_sub)){
+                $a = new \stdClass();
+                switch($sub->scheduled_sub->billinginterval){
+                    case constants::M_BILLING_YEARLY:
+                        $a->period_display=get_string('yearly',constants::M_COMP);
+                        break;
+                    case constants::M_BILLING_MONTHLY:
+                        $a->period_display=get_string('monthly',constants::M_COMP);
+                        break;
+                    case constants::M_BILLING_FREE:
+                        $a->period_display=get_string('free',constants::M_COMP);
+                        break;
+                    default:
+                        $a->period_display='';
+
+                }
+
+                //get the new payment amount
+                if($sub->paymentcurr!=='JPY'){
+                    $scheduled_amount = floatval($sub->scheduled_sub->payment) / 100;
+                }
+                $fmt = \numfmt_create( 'en_US', \NumberFormatter::CURRENCY );
+                $a->payment_display =  \numfmt_format_currency($fmt, $scheduled_amount , $sub->paymentcurr)."\n";
+
+                //get our plan
+                $a->planname = $sub->scheduled_sub->planname;
+
+                $sub->status_display .= '<br><span class="block_poodllclassroom_subchanges">' .
+                    get_string('subwillchange',constants::M_COMP, $a) .
+                    '</span>';
+
+
             }
 
             //expiry date
@@ -800,6 +891,21 @@ class common
         return $DB->get_record(constants::M_TABLE_SUBS,array('upstreamsubid'=>$upstreamsubid));
     }
 
+    //this is where any sub specific stuff has to happen .. eg get LTI creds, or API user and secret
+    public static function respond_to_updated_upstream_sub($poodllsub, $upstreamsub){
+        global $DB;
+        $plan = self::get_plan($poodllsub->planid);
+        $jsonfields = self::process_updated_sub($poodllsub, $upstreamsub, $plan);
+
+        $poodllsub->jsonfields = $jsonfields;
+        $poodllsub->hostedpage = json_encode($upstreamsub);
+
+        $ret = $DB->update_record(constants::M_TABLE_SUBS, $poodllsub);
+        return $ret;
+    }
+
+    //here we update the local sub table with details from upstream sub
+    //we try to never use local sub info, and to always pull afresh, eventually remove most fields from table
     public static function update_poodllsub_from_upstream($poodllsub,$upstreamsub){
         global $DB;
         $ret = false;
@@ -808,12 +914,7 @@ class common
         if($plan && $poodllsub && $upstreamsub) {
 
             $poodllsub->planid = $plan->id;
-
-            if ($upstreamsub->due_invoices_count > 0) {
-                $poodllsub->status = constants::M_STATUS_PAYMENTDUE;
-            } else {
-                $poodllsub->status = constants::M_STATUS_ACTIVE;
-            }
+            $poodllsub->status = $upstreamsub->status;
 
             if (is_number($upstreamsub->current_term_end)) {
                 $poodllsub->expiretime = $upstreamsub->current_term_end;
@@ -822,18 +923,9 @@ class common
             $poodllsub->paymentcurr = $upstreamsub->currency_code;
             $poodllsub->billinginterval = $plan->billinginterval;
             $poodllsub->timemodified = time();
-
-            //this is where any sub specific stuff has to happen .. eg get LTI creds, or API user and secret
-
-            //Disable while we import from CB
-            $jsonfields = self::process_updated_sub($poodllsub, $upstreamsub, $plan);
-
-            $poodllsub->jsonfields = $jsonfields;
-            $poodllsub->hostedpage = json_encode($upstreamsub);
-
             $ret = $DB->update_record(constants::M_TABLE_SUBS, $poodllsub);
         }
-        return $ret ? $poodllsub->id : false;
+        return $ret ? $poodllsub : false;
     }
 
 
@@ -895,11 +987,7 @@ class common
         $newsub->planid=$plan->id;
         $newsub->upstreamownerid=$school->upstreamownerid;
         $newsub->upstreamsubid=$subscription->id;
-        if($subscription->due_invoices_count>0){
-            $newsub->status=constants::M_STATUS_PAYMENTDUE;
-        }else{
-            $newsub->status=constants::M_STATUS_ACTIVE;
-        }
+        $newsub->status=$subscription->status;
         
         if(isset($subscription->current_term_end) && is_number($subscription->current_term_end)){
             $newsub->expiretime=$subscription->current_term_end;
@@ -915,7 +1003,6 @@ class common
 
 
         //this is where any sub specific stuff has to happen .. eg get LTI creds, or API user and secret
-
         //Disable while we import from CB
         $jsonfields = self::process_new_sub($school, $plan, $subscription);
 
@@ -936,63 +1023,6 @@ class common
             $upstreamsub->current_term_end=$upstreamsub->next_billing_at + YEARSECS;
         }
         return $upstreamsub;
-    }
-
-    public static function update_poodll_sub($upstreamsub, $poodllsub){
-        global $DB;
-
-        $update=false;
-
-        //Only some subs have total=dues nd current term end. often buried in items. here we fetch them
-        if(!isset($upstreamsub->total_dues) || !isset($upstreamsub->current_term_end)){
-            $upstreamsub = self::add_fields_to_sub($upstreamsub);
-        }
-
-        if($poodllsub->paymentcurr != $upstreamsub->currency_code){
-            $poodllsub->paymentcurr = $upstreamsub->currency_code;
-            $update=true;
-        }
-        if($poodllsub->payment != $upstreamsub->total_dues){
-            $poodllsub->payment =$upstreamsub->total_dues;
-            $update=true;
-        }
-
-        $jsonobj= json_decode($poodllsub->jsonfields);
-        if(!$jsonobj){$jsonobj = new \stdClass();}
-        if(!isset($jsonobj->due_invoices_count) || $jsonobj->due_invoices_count != $upstreamsub->due_invoices_count){
-            $jsonobj->due_invoices_count = $upstreamsub->due_invoices_count;
-            if( $upstreamsub->due_invoices_count==0 && $poodllsub->status==constants::M_STATUS_PAYMENTDUE){
-                $poodllsub->status=constants::M_STATUS_ACTIVE;
-            }elseif( $upstreamsub->due_invoices_count>0 && $poodllsub->status!=constants::M_STATUS_PAYMENTDUE){
-                $poodllsub->status=constants::M_STATUS_PAYMENTDUE;
-            }
-            $update=true;
-        }
-        if(!isset($jsonobj->has_scheduled_changes) || $jsonobj->has_scheduled_changes != $upstreamsub->has_scheduled_changes){
-            $jsonobj->has_scheduled_changes = $upstreamsub->has_scheduled_changes;
-            $update=true;
-        }
-        $poodllsub->jsonfields = json_encode($jsonobj);
-
-        if($poodllsub->expiretime != $upstreamsub->current_term_end){
-            $poodllsub->expiretime = $upstreamsub->current_term_end;
-            $update=true;
-        }else{
-            if($poodllsub->expiretime <time()){
-                 if($poodllsub->status==constants::M_STATUS_ACTIVE){
-                     $poodllsub->status=constants::M_STATUS_INACTIVE;
-                     $update=true;
-                 }
-            }
-        }
-
-        if($update){
-            $poodllsub->timemodified=time();
-            $DB->update_record(constants::M_TABLE_SUBS,$poodllsub);
-
-            //Disable while we import from CB
-            $jsonfields = self::process_new_sub($school, $plan, $subscription);
-        }
     }
 
     public static function process_new_sub($school, $plan,$subscription){
@@ -1660,21 +1690,6 @@ class common
             }
         }else{
             return false;
-        }
-    }
-
-    public static function do_sync_subs($trace)
-    {
-        global $DB;
-        //sync subs that appear to have expired or have a payment due
-        $syncsubs = $DB->get_records_sql("SELECT * from {" . constants::M_TABLE_SUBS . "} WHERE (expiretime < :now AND status = :activestatus) OR status = :paymentduestatus" ,
-            array('now'=>time(),'activestatus'=>constants::M_STATUS_ACTIVE,'paymentduestatus'=>constants::M_STATUS_PAYMENTDUE));
-
-
-        $trace->output('chargebee syncing: ' . count($syncsubs));
-        foreach($syncsubs as $poodllsub){
-            $trace->output('syncing:' . $poodllsub->upstreamsubid);
-            chargebee_helper::sync_sub($poodllsub);
         }
     }
 }//end of class

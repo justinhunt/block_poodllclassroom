@@ -274,6 +274,7 @@ class chargebee_helper
 
     public static function process_one_event($theevent, $trace=false){
         global $DB;
+        $responded = false;
 
         if ($theevent && isset($theevent->occurred_at)) {
             if($trace) {
@@ -339,13 +340,16 @@ class chargebee_helper
                             }
                         }
 
-                        ///renew a sub
+                    //renew a sub
                     }else{
-                        $subscription = $theevent->content->subscription;
-                        $subid = common::update_poodllsub_from_upstream($poodllsub,$subscription);
+                        $upstreamsub = $theevent->content->subscription;
+                        $updatedsub = common::update_poodllsub_from_upstream($poodllsub,$upstreamsub);
+                        if($updatedsub) {
+                            $responded = common::respond_to_updated_upstream_sub($updatedsub, $upstreamsub);
+                        }
                         if($trace){
-                            if($subid) {
-                                $trace->output("cbsync:: renewed sub: " . $subid);
+                            if($updatedsub && $responded) {
+                                $trace->output("cbsync:: renewed sub: " . $updatedsub->id);
                             }else{
                                 $trace->output("cbsync:: failed to renew sub");
                             }
@@ -375,10 +379,13 @@ class chargebee_helper
                             $trace->output("cbsync:: appears to be a failure to pay, set expiry to today: " . $upstreamsub->cancel_reason);
                         }
 
-                        $subid = common::update_poodllsub_from_upstream($poodllsub,$upstreamsub);
+                        $updatedsub = common::update_poodllsub_from_upstream($poodllsub,$upstreamsub);
+                        if($updatedsub) {
+                            $responded = common::respond_to_updated_upstream_sub($updatedsub, $upstreamsub);
+                        }
                         if($trace){
-                            if($subid) {
-                                $trace->output("cbsync:: cancelled sub: " . $subid);
+                            if($updatedsub && $responded) {
+                                $trace->output("cbsync:: cancelled sub: " . $updatedsub->id);
                             }else{
                                 $trace->output("cbsync:: failed to cancel sub");
                             }
@@ -402,10 +409,13 @@ class chargebee_helper
 
 
                         $upstreamsub = $theevent->content->subscription;
-                        $subid = common::update_poodllsub_from_upstream($poodllsub,$upstreamsub);
+                        $updatedsub = common::update_poodllsub_from_upstream($poodllsub,$upstreamsub);
+                        if($updatedsub) {
+                            $responded = common::respond_to_updated_upstream_sub($updatedsub, $upstreamsub);
+                        }
                         if($trace){
-                            if($subid) {
-                                $trace->output("cbsync:: reactivated sub: " . $subid);
+                            if($updatedsub && $responded) {
+                                $trace->output("cbsync:: reactivated sub: " . $updatedsub->id);
                             }else{
                                 $trace->output("cbsync:: failed to reactivate sub");
                             }
@@ -426,11 +436,13 @@ class chargebee_helper
                         }
 
                         $upstreamsub = $theevent->content->subscription;
-                        $subid = common::update_poodllsub_from_upstream($poodllsub,$upstreamsub);
-
+                        $updatedsub = common::update_poodllsub_from_upstream($poodllsub,$upstreamsub);
+                        if($updatedsub) {
+                            $responded = common::respond_to_updated_upstream_sub($updatedsub, $upstreamsub);
+                        }
                         if($trace){
-                            if($subid) {
-                                $trace->output("cbsync:: updated poodll sub: " . $poodllsub->id);
+                            if($updatedsub && $responded) {
+                                $trace->output("cbsync:: updated poodll sub: " . $updatedsub->id);
                             }else{
                                 $trace->output("cbsync:: failed to update poodll sub: " . $poodllsub->id);
                             }
@@ -618,23 +630,6 @@ class chargebee_helper
         return false;
     }
 
-    public static function sync_sub($poodllsub){
-        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
-        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
-
-        $url = "https://$siteprefix.chargebee.com/api/v2/subscriptions/";
-        $url .= $poodllsub->upstreamsubid;
-
-        $postdata=false;
-        $curlresult = common::curl_fetch($url,$postdata,$apikey);
-        $jsonresult = common::make_object_from_json($curlresult);
-        if($jsonresult){
-            if($jsonresult->subscription){
-                common::update_poodll_sub($jsonresult->subscription,$poodllsub);
-            }
-        }
-    }
-
     public static function fetch_chargebee_user($upstreamuserid){
         $apikey = get_config(constants::M_COMP,'chargebeeapikey');
         $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
@@ -722,6 +717,24 @@ class chargebee_helper
 
         $url = "https://$siteprefix.chargebee.com/api/v2/subscriptions/";
         $url .= $upstreamsubid;
+
+        $postdata=false;
+        $curlresult = common::curl_fetch($url,$postdata,$apikey);
+        $jsonresult = common::make_object_from_json($curlresult);
+        if($jsonresult) {
+            return $jsonresult;
+        }else{
+            return false;
+        }
+    }
+
+    public static function fetch_scheduled_chargebee_sub($upstreamsubid){
+        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
+        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
+
+        $url = "https://$siteprefix.chargebee.com/api/v2/subscriptions/";
+        $url .= $upstreamsubid;
+        $url .= '/retrieve_with_scheduled_changes';
 
         $postdata=false;
         $curlresult = common::curl_fetch($url,$postdata,$apikey);

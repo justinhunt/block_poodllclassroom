@@ -62,7 +62,7 @@ if(!$school){
 }
 
 //Subs Section
-$subs = common::fetch_schoolsubs_by_school($school->id);
+$subs =    common::fetch_subs_by_school($school->id); //common::fetch_schoolsubs_by_school($school->id);
 $extended_subs = common::get_extended_sub_data($subs);
 $display_subs = common::get_display_sub_data($extended_subs);
 $subssectiondata = array('subs'=>array_values($display_subs));
