@@ -536,6 +536,11 @@ class common
     public static function merge_poodll_upstream_sub($poodllsub){
 
         $upstream = chargebee_helper::fetch_chargebee_sub($poodllsub->upstreamsubid);
+        //we should not get in this situation, but its possible at least in the early days to have some out of sync
+        if(!$upstream){
+            return false;
+        }
+
         $upstreamsub=$upstream->subscription;
        // $upstreamuser=$upstream->customer;
         $poodllsub= self::update_poodllsub_from_upstream($poodllsub, $upstreamsub);
@@ -950,7 +955,7 @@ class common
         if(isset($subscription->cf_schoolid)) {
             $school=$DB->get_record(constants::M_TABLE_SCHOOLS,array('id'=>$subscription->cf_schoolid));
         }elseif($upstreamownerid){
-            $schools = self::get_school_by_upstreamownerid($upstreamownerid);
+            $schools = self::get_schools_by_upstreamownerid($upstreamownerid);
             if( $schools && count($schools)==1){
                 $school = array_shift($schools);
             }
@@ -1122,7 +1127,7 @@ class common
 
     }
 
-    public static function get_school_by_upstreamownerid($upstreamownerid){
+    public static function get_schools_by_upstreamownerid($upstreamownerid){
         global $DB;
         $schools = $DB->get_records(constants::M_TABLE_SCHOOLS,array('upstreamownerid'=>$upstreamownerid));
         if($schools) {
@@ -1341,7 +1346,7 @@ class common
         $ret['message']='OK';
 
         //do we already gots one like dis one, return
-        $existing_schools = self::get_school_by_upstreamownerid($upstreamownerid);
+        $existing_schools = self::get_schools_by_upstreamownerid($upstreamownerid);
         if(!$existing_schools ){
             $ret['success']=false;
             $ret['message']='We dont have that school:';
@@ -1427,7 +1432,7 @@ class common
         $ret['message']='OK';
 
         //do we already gots one like dis one, return
-        $existing_schools = self::get_school_by_upstreamownerid($upstreamownerid);
+        $existing_schools = self::get_schools_by_upstreamownerid($upstreamownerid);
         if($existing_schools  && !empty($existing_schools )){
             $ret['success']=false;
             $ret['message']='We already have that school:';

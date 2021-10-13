@@ -28,6 +28,7 @@ require('../../../config.php');
 use block_poodllclassroom\constants;
 use block_poodllclassroom\common;
 use block_poodllclassroom\cpapi_helper;
+use block_poodllclassroom\chargebee_helper;
 
 $id        = optional_param('id', 0, PARAM_INT);
 $delete    = optional_param('delete', 0, PARAM_BOOL);
@@ -268,7 +269,13 @@ if ($editform->is_cancelled()){
                 $data->timemodified=time();
                 if(!empty($data->siteurl)){$data->siteurls=json_encode($data->siteurl);}
                 $data->timemodified=time();
+                $oldschool = $DB->get_record(constants::M_TABLE_SCHOOLS,array('id'=>$data->id));
                 $result = $DB->update_record(constants::M_TABLE_SCHOOLS, $data);
+                //update chargebee if required
+                if($oldschool && $oldschool->name != $data->name) {
+                   chargebee_helper::update_chargebee_company($oldschool->upstreamownerid,$data->name);
+                }
+
                 //update entry on cpapi too
                 $url1=''; $url2=''; $url3=''; $url4=''; $url5='';
                 list($url1,$url2,$url3,$url4,$url5) = $data->siteurl;

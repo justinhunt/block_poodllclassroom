@@ -188,7 +188,8 @@ class chargebee_helper
         }
 
         $postdata=[];
-        $postdata['event_type[in]'] = '["subscription_created","subscription_changed","subscription_renewed","subscription_cancelled","subscription_reactivated","subscription_deleted"]';
+        $postdata['event_type[in]'] = '["subscription_created","subscription_changed","subscription_renewed",' .
+            '"subscription_cancelled","subscription_reactivated","subscription_deleted","customer_changed"]';
         $postdata['occurred_at[after]'] = ''  . $lastoccurredat;
         //this is a GET request
         $qstring= http_build_query($postdata,"",'&');
@@ -480,10 +481,93 @@ class chargebee_helper
                         }
                     }
                     break;
+
+                case 'customer_changed':
+                    if($trace) {
+                        $trace->output("cbsync:: processing customer changed event: " . $theevent->id);
+                    }
+                    $customer = $theevent->content->customer;
+                    $poodllschools = common::get_schools_by_upstreamownerid($customer->id);
+                    if ($poodllschools != false) {
+                        if($trace){
+                            $trace->output("cbsync:: changing customer details locally: " . $customer->id);
+                        }
+                        foreach($poodllschools as $poodllschool){
+                            if($poodllschool->resellerid == common::fetch_poodll_resellerid()){ //constants::M_RESELLER_POODLL){
+                                $poodlluser = $DB->get_record('user',array('id'=>$poodllschool->ownerid));
+                                $updateuser=false;
+                                $updateschool=false;
+                                //user name
+                                if($customer->first_name != $poodlluser->firstname){
+                                    $updateuser=true;
+                                    $poodlluser->firstname=$customer->first_name;
+                                }
+                                //last name
+                                if($customer->last_name != $poodlluser->lastname){
+                                    $updateuser=true;
+                                    $poodlluser->lastname=$customer->last_name;
+                                }
+                                //email
+                                if($customer->email != $poodlluser->email){
+                                    $updateuser=true;
+                                    $poodlluser->email=$customer->email;
+                                }
+
+                                //update user if user info was changed
+                                if($updateuser){
+                                    $trace->output("cbsync:: changing customer updating poodll user");
+                                    $DB->update_record("user",$poodlluser);
+                                    $trace->output("cbsync:: changing customer updating cpapi user");
+                                    cpapi_helper::update_cpapi_user($poodllschool->apiuser,$poodlluser->firstname,$poodlluser->lastname,$poodlluser->email);
+                                }
+
+                                //Update School if company name altered upstream
+                                if($customer->company != $poodllschool->name){
+                                    $updateschool=true;
+                                    $poodllschool->name=$customer->company;
+                                }
+                                if($updateschool){
+                                    $trace->output("cbsync:: changing customer updating poodllschool");
+                                    $DB->update_record(constants::M_TABLE_SCHOOLS,$poodllschool);
+                                }
+                            }else{
+                                $trace->output("cbsync:: changing customer to change is a reseller. not touching school");
+                            }
+                        }
+
+                    }else{
+                        if($trace){
+                            $trace->output("cbsync:: no poodll customer with that upstream id: " . $customer->id);
+                        }
+                    }
+                    break;
                 default:
                     //do nothing
             }//end of switch
         }//end of is valid event
+    }
+
+    public static function update_chargebee_company($customerid, $companyname){
+        global $USER, $CFG;
+
+        if(empty($companyname)){return false;}
+
+        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
+        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
+
+        if($customerid && !empty($apikey) && !empty($siteprefix)){
+            $url = "https://$siteprefix.chargebee.com/api/v2/customers/" . $customerid;
+            $postdata=[];
+            $postdata['company'] = $companyname;
+
+
+            $curlresult = common::curl_fetch($url,$postdata,$apikey);
+            $jsonresult = common::make_object_from_json($curlresult);
+            if($jsonresult){
+                return $jsonresult;
+            }
+        }
+        return false;
     }
 
     public static function get_checkout_existing($planid, $schoolid, $currentsubid){

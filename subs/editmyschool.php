@@ -28,6 +28,7 @@ require('../../../config.php');
 use block_poodllclassroom\constants;
 use block_poodllclassroom\common;
 use block_poodllclassroom\cpapi_helper;
+use block_poodllclassroom\chargebee_helper;
 
 $id        = optional_param('id', 0, PARAM_INT);
 $add        = optional_param('add', 0, PARAM_BOOL);
@@ -177,6 +178,10 @@ if ($editform->is_cancelled()){
                         $cpapi_username = strtolower($theschool->apiuser);
                         cpapi_helper::update_cpapi_sites($cpapi_username, $url1, $url2, $url3, $url4, $url5);
                         cpapi_helper::update_cpapi_user($cpapi_username, $USER->firstname, $USER->lastname, $USER->email);
+                        //update chargebee if required
+                        if($theschool->name != $data->name) {
+                            chargebee_helper::update_chargebee_company($theschool->upstreamownerid,$data->name);
+                        }
                     }
                 }
             }
