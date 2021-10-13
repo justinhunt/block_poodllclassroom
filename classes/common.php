@@ -537,7 +537,7 @@ class common
 
         $upstream = chargebee_helper::fetch_chargebee_sub($poodllsub->upstreamsubid);
         //we should not get in this situation, but its possible at least in the early days to have some out of sync
-        if(!$upstream){
+        if(!$upstream || !isset($upstream->subscription)){
             return false;
         }
 
