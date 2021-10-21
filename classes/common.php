@@ -671,7 +671,7 @@ class common
     public static function fetch_schools_by_reseller($resellerid){
         global $DB;
 
-        $sql = 'SELECT school.*, u.firstname as ownerfirstname, u.lastname as ownerlastname, u.email as owneremail';
+        $sql = 'SELECT school.*, u.firstname as ownerfirstname, u.lastname as ownerlastname, u.email as owneremail ';
         $sql .= 'from {'. constants::M_TABLE_SCHOOLS .'} school ';
         $sql .= 'INNER JOIN {user} u ON u.id = school.ownerid ';
         $sql .= 'WHERE school.resellerid = :resellerid ';
