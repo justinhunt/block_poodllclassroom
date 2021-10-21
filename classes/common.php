@@ -359,10 +359,10 @@ class common
 
     public static function fetch_owners_array(){
         global $DB;
-        $owners = $DB->get_records('user', array());
+        $owners = $DB->get_records('user', array(),'firstname, lastname ASC');
         $ret = [];
         foreach($owners as $owner){
-            $ret[$owner->id]=$owner->lastname . ' ' . $owner->firstname ;
+            $ret[$owner->id]=$owner->firstname . ' ' . $owner->lastname ;
         }
         return $ret;
     }
@@ -671,7 +671,7 @@ class common
     public static function fetch_schools_by_reseller($resellerid){
         global $DB;
 
-        $sql = 'SELECT school.*, u.firstname as ownerfirstname, u.lastname as ownerlastname ';
+        $sql = 'SELECT school.*, u.firstname as ownerfirstname, u.lastname as ownerlastname, u.email as owneremail';
         $sql .= 'from {'. constants::M_TABLE_SCHOOLS .'} school ';
         $sql .= 'INNER JOIN {user} u ON u.id = school.ownerid ';
         $sql .= 'WHERE school.resellerid = :resellerid ';
@@ -688,7 +688,7 @@ class common
     public static function fetch_schools(){
         global $DB;
 
-        $sql = 'SELECT school.*, u.firstname as ownerfirstname, u.lastname as ownerlastname ';
+        $sql = 'SELECT school.*, u.firstname as ownerfirstname, u.lastname as ownerlastname, u.email as owneremail ';
         $sql .= 'from {'. constants::M_TABLE_SCHOOLS .'} school ';
         $sql .= 'INNER JOIN {user} u ON u.id = school.ownerid ';
         $schools=$DB->get_records_sql($sql);

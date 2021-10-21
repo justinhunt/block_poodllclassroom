@@ -823,6 +823,7 @@ class renderer extends \plugin_renderer_base {
             $fields[] = $school->name ;
             if($superadmin) {
                 $fields[] = $school->ownerfirstname . ' ' . $school->ownerlastname . "($school->ownerid)";
+                $fields[] = $school->owneremail;
                 $fields[] = $school->upstreamownerid;
                 $fields[] = $school->status;
                 $fields[] = $school->jsonfields;
@@ -874,6 +875,7 @@ class renderer extends \plugin_renderer_base {
         $table->head[] = get_string('school', constants::M_COMP);
         if($superadmin) {
             $table->head[] = get_string('owner', constants::M_COMP);
+            $table->head[] = get_string('owneremail', constants::M_COMP);
             $table->head[] = get_string('upstreamownerid', constants::M_COMP);
             $table->head[] = get_string('status', constants::M_COMP);
             $table->head[] = get_string('jsonfields', constants::M_COMP);

@@ -381,6 +381,8 @@ $string['siteurlsheading']="site urls heading";
 $string['siteurlsform']="site urls form";
 $string['siteurls']="site urls";
 $string['syncallsiteurls']="sync all site urls";
+$string['owneremail']="Email";
+
 
 
 
