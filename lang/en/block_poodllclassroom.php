@@ -184,7 +184,9 @@ $string['courses'] = 'Courses';
 $string['upgradeplanheader'] = 'Change Plan Options';
 $string['monthlyyearly'] = 'Monthly <--> Yearly';
 $string['yourcurrentplan'] = '* current plan *';
-$string['changeplaninstructions'] = 'Choose a subscription plan from the options below. Annual and monthly payment options can be selected. The prices shown are unadjusted prices. If your plan is an annual one, when selected the new plan\'s price will be adjusted to factor in the cost from now until the end of the original subscription period.' ;
+
+$string['changeplan'] ='Change Plan';
+$string['changeplaninstructions'] = 'Choose a subscription plan from the options below. The prices shown are all in US dollars. The new plan will begin at the end of the current subscription. If you are upgrading from a free trial the new plan will begin immediately.' ;
 $string['youhavenosubscription'] = 'You do not have a subscription, so we can not change your plan.';
 $string['poodllclassroomoptions'] = 'Account Options';
 $string['maximumcourses'] = '<i>Maximum {$a} courses</i>';

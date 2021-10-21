@@ -214,7 +214,7 @@ class renderer extends \plugin_renderer_base {
 
     }
 
-    function fetch_checkout_buttons($school, $platform, $planfamily)
+    function fetch_checkout_buttons($school, $platform, $planfamily, $checkoutexisting=false)
     {
 
         if (!$school) {
@@ -232,9 +232,6 @@ class renderer extends \plugin_renderer_base {
 
         //get subs for the school
         $subs = common::fetch_subs_by_school($school->id);
-
-        $usercount = 0;
-        $coursecount = 0;
 
         $monthlyplans = [];
         $yearlyplans = [];
@@ -264,7 +261,7 @@ class renderer extends \plugin_renderer_base {
         //here we set up any info we need to pass into javascript
         $opts = array();
         $opts['siteprefix'] = get_config(constants::M_COMP, 'chargebeesiteprefix');
-        $opts['newplanclass'] = constants::M_COMP . '_newplan';
+       // $opts['newplanclass'] = constants::M_COMP . '_newplan';
         $opts['gocbcheckoutclass'] = constants::M_COMP . '_gocbcheckout';
         $this->page->requires->js_call_amd(constants::M_COMP . "/chargebeehelper", 'init', array($opts));
 
@@ -277,6 +274,7 @@ class renderer extends \plugin_renderer_base {
         }else{
             $togglediv ='';
         }
+
 
         //free plans
         $mdata =array();
@@ -292,7 +290,11 @@ class renderer extends \plugin_renderer_base {
         $mdata['billinginterval']='Monthly';
         $mdata['currency']='USD';
         $mdata['billingintervallabel']=get_string('freetrial',constants::M_COMP);
-        $freely = $this->render_from_template('block_poodllclassroom/freeplancontainer', $mdata);
+        if($checkoutexisting) {
+            $freely = '';
+        }else{
+            $freely = $this->render_from_template('block_poodllclassroom/freeplancontainer', $mdata);
+        }
 
         //monthly plans
         $mdata =array();
@@ -301,6 +303,7 @@ class renderer extends \plugin_renderer_base {
         $mdata['billinginterval']='Monthly';
         $mdata['currency']='USD';
         $mdata['billingintervallabel']=get_string('monthly',constants::M_COMP);
+        if($checkoutexisting) {$mdata['checkoutexisting']=$checkoutexisting;}
         $monthly = $this->render_from_template('block_poodllclassroom/newplancontainer', $mdata);
 
         //yearly plans
@@ -309,6 +312,7 @@ class renderer extends \plugin_renderer_base {
         $ydata['billinginterval']='Yearly';
         $ydata['currency']='USD';
         $ydata['billingintervallabel']=get_string('yearly',constants::M_COMP);
+        if($checkoutexisting) {$ydata['checkoutexisting']=$checkoutexisting;}
         if($platform==constants::M_PLATFORM_MOODLE && $planfamily=='ALL'){
             $langplans=[];
             $mediaplans=[];
@@ -337,6 +341,7 @@ class renderer extends \plugin_renderer_base {
             $yearly = $this->render_from_template('block_poodllclassroom/moodleplanscontainer', $ydata);
         }else {
             $ydata['plans']=$yearlyplans;
+            if($checkoutexisting) {$ydata['checkoutexisting']=$checkoutexisting;}
             $yearly = $this->render_from_template('block_poodllclassroom/newplancontainer', $ydata);
         }
 
@@ -359,92 +364,18 @@ class renderer extends \plugin_renderer_base {
             return $ret;
 
         }
+        $checkoutexisting=true;
+        $school = common::get_school_by_sub($extendedsub);
+        //this will limit what sub options are shown
+        //$planfamily = $extendedsub->plan->planfamily;
 
-        //get plans
-        $billingintervals = common::fetch_billingintervals();
-        $plans=common::fetch_plans_by_family($extendedsub->plan->planfamily);
+        //this will show all platform sub options
+        $planfamily = constants::M_FAMILY_ALL;
 
-        $usercount=0;
-        $coursecount=0;
-
-        $monthlyplans = [];
-        $yearlyplans = [];
-        $showfirst = constants::M_BILLING_YEARLY;
-
-        foreach($plans as $plan) {
-            $plan->billingintervalname=$billingintervals[$plan->billinginterval];
-            $plan->schoolid = $extendedsub->schoolid;
-            $plan->currentsubid=$extendedsub->id;
-            //if the users current plan, and its not free/monthly, then set the active display to yeif($plan->id==$myschool->planid){
-            if($plan->id == $extendedsub->planid) {
-                $plan->selected = true;
-                $plan->disabled = true;
-                if ($plan->billinginterval == constants::M_BILLING_YEARLY) {
-                    $showfirst = constants::M_BILLING_YEARLY;
-                }
-            }else{
-                if($plan->maxusers < $usercount){
-                    $plan->disabled = true;
-                    $plan->toomanyusers = true;
-                    $plan->usercount = $usercount;
-                }
-                if($plan->maxcourses < $coursecount){
-                    $plan->disabled = true;
-                    $plan->toomanycourses = true;
-                    $plan->coursecount = $coursecount;
-                }
-            }
-
-            switch($plan->billinginterval){
-                case constants::M_BILLING_MONTHLY:
-                    $monthlyplans[] = $plan;
-                    break;
-                case constants::M_BILLING_YEARLY:
-                    $yearlyplans[] = $plan;
-                    break;
-                case constants::M_BILLING_FREE:
-                    //$monthlyplans[] = $plan;
-                   // $yearlyplans[] = $plan;
-                    break;
-
-            }
-        }
-
-        //here we set up any info we need to pass into javascript
-        $opts =Array();
-        $opts['siteprefix']= get_config(constants::M_COMP,'chargebeesiteprefix');
-        $opts['changeplanclass']=constants::M_COMP . '_changeplan';
-        $opts['gocbcheckoutclass']=constants::M_COMP . '_gocbcheckout';
-        $opts['gocbmanageclass']=constants::M_COMP . '_subsmanagelink';
-        $this->page->requires->js_call_amd(constants::M_COMP . "/chargebeehelper", 'init', array($opts));
-
-
-        //toggle monthly/yearly button
-        if (count($monthlyplans) > 0){
-            $togglebutton = \html_writer::link('#', get_string('monthlyyearly', constants::M_COMP),
-                array('class' => 'btn btn-secondary monthlyyearly'));
-            $togglediv = \html_writer::div($togglebutton, constants::M_COMP . '_monthlyyearly');
-        }else{
-            $togglediv ='';
-        }
-
-        //monthly plans
-        $mdata =array();
-        $mdata['plans']=$monthlyplans;
-        $mdata['display']=($showfirst==constants::M_BILLING_MONTHLY) ? '' : 'block_poodllclassroom_hidden';
-        $mdata['billinginterval']='monthly';
-        $mdata['billingintervallabel']=get_string('monthly',constants::M_COMP);
-        $monthly = $this->render_from_template('block_poodllclassroom/upgradecontainer', $mdata);
-
-        //yearly plans
-        $ydata =array();
-        $ydata['plans']=$yearlyplans;
-        $ydata['display']=($showfirst==constants::M_BILLING_YEARLY) ? '' : 'block_poodllclassroom_hidden';
-        $ydata['billinginterval']='yearly';
-        $ydata['billingintervallabel']=get_string('yearly',constants::M_COMP);
-        $yearly = $this->render_from_template('block_poodllclassroom/upgradecontainer', $ydata);
-
-        return $togglediv . $monthly . $yearly;
+        return self::fetch_checkout_buttons($school,
+            $extendedsub->plan->platform,
+            $planfamily,
+            $checkoutexisting);
 
     }
 

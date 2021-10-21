@@ -7,7 +7,6 @@ define(['jquery','core/log','core/ajax'], function($, log, ajax) {
     return {
 
         instanceprops: null,
-        changeplanclass: '',
         siteprefix: '',
         controls: {},
 
@@ -15,7 +14,6 @@ define(['jquery','core/log','core/ajax'], function($, log, ajax) {
         init: function(props){
             //log.debug(props);
             this.instanceprops=props;
-            this.changeplanclass=props.changeplanclass;
             this.siteprefix=props.siteprefix;
             this.gocbcheckoutclass = props.gocbcheckoutclass;
             this.gocbmanageclass = props.gocbmanageclass;

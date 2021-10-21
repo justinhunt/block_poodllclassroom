@@ -8,8 +8,9 @@
     {{#expiretime_display}} <td class="itemdate cell c2" style="">{{expiretime_display}}</td>{{/expiretime_display}}
     <td class="itemedit cell c7" style="">
         <!-- <a class="block_poodllclassroom_subseditlink" data-cbaction='none' data-id="{{id}}" data-type="change" href="{{{changeurl}}}">{{#str}}upgradesub, block_poodllclassroom{{/str}}</a> -->
-       
-        <a class="block_poodllclassroom_subsmanagelink" data-cbaction='ssp' data-id="{{id}}" data-upstreamsubid="{{upstreamsubid}}" data-upstreamownerid="{{school.upstreamownerid}}" data-type="subdetails" href="#">{{#str}}managesub, block_poodllclassroom{{/str}}</a>
+        <a class="block_poodllclassroom_subseditlink btn btn-secondary" data-cbaction='none' data-id="{{id}}" data-type="change" href="{{{changeurl}}}">{{#str}}changeplan, block_poodllclassroom{{/str}}</a>
+
+        <a class="block_poodllclassroom_subsmanagelink btn btn-secondary" data-cbaction='ssp' data-id="{{id}}" data-upstreamsubid="{{upstreamsubid}}" data-upstreamownerid="{{school.upstreamownerid}}" data-type="subdetails" href="#">{{#str}}managesub, block_poodllclassroom{{/str}}</a>
     </td>
     <td class="renew cell c8 lastcol" style="">
     {{#oldnotfreecondition_free}}

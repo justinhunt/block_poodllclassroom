@@ -2,24 +2,44 @@
 <h4>{{#str}}mediaplans, block_poodllclassroom{{/str}}</h4>
 <div id="block_poodllclassroom_mediaplans_cont" class="block_poodllclassroom_moodleplans_cont center block_poodllclassroom_flexbox {{billinginterval}} {{display}}">
     {{#mediaplans}}
+        {{#checkoutoutexisting}}
+            {{> block_poodllclassroom/upgradetile}}
+        {{/checkoutoutexisting}}
+        {{^checkoutoutexisting}}
             {{> block_poodllclassroom/newplantile}}
+        {{/checkoutoutexisting}}
     {{/mediaplans}}
 </div>
 <h4>{{#str}}langplans, block_poodllclassroom{{/str}}</h4>
 <div id="block_poodllclassroom_langplans_cont" class="block_poodllclassroom_moodleplans_cont center block_poodllclassroom_flexbox {{billinginterval}} {{display}}">
     {{#langplans}}
-        {{> block_poodllclassroom/newplantile}}
+        {{#checkoutoutexisting}}
+            {{> block_poodllclassroom/upgradetile}}
+        {{/checkoutoutexisting}}
+        {{^checkoutoutexisting}}
+            {{> block_poodllclassroom/newplantile}}
+        {{/checkoutoutexisting}}
     {{/langplans}}
 </div>
 <h4>{{#str}}essentialsplans, block_poodllclassroom{{/str}}</h4>
 <div id="block_poodllclassroom_essentialsplans_cont" class="block_poodllclassroom_moodleplans_cont center block_poodllclassroom_flexbox {{billinginterval}} {{display}}">
     {{#essentialsplans}}
-        {{> block_poodllclassroom/newplantile}}
+        {{#checkoutoutexisting}}
+            {{> block_poodllclassroom/upgradetile}}
+        {{/checkoutoutexisting}}
+        {{^checkoutoutexisting}}
+            {{> block_poodllclassroom/newplantile}}
+        {{/checkoutoutexisting}}
     {{/essentialsplans}}
 </div>
 <h4>{{#str}}englishcentralplans, block_poodllclassroom{{/str}}</h4>
 <div id="block_poodllclassroom_englishcentralplans_cont" class="block_poodllclassroom_moodleplans_cont center block_poodllclassroom_flexbox {{billinginterval}} {{display}}">
     {{#englishcentralplans}}
-        {{> block_poodllclassroom/newplantile}}
+        {{#checkoutoutexisting}}
+            {{> block_poodllclassroom/upgradetile}}
+        {{/checkoutoutexisting}}
+        {{^checkoutoutexisting}}
+            {{> block_poodllclassroom/newplantile}}
+        {{/checkoutoutexisting}}
     {{/englishcentralplans}}
 </div>
