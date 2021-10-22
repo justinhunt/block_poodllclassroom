@@ -362,7 +362,7 @@ class common
         $owners = $DB->get_records('user', array(),'firstname, lastname ASC');
         $ret = [];
         foreach($owners as $owner){
-            $ret[$owner->id]=$owner->firstname . ' ' . $owner->lastname ;
+            $ret[$owner->id]=$owner->firstname . ' ' . $owner->lastname . '(' . $owner->id . ')' ;
         }
         return $ret;
     }
