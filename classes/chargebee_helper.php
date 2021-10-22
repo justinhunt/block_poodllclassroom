@@ -319,6 +319,13 @@ class chargebee_helper
                         $trace->output("cbsync:: processing ". $pevent->type . " event: " . $theevent->id);
                     }
 
+                    //Temporarily disable events from
+                    $resellers =['1692','464','2050','483','782','695','380','2802','1243'];
+                 if(in_array($theevent->content->subscription->customer_id, $resellers )){
+                     $trace->output("cbsync:: ignoring reseller: "  . $theevent->content->subscription->customer_id);
+                     break;
+                 }
+
                     //create a sub
                     $poodllsub = common::get_poodllsub_by_upstreamsubid($theevent->content->subscription->id);
                     if ($poodllsub == false) {
@@ -545,6 +552,11 @@ class chargebee_helper
                     //do nothing
             }//end of switch
         }//end of is valid event
+    }
+    public static function update_chargebee_subscription_schoolname($customerid, $companyname, $subs)
+    {
+        //update each subs cf_schoolid
+
     }
 
     public static function update_chargebee_company($customerid, $companyname){

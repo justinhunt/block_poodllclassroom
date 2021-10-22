@@ -97,8 +97,6 @@ if(true) {
 
     $content = $renderer->render_from_template('block_poodllclassroom/schoolheader',$school);
     $content .='<br>';
-
-
     $content .= $renderer->render_from_template('block_poodllclassroom/subsheader',$subssectiondata);
 
     //Platform Subs Details Section

@@ -732,7 +732,7 @@ class common
     }
 
     public static function get_extended_sub_data($subs){
-        global $DB;
+        global $DB, $USER, $OUTPUT;
         $plans= [];
         $schools=[];
         foreach($subs as $sub){
@@ -762,6 +762,14 @@ class common
             }
 
            $sub->extra=json_decode($sub->jsonfields);
+
+            //if super admin we can edit sub //REMOVE THIS EVENTUALLY
+            if($USER->id==2) {
+                $urlparams = array('id' => $sub->id,'type'=>'sub','returnurl' => '');
+                $sub->editsuburl = \html_writer::link(new \moodle_url(constants::M_URL . '/subs/edit.php', $urlparams),
+                    $OUTPUT->pix_icon('t/edit', get_string('edit')),
+                    array('title' => get_string('edit')));
+            }
         }
         return $subs;
     }
