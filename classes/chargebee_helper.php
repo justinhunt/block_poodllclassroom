@@ -438,7 +438,7 @@ class chargebee_helper
                         $trace->output("cbsync:: processing sub changed event: " . $theevent->id);
                     }
 
-                    //only change an existing subscription twice
+                    //only change an existing subscription
                     $poodllsub = common::get_poodllsub_by_upstreamsubid($theevent->content->subscription->id);
                     if ($poodllsub != false) {
                         if($trace){
@@ -555,9 +555,27 @@ class chargebee_helper
             }//end of switch
         }//end of is valid event
     }
-    public static function update_chargebee_subscription_schoolname($customerid, $companyname, $subs)
+
+    //update the subscription custom field with the school id
+    public static function update_chargebee_subscription_schoolname( $schoolname, $subs)
     {
-        //update each subs cf_schoolid
+        global $USER, $CFG;
+
+        if(empty($schoolname)){return false;}
+        if(!$subs || count($subs)==0){return false;}
+
+        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
+        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
+        foreach ($subs as $sub){
+            $url = "https://$siteprefix.chargebee.com/api/v2/subscriptions/" . $sub->upstreamid;
+            $postdata=[];
+            $postdata['cf_schoolid'] = [];
+            $postdata['cf_schoolid'][0]=$schoolname;
+            $curlresult = common::curl_fetch($url,$postdata,$apikey);
+            $jsonresult = common::make_object_from_json($curlresult);
+
+        }
+        return true;
 
     }
 

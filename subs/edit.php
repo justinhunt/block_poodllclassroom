@@ -248,9 +248,8 @@ if ($editform->is_cancelled()){
         case 'school':
             //deal with URLS
             if(!empty($data->siteurl)){$data->siteurls=json_encode($data->siteurl);}
+            $reseller = common::fetch_me_reseller($data->ownerid);
             if (!$data->id) {
-
-                $reseller = common::fetch_me_reseller($data->ownerid);
                 if($reseller){
                     $school = common::create_blank_school($data->ownerid,$reseller,$data->name);
                 }else{
@@ -273,8 +272,19 @@ if ($editform->is_cancelled()){
                 $result = $DB->update_record(constants::M_TABLE_SCHOOLS, $data);
                 //update chargebee if required
                 if($oldschool && $oldschool->name != $data->name) {
-                   chargebee_helper::update_chargebee_company($oldschool->upstreamownerid,$data->name);
+                    //only update company name if the user is not a reseller
+                    if(!$reseller) {
+                        chargebee_helper::update_chargebee_company($oldschool->upstreamownerid, $data->name);
+                    }
+                    //update all the sub school ids
+                    $subs = common::fetch_subs_by_school($data->id);
+                    if ($subs) {
+                        chargebee_helper::update_chargebee_subscription_schoolname(
+                                $data->name,
+                                $subs);
+                    }
                 }
+
 
                 //update entry on cpapi too
                 $url1=''; $url2=''; $url3=''; $url4=''; $url5='';

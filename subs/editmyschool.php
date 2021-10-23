@@ -181,19 +181,22 @@ if ($editform->is_cancelled()){
                         //update chargebee if required
                         if($theschool->name != $data->name) {
                             //a reseller will have multiple schools so we dont want to update the company name here, since it will be one of their clients name actually
-                            if(!$reseller) {
+                            if (!$reseller) {
                                 chargebee_helper::update_chargebee_company($theschool->upstreamownerid, $data->name);
-                            }else{
-                                $subs = common::fetch_subs_by_school($id);
-                                if($subs) {
-                                    chargebee_helper::update_chargebee_subscription_schoolname($theschool->upstreamownerid, $data->name, $subs);
-                                }
+                            }
+                            //update all the sub school ids
+                            $subs = common::fetch_subs_by_school($id);
+                            if ($subs) {
+                                chargebee_helper::update_chargebee_subscription_schoolname(
+                                        $data->name,
+                                        $subs);
                             }
                         }
                     }
                 }
             }
     }
+
 
     // Redirect to where we were before.
     redirect($returnurl);
