@@ -278,6 +278,7 @@ if ($editform->is_cancelled()){
                     }
                     //update all the sub school ids
                     $subs = common::fetch_subs_by_school($data->id);
+                    print_r($subs);
                     if ($subs) {
                         chargebee_helper::update_chargebee_subscription_schoolname(
                                 $data->name,
