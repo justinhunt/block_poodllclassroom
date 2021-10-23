@@ -953,15 +953,15 @@ class common
         return $plan;
     }
 
-    public static function create_poodll_sub($subscription, $currency_code, $amount_paid, $upstreamownerid=false){
+    public static function create_poodll_sub($subscription, $currency_code, $amount_paid, $upstreamownerid, $downstreamschoolid=false){
 
         global $DB;
 
         //set up our school
         $school=false;
         //we append this to get checkout existing, probably wont come in here, unless something went weird at hostedpage welcome back
-        if(isset($subscription->cf_schoolid)) {
-            $school=$DB->get_record(constants::M_TABLE_SCHOOLS,array('id'=>$subscription->cf_schoolid));
+        if($downstreamschoolid) {
+            $school=$DB->get_record(constants::M_TABLE_SCHOOLS,array('id'=>$downstreamschoolid));
         }elseif($upstreamownerid){
             $schools = self::get_schools_by_upstreamownerid($upstreamownerid);
             if( $schools && count($schools)==1){
@@ -1589,7 +1589,7 @@ class common
         }
     }
 
-    public static function create_sub_from_upstreamid($upstreamsubid){
+    public static function create_sub_from_upstreamid($upstreamsubid,$downstreamschoolid=false){
         global $CFG;
         //dont create a subscription twice, that would be bad ...
         $poodllsub = common::get_poodllsub_by_upstreamsubid($upstreamsubid);
@@ -1603,7 +1603,7 @@ class common
             $customer =$upstream_sub->customer;
             $currency_code = $upstream_sub->subscription->currency_code;
             $amount_paid = $upstream_sub->subscription->subscription_items[0]->amount;
-            $newsubid = self::create_poodll_sub($upstream_sub->subscription, $currency_code, $amount_paid,$customer->id);
+            $newsubid = self::create_poodll_sub($upstream_sub->subscription, $currency_code, $amount_paid,$customer->id,$downstreamschoolid);
             if($newsubid ){
                 $ret['success']=true;
                 $ret['message']='Created local sub(' . $newsubid  . ') from: ' .$upstreamsubid ;

@@ -46,6 +46,11 @@ class syncsubform extends \moodleform {
 
         $mform->addElement('text', 'upstreamsubid', get_string('upstreamsubid', constants::M_COMP), array('size' => 70));
         $mform->setType('upstreamsubid', PARAM_TEXT);
+        $mform->addRule('upstreamsubid', "you need to enter upstream sub id to sync", 'required', null, 'client');
+
+        $mform->addElement('text', 'downstreamschoolid', get_string('downstreamschoolid', constants::M_COMP), array('size' => 70));
+        $mform->setType('downstreamschoolid', PARAM_TEXT);
+
         $mform->addElement('hidden', 'type', 'subs');
         $mform->setType('type', PARAM_TEXT);
         //add the action buttons

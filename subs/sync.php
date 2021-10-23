@@ -208,8 +208,12 @@ switch($type) {
         if ($syncsubform->is_cancelled()){
             redirect($returnurl);
         }else if($data = $syncsubform->get_data()) {
-
-            $ret =  common::create_sub_from_upstreamid($data->upstreamsubid);
+            if(empty($data->downstreamschoolid)) {
+                $downstreamschoolid = false;
+            }else{
+                $downstreamschoolid = $data->downstreamschoolid;
+            }
+            $ret =  common::create_sub_from_upstreamid($data->upstreamsubid, $downstreamschoolid);
             if(!$ret || !$ret['success']){
                 redirect($returnurl, $ret["message"] );
             }else{

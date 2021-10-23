@@ -67,7 +67,18 @@ if($state=='succeeded') {
         if($poodllsub===false) {
             $currency_code= $subscription->currency_code;
             $amount_paid= $subscription->subscription_items[0]->amount;
-           $ret = common::create_poodll_sub( $subscription,$currency_code,$amount_paid,$subscription->customer_id);
+            //if we have a passed in school id we can link the sub to the school.
+            //if we do not then it will try to guess it from the owner, but resellers with multiple schools will fail
+            $pass_thru_content=$hp->hosted_page->pass_thru_content;
+            $downstreamschoolid = false;
+            if($pass_thru_content && !empty($pass_thru_content)){
+                $pass_thru_array=json_decode($pass_thru_content);
+                if(array_key_exists("schoolid",$pass_thru_array )){
+                    $downstreamschoolid = $pass_thru_array['schoolid'];
+                }
+            }
+            $downstreamschoolid = $hp->hosted_page->content->subscription;
+           $ret = common::create_poodll_sub( $subscription,$currency_code,$amount_paid,$subscription->customer_id,$downstreamschoolid);
            if(!$ret){
                $ret = get_string('unabletocreatesub',constants::M_COMP);
                redirect($CFG->wwwroot . '/my/',$ret,3, \core\output\notification::NOTIFY_WARNING);
@@ -78,10 +89,8 @@ if($state=='succeeded') {
 
         //if its an existing sub ... update it
         }else{
-            //WHAT TO DO HERE??? If they downgrade till next time? upgrade?
-            //IN the interests of getting this out the door. Lets hide the changesub link for now
-            //do some update with $poodllsub
-            $ret = "That was an update, not sure about that";
+            // This should change upstream and here we pick ut up each time so not much to be done
+            $ret = "Subscription Updated";
             redirect($CFG->wwwroot . '/my/',$ret);
         }
         $ret = get_string('createdsub',constants::M_COMP);
@@ -98,13 +107,3 @@ if($state=='succeeded') {
 }
 
 redirect($CFG->wwwroot . '/my/',$ret);
-
-//get our renderer
-/*
-$renderer = $PAGE->get_renderer(constants::M_COMP);
-
-echo $renderer->header();
-echo $renderer->heading($companyname);
-echo $ret;
-echo $renderer->footer();
-*/

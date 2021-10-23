@@ -122,8 +122,8 @@ class chargebee_helper
 
             //customfields
             $postdata['subscription']=[];
-            $postdata['subscription']['cf_schoolid']=$school->id;
-            $postdata['subscription']['cf_planid']=$plan->id;
+            $postdata['subscription']['cf_schoolid']=[];
+            $postdata['subscription']['cf_schoolid'][0]=$school->name;
 
             //passthrough
             $passthrough = [];
@@ -638,12 +638,12 @@ class chargebee_helper
 
             $postdata['subscription_items']=[];
             $postdata['subscription_items']['plan_id']=[];
-            $postdata['subscription_items']['cf_school_name']=[];
+            $postdata['subscription_items']['cf_schoolid']=[];
 
             $postdata['pass_thru_content'] = json_encode($passthrough);
 
             $postdata['subscription_items']['plan_id'][0] = $plan->upstreamplan;
-            $postdata['subscription_items']['cf_school_name'][0] = $schoolname;
+            $postdata['subscription_items']['cf_schoolid'][0] = $schoolname;
 
             $postdata['subscription_items']['item_price_id'][0] = $plan->upstreamplan . '-' .  $current_sub->paymentcurr . '-'  . $billing;
             $postdata['subscription_items']['quantity'][0]=1;
