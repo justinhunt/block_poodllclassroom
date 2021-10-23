@@ -74,12 +74,9 @@ if($state=='succeeded') {
             if($pass_thru_content && !empty($pass_thru_content)){
                 $pass_thru=json_decode($pass_thru_content);
                 if(isset($pass_thru->schoolid)){
-                    print_r($pass_thru);
-                    die;
                     $downstreamschoolid = $pass_thru->schoolid;
                 }
             }
-            $downstreamschoolid = $hp->hosted_page->content->subscription;
            $ret = common::create_poodll_sub( $subscription,$currency_code,$amount_paid,$subscription->customer_id,$downstreamschoolid);
            if(!$ret){
                $ret = get_string('unabletocreatesub',constants::M_COMP);
