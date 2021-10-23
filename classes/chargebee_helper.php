@@ -568,7 +568,8 @@ class chargebee_helper
         foreach ($subs as $sub){
             $url = "https://$siteprefix.chargebee.com/api/v2/subscriptions/" . $sub->upstreamid . '/update_for_items';
             $postdata=[];
-            $postdata['cf_schoolid'] = $schoolname;
+            $postdata['subscription']=[];
+            $postdata['subscription']['cf_schoolid'] = $schoolname;
 
             $curlresult = common::curl_fetch($url,$postdata,$apikey);
             $jsonresult = common::make_object_from_json($curlresult);
