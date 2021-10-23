@@ -754,7 +754,7 @@ class renderer extends \plugin_renderer_base {
 
             $fields = array();
             $fields[] = $school->id;
-            $fields[] = \html_writer::link(new \moodle_url(constants::M_URL . '/subs/edit.php', $urlparams),
+            $fields[] = \html_writer::link($schooldetailsurl,
                     $school->name,
                     array('title' => get_string('view')));
             if($superadmin) {
