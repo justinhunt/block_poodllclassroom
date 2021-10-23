@@ -320,11 +320,13 @@ class chargebee_helper
                     }
 
                     //Temporarily disable events from
+                    /*
                     $resellers =['1692','464','2050','483','782','695','380','2802','1243'];
                  if(in_array($theevent->content->subscription->customer_id, $resellers )){
                      $trace->output("cbsync:: ignoring reseller: "  . $theevent->content->subscription->customer_id);
                      break;
                  }
+                    */
 
                     //create a sub
                     $poodllsub = common::get_poodllsub_by_upstreamsubid($theevent->content->subscription->id);
