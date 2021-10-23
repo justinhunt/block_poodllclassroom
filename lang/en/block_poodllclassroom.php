@@ -385,6 +385,8 @@ $string['siteurls']="site urls";
 $string['syncallsiteurls']="sync all site urls";
 $string['owneremail']="Email";
 $string['downstreamschoolid']="Downstream School ID";
+$string['resellerintro']="This is the Poodll reseller's dashboard. From here you can add new schools and administer existing schools. You can administer the subscriptions and URLs for each school, and see usage stats, from it's page linked below. The reseller discount will be applied to any subscriptions purchased from the school page. Use the account options button to review invoices and account settings. Set a credit card using the 'Update Credit Card' details button.";
+
 
 
 
