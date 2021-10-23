@@ -749,9 +749,14 @@ class renderer extends \plugin_renderer_base {
 
         $data = array();
         foreach($schools as $school) {
+            $urlparams = array('id' => $school->id,'type'=>'school','returnurl' => $returnurl->out_as_local_url());
+            $schooldetailsurl = new \moodle_url(constants::M_URL . '/subs/schooldetails.php', $urlparams);
+
             $fields = array();
             $fields[] = $school->id;
-            $fields[] = $school->name ;
+            $fields[] = \html_writer::link(new \moodle_url(constants::M_URL . '/subs/edit.php', $urlparams),
+                    $school->name,
+                    array('title' => get_string('view')));
             if($superadmin) {
                 $fields[] = $school->ownerfirstname . ' ' . $school->ownerlastname . "($school->ownerid)";
                 $fields[] = $school->owneremail;
@@ -762,11 +767,8 @@ class renderer extends \plugin_renderer_base {
             $fields[] = strftime('%d %b %Y', $school->timemodified);
 
             $buttons = array();
-
-            $urlparams = array('id' => $school->id,'type'=>'school','returnurl' => $returnurl->out_as_local_url());
-
             //view school subs and other details
-            $buttons[] = \html_writer::link(new \moodle_url(constants::M_URL . '/subs/schooldetails.php', $urlparams),
+            $buttons[] = \html_writer::link($schooldetailsurl,
                     $this->output->pix_icon('t/preview', get_string('view')),
                     array('title' => get_string('view')));
 
