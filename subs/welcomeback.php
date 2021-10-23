@@ -72,9 +72,9 @@ if($state=='succeeded') {
             $pass_thru_content=$hp->hosted_page->pass_thru_content;
             $downstreamschoolid = false;
             if($pass_thru_content && !empty($pass_thru_content)){
-                $pass_thru_array=json_decode($pass_thru_content);
-                if(array_key_exists("schoolid",$pass_thru_array )){
-                    $downstreamschoolid = $pass_thru_array['schoolid'];
+                $pass_thru=json_decode($pass_thru_content);
+                if(isset($pass_thru->schoolid)){
+                    $downstreamschoolid = $pass_thru->schoolid;
                 }
             }
             $downstreamschoolid = $hp->hosted_page->content->subscription;
