@@ -74,6 +74,8 @@ if($state=='succeeded') {
             if($pass_thru_content && !empty($pass_thru_content)){
                 $pass_thru=json_decode($pass_thru_content);
                 if(isset($pass_thru->schoolid)){
+                    print_r($pass_thru);
+                    die;
                     $downstreamschoolid = $pass_thru->schoolid;
                 }
             }
