@@ -836,7 +836,7 @@ class common
                 $sub->status_display .= '<br><span class="block_poodllclassroom_paymentdue">' . get_string('paymentdue',constants::M_COMP) .'</span>';
             }
 
-            if(isset($sub->cancel_schedule_created_at)){
+            if(isset($sub->cancelled_at) && $sub->status != constants::M_STATUS_CANCELLED && $sub->cancelled_at > time() ){
                 $sub->status_display .= '<br><span class="block_poodllclassroom_willcancel">' . get_string('willcancel',constants::M_COMP) .'</span>';
             }
             if(isset($sub->scheduled_sub)){
