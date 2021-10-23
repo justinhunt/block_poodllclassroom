@@ -574,6 +574,7 @@ class chargebee_helper
             $postdata['subscription_items']['cf_schoolid'][0] = $schoolname;
 
             $curlresult = common::curl_fetch($url,$postdata,$apikey);
+            print_r($curlresult);
             $jsonresult = common::make_object_from_json($curlresult);
 
         }
