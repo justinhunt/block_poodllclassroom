@@ -573,6 +573,9 @@ class chargebee_helper
             $curlresult = common::curl_fetch($url,$postdata,$apikey);
             $jsonresult = common::make_object_from_json($curlresult);
 
+            print_r($curlresult);
+            die;
+
         }
         return true;
 
