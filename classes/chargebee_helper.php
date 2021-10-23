@@ -122,8 +122,7 @@ class chargebee_helper
 
             //customfields
             $postdata['subscription']=[];
-            $postdata['subscription']['cf_schoolid']=[];
-            $postdata['subscription']['cf_schoolid'][0]=$school->name;
+            $postdata['subscription']['cf_schoolid']=$school->name;
 
             //passthrough
             $passthrough = [];
@@ -569,9 +568,7 @@ class chargebee_helper
         foreach ($subs as $sub){
             $url = "https://$siteprefix.chargebee.com/api/v2/subscriptions/" . $sub->upstreamid . '/update_for_items';
             $postdata=[];
-            $postdata['subscription_items'] = [];
-            $postdata['subscription_items']['cf_schoolid'] = [];
-            $postdata['subscription_items']['cf_schoolid'][0] = $schoolname;
+            $postdata['cf_schoolid'] = $schoolname;
 
             $curlresult = common::curl_fetch($url,$postdata,$apikey);
             $jsonresult = common::make_object_from_json($curlresult);
@@ -649,21 +646,19 @@ class chargebee_helper
             //$passthrough['currency']=$currency;
             //$passthrough['billing']=$billing;
             $postdata['pass_thru_content'] = json_encode($passthrough);
+
+
             $postdata['replace_items_list'] = 'true';
 
             $postdata['redirect_url'] = $CFG->wwwroot . constants::M_URL . '/subs/welcomeback.php';
             $postdata['cancel_url'] = $CFG->wwwroot . '/my/';
             $postdata['subscription']=[];
             $postdata['subscription']['id'] = $current_sub->upstreamsubid;
+            $postdata['subscription']['cf_schoolid']=$schoolname;
 
             $postdata['subscription_items']=[];
             $postdata['subscription_items']['plan_id']=[];
-            $postdata['subscription_items']['cf_schoolid']=[];
-
-            $postdata['pass_thru_content'] = json_encode($passthrough);
-
             $postdata['subscription_items']['plan_id'][0] = $plan->upstreamplan;
-            $postdata['subscription_items']['cf_schoolid'][0] = $schoolname;
 
             $postdata['subscription_items']['item_price_id'][0] = $plan->upstreamplan . '-' .  $current_sub->paymentcurr . '-'  . $billing;
             $postdata['subscription_items']['quantity'][0]=1;
