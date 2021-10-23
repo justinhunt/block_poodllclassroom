@@ -566,6 +566,7 @@ class chargebee_helper
         $apikey = get_config(constants::M_COMP,'chargebeeapikey');
         $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
         foreach ($subs as $sub){
+            print_r($sub);
             $url = "https://$siteprefix.chargebee.com/api/v2/subscriptions/" . $sub->upstreamid . '/update_for_items';
             print_r($url);
             $postdata=[];
