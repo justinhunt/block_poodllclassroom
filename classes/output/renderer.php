@@ -214,7 +214,7 @@ class renderer extends \plugin_renderer_base {
 
     }
 
-    function fetch_checkout_buttons($school, $platform, $planfamily, $checkoutexisting=false)
+    function fetch_checkout_buttons($school, $platform, $planfamily, $checkoutexisting=false, $existingsubid=false)
     {
 
         if (!$school) {
@@ -303,7 +303,10 @@ class renderer extends \plugin_renderer_base {
         $mdata['billinginterval']='Monthly';
         $mdata['currency']='USD';
         $mdata['billingintervallabel']=get_string('monthly',constants::M_COMP);
-        if($checkoutexisting) {$mdata['checkoutexisting']=$checkoutexisting;}
+        if($checkoutexisting) {
+            $mdata['checkoutexisting']=$checkoutexisting;
+            $mdata['currentsubid']=$existingsubid;
+        }
         $monthly = $this->render_from_template('block_poodllclassroom/newplancontainer', $mdata);
 
         //yearly plans
@@ -312,7 +315,10 @@ class renderer extends \plugin_renderer_base {
         $ydata['billinginterval']='Yearly';
         $ydata['currency']='USD';
         $ydata['billingintervallabel']=get_string('yearly',constants::M_COMP);
-        if($checkoutexisting) {$ydata['checkoutexisting']=$checkoutexisting;}
+        if($checkoutexisting) {
+            $ydata['checkoutexisting']=$checkoutexisting;
+            $ydata['currentsubid']=$existingsubid;
+        }
         if($platform==constants::M_PLATFORM_MOODLE && $planfamily=='ALL'){
             $langplans=[];
             $mediaplans=[];
@@ -341,7 +347,10 @@ class renderer extends \plugin_renderer_base {
             $yearly = $this->render_from_template('block_poodllclassroom/moodleplanscontainer', $ydata);
         }else {
             $ydata['plans']=$yearlyplans;
-            if($checkoutexisting) {$ydata['checkoutexisting']=$checkoutexisting;}
+            if($checkoutexisting) {
+                $ydata['checkoutexisting']=$checkoutexisting;
+                $ydata['currentsubid']=$existingsubid;
+            }
             $yearly = $this->render_from_template('block_poodllclassroom/newplancontainer', $ydata);
         }
 
@@ -375,7 +384,8 @@ class renderer extends \plugin_renderer_base {
         return self::fetch_checkout_buttons($school,
             $extendedsub->plan->platform,
             $planfamily,
-            $checkoutexisting);
+            $checkoutexisting,
+            $extendedsub->id);
 
     }
 

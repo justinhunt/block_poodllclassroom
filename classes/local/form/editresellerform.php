@@ -51,14 +51,14 @@ class editresellerform extends \moodleform {
 
         $mform->addElement('text', 'name', get_string('resellername', constants::M_COMP), array('size'=>70));
         $mform->setType('name', PARAM_TEXT);
-        $mform->setDefault('name', '-- ?? --');
+        $mform->addRule('name', "you need to enter a reseller name", 'required', null, 'client');
+
+        $users = common::fetch_users_array();
+        $mform->addElement('select', 'userid', get_string('users', constants::M_COMP), $users);
 
         $mform->addElement('text', 'description', get_string('description', constants::M_COMP), array('size'=>70));
         $mform->setType('description', PARAM_TEXT);
         $mform->setDefault('description', '');
-
-        $users = common::fetch_users_array();
-        $mform->addElement('select', 'userid', get_string('users', constants::M_COMP), $users);
 
         $mform->addElement('textarea', 'jsonfields', get_string('jsonfields', constants::M_COMP), array('size'=>70));
         $mform->setType('jsonfields', PARAM_RAW);
