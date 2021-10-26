@@ -934,12 +934,7 @@ class common
 
             $poodllsub->planid = $plan->id;
             $poodllsub->status = $upstreamsub->status;
-
-            if (isset($upstreamsub->current_term_end) && is_number($upstreamsub->current_term_end)) {
-                $poodllsub->expiretime = $upstreamsub->current_term_end;
-            }elseif($upstreamsub->status=='in_trial' && isset($upstreamsub->subscription_items[0]->trial_end)){
-                $poodllsub->expiretime = $upstreamsub->subscription_items[0]->trial_end;
-            }
+            $poodllsub->expiretime= self::extract_expire_time($upstreamsub);
             $poodllsub->payment = $upstreamsub->subscription_items[0]->amount;
             $poodllsub->paymentcurr = $upstreamsub->currency_code;
             $poodllsub->billinginterval = $plan->billinginterval;
@@ -981,7 +976,7 @@ class common
         }
 
         //Only some subs have total=dues nd current term end. often buried in items. here we fetch them
-        if(!isset($subscription->total_dues) || !isset($subscription->current_term_end)){
+        if(!isset($subscription->total_dues)){
             $subscription = self::add_fields_to_sub($subscription);
         }
 
@@ -1009,10 +1004,7 @@ class common
         $newsub->upstreamownerid=$school->upstreamownerid;
         $newsub->upstreamsubid=$subscription->id;
         $newsub->status=$subscription->status;
-        
-        if(isset($subscription->current_term_end) && is_number($subscription->current_term_end)){
-            $newsub->expiretime=$subscription->current_term_end;
-        }
+        $newsub->expiretime = self::extract_expire_time($subscription);
         $newsub->payment= $amount_paid;
         $newsub->paymentcurr=$currency_code;
         $newsub->billinginterval=$plan->billinginterval;
@@ -1040,9 +1032,6 @@ class common
         if(!isset($upstreamsub->total_dues) ||!is_numeric($upstreamsub->total_dues)){
             $upstreamsub->total_dues=$upstreamsub->subscription_items[0]->amount;
         }
-        if(!isset($upstreamsub->current_term_end) ||!is_numeric($upstreamsub->current_term_end)){
-            $upstreamsub->current_term_end=$upstreamsub->next_billing_at + YEARSECS;
-        }
         return $upstreamsub;
     }
 
@@ -1060,7 +1049,7 @@ class common
                 $accesskeysecret='yyyyyy';
                 $subscriptionid = $plan->poodllplanid; //this is the numeric id .. of the old memberpress system which cloudpoodll still keys on
                 $transactionid = 999;//$subscription->id would be the one, but its int only at this stage
-                $expiretime=$subscription->current_term_end;
+                $expiretime=self::extract_expire_time($subscription);
                 $theuser = $DB->get_record('user', array('id'=>$school->ownerid));
                 $ret = cpapi_helper::update_cpapi_user($username,$theuser->firstname,$theuser->lastname,$theuser->email,
                     $expiretime,$subscriptionid,$transactionid,$accesskeyid,$accesskeysecret);
@@ -1069,6 +1058,21 @@ class common
         }
 
         return json_encode($obj);
+    }
+
+    //The chargebee sub could be in a trial or paid or other state
+    //so we can not rely on the expire time to be the same property for all upstream subs
+    public static function extract_expire_time($upstreamsub){
+
+        if (isset($upstreamsub->current_term_end) && is_number($upstreamsub->current_term_end)) {
+            $expiretime = $upstreamsub->current_term_end;
+        }elseif($upstreamsub->status=='in_trial' && isset($upstreamsub->subscription_items[0]->trial_end)){
+            $expiretime = $upstreamsub->subscription_items[0]->trial_end;
+        }else{
+            //getting here would be unthinkable ..  but who knows
+            $upstreamsub->current_term_end=$upstreamsub->next_billing_at + YEARSECS;
+        }
+        return $expiretime;
     }
 
     public static function process_updated_sub($poodllsub,$upstreamsub,$plan){
@@ -1082,7 +1086,7 @@ class common
                 $accesskeysecret='yyyyyy';
                 $subscriptionid = $plan->poodllplanid; //this is the numeric id .. of the old memberpress system which cloudpoodll still keys on
                 $transactionid = 999;//$subscription->id would be the one, but its int only at this stage
-                $expiretime=$upstreamsub->current_term_end;
+                $expiretime=self::extract_expire_time($subscription);
                 $theuser = $DB->get_record('user', array('id'=>$school->ownerid));
                 $ret = cpapi_helper::update_cpapi_user($username,$theuser->firstname,$theuser->lastname,$theuser->email,
                     $expiretime,$subscriptionid,$transactionid,$accesskeyid,$accesskeysecret);
