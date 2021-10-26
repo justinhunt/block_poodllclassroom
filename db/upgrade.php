@@ -85,6 +85,21 @@ function xmldb_block_poodllclassroom_upgrade($oldversion) {
 
     }
 
+    if ($oldversion < 2021102600) {
+
+        $table = new xmldb_table(constants::M_TABLE_PLANS);
+        $field = new xmldb_field('hasfreetrial',
+            XMLDB_TYPE_INTEGER, '2', null, null, null, 0);
+
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // savepoint reached.
+        upgrade_plugin_savepoint(true, 2021102600, 'block',constants::M_NAME);
+
+    }
+
 
 
     return true;

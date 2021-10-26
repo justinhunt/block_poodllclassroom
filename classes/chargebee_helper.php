@@ -16,6 +16,9 @@ class chargebee_helper
 
         $plan = common::get_plan($planid);
         switch($billinginterval){
+            case constants::M_BILLING_DAILY:
+                $billing='Daily';
+                break;
             case constants::M_BILLING_MONTHLY:
                 $billing='Monthly';
                 break;
@@ -88,8 +91,9 @@ class chargebee_helper
             $postdata['subscription_items']['item_price_id']=[];
             $postdata['subscription_items']['quantity']=[];
 
+            //I think that we no longer need this...
             //hacky way to make sure free trials all use monthly plans (though they show in yearly)
-            if(strpos(strtolower($plan->upstreamplan),'trial')>0){$billing='Monthly';}
+            //if(strpos(strtolower($plan->upstreamplan),'trial')>0){$billing='Daily';}
 
             $postdata['subscription_items']['item_price_id'][0] = $plan->upstreamplan . '-' .  $currency . '-'  . $billing;
             $postdata['subscription_items']['quantity'][0]=1;
@@ -608,8 +612,10 @@ class chargebee_helper
         $plan = common::get_plan($planid);
 
         switch($plan->billinginterval){
+            case constants::M_BILLING_DAILY:
+                $billing='Daily';
+                break;
             case constants::M_BILLING_MONTHLY:
-            case constants::M_BILLING_FREE:
                 $billing='Monthly';
                 break;
             case constants::M_BILLING_YEARLY:

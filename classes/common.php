@@ -322,7 +322,7 @@ class common
     public static function fetch_billingintervals(){
         return array(constants::M_BILLING_YEARLY=>get_string('yearly',constants::M_COMP),
                 constants::M_BILLING_MONTHLY=>get_string('monthly',constants::M_COMP),
-                constants::M_BILLING_FREE=>get_string('free',constants::M_COMP));
+                constants::M_BILLING_DAILY=>get_string('daily',constants::M_COMP));
     }
 
     public static function fetch_planfamilies(){
@@ -785,9 +785,14 @@ class common
                 case constants::M_BILLING_MONTHLY:
                     $sub->plan->period_display=get_string('monthly',constants::M_COMP);
                     break;
-                case constants::M_BILLING_FREE:
-                    $sub->plan->period_display=get_string('free',constants::M_COMP);
-                    $sub->free=true;
+                case constants::M_BILLING_DAILY:
+                    if($sub->plan->hasfreetrial){
+                        $sub->plan->period_display=get_string('free',constants::M_COMP);
+                        $sub->free=true;
+                    }else{
+                        $sub->plan->period_display=get_string('daily',constants::M_COMP);
+                    }
+
                     break;
                 default:
                     $sub->plan->period_display='';
@@ -817,6 +822,7 @@ class common
                     break;
                 case constants::M_STATUS_IN_TRIAL:
                     $sub->status_display=get_string('intrial_status',constants::M_COMP);
+                    $sub->intrial=true;
                     break;
                 case constants::M_STATUS_NONRENEWING:
                     $sub->status_display=get_string('nonrenewing_status',constants::M_COMP);
@@ -848,7 +854,7 @@ class common
                     case constants::M_BILLING_MONTHLY:
                         $a->period_display=get_string('monthly',constants::M_COMP);
                         break;
-                    case constants::M_BILLING_FREE:
+                    case constants::M_BILLING_DAILY:
                         $a->period_display=get_string('free',constants::M_COMP);
                         break;
                     default:
@@ -929,8 +935,10 @@ class common
             $poodllsub->planid = $plan->id;
             $poodllsub->status = $upstreamsub->status;
 
-            if (is_number($upstreamsub->current_term_end)) {
+            if (isset($upstreamsub->current_term_end) && is_number($upstreamsub->current_term_end)) {
                 $poodllsub->expiretime = $upstreamsub->current_term_end;
+            }elseif($upstreamsub->status=='in_trial' && isset($upstreamsub->subscription_items[0]->trial_end)){
+                $poodllsub->expiretime = $upstreamsub->subscription_items[0]->trial_end;
             }
             $poodllsub->payment = $upstreamsub->subscription_items[0]->amount;
             $poodllsub->paymentcurr = $upstreamsub->currency_code;
@@ -1090,9 +1098,11 @@ class common
 
     public static function fetch_upstreamplanid_from_upstreamsub($subscription){
         $plan_id = $subscription->subscription_items[0]->item_price_id;
+        $currency = $subscription->currency_code ? $subscription->currency_code : 'USD';
         //remove any appended price plan IDs
-        $plan_id = str_replace('-USD-Yearly','',$plan_id);
-        $plan_id = str_replace('-USD-Monthly','',$plan_id);
+        $plan_id = str_replace('-' .  $currency . '-Yearly','',$plan_id);
+        $plan_id = str_replace('-' .  $currency . '-Monthly','',$plan_id);
+        $plan_id = str_replace('-' .  $currency . '-Daily','',$plan_id);
         return $plan_id;
     }
 

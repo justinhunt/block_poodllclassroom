@@ -176,6 +176,7 @@ $string['price'] = 'Price';
 $string['description'] = 'Description';
 $string['monthly'] = 'Monthly';
 $string['yearly'] = 'Yearly';
+$string['daily'] = 'Daily';
 $string['free'] = 'Free';
 $string['users'] = 'Users';
 $string['planfamily'] = 'Plan Family';
@@ -184,6 +185,7 @@ $string['courses'] = 'Courses';
 $string['upgradeplanheader'] = 'Change Plan Options';
 $string['monthlyyearly'] = 'Monthly <--> Yearly';
 $string['yourcurrentplan'] = '* current plan *';
+$string['upgradeplan'] = 'Upgrade Plan';
 
 $string['changeplan'] ='Change Plan';
 $string['changeplaninstructions'] = 'Choose a subscription plan from the options below. The prices shown are all in US dollars. The new plan will begin at the end of the current subscription. If you are upgrading from a free trial the new plan will begin immediately.' ;
@@ -384,9 +386,14 @@ $string['siteurlsform']="site urls form";
 $string['siteurls']="site urls";
 $string['syncallsiteurls']="sync all site urls";
 $string['owneremail']="Email";
+$string['hasfreetrial']="Has free trial";
 $string['downstreamschoolid']="Downstream School ID";
 $string['resellerintro']="This is the Poodll reseller's dashboard. From here you can add new schools and administer existing schools. You can administer the subscriptions and URLs for each school, and see usage stats, from it's page linked below. The reseller discount will be applied to any subscriptions purchased from the school page. Use the account options button to review invoices and account settings. Set a credit card using the 'Update Credit Card' details button.";
-
+$string['mediaplansintro']="Poodll Media adds Poodll's audio and video recording features to Moodle's assignment, quiz and html editors.";
+$string['languagesplansintro']="Poodll Languages gives access to Poodll ReadAloud, Poodll Solo, Poodll MiniLessons and Poodll Wordcards.";
+$string['essentialsplansintro']="Poodll Essentials gives access to both Poodll Media and Poodll Languages for a low price.";
+$string['englishcentralplansintro']="Poodll EnglishCentral allows your students to use the full range of EnglishCentral video learning activities from within Moodle.";
+$string['freeplansintro']="The Poodll free trial gives full 30 day access to all of the Poodll plugins and features. You can upgrade to a full plan at any time.";
 
 
 

@@ -7,7 +7,12 @@
     <td class="itemdate cell c6" style="">{{timecreated_display}}</td>
     {{#expiretime_display}} <td class="itemdate cell c2" style="">{{expiretime_display}}</td>{{/expiretime_display}}
     <td class="itemedit cell c7" style="">
+    {{#intrial}}
+        <a class="block_poodllclassroom_subseditlink btn btn-success" data-cbaction='none' data-id="{{id}}" data-type="change" href="{{{changeurl}}}">{{#str}}upgradeplan, block_poodllclassroom{{/str}}</a>
+    {{/intrial}}
+    {{^intrial}}
         <a class="block_poodllclassroom_subseditlink btn btn-secondary" data-cbaction='none' data-id="{{id}}" data-type="change" href="{{{changeurl}}}">{{#str}}changeplan, block_poodllclassroom{{/str}}</a>
+    {{/intrial}}
         <a class="block_poodllclassroom_subsmanagelink btn btn-secondary" data-cbaction='ssp' data-id="{{id}}" data-upstreamsubid="{{upstreamsubid}}" data-upstreamownerid="{{school.upstreamownerid}}" data-type="subdetails" href="#">{{#str}}managesub, block_poodllclassroom{{/str}}</a>
         {{#editsuburl}}
             {{{editsuburl}}}

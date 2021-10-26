@@ -1,6 +1,5 @@
-<div id="block_poodllclassroom_freeplanitem_{{id}}" class="block_poodllclassroom_freeplan_cont {{#alreadytaken}}disabled{{/alreadytaken}}" style="border: 1px solid black; width: 200px; padding: 15px;">
+<div id="block_poodllclassroom_freeplanitem_{{id}}" class="block_poodllclassroom_freeplan_cont {{#alreadytaken}}disabled{{/alreadytaken}}" style="border: 1px solid black; width: 250px; padding: 15px;">
     <div class="block_poodllclassroom_planname">{{name}}</div>
-    <div class="block_poodllclassroom_billinginterval">{{billingintervalname}}</div>
     <div class="block_poodllclassroom_price">US${{price}}</div>
     {{#platform_LTI}}
         <div class="block_poodllclassroom_maxusers">{{maxusers}} {{#str}}users, block_poodllclassroom{{/str}}</div>
@@ -10,7 +9,7 @@
       <div class="block_poodllclassroom_maxcourses">{{maxcourses}} {{#str}}courses, block_poodllclassroom{{/str}} </div>
     {{/platform_CLASSROOM}}
     <div class="block_poodllclassroom_description">{{description}}</div>
-   <a href="#" class="btn btn-secondary block_poodllclassroom_newplan block_poodllclassroom_gocbcheckout block_poodllclassroom_flexbox {{#disabled}}disabled{{/disabled}}" {{#selected}}tabindex="-1"{{/selected}}
+   <a href="#" class="btn btn-secondary block_poodllclassroom_newplan block_poodllclassroom_gocbcheckout block_poodllclassroom_flexbox {{#alreadytaken}}disabled{{/alreadytaken}}" {{#selected}}tabindex="-1"{{/selected}}
       data-method="get_checkout_new" data-schoolid="{{schoolid}}" data-planid="{{id}}" data-currency="{{currency}}" data-billinginterval="{{billinginterval}}">{{#str}}chooseplan, block_poodllclassroom{{/str}}</a>
     <div class="block_poodllclassroom_currentplan">{{#selected}}{{#str}}yourcurrentplan, block_poodllclassroom{{/str}}{{/selected}}</div>
     {{#alreadytaken}}

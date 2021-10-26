@@ -235,13 +235,14 @@ class renderer extends \plugin_renderer_base {
 
         $monthlyplans = [];
         $yearlyplans = [];
+        $dailyplans = [];
         $freeplans = [];
         $showfirst = constants::M_BILLING_YEARLY;
 
         foreach ($plans as $plan) {
             $plan->billingintervalname = $billingintervals[$plan->billinginterval];
             $plan->schoolid=$school->id;
-            //if the users current plan, and its not free/monthly, then set the active display to yeif($plan->id==$myschool->planid){
+            //if the users current plan, and its not free/monthly, then set the active display to yes if($plan->id==$myschool->planid){
 
 
             switch ($plan->billinginterval) {
@@ -251,10 +252,13 @@ class renderer extends \plugin_renderer_base {
                 case constants::M_BILLING_YEARLY:
                     $yearlyplans[] = $plan;
                     break;
-                case constants::M_BILLING_FREE:
-                    $freeplans[] = $plan;
+                case constants::M_BILLING_DAILY:
+                    $dailyplans[] = $plan;
                     break;
 
+            }
+            if($plan->hasfreetrial){
+                $freeplans[] = $plan;
             }
         }
 

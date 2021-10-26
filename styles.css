@@ -29,7 +29,17 @@
 .block_poodllclassroom_newplan_cont,
 .block_poodllclassroom_freeplan_cont {
     margin: 10px;
+    text-align: center;
 }
+.block_poodllclassroom_planname {
+    font-weight: 500;
+}
+a.block_poodllclassroom_newplan.block_poodllclassroom_gocbcheckout,
+a.block_poodllclassroom_changeplan.block_poodllclassroom_gocbcheckout,
+a.block_poodllclassroom_freeplan.block_poodllclassroom_gocbcheckout {
+    margin-top: 20px;
+}
+
 .block_poodllclassroom_billingheader{
     margin-top: 10px;
 }
@@ -91,4 +101,10 @@
 }
 span.block_poodllclassroom_paymentdue {
     color: red;
+}
+.block_poodllclassroom_moodleplans_cont,
+.block_poodllclassroom_freeplans_cont,
+.block_poodllclassroom_checkoutinstructions
+{
+    margin-bottom: 20px;
 }

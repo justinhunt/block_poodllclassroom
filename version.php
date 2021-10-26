@@ -24,8 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2021070103;        // The current plugin version (Date: YYYYMMDDXX)
+$plugin->version   = 2021102600;        // The current plugin version (Date: YYYYMMDDXX)
 $plugin->requires  = 2012112900;        // Requires this Moodle version
 $plugin->component = 'block_poodllclassroom'; // Full name of the plugin (used for diagnostics)
 $plugin->maturity  = MATURITY_STABLE;
-$plugin->release   = '1.0.49(Build 2021070103)';
+$plugin->release   = '1.0.50(Build 2021102600)';

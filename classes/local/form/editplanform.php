@@ -72,6 +72,11 @@ class editplanform extends \moodleform {
         $mform->addElement('text', 'upstreamplan', get_string('upstreamplan', constants::M_COMP), array());
         $mform->setType('upstreamplan', PARAM_TEXT);
 
+        $options = common::fetch_truefalse();
+        $mform->addElement('select', 'hasfreetrial', get_string('hasfreetrial', constants::M_COMP), $options);
+        $mform->setType('hasfreetrial', PARAM_INT);
+        $mform->setDefault('showcheckout', 0);
+
         $mform->addElement('text', 'poodllplanid', get_string('poodllplanid', constants::M_COMP), array());
         $mform->setType('poodllplanid', PARAM_INT);
 

@@ -57,7 +57,7 @@ const M_INTEGRATION_CLOUDPOODLL = 'cloudpoodll';
 
 const M_BILLING_YEARLY = 0;
 const M_BILLING_MONTHLY = 1;
-const M_BILLING_FREE = 2;
+const M_BILLING_DAILY = 2;
 
 const M_PLATFORM_MOODLE = 'MOODLE';
 const M_PLATFORM_LTI = 'LTI';
