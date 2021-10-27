@@ -1066,11 +1066,13 @@ class common
 
         if (isset($upstreamsub->current_term_end) && is_number($upstreamsub->current_term_end)) {
             $expiretime = $upstreamsub->current_term_end;
-        }elseif($upstreamsub->status=='in_trial' && isset($upstreamsub->subscription_items[0]->trial_end)){
+        }elseif($upstreamsub->status==constants::M_STATUS_IN_TRIAL && isset($upstreamsub->subscription_items[0]->trial_end)){
+            $expiretime = $upstreamsub->subscription_items[0]->trial_end;
+        }elseif(isset($upstreamsub->subscription_items[0]->trial_end) && $upstreamsub->status==constants::M_STATUS_CANCELLED) {
             $expiretime = $upstreamsub->subscription_items[0]->trial_end;
         }else{
             //getting here would be unthinkable ..  but who knows
-            $upstreamsub->current_term_end=$upstreamsub->next_billing_at + YEARSECS;
+            $expiretime =$upstreamsub->next_billing_at + YEARSECS;
         }
         return $expiretime;
     }
