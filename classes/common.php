@@ -604,7 +604,7 @@ class common
         $ret = [];
         if($users &&!empty($users)) {
             foreach($users as $user){
-                $ret[$user->id]=$user->lastname . ' ' . $user->firstname ;
+                $ret[$user->id]=$user->firstname . ' ' . $user->lastname . '(' . $user->id . ')' ;
             }
         }
         return $ret;
@@ -1088,7 +1088,7 @@ class common
                 $accesskeysecret='yyyyyy';
                 $subscriptionid = $plan->poodllplanid; //this is the numeric id .. of the old memberpress system which cloudpoodll still keys on
                 $transactionid = 999;//$subscription->id would be the one, but its int only at this stage
-                $expiretime=self::extract_expire_time($subscription);
+                $expiretime=self::extract_expire_time($upstreamsub);
                 $theuser = $DB->get_record('user', array('id'=>$school->ownerid));
                 $ret = cpapi_helper::update_cpapi_user($username,$theuser->firstname,$theuser->lastname,$theuser->email,
                     $expiretime,$subscriptionid,$transactionid,$accesskeyid,$accesskeysecret);
