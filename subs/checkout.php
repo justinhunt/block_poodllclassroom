@@ -65,7 +65,6 @@ if(!$school){
 }
 
 echo $renderer->header();
-echo $renderer->heading($companyname);
 echo $renderer->fetch_checkout_toppart();
 echo $renderer->fetch_checkout_buttons($school, $platform, $planfamily);
 echo $renderer->footer();

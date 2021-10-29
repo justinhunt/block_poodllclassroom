@@ -188,7 +188,7 @@ $string['yourcurrentplan'] = '* current plan *';
 $string['upgradeplan'] = 'Upgrade Plan';
 
 $string['changeplan'] ='Change Plan';
-$string['changeplaninstructions'] = 'Choose a subscription plan from the options below. The prices shown are all in US dollars. The new plan will begin at the end of the current subscription. If you are upgrading from a free trial the new plan will begin immediately.' ;
+$string['changeplaninstructions'] = 'Choose a subscription plan from the options below. The prices shown are all in US dollars. The new plan will begin immediately. If you wish to schedule your new plan to begin at next renewal, please contact Poodll Support. ' ;
 $string['youhavenosubscription'] = 'You do not have a subscription, so we can not change your plan.';
 $string['poodllclassroomoptions'] = 'Account Options';
 $string['maximumcourses'] = '<i>Maximum {$a} courses</i>';

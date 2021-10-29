@@ -104,7 +104,11 @@ span.block_poodllclassroom_paymentdue {
 }
 .block_poodllclassroom_moodleplans_cont,
 .block_poodllclassroom_freeplans_cont,
-.block_poodllclassroom_checkoutinstructions
+.block_poodllclassroom_checkoutinstructions,
+.block_poodllclassroom_changeplaninstructions
 {
     margin-bottom: 20px;
+}
+table.generaltable.block_poodllclassroom_subslist_table {
+    margin-top: 20px;
 }

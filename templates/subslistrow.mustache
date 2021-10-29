@@ -11,17 +11,15 @@
         <a class="block_poodllclassroom_subseditlink btn btn-success" data-cbaction='none' data-id="{{id}}" data-type="change" href="{{{changeurl}}}">{{#str}}upgradeplan, block_poodllclassroom{{/str}}</a>
     {{/intrial}}
     {{^intrial}}
-        <a class="block_poodllclassroom_subseditlink btn btn-secondary" data-cbaction='none' data-id="{{id}}" data-type="change" href="{{{changeurl}}}">{{#str}}changeplan, block_poodllclassroom{{/str}}</a>
+        <!-- a class="block_poodllclassroom_subseditlink btn btn-secondary" data-cbaction='none' data-id="{{id}}" data-type="change" href="{{{changeurl}}}">{{#str}}changeplan, block_poodllclassroom{{/str}}</a -->
     {{/intrial}}
         <a class="block_poodllclassroom_subsmanagelink btn btn-secondary" data-cbaction='ssp' data-id="{{id}}" data-upstreamsubid="{{upstreamsubid}}" data-upstreamownerid="{{school.upstreamownerid}}" data-type="subdetails" href="#">{{#str}}managesub, block_poodllclassroom{{/str}}</a>
         {{#editsuburl}}
+            <!-- admins will see a little icon here .. to change upstream sub id mainly -->
             {{{editsuburl}}}
         {{/editsuburl}}
     </td>
     <td class="renew cell c8 lastcol" style="">
-    {{#oldnotfreecondition_free}}
-        <a class="block_poodllclassroom_renewlink block_poodllclassroom_gocbcheckout" data-method='get_checkout_existing' data-planid="{{plan.id}}" data-schoolid="{{school.id}}"
-           data-currency="{{paymentcurr}}" data-currentsubid="{{id}}"  data-billinginterval="{{plan.billinginterval}}"  href="#">{{#str}}renewnow, block_poodllclassroom{{/str}}</a>
-    {{/oldnotfreecondition_free}}
+    <!-- nothing here -->
     </td>
 </tr>
