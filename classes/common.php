@@ -826,12 +826,22 @@ class common
                     break;
                 case constants::M_STATUS_NONRENEWING:
                     $sub->status_display=get_string('nonrenewing_status',constants::M_COMP);
+                    //because of the way we have set up free trials, between end of trial and cancellation there will be a day
+                    // the intrial flag turns on the upgrade button so we want to show that.
+                    if($sub->plan->hasfreetrial){
+                        $sub->intrial=true;
+                    }
                     break;
                 case constants::M_STATUS_PAUSED:
                     $sub->status_display=get_string('paused_status',constants::M_COMP);
                     break;
                 case constants::M_STATUS_CANCELLED:
                     $sub->status_display=get_string('cancelled_status',constants::M_COMP);
+                    //if its a cancelled free trial it would be good to show something here, but they may already have taken a new sub
+                    if($sub->plan->hasfreetrial){
+                        //do not do anything special
+                    }
+
                     break;
                 case constants::M_STATUS_NONE:
                 default:
