@@ -119,7 +119,7 @@ if(true) {
     }
 
     //Platform Moodle Subs Section
-    $moodledata = ['school'=>'','subs'=>$moodlesubs,
+    $moodledata = ['school'=>$school,'subs'=>$moodlesubs,
         'planfamily'=>'all',
         'platform'=>constants::M_PLATFORM_MOODLE,
         'checkouturl'=>$checkouturl->out(),
@@ -147,7 +147,7 @@ if(true) {
 
 
     //Platform LTI Section
-    $ltidata=['school'=>'','subs'=>$ltisubs,
+    $ltidata=['school'=>$school,'subs'=>$ltisubs,
         'planfamily'=>'all',
         'platform'=>constants::M_PLATFORM_LTI,
         'checkouturl'=>$checkouturl->out()];
@@ -161,7 +161,7 @@ if(true) {
 
     //Platform Classroom Section
     if(count($classroomsubs)>0){
-        $classroomdata= ['school'=>'','subs'=>$classroomsubs,
+        $classroomdata= ['school'=>$school,'subs'=>$classroomsubs,
             'planfamily'=>'all',
             'platform'=>constants::M_PLATFORM_CLASSROOM,
             'checkouturl'=>$checkouturl->out()];

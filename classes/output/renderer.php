@@ -176,7 +176,7 @@ class renderer extends \plugin_renderer_base {
 
         //Platform Moodle Subs Section
         $editschoolurl =  $CFG->wwwroot . '/blocks/poodllclassroom/subs/editmyschool.php?id='. $school->id;
-        $moodledata=['school'=>'','subs'=>$moodlesubs, 'editschoolurl'=>$editschoolurl,
+        $moodledata=['school'=>$school,'subs'=>$moodlesubs, 'editschoolurl'=>$editschoolurl,
             'platform'=>constants::M_PLATFORM_MOODLE,
             'checkouturl'=>$checkouturl->out()];
         if(count($moodlesubs)>0){
@@ -195,7 +195,7 @@ class renderer extends \plugin_renderer_base {
 
 
         //Platform LTI Section
-            $ltidata = ['school'=>'','subs'=>$ltisubs,
+            $ltidata = ['school'=>$school,'subs'=>$ltisubs,
                 'planfamily'=>'all',
                 'platform'=>constants::M_PLATFORM_LTI,
                 'checkouturl'=>$checkouturl->out()];
@@ -209,7 +209,7 @@ class renderer extends \plugin_renderer_base {
 
         //Platform Classroom Section
         if(count($classroomsubs)>0){
-            $classroomdata =  ['school'=>'','subs'=>$classroomsubs,
+            $classroomdata =  ['school'=>$school,'subs'=>$classroomsubs,
                 'planfamily'=>'all',
                 'platform'=>constants::M_PLATFORM_CLASSROOM,
                 'checkouturl'=>$checkouturl->out()];
@@ -220,10 +220,7 @@ class renderer extends \plugin_renderer_base {
             $content .= $this->render_from_template('block_poodllclassroom/classroomsubs',
                 $classroomdata );
         }
-
         return $content;
-
-
     }
 
     function fetch_checkout_toppart() {
