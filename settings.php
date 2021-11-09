@@ -18,7 +18,7 @@
  * Block newblock
  *
  * @package    block_poodllclassroom
- * @copyright  Justin Hunt Neis <poodllsupport@gmail.com>
+ * @copyright  Justin Hunt  <poodllsupport@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

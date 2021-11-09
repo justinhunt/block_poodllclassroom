@@ -109,7 +109,6 @@ if(true) {
             case constants::M_PLATFORM_MOODLE:
                 $moodlesubs[] = $dsub;
                 break;
-
             case constants::M_PLATFORM_LTI:
                 $ltisubs[] = $dsub;
                 break;
@@ -120,32 +119,59 @@ if(true) {
     }
 
     //Platform Moodle Subs Section
+    $moodledata = ['school'=>'','subs'=>$moodlesubs,
+        'planfamily'=>'all',
+        'platform'=>constants::M_PLATFORM_MOODLE,
+        'checkouturl'=>$checkouturl->out(),
+        'editschoolurl'=>false];
     if(count($moodlesubs)>0){
+        $moodledata['hassubs']=true;
+        //schoolname
+        $moodledata['school']=$moodlesubs[0]->school;
+
+        //edit url
         $urlparams= array('id' => $moodlesubs[0]->school->id,'type'=>'school','returnurl' => $PAGE->url->out_as_local_url());
         $theurl = new \moodle_url(constants::M_URL . '/subs/editmyschool.php', $urlparams);
-        $editschoolurl = $theurl->out();
-        $content .= $renderer->render_from_template('block_poodllclassroom/moodlesubs',
-                ['school'=>$moodlesubs[0]->school,'subs'=>$moodlesubs,
-                    'platform'=>constants::M_PLATFORM_MOODLE, 'checkouturl'=>$checkouturl->out(), 'editschoolurl'=>$editschoolurl]);
+        $moodledata['editschoolurl'] = $theurl->out();
 
+        //usage data
         $schoolusagedata = cpapi_helper::fetch_usage_data($moodlesubs[0]->school->apiuser);
-        if($schoolusagedata) {
-            $content .=  $renderer->display_usage_report($schoolusagedata);
-        }else{
-            $content .=   get_string('nousagedata', constants::M_COMP);
+        if ($schoolusagedata) {
+            $moodledata['usagereport'] = $renderer->display_usage_report($schoolusagedata);
+        } else {
+            $moodledata['usagereport'] = get_string('nousagedata', constants::M_COMP);
         }
-    }
+    };
+    $content .= $renderer->render_from_template('block_poodllclassroom/moodlesubs',
+            $moodledata);
+
 
     //Platform LTI Section
+    $ltidata=['school'=>'','subs'=>$ltisubs,
+        'planfamily'=>'all',
+        'platform'=>constants::M_PLATFORM_LTI,
+        'checkouturl'=>$checkouturl->out()];
     if(count($ltisubs)>0){
-        $content .= $renderer->render_from_template('block_poodllclassroom/ltisubs',
-            ['school'=>$moodlesubs[0]->school,'subs'=>$ltisubs,'platform'=>constants::M_PLATFORM_LTI,'checkouturl'=>$checkouturl->out()]);
+        $ltidata['hassubs']=true;
+        //schoolname
+        $ltidata['school']=$ltisubs[0]->school;
     }
+    $content .= $renderer->render_from_template('block_poodllclassroom/ltisubs',
+        $ltidata);
 
     //Platform Classroom Section
     if(count($classroomsubs)>0){
+        $classroomdata= ['school'=>'','subs'=>$classroomsubs,
+            'planfamily'=>'all',
+            'platform'=>constants::M_PLATFORM_CLASSROOM,
+            'checkouturl'=>$checkouturl->out()];
+        if(count($classroomsubs)>0){
+            $classroomdata['hassubs']=true;
+            //schoolname
+            $classroomdata['school']=$classroomsubs[0]->school;
+        }
         $content .= $renderer->render_from_template('block_poodllclassroom/classroomsubs',
-            ['school'=>$moodlesubs[0]->school,'subs'=>$classroomsubs, 'platform'=>constants::M_PLATFORM_CLASSROOM,'checkouturl'=>$checkouturl->out()]);
+           $classroomdata);
     }
 
     //return button

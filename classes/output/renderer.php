@@ -143,13 +143,13 @@ class renderer extends \plugin_renderer_base {
         }
 
         //checkout button
-        $checkoutbuttondata = ['school'=>$school,'subtype'=>'all', 'checkouturl'=>$checkouturl->out()];
-        $checkoutbutton = $this->render_from_template('block_poodllclassroom/checkoutpagebutton', $checkoutbuttondata);
+   //     $checkoutbuttondata = ['school'=>$school,'planfamily'=>'all', 'platform'=>constants::M_PLATFORM_MOODLE, 'checkouturl'=>$checkouturl->out()];
+   //     $checkoutbutton = $this->render_from_template('block_poodllclassroom/checkoutpagebutton', $checkoutbuttondata);
 
         $subssectiondata['show_expiretime']=true;
         $subssectiondata['show_payment']=true;
         $subssectiondata['show_status']=true;
-        $subssectiondata['checkoutbutton']=$checkoutbutton;
+ //       $subssectiondata['checkoutbutton']=$checkoutbutton;
         $content .= $this->render_from_template('block_poodllclassroom/subsheader',$subssectiondata);
 
 
@@ -175,32 +175,51 @@ class renderer extends \plugin_renderer_base {
         }
 
         //Platform Moodle Subs Section
+        $editschoolurl =  $CFG->wwwroot . '/blocks/poodllclassroom/subs/editmyschool.php?id='. $school->id;
+        $moodledata=['school'=>'','subs'=>$moodlesubs, 'editschoolurl'=>$editschoolurl,
+            'platform'=>constants::M_PLATFORM_MOODLE,
+            'checkouturl'=>$checkouturl->out()];
         if(count($moodlesubs)>0){
-            $editschoolurl =  $CFG->wwwroot . '/blocks/poodllclassroom/subs/editmyschool.php?id='. $school->id;
-            $content .= $this->render_from_template('block_poodllclassroom/moodlesubs',
-                    ['school'=>$moodlesubs[0]->school,'subs'=>$moodlesubs, 'editschoolurl'=>$editschoolurl,'subtype'=>'moodle', 'checkouturl'=>$checkouturl->out()]);
-
+            $moodledata['hassubs']=true;
+            $moodledata['school']=$moodlesubs[0]->school;
             $schoolusagedata = cpapi_helper::fetch_usage_data($moodlesubs[0]->school->apiuser);
-            if($schoolusagedata) {
-                $content .=  $this->display_usage_report($schoolusagedata);
-            }else{
-                $content .=   get_string('nousagedata', constants::M_COMP);
+            if ($schoolusagedata) {
+                $moodledata['usagereport'] = $this->display_usage_report($schoolusagedata);
+            } else {
+                $moodledata['usagereport'] = get_string('nousagedata', constants::M_COMP);
             }
         }
+        $content .= $this->render_from_template('block_poodllclassroom/moodlesubs',
+                $moodledata);
+
+
 
         //Platform LTI Section
-        if(count($ltisubs)>0){
+            $ltidata = ['school'=>'','subs'=>$ltisubs,
+                'planfamily'=>'all',
+                'platform'=>constants::M_PLATFORM_LTI,
+                'checkouturl'=>$checkouturl->out()];
+            if(count($ltisubs)>0){
+                $ltidata['hassubs']=true;
+                $ltidata['school']=$ltisubs[0]->school;
+            }
             $content .= $this->render_from_template('block_poodllclassroom/ltisubs',
-                ['school'=>$moodlesubs[0]->school,'subs'=>$ltisubs,'subtype'=>'moodle', 'checkouturl'=>$checkouturl->out()]);
-        }
+                $ltidata);
+
 
         //Platform Classroom Section
         if(count($classroomsubs)>0){
+            $classroomdata =  ['school'=>'','subs'=>$classroomsubs,
+                'planfamily'=>'all',
+                'platform'=>constants::M_PLATFORM_CLASSROOM,
+                'checkouturl'=>$checkouturl->out()];
+            if(count($classroomsubs)>0){
+                $classroomdata['hassubs']=true;
+                $classroomdata['school']=$classroomsubs[0]->school;
+            }
             $content .= $this->render_from_template('block_poodllclassroom/classroomsubs',
-                ['school'=>$moodlesubs[0]->school,'subs'=>$classroomsubs,'subtype'=>'moodle', 'checkouturl'=>$checkouturl->out()]);
+                $classroomdata );
         }
-
-
 
         return $content;
 
@@ -778,7 +797,7 @@ class renderer extends \plugin_renderer_base {
                 $fields[] = $school->status;
                 $fields[] = $school->jsonfields;
             }
-            $fields[] = strftime('%d %b %Y', $school->timemodified);
+            $fields[] = date("Y-m-d", $school->timemodified);//strftime('%d %b %Y', $school->timemodified);
 
             $buttons = array();
             //view school subs and other details

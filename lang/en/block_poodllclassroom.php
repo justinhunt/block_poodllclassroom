@@ -227,12 +227,17 @@ $string['renewnow'] = 'Renew';
 $string['change'] = 'change';
 $string['noaccessportal'] = 'Unable to access portal';
 $string['siteurl']='Site URL {$a}';
-$string['nositeurls']='No site urls have been registered. Click the \'Edit site details\' button below to register your Moodle site URL(s). Poodll will not work on unregistered sites.';
+$string['nositeurls']='No site urls have been registered. Click the \'Edit site details\' button below to register your Moodle site URL(s). Poodll for Moodle will not work on unregistered sites.';
 $string['apiuser']='API User';
 $string['apisecret']='API Secret';
-$string['moodlesubs']='Moodle Site Details';
-$string['ltisubs']='Poodll for Platform(LTI) Subscriptions';
-$string['classroomsubs']='Poodll NET Subscriptions';
+$string['copied']='Copied!';
+$string['copy']='Copy';
+$string['moodlesubs']='Poodll for Moodle Subscription Details';
+$string['moodlesubs_none']='You do not have any current Poodll for Moodle subscriptions. Click the Add new subscription button to add one.';
+$string['ltisubs']='Poodll for Platforms (LTI) Subscription Details';
+$string['ltisubs_none']='You do not have any current Poodll for Platforms(LTI) subscriptions. Click the Add new subscription button to add one.';
+$string['classroomsubs']='Poodll Classroom Subscription Details';
+$string['classroomsubs_none']='You do not have any current Poodll Classroom subscriptions. Click the Add new subscription button to add one.';
 $string['allschoolsubs']='All Poodll Subscriptions';
 $string['reseller']='Reseller';
 $string['resellername']='Reseller Name';
@@ -393,7 +398,9 @@ $string['mediaplansintro']="Poodll Media adds Poodll's audio and video recording
 $string['languagesplansintro']="Poodll Languages gives access to Poodll ReadAloud, Poodll Solo, Poodll MiniLessons and Poodll Wordcards.";
 $string['essentialsplansintro']="Poodll Essentials gives access to both Poodll Media and Poodll Languages for a low price.";
 $string['englishcentralplansintro']="Poodll EnglishCentral allows your students to use the full range of EnglishCentral video learning activities from within Moodle.";
-$string['freeplansintro']="The Poodll free trial gives full 30 day access to all of the Poodll plugins and features. You can upgrade to a full plan at any time.";
-
+$string['freeplansintro']="The Poodll free trial gives full 30 day access.. You can upgrade to a full plan at any time.";
+$string['cartridgeurl'] = 'Cartridge URL';
+$string['consumerkey'] = 'Consumer Key';
+$string['consumersecret'] = 'Secret';
 
 

@@ -18,7 +18,6 @@ namespace block_poodllclassroom;
 
 use block_poodllclassroom\constants;
 
-
 defined('MOODLE_INTERNAL') || die();
 
 require_once("$CFG->dirroot/user/externallib.php");
@@ -886,7 +885,6 @@ class common
                     get_string('subwillchange',constants::M_COMP, $a) .
                     '</span>';
 
-
             }
 
             //expiry date
@@ -894,6 +892,14 @@ class common
 
             //time created
             $sub->timecreated_display =date("Y-m-d H:i:s", $sub->timecreated);
+
+            //lti subs
+            if(isset($sub->extra) && isset($sub->extra->ltidetails) && is_array($sub->extra->ltidetails)){
+                $sub->extra->cartridgeurl=$sub->extra->ltidetails[0]->toolurl;
+                $sub->extra->consumerkey=$sub->extra->ltidetails[0]->consumerkey;
+                $sub->extra->consumersecret=$sub->extra->ltidetails[0]->secret;
+            }
+
         }
         return $subs;
     }
@@ -1053,17 +1059,26 @@ class common
         $obj->has_scheduled_changes= $subscription->has_scheduled_changes;
 
         switch($plan->platform){
-            case constants::M_PLATFORM_MOODLE:
-                $username = strtolower($school->apiuser);
-                $accesskeyid='xxxxxx';
-                $accesskeysecret='yyyyyy';
-                $subscriptionid = $plan->poodllplanid; //this is the numeric id .. of the old memberpress system which cloudpoodll still keys on
-                $transactionid = 999;//$subscription->id would be the one, but its int only at this stage
-                $expiretime=self::extract_expire_time($subscription);
-                $theuser = $DB->get_record('user', array('id'=>$school->ownerid));
-                $ret = cpapi_helper::update_cpapi_user($username,$theuser->firstname,$theuser->lastname,$theuser->email,
-                    $expiretime,$subscriptionid,$transactionid,$accesskeyid,$accesskeysecret);
-                break;
+                case constants::M_PLATFORM_MOODLE:
+                    $username = strtolower($school->apiuser);
+                    $accesskeyid='xxxxxx';
+                    $accesskeysecret='yyyyyy';
+                    $subscriptionid = $plan->poodllplanid; //this is the numeric id .. of the old memberpress system which cloudpoodll still keys on
+                    $transactionid = 999;//$subscription->id would be the one, but its int only at this stage
+                    $expiretime=self::extract_expire_time($subscription);
+                    $theuser = $DB->get_record('user', array('id'=>$school->ownerid));
+                    $ret = cpapi_helper::update_cpapi_user($username,$theuser->firstname,$theuser->lastname,$theuser->email,
+                        $expiretime,$subscriptionid,$transactionid,$accesskeyid,$accesskeysecret);
+                    break;
+
+                case constants::M_PLATFORM_LTI:
+                    $expiretime=self::extract_expire_time($subscription);
+                    $ret = lti_helper::update_lti_sub($school->name, $subscription->customer_id, $subscription->id,$plan->upstreamplan,$expiretime);
+                    if($ret && isset($ret->error) && !$ret->error){
+                        $obj->ltidetails=$ret->ltidetails;
+                    }
+                    break;
+
             default:
         }
 
@@ -1103,6 +1118,16 @@ class common
                 $ret = cpapi_helper::update_cpapi_user($username,$theuser->firstname,$theuser->lastname,$theuser->email,
                     $expiretime,$subscriptionid,$transactionid,$accesskeyid,$accesskeysecret);
                 break;
+
+            case constants::M_PLATFORM_LTI:
+                $expiretime=self::extract_expire_time($upstreamsub);
+                $ret = lti_helper::update_lti_sub($school->name, $upstreamsub->customer_id, $upstreamsub->id,$plan->upstreamplan,$expiretime);
+                if($ret && isset($ret->error) && !$ret->error){
+                    //not sure what to do here, so will do nothing!
+                    //$obj->ltidetails=$ret->ltidetails;
+                }
+                break;
+
             default:
         }
 

@@ -1,13 +1,35 @@
 
 <div id="block_poodllclassroom_ltisubslist_cont" class="block_poodllclassroom_ltisubslist_cont" style="display: {{display}};">
-    <h3 class="block_poodllclassroom_subslist_title">{{#str}}ltisubs, block_poodllclassroom{{/str}}</h3>
-    {{> block_poodllclassroom/checkoutpagebutton}}
+    <h4 class="block_poodllclassroom_subslist_title">{{#str}}ltisubs, block_poodllclassroom{{/str}}</h4>
+    {{^hassubs}}{{#str}}ltisubs_none, block_poodllclassroom{{/str}}<br>{{/hassubs}}
+    {{> block_poodllclassroom/checkoutpagebutton}} <br>
+    {{#hassubs}}
         {{#subs}}
-            <div>Course Name: {{plan.name}}</div>
-            <div>Cartridge URL: {{extra.cartridgeurl}}</div>
-            <div>Consumer Key: {{extra.consumerkey}}</div>
-            <div>Consumer Secret: {{extra.consumersecret}}</div>
+            <div class="bpc_moodlesubsrow">
+                <div class="bpc_col-1">{{#str}}name, block_poodllclassroom{{/str}}</div> <div class="bpc_col-2">{{plan.name}}</div>
+            </div>
+            <div class="bpc_ltisubsrow">
+                <div class="bpc_col-1 ">{{#str}}cartridgeurl, block_poodllclassroom{{/str}}</div>
+                <div class="bpc_col-2 " id="cartridgeurl_{{id}}" data-clipboard-text="{{extra.cartridgeurl}}">{{extra.cartridgeurl}}</div>
+                <div class="bpc_col-3 "><a class="btn btn-info poodllclassroom_clipboardbutton" data-clipboard-action="copy"
+                                           data-clipboard-target="#cartridgeurl_{{id}}">{{#str}}copy, block_poodllclassroom{{/str}}</a></div>
+                <div class="bpc_col-4 bpc_copied" style="display: none">{{#str}}copied, block_poodllclassroom{{/str}}</div>
+            </div>
+            <div class="bpc_ltisubsrow">
+                <div class="bpc_col-1 ">{{#str}}consumerkey, block_poodllclassroom{{/str}}</div>
+                <div class="bpc_col-2 " id="consumerkey_{{id}}" data-clipboard-text="{{extra.consumerkey}}">{{extra.consumerkey}}</div>
+                <div class="bpc_col-3 "><a class="btn btn-info poodllclassroom_clipboardbutton" data-clipboard-action="copy"
+                                           data-clipboard-target="#consumerkey_{{id}}">{{#str}}copy, block_poodllclassroom{{/str}}</a></div>
+                <div class="bpc_col-4 bpc_copied" style="display: none">{{#str}}copied, block_poodllclassroom{{/str}}</div>
+            </div>
+            <div class="bpc_ltisubsrow">
+                <div class="bpc_col-1 ">{{#str}}consumersecret, block_poodllclassroom{{/str}}</div>
+                <div class="bpc_col-2 " id="consumersecret_{{id}}" data-clipboard-text="{{extra.consumersecret}}">{{extra.consumersecret}}</div>
+                <div class="bpc_col-3 "><a class="btn btn-info poodllclassroom_clipboardbutton" data-clipboard-action="copy"
+                                           data-clipboard-target="#consumersecret_{{id}}">{{#str}}copy, block_poodllclassroom{{/str}}</a></div>
+                <div class="bpc_col-4 bpc_copied" style="display: none">{{#str}}copied, block_poodllclassroom{{/str}}</div>
+            </div>
             <hr>
         {{/subs}}
+    {{/hassubs}}
 </div>
-<hr>

@@ -18,9 +18,18 @@
     min-width: 150px;
     margin-top: 10px;
 }
-.block_poodllclassroom_userlist_cont{
-
+.block_poodllclassroom_ltisubslist_cont,
+.block_poodllclassroom_moodlesubslist_cont,
+.block_poodllclassroom_classroomsubslist_cont {
+    border: 1px #ccc solid;
+    display: block;
+    padding: 15px;
+    margin-bottom: 10px;
 }
+.block_poodllclassroom_opencheckout {
+    margin: 5px;
+}
+
 .block_poodllclassroom_nousers_cont {
    /* text-align: center; */
     margin-top: 10px;
@@ -70,7 +79,10 @@ a.block_poodllclassroom_freeplan.block_poodllclassroom_gocbcheckout {
     margin-right: 10px;
     margin-bottom: 10px;
 }
-.bpc_moodlesubsrow {
+.bpc_moodlesubsrow,
+.bpc_ltisubsrow,
+.bpc_classroomsubsrow
+{
     display: flex;
     margin-top: 10px;
 }
@@ -82,12 +94,13 @@ a.block_poodllclassroom_freeplan.block_poodllclassroom_gocbcheckout {
 .bpc_col-1 {
     padding: 7px;
     border: 1px solid grey;
-    min-width: 100px;
+    min-width: 120px;
 }
 .bpc_col-2 {
     padding: 7px;
     border: 1px solid grey;
     min-width: 350px;
+    max-width: 600px;
 }
 .bpc_col-3 {
     padding: 7px;
