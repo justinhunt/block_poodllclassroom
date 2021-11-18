@@ -227,16 +227,13 @@ class renderer extends \plugin_renderer_base {
         $ret = $this->output->heading(get_string('checkout', constants::M_COMP),3);
         $ret .= \html_writer::div(get_string('checkoutinstructions',constants::M_COMP),constants::M_COMP . '_checkoutinstructions');
         return $ret;
-
     }
 
     function fetch_checkout_buttons($school, $platform, $planfamily, $checkoutexisting=false, $existingsubid=false)
     {
-
         if (!$school) {
             $ret = \html_writer::div(get_string('youhavenoschool', constants::M_COMP), constants::M_COMP . '_noschool');
             return $ret;
-
         }
         $platform = strtoupper($platform);
         $planfamily = strtoupper($planfamily);

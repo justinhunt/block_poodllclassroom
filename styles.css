@@ -101,6 +101,7 @@ a.block_poodllclassroom_freeplan.block_poodllclassroom_gocbcheckout {
     border: 1px solid grey;
     min-width: 350px;
     max-width: 600px;
+    overflow-wrap: anywhere;
 }
 .bpc_col-3 {
     padding: 7px;
@@ -124,4 +125,37 @@ span.block_poodllclassroom_paymentdue {
 }
 table.generaltable.block_poodllclassroom_subslist_table {
     margin-top: 20px;
+}
+
+.bpc_login-form {
+    padding: 20px 15px;
+    max-width: 400px;
+}
+
+#bpc_email,
+#bpc_password {
+    border: 1px solid rgba(0, 0, 0, .15);
+    height: 44px;
+    margin: 5px;
+    max-width: 400px;
+}
+
+.bpc_loginbtn {
+    padding: 0.5rem;
+    margin: 5px;
+    width: 100%;
+    max-width: 400px;
+}
+.bpc_loginbtn .btn {
+    width: 100%;
+}
+.bpc_loginform_instructions {
+    width: 100%;
+    max-width: 400px;
+}
+.block_poodllclassroom_signupthanksvideo ,
+.block_poodllclassroom_signupthanksform {
+    width: 50%;
+    max-width: 640px;
+    margin: 20px;
 }

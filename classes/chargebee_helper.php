@@ -215,7 +215,7 @@ class chargebee_helper
             self::process_one_event($theevent, $trace);
 
         }//end of events list loop
-        return false;
+        return $eventslist;
     }
 
     public static function retrieve_process_one_event($eventid, $trace=false){

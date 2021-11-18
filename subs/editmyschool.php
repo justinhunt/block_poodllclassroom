@@ -172,12 +172,20 @@ if ($editform->is_cancelled()){
                         $url4 = '';
                         $url5 = '';
                         list($url1, $url2, $url3, $url4, $url5) = $data->siteurl;
-                        // \block_poodllclassroom\cpapi_helper::update_cpapi_sites($theschool->apiuser,$url1,$url2,$url3,$url4,$url5);
-                        // \block_poodllclassroom\cpapi_helper::update_cpapi_sites($USER->username,$url1,$url2,$url3,$url4,$url5);
 
                         $cpapi_username = strtolower($theschool->apiuser);
                         cpapi_helper::update_cpapi_sites($cpapi_username, $url1, $url2, $url3, $url4, $url5);
-                        cpapi_helper::update_cpapi_user($cpapi_username, $USER->firstname, $USER->lastname, $USER->email);
+                        //If this is the owner editing we use their details when updating cloud poodll
+                        if ($theschool->ownerid == $USER->id) {
+                            cpapi_helper::update_cpapi_user($cpapi_username, $USER->firstname, $USER->lastname, $USER->email);
+                            //If its the reseller or admin editing we use their details when updating cloud poodll
+                            //what about resold schools though??? should we use the school name?
+                        }else{
+                            $owner = $DB->get_record('user',array('id'=>$theschool->ownerid));
+                            if($owner){
+                                cpapi_helper::update_cpapi_user($cpapi_username, $owner->firstname, $owner->lastname, $owner->email);
+                            }
+                        }
                         //update chargebee if required
                         if($theschool->name != $data->name) {
                             //a reseller will have multiple schools so we dont want to update the company name here, since it will be one of their clients name actually

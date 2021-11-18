@@ -59,7 +59,6 @@ class cpapi_helper {
         $adminconfig = get_config(constants::M_COMP);
         if(!$adminconfig->enablecpapievents){return false;}
 
-
         //check for blacklisted URL
         $blacklist =['XXXXSITE.edu.vn'];
         foreach($blacklist as $badurl){

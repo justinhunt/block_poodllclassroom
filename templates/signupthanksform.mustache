@@ -1,0 +1,14 @@
+<div class="bpc_loginform_instructions">{{#str}}loginform_instructions, block_poodllclassroom{{/str}}</div>
+<form class="bpc_login-form" action="{{{loginurl}}}" method="POST" role="form">
+    <input type="hidden" name="logintoken" value="{{logintoken}}">
+    <div class="bpc_input-group">
+        <input type="text" class="form-control" id="bpc_email" name="username" placeholder="{{#str}}email{{/str}}" value="{{{useremail}}}" required />
+    </div>
+    <div class="bpc_input-group">
+        <input type="password" class="form-control" id="bpc_password" name="password" placeholder="{{#str}}password{{/str}}" required />
+    </div>
+
+    <div class="bpc_loginbtn">
+        <button type="submit" class="btn btn-primary">{{#str}}login{{/str}}</button>
+    </div>
+</form>

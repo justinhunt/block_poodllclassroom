@@ -403,4 +403,9 @@ $string['cartridgeurl'] = 'Cartridge URL';
 $string['consumerkey'] = 'Consumer Key';
 $string['consumersecret'] = 'Secret';
 
+$string['signupthanks'] = 'Thanks for Subscribing';
+$string['thanks'] = 'Thank you';
+$string['loginform_instructions'] = "Your password has been sent to the email address that you registered with. Please check your email, and enter your password below to login. You need to login to get the information that you need to set Poodll up on your site.";
+
+
 
