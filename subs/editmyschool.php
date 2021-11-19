@@ -236,6 +236,7 @@ $PAGE->navbar->add($strheading);
 
 echo $renderer->header();
 echo $renderer->heading($strheading);
+echo $renderer->fetch_schooldetailsform_instructions();
 $editform->display();
 echo $renderer->footer();
 

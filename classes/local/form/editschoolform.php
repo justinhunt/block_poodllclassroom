@@ -76,7 +76,7 @@ class editschoolform extends \moodleform {
         }
 
         for($urlcount =0; $urlcount<5; $urlcount++) {
-            $mform->addElement('text', 'siteurl[' . $urlcount  . ']', get_string('siteurl', constants::M_COMP, $urlcount+1), array('size' => 70));
+            $mform->addElement('text', 'siteurl[' . $urlcount  . ']', get_string('siteurl', constants::M_COMP, $urlcount+1), array('size' => 70,'placeholder'=>'e.g https://my.moodlesite.com'));
             $mform->setType('siteurl[' . $urlcount  . ']', PARAM_TEXT);
         }
 

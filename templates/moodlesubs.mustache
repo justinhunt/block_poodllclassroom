@@ -1,6 +1,7 @@
 
 <div id="block_poodllclassroom_moodlesubslist_cont" class="block_poodllclassroom_moodlesubslist_cont" style="display: {{display}};">
         <h4 class="block_poodllclassroom_subslist_title">{{#str}}moodlesubs, block_poodllclassroom{{/str}}</h4>
+        {{#hassubs}}{{#str}}moodlesubs_intro, block_poodllclassroom{{/str}} {{> block_poodllclassroom/watchthevideo}}<br>{{/hassubs}}
         {{^hassubs}}{{#str}}moodlesubs_none, block_poodllclassroom{{/str}}<br>{{/hassubs}}
         {{> block_poodllclassroom/checkoutpagebutton}}<br>
     {{#hassubs}}

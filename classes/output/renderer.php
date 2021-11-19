@@ -54,6 +54,9 @@ class renderer extends \plugin_renderer_base {
         $clipboardopts = array();
         $this->page->requires->js_call_amd(constants::M_COMP . "/clipboardhelper", 'init', array($clipboardopts));
 
+        //set up our lightbox css (for the watch this video mustache template called from moodlesubs mustache and lti subs mustache)
+        $this->page->requires->css(new \moodle_url("https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css"));
+
         //if we are a reseller we are showing reseller things and reseller options
         $me_reseller = common::fetch_me_reseller();
         if($me_reseller && $me_reseller->resellertype==constants::M_RESELLER_THIRDPARTY){
@@ -203,6 +206,21 @@ class renderer extends \plugin_renderer_base {
                 $ltidata['hassubs']=true;
                 $ltidata['school']=$ltisubs[0]->school;
             }
+
+        //lti tutorials
+        $ltitutdata=[];
+        $ltitutdata['ltitut']=[];
+        //Moodle
+        $ltitutdata['ltitut'][]=['title'=>'Moodle','logourl'=>$CFG->wwwroot . constants::M_URL . '/pix/moodle_logo_small.svg',
+            'instructions'=>get_string('ltimoodleinstructions', constants::M_COMP),
+            'tuturl'=>'https://support.poodll.com/en/support/solutions/articles/19000125439-setting-up-poodll-lti-on-your-moodle-site',
+            'videoid'=>'532567654','videobutton'=>true];
+        //canvas
+        $ltitutdata['ltitut'][]=['title'=>'Canvas','logourl'=>$CFG->wwwroot . constants::M_URL . '/pix/canvas-transparent.png',
+            'instructions'=>get_string('lticanvasinstructions', constants::M_COMP),
+            'tuturl'=>'https://support.poodll.com/en/support/solutions/articles/19000125450-setting-up-poodll-lti-on-canvas-lms'];
+        $ltidata['ltituts']=$ltitutdata;
+
             $content .= $this->render_from_template('block_poodllclassroom/ltisubs',
                 $ltidata);
 
@@ -1123,6 +1141,10 @@ class renderer extends \plugin_renderer_base {
         $pusers=trim($pusers);
         return count(array_unique(explode(',',$pusers)));
 
+    }
+
+    public function fetch_schooldetailsform_instructions(){
+        return $this->output->render_from_template('block_poodllclassroom/schooldetailsinstructions', []);
     }
 
 }

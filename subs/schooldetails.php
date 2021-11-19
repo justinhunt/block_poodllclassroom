@@ -51,6 +51,7 @@ $school = common::get_resold_or_my_school($id);
 
 //get our renderer
 $renderer = $PAGE->get_renderer(constants::M_COMP);
+$PAGE->requires->css(new \moodle_url("https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css"));
 
 if(!$school){
     //return the page header
@@ -123,9 +124,11 @@ if(true) {
         'planfamily'=>'all',
         'platform'=>constants::M_PLATFORM_MOODLE,
         'checkouturl'=>$checkouturl->out(),
-        'editschoolurl'=>false];
+        'editschoolurl'=>false,
+        'videoid'=>'647332061'];
     if(count($moodlesubs)>0){
         $moodledata['hassubs']=true;
+
         //schoolname
         $moodledata['school']=$moodlesubs[0]->school;
 
@@ -156,8 +159,25 @@ if(true) {
         //schoolname
         $ltidata['school']=$ltisubs[0]->school;
     }
+
+    //lti tutorials
+    $ltitutdata=[];
+    $ltitutdata['ltitut']=[];
+    //Moodle
+    $ltitutdata['ltitut'][]=['title'=>'Moodle','logourl'=>$CFG->wwwroot . constants::M_URL . '/pix/moodle_logo_small.svg',
+        'instructions'=>get_string('ltimoodleinstructions', constants::M_COMP),
+        'tuturl'=>'https://support.poodll.com/en/support/solutions/articles/19000125439-setting-up-poodll-lti-on-your-moodle-site',
+        'videoid'=>'532567654','videobutton'=>true];
+    //canvas
+    $ltitutdata['ltitut'][]=['title'=>'Canvas','logourl'=>$CFG->wwwroot . constants::M_URL . '/pix/canvas-transparent.png',
+        'instructions'=>get_string('lticanvasinstructions', constants::M_COMP),
+        'tuturl'=>'https://support.poodll.com/en/support/solutions/articles/19000125450-setting-up-poodll-lti-on-canvas-lms'];
+    $ltidata['ltituts']=$ltitutdata;
+
     $content .= $renderer->render_from_template('block_poodllclassroom/ltisubs',
         $ltidata);
+
+
 
     //Platform Classroom Section
     if(count($classroomsubs)>0){

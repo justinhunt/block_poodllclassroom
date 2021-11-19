@@ -234,7 +234,9 @@ $string['copied']='Copied!';
 $string['copy']='Copy';
 $string['moodlesubs']='Poodll for Moodle Subscription Details';
 $string['moodlesubs_none']='You do not have any current Poodll for Moodle subscriptions. Click the Add new subscription button to add one.';
+$string['moodlesubs_intro']='Your school details are below. These are used by your Poodll for Moodle subscription(s). Click the \'edit site details\' button to change school name and to add/edit your Moodle site URL(s). Need help? Click the orange button below to contact Poodll support. Just getting started? ..';
 $string['ltisubs']='Poodll for Platforms (LTI) Subscription Details';
+$string['ltisubs_intro']='Your LTI subscription credentials are below. See the tutorials below the credentials to learn how to set up Poodll for Platforms(LTI) on your Moodle or Canvas site.';
 $string['ltisubs_none']='You do not have any current Poodll for Platforms(LTI) subscriptions. Click the Add new subscription button to add one.';
 $string['classroomsubs']='Poodll Classroom Subscription Details';
 $string['classroomsubs_none']='You do not have any current Poodll Classroom subscriptions. Click the Add new subscription button to add one.';
@@ -406,6 +408,12 @@ $string['consumersecret'] = 'Secret';
 $string['signupthanks'] = 'Thanks for Subscribing';
 $string['thanks'] = 'Thank you';
 $string['loginform_instructions'] = "Your password has been sent to the email address that you registered with. Please check your email, and enter your password below to login. You need to login to get the information that you need to set Poodll up on your site.";
+$string['schooldetails_instructions'] = 'Enter the school or organisation name and Moodle site URL(s) below. The school name will be shown on Poodll invoices. Each site URL should begin with \'https://\'. It is not necessary to add sub directories. You can use a wildcard in place of a subdomain if you have several subdomains. NB Unless you are a reseller, Poodll is only licensed for one school.';
+$string['watchthevideo'] = 'Watch the video';
+$string['ltimoodleinstructions'] = 'Follow the tutorial to learn how to set up Poodll LTI courses to work on your Moodle site.';
+$string['lticanvasinstructions'] = 'Follow the tutorial to learn how to set up Poodll LTI courses to work on your Canvas site.';
+$string['ltitutsintro'] = 'Setting up Poodll for Platforms';
+$string['read'] = 'Read';
 
 
 
