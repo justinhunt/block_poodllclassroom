@@ -125,7 +125,7 @@ if(true) {
         'platform'=>constants::M_PLATFORM_MOODLE,
         'checkouturl'=>$checkouturl->out(),
         'editschoolurl'=>false,
-        'videoid'=>'647332061'];
+        'videoid'=>'648951396'];
     if(count($moodlesubs)>0){
         $moodledata['hassubs']=true;
 

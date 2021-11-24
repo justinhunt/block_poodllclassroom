@@ -99,8 +99,8 @@ a.block_poodllclassroom_freeplan.block_poodllclassroom_gocbcheckout {
 .bpc_col-2 {
     padding: 7px;
     border: 1px solid grey;
-    min-width: 350px;
-    max-width: 600px;
+    min-width: 390px;
+    max-width: 390px;
     overflow-wrap: anywhere;
 }
 .bpc_col-3 {

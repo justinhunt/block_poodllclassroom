@@ -181,7 +181,8 @@ class renderer extends \plugin_renderer_base {
         $editschoolurl =  $CFG->wwwroot . '/blocks/poodllclassroom/subs/editmyschool.php?id='. $school->id;
         $moodledata=['school'=>$school,'subs'=>$moodlesubs, 'editschoolurl'=>$editschoolurl,
             'platform'=>constants::M_PLATFORM_MOODLE,
-            'checkouturl'=>$checkouturl->out()];
+            'checkouturl'=>$checkouturl->out(),
+            'videoid'=>'648951396'];
         if(count($moodlesubs)>0){
             $moodledata['hassubs']=true;
             $moodledata['school']=$moodlesubs[0]->school;
