@@ -1683,16 +1683,28 @@ class common
     }
     public static function fetch_upstream_user_id($userid)
     {
+        return self::update_upstreamuser_moodleuser_link($userid);
+    }
+
+    public static function update_upstreamuser_moodleuser_link($userid,$upstreamuserid=''){
         global $DB;
         $classroomuser = $DB->get_record(constants::M_TABLE_USERS,array('userid'=>$userid));
         if(!$classroomuser) {
-            $upstreamuserid = 'user-' . $userid . '-' . random_string(8);
+            //this should totally never ever happen
+            if(empty($upstreamuserid)){
+                $upstreamuserid =  'user-' . $userid . '-' . random_string(8);
+            }
             $classroomuser=new \stdClass();
             $classroomuser->userid=$userid;
             $classroomuser->upstreamuserid=$upstreamuserid;
             $classroomuser->status=constants::M_STATUS_ACTIVE;
             $classroomuser->timecreated=time();
             $DB->insert_record(constants::M_TABLE_USERS,$classroomuser);
+        }else{
+            if($classroomuser->upstreamuserid != $upstreamuserid && !empty($upstreamuserid)){
+                $classroomuser->upstreamuserid = $upstreamuserid;
+                $DB->update_record(constants::M_TABLE_USERS,$classroomuser);
+            }
         }
         return $classroomuser->upstreamuserid;
     }

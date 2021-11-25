@@ -227,7 +227,11 @@ if ($editform->is_cancelled()){
 
                 $data->timemodified=time();
                 $data->timecreated=time();
-                $data->upstreamuserid=common::fetch_upstream_user_id($data->userid);
+                //this should not ever be empty
+                if(empty($data->upstreamuserid)) {
+                    //common::fetch_upstream_user_id($data->userid);
+                    $data->upstreamuserid =  common::update_upstreamuser_moodleuser_link($data->userid);
+                }
                 $result=$DB->insert_record(constants::M_TABLE_RESELLERS,$data);
             } else {
                 $reseller = $DB->get_record(constants::M_TABLE_RESELLERS,array('id'=>$data->id));

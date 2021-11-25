@@ -56,6 +56,10 @@ class editresellerform extends \moodleform {
         $users = common::fetch_users_array();
         $mform->addElement('select', 'userid', get_string('users', constants::M_COMP), $users);
 
+        $mform->addElement('text', 'upstreamuserid', get_string('upstreamuserid', constants::M_COMP), array('size'=>70));
+        $mform->setType('upstreamuserid', PARAM_TEXT);
+        $mform->addRule('upstreamuserid', "you need to enter an upstreamuser id", 'required', null, 'client');
+
         $mform->addElement('text', 'description', get_string('description', constants::M_COMP), array('size'=>70));
         $mform->setType('description', PARAM_TEXT);
         $mform->setDefault('description', '');
