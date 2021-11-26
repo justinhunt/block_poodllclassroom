@@ -1586,13 +1586,21 @@ class common
         $newuser['lastname']=$upstream_user->customer->last_name;
         $newuser['lastnamephonetic']=$upstream_user->customer->last_name;
         $newuser['alternatename'] = $upstream_user->customer->last_name . ' ' . $upstream_user->customer->first_name;
-        $newuser['username']=strtolower($legacyuser['apiuser']);
+        $newuser['username']=strtolower($upstream_user->customer->email);
         $newuser['auth']='manual';
 
-        //its unlikely the username exists, but in the odd case (or in the test site case where cpapi and poodllclassroom are same) we use the email
+        //its unlikely the username/email exists .. but it might happen, we try 5 times to change it before using the apiuser
         $usernameexists = $DB->get_record('user', array('username'=> $newuser['username']));
-        if($usernameexists) {
-            $newuser['username'] = $newuser['username'] . '0000';
+        $inc=0;
+        while($usernameexists && $inc < 5) {
+            $bits =  explode('@', $newuser['username']);
+            $bits[0] = $bits[0] . '+' . $inc;
+            $newuser['username'] = $bits[0] . '@' . $bits[1];
+            $inc++;
+            $usernameexists = $DB->get_record('user', array('username'=> $newuser['username']));
+        }
+        if($usernameexists){
+            $newuser['username'] =  strtolower($legacyuser['apiuser']);
         }
 
         //either create a password or set a bogus one to be changed
