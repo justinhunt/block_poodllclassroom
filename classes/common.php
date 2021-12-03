@@ -684,6 +684,22 @@ class common
         }
     }
 
+    public static function add_expiring_sub_to_schools($schools){
+        global $DB;
+
+        foreach($schools as $school){
+            $sql =  ' SELECT MIN(expiretime) as expiretime FROM {'. constants::M_TABLE_SUBS .'} sub ';
+            $sql .= ' WHERE sub.schoolid = :schoolid AND NOT sub.status IN (\'inactive\',\'cancelled\') ';
+            $sql .= ' GROUP BY schoolid';
+            $subs= $DB->get_records_sql($sql,['schoolid'=>$school->id]);
+            if($subs){
+                $sub = array_shift($subs);
+                $school->nextexpiry=$sub->expiretime;
+            }
+        }
+        return $schools;
+    }
+
     public static function fetch_schools(){
         global $DB;
 
@@ -691,7 +707,6 @@ class common
         $sql .= 'from {'. constants::M_TABLE_SCHOOLS .'} school ';
         $sql .= 'INNER JOIN {user} u ON u.id = school.ownerid ';
         $schools=$DB->get_records_sql($sql);
-
 
         if($schools) {
             return $schools;

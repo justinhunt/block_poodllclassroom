@@ -66,6 +66,7 @@ if(has_capability('block/poodllclassroom:manageintegration', $context)) {
 
         //display schools
         $resold_schools = common::fetch_schools_by_reseller($the_reseller->id);
+        $resold_schools = common::add_expiring_sub_to_schools($resold_schools);
         $params = [];
         $returnurl = new \moodle_url(constants::M_URL . '/subs/subs.php', $params);
         $schoolstable = $renderer->fetch_schools_table($resold_schools, $returnurl);

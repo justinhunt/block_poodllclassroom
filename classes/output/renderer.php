@@ -79,6 +79,7 @@ class renderer extends \plugin_renderer_base {
 
             //display schools
             $resold_schools = common::fetch_schools_by_reseller($me_reseller->id);
+            $resold_schools = common::add_expiring_sub_to_schools($resold_schools);
             $params=[];
             $returnurl = new \moodle_url( $CFG->wwwroot . '/my/', $params);
             $schoolstable = $this->fetch_schools_table($resold_schools,$returnurl);
@@ -807,8 +808,14 @@ class renderer extends \plugin_renderer_base {
                 $fields[] = $school->ownerfirstname . ' ' . $school->ownerlastname . "($school->ownerid)";
                 $fields[] = $school->owneremail;
                 $fields[] = $school->upstreamownerid;
-                $fields[] = $school->status;
-                $fields[] = $school->jsonfields;
+                //$fields[] = $school->status;
+               // $fields[] = $school->jsonfields;
+            }
+            //get next expiry
+            if(isset($school->nextexpiry) && !empty($school->nextexpiry)) {
+                $fields[] = date("Y-m-d", $school->nextexpiry);//strftime('%d %b %Y', $school->timemodified);
+            }else{
+                $fields[] = '-';
             }
             $fields[] = date("Y-m-d", $school->timemodified);//strftime('%d %b %Y', $school->timemodified);
 
@@ -856,9 +863,10 @@ class renderer extends \plugin_renderer_base {
             $table->head[] = get_string('owner', constants::M_COMP);
             $table->head[] = get_string('owneremail', constants::M_COMP);
             $table->head[] = get_string('upstreamownerid', constants::M_COMP);
-            $table->head[] = get_string('status', constants::M_COMP);
-            $table->head[] = get_string('jsonfields', constants::M_COMP);
+          //  $table->head[] = get_string('status', constants::M_COMP);
+          //  $table->head[] = get_string('jsonfields', constants::M_COMP);
         }
+        $table->head[] = get_string('nextexpiry', constants::M_COMP);
         $table->head[] = get_string('lastchange', constants::M_COMP);
         $table->head[] = get_string('action');
         $table->colclasses = array('leftalign name', 'leftalign size','centeralign action');

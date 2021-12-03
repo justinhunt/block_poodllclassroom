@@ -414,6 +414,7 @@ $string['ltimoodleinstructions'] = 'Follow the tutorial to learn how to set up P
 $string['lticanvasinstructions'] = 'Follow the tutorial to learn how to set up Poodll LTI courses to work on your Canvas site.';
 $string['ltitutsintro'] = 'Setting up Poodll for Platforms';
 $string['read'] = 'Read';
+$string['nextexpiry'] = 'Next Expiry/Renewal';
 
 
 
