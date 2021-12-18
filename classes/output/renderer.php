@@ -114,6 +114,17 @@ class renderer extends \plugin_renderer_base {
                     $optionsdata['paymentsources']=$paymentsources;
 
                     $options[] = $paymentsources;
+                }else{
+                    //if they have no subs, then perhaps this is a new account, in which case lets let them take a free trial
+                    //do this here or down below ..
+                    $freetrialdata=[];
+                    $freetrialdata['planid']=59;
+                    $freetrialdata['schoolid']=$school->id;
+                    $freetrialdata['currency']='USD';
+                    $freetrialdata['billinginterval']=2;
+                    $freetrialbutton = $this->render_from_template('block_poodllclassroom/dashfreetrialbutton', $freetrialdata);
+                    $content .= $freetrialbutton;
+
                 }
                 //manage all our subscriptions
                 //  $portalurl =chargebee::get_portalurl_by_upstreamid($school->upstreamownerid);
