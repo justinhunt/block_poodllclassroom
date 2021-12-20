@@ -115,8 +115,18 @@ class renderer extends \plugin_renderer_base {
 
                     $options[] = $paymentsources;
                 }else{
-                    //if they have no subs, then perhaps this is a new account, in which case lets let them take a free trial
-                    //do this here or down below ..
+
+                    //if they are not a reseller and they have no subscription,
+                    // //then lets encourage them to take a subscription from the subscriptions page
+                    // the only reseller that should arrive here is Poodll admin, and we also do not want to be redirected, so lets first check
+                    if(!$me_reseller) {
+                        $checkouturl = new \moodle_url(constants::M_URL . '/subs/checkout.php',
+                            array('schoolid' => $school->id, 'platform' => constants::M_PLATFORM_MOODLE, 'planfamily' => 'all'));
+                        redirect($checkouturl);
+                    }
+
+                    // free trial button ??
+                    /*
                     $freetrialdata=[];
                     $freetrialdata['planid']=59;
                     $freetrialdata['schoolid']=$school->id;
@@ -124,6 +134,7 @@ class renderer extends \plugin_renderer_base {
                     $freetrialdata['billinginterval']=2;
                     $freetrialbutton = $this->render_from_template('block_poodllclassroom/dashfreetrialbutton', $freetrialdata);
                     $content .= $freetrialbutton;
+                    */
 
                 }
                 //manage all our subscriptions
@@ -193,6 +204,7 @@ class renderer extends \plugin_renderer_base {
         $editschoolurl =  $CFG->wwwroot . '/blocks/poodllclassroom/subs/editmyschool.php?id='. $school->id;
         $moodledata=['school'=>$school,'subs'=>$moodlesubs, 'editschoolurl'=>$editschoolurl,
             'platform'=>constants::M_PLATFORM_MOODLE,
+            'planfamily'=>'all',
             'checkouturl'=>$checkouturl->out(),
             'videoid'=>'648951396'];
         if(count($moodlesubs)>0){
@@ -254,9 +266,19 @@ class renderer extends \plugin_renderer_base {
         return $content;
     }
 
-    function fetch_checkout_toppart() {
-        $ret = $this->output->heading(get_string('checkout', constants::M_COMP),3);
+    function fetch_checkout_toppart($school, $platform, $planfamily) {
+        global $CFG;
+
+        $ret = $this->output->heading(get_string('checkouttitle', constants::M_COMP),3);
         $ret .= \html_writer::div(get_string('checkoutinstructions',constants::M_COMP),constants::M_COMP . '_checkoutinstructions');
+
+        $tabsdata = [];
+        $checkouturl = new \moodle_url(constants::M_URL . '/subs/checkout.php',array('schoolid'=>$school->id ,'planfamily'=>$planfamily));
+        $tabsdata['checkouturl']=$checkouturl->out();
+        $tabsdata['platform_' . strtoupper($platform)]=1;
+        //$tabsdata['school']=$school;
+       // $tabsdata['planfamily']=$planfamily;
+        $ret .= $this->render_from_template('block_poodllclassroom/checkoutpagetabs', $tabsdata);
         return $ret;
     }
 

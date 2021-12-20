@@ -65,6 +65,6 @@ if(!$school){
 }
 
 echo $renderer->header();
-echo $renderer->fetch_checkout_toppart();
+echo $renderer->fetch_checkout_toppart($school, $platform, $planfamily);
 echo $renderer->fetch_checkout_buttons($school, $platform, $planfamily);
 echo $renderer->footer();
