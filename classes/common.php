@@ -1351,66 +1351,6 @@ class common
         }
     }
 
-    public static function fetch_legacydeets_for_user($email){
-        $ret=[];
-        $ret['apiuser'] = '';
-        $ret['apisecret'] = '';
-        $ret['schoolname'] = '';
-        $ret['phone'] = '';
-        $ret['siteurl1'] = '';
-        $ret['siteurl2'] = '';
-        $ret['siteurl3'] = '';
-        $ret['siteurl4'] = '';
-        $ret['siteurl5'] = '';
-        $ret['success']=false;
-
-        // Create connection
-        $conn = self::poodll_reginald_fetch_connection();
-        if(!$conn){return $ret;}
-
-        //prepare sql statment
-        $sql = "SELECT um.user_id, u.user_login, um.meta_key,  um.meta_value
-                FROM wp_usermeta um INNER JOIN wp_users u ON u.id = um.user_id
-                WHERE u.user_email = '" . $email . "'" ;
-        //if no problem
-        if ($result = $conn->query($sql)) {
-            //if we got results
-            if ($result->num_rows > 0) {
-                //loop through results
-               while( $row = $result->fetch_assoc()) {
-                   switch ($row['meta_key']) {
-                       case 'mepr_api_secret':
-                           $ret['apiuser'] = $row['user_login'];
-                           $ret['apisecret'] = $row['meta_value'];
-                           $ret['success'] = true;
-                           break;
-                       case 'mepr_organisation_name':
-                           $ret['schoolname'] = $row['meta_value'];
-                           break;
-                       case 'mepr_contact_phone':
-                           $ret['phone'] = $row['meta_value'];
-                           break;
-                       case 'mepr_moodle_site_url_1':
-                           $ret['siteurl1'] = $row['meta_value'];
-                           break;
-                       case 'mepr_moodle_site_url_2':
-                           $ret['siteurl2'] = $row['meta_value'];
-                           break;
-                       case 'mepr_moodle_site_url_3':
-                           $ret['siteurl3'] = $row['meta_value'];
-                           break;
-                       case 'mepr_moodle_site_url_4':
-                           $ret['siteurl4'] = $row['meta_value'];
-                           break;
-                       case 'mepr_moodle_site_url_5':
-                           $ret['siteurl5'] = $row['meta_value'];
-                           break;
-                   }//end of switch case
-               }//end of loop rows
-            }//end of num_rows
-        }//end of if result
-        return $ret;
-    }
 
     public static function sync_siteurls_from_upstreamid($upstreamownerid){
         global $CFG, $DB;
@@ -1445,47 +1385,11 @@ class common
             return $ret;
         }
 
-        //OK we are ready to get started  ... but first we need to pick up our API user and secret from the user/secret dump
-        //need to connect (while its still current .... ) to livewww DB on this server and search wp_usermeta and search:
-        // user_id + mepr_api_secret + mepr_organisation_name + mepr_contact_phone
-        // wp_users ID user_login (API user) and user_email
-
-        $legacyuser = self::fetch_legacydeets_for_user($upstream_user->customer->email);
-        if($legacyuser && $legacyuser['success'] && !empty($legacyuser['apiuser'])){
-            if(!empty($legacyuser['siteurl1'])){$legacyuser['siteurls'][]=$legacyuser['siteurl1'];}
-            if(!empty($legacyuser['siteurl2'])){$legacyuser['siteurls'][]=$legacyuser['siteurl2'];}
-            if(!empty($legacyuser['siteurl3'])){$legacyuser['siteurls'][]=$legacyuser['siteurl3'];}
-            if(!empty($legacyuser['siteurl4'])){$legacyuser['siteurls'][]=$legacyuser['siteurl4'];}
-            if(!empty($legacyuser['siteurl5'])){$legacyuser['siteurls'][]=$legacyuser['siteurl5'];}
-
-            //if there is no existing user in the live user dump, lets create one
-        }else {
-            $ret['success'] = false;
-            $ret['message'] = 'could not fetch a legacy user for: ' . $upstream_user->customer->email;
-            return $ret;
-
-        }
-
-        //in this case we are patching up a situation where URL2 was not imported correctly
-       if(!empty($legacyuser['siteurl2'])) {
-           $theurls = json_decode($school->siteurls);
-           if(is_array($theurls)){
-               if(!in_array($legacyuser['siteurl2'],$theurls)){
-                   $theurls[] = $legacyuser['siteurl2'];
-                   $newurls = json_encode($theurls);
-
-                   $dbret = $DB->update_record(constants::M_TABLE_SCHOOLS, array('id'=>$school->id,'siteurls'=>$newurls));
-                   if($dbret) {
-                       $ret['success'] = true;
-                       $ret['message'] = 'YES!!! We updated one site url';
-                       return $ret;
-                   }
-               }
-           }else{
+        //Do some syncing
+       if(false) {
                $ret['success']=false;
                $ret['message']='We had nothing to do here';
                return $ret;
-           }
        }else{
            $ret['success']=false;
            $ret['message']='Site URL2 was empty';
@@ -1494,11 +1398,9 @@ class common
         $ret['success']=false;
         $ret['message']='ended with nothing, possibly a DB error';
         return $ret;
-
     }
 
-
-    public static function create_school_from_upstreamid($upstreamownerid){
+    public static function create_school_from_upstreamid($upstreamownerid, $startsiteurl=false){
         global $CFG, $DB;
         $ret=[];
         $ret['id']=$upstreamownerid;
@@ -1546,54 +1448,42 @@ class common
             return $ret;
         }
 
-        //OK we are ready to get started  ... but first we need to pick up our API user and secret from the user/secret dump
-        //need to connect (while its still current .... ) to livewww DB on this server and search wp_usermeta and search:
-        // user_id + mepr_api_secret + mepr_organisation_name + mepr_contact_phone
-        // wp_users ID user_login (API user) and user_email
-        $legacyuser = self::fetch_legacydeets_for_user($upstream_user->customer->email);
-        if($legacyuser && $legacyuser['success'] && !empty($legacyuser['apiuser'])){
-            $adminconfig = get_config(constants::M_COMP);
-            if(!empty($legacyuser['siteurl1'])){$legacyuser['siteurls'][]=$legacyuser['siteurl1'];}
-            if(!empty($legacyuser['siteurl2'])){$legacyuser['siteurls'][]=$legacyuser['siteurl2'];}
-            if(!empty($legacyuser['siteurl3'])){$legacyuser['siteurls'][]=$legacyuser['siteurl3'];}
-            if(!empty($legacyuser['siteurl4'])){$legacyuser['siteurls'][]=$legacyuser['siteurl4'];}
-            if(!empty($legacyuser['siteurl5'])){$legacyuser['siteurls'][]=$legacyuser['siteurl5'];}
+        //if we have disabled comunications with cpapi (for testing etc) .. create bogus deets
+        $adminconfig = get_config(constants::M_COMP);
+        if (!$adminconfig->enablecpapievents) {
+            $legacyuser = [];
+            $legacyuser['apiuser'] = 'bogus' . cpapi_helper::create_random_apiuser();
+            $legacyuser['apiusername'] = $legacyuser['apiuser'];
+            $legacyuser['apisecret'] = $legacyuser['apiuser'];
+            $legacyuser['siteurls'] = [];
 
-        //if there is no existing user in the live user dump, lets create one
-        }else {
-            //if we have disabled comunicationa with cpapi (for testing etc) .. create bogus deets
-            $adminconfig = get_config(constants::M_COMP);
-            if (!$adminconfig->enablecpapievents) {
-                $legacyuser = [];
-                $legacyuser['apiuser'] = 'bogus' . cpapi_helper::create_random_apiuser();
-                $legacyuser['apiusername'] = $legacyuser['apiuser'];
-                $legacyuser['apisecret'] = $legacyuser['apiuser'];
-                $legacyuser['siteurls'] = [];
+            //otherwise connect and create a real user
+        } else {
+            //lets create a user
+            //create user
+            $apiusername = cpapi_helper::create_random_apiuser();
+            $legacyuser = cpapi_helper::create_cpapi_user(
+                $upstream_user->customer->first_name,
+                $upstream_user->customer->last_name,
+                $upstream_user->customer->email,
+                $apiusername);
+            if ($legacyuser) {
+                $legacyuser = get_object_vars($legacyuser);
+            }
 
-                //otherwise connect and create a real user
-            } else {
-                //lets create a user
-                //create user
-                $apiusername = cpapi_helper::create_random_apiuser();
-                $legacyuser = cpapi_helper::create_cpapi_user(
-                    $upstream_user->customer->first_name,
-                    $upstream_user->customer->last_name,
-                    $upstream_user->customer->email,
-                    $apiusername);
-                if ($legacyuser) {
-                    $legacyuser = get_object_vars($legacyuser);
-                }
+            //if that failed lets leave
+            if (!$legacyuser || empty($legacyuser['apiuser'])) {
+                $ret['success'] = false;
+                $ret['message'] = 'could not fetch nor create a legacy user for: ' . $upstream_user->customer->email;
+                return $ret;
+            }
 
-                //if that failed lets leave
-                if (!$legacyuser || empty($legacyuser['apiuser'])) {
-                    $ret['success'] = false;
-                    $ret['message'] = 'could not fetch nor create a legacy user for: ' . $upstream_user->customer->email;
-                    return $ret;
-                }
+            //if we have a site URL for our new site, lets add that now
+            if($startsiteurl){
+                cpapi_helper::update_cpapi_sites($legacyuser['apiuser'],$startsiteurl,'','','','');
+                $legacyuser['siteurls'][]=$startsiteurl;
             }
         }
-        //$legacyuser  as ['success'=>true] ['apiuser'=>''] ['apisecret'=>'']['schoolname'=>'']['phone'=>'']
-        //print_r($legacyuser );
 
         $newuser=[];
         $newuser['firstname']=$upstream_user->customer->first_name;

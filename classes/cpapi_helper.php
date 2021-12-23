@@ -180,6 +180,7 @@ class cpapi_helper {
         if(is_array($ret)){
             $ret=$ret[0];
         }
+
         $ret->apiusername=$apiusername;
         $ret->apiuser=$apiusername;
         $ret->apisecret=$apisecret;

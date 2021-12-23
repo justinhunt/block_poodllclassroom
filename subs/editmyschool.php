@@ -161,6 +161,16 @@ if ($editform->is_cancelled()){
                 if ($theschool->ownerid == $USER->id || $caneditthisschool) {
 
                     if (!empty($data->siteurl)) {
+                        //loop through site urls, and trim, lowercase and make sure they start with https://
+                        for($x=0;$x<count($data->siteurl);$x++){
+                            $data->siteurl[$x]=trim($data->siteurl[$x]);
+                            if(!empty($data->siteurl[$x])){
+                                $data->siteurl[$x]= strtolower($data->siteurl[$x]);
+                                if(strpos($data->siteurl[$x],'http')!==0){
+                                    $data->siteurl[$x]='https://' . $data->siteurl[$x];
+                                }
+                            }
+                        }
                         $data->siteurls = json_encode($data->siteurl);
 
                         $data->timemodified = time();

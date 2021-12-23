@@ -334,8 +334,14 @@ class chargebee_helper
                     //create a sub
                     $poodllsub = common::get_poodllsub_by_upstreamsubid($theevent->content->subscription->id);
                     if ($poodllsub == false) {
-                        //lets create the school. IF it already exists, nothing bad will happen
-                        $ret = common::create_school_from_upstreamid($theevent->content->subscription->customer_id);
+                        //Lets create the school. If it already exists, nothing bad will happen
+                        //if we have a startsiteurl from a free trial link on a  moodle site, lets register that now too
+                        $startsiteurl=false;
+                        if(isset($theevent->content->subscription->cf_startsiteurl)&&
+                            !empty($theevent->content->subscription->cf_startsiteurl)){
+                            $startsiteurl=$theevent->content->subscription->cf_startsiteurl;
+                        }
+                        $ret = common::create_school_from_upstreamid($theevent->content->subscription->customer_id, $startsiteurl);
                         if($trace && $ret){
                             $trace->output("cbsync:: create school from upstreamid: " . $ret['message']);
                         }
