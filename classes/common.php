@@ -1508,9 +1508,18 @@ class common
             $newuser['username'] =  strtolower($legacyuser['apiuser']);
         }
 
-        //either create a password or set a bogus one to be changed
-        $newuser['createpassword']=true;
-       //$newuser['password']='IH@ve1999b!guc@tsonmyhat';
+        //If we set createpassword, Moodle will make a temp password and email it.
+        //we used to do this and force them to login and set their site URL and pick up API keys
+        //but people just got lost. And the email was hard to configure cos' we could not set extra data fields
+        //So now we get siteurl from startsiteurl (if they come the right way)
+        // and just send all the info including API user and secret in the email from here
+       // $sendpoodllwelcome= $startsiteurl && !empty($startsiteurl);
+        $sendpoodllwelcome=true;
+        if( $sendpoodllwelcome){
+            $newuser['password']= generate_password();
+        }else{
+            $newuser['createpassword']=true;
+        }
 
         $newuser['email']=$upstream_user->customer->email;
 
@@ -1535,6 +1544,21 @@ class common
                 $school->name= $upstream_user->customer->first_name . ' ' . $upstream_user->customer->last_name  .  ' ' .' school';
             }
             $id = $DB->insert_record(constants::M_TABLE_SCHOOLS,$school);
+
+            //send an email to user about their account
+            if( $sendpoodllwelcome){
+                if($startsiteurl) {
+                    $school->startsiteurl = $startsiteurl;
+                }
+                $school->first_name = $upstream_user->customer->first_name;
+                $school->last_name = $upstream_user->customer->last_name;
+                $mailsubject = get_string('poodllwelcomemailsubject', constants::M_COMP);
+                $mailcontent = $OUTPUT->render_from_template('block_poodllclassroom/poodllwelcomemail', $school);
+                $supportuser = \core_user::get_support_user();
+                email_to_user($user, $supportuser, $mailsubject, $mailcontent);
+
+            }
+
             //if we could not create a school, yay, else return false
             if($id){
                 $school->id = $id;
