@@ -1480,6 +1480,10 @@ class common
 
             //if we have a site URL for our new site, lets add that now
             if($startsiteurl){
+                $startsiteurl = strtolower($startsiteurl);
+                if(strpos($startsiteurl,'http')!==0){
+                    $startsiteurl='https://' . $startsiteurl;
+                }
                 cpapi_helper::update_cpapi_sites($legacyuser['apiuser'],$startsiteurl,'','','','');
                 $legacyuser['siteurls'][]=$startsiteurl;
             }
