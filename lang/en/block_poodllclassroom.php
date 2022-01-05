@@ -418,7 +418,7 @@ $string['lticanvasinstructions'] = 'Follow the tutorial to learn how to set up P
 $string['ltitutsintro'] = 'Setting up Poodll for Platforms';
 $string['read'] = 'Read';
 $string['nextexpiry'] = 'Next Expiry/Renewal';
-$string['poodllwelcomemailsubject'] = 'Welcome to Poodll';
+$string['poodllwelcomemailsubject'] = 'Let\'s get started with Poodll';
 
 
 
