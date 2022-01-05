@@ -1557,10 +1557,11 @@ class common
                 $school->email = $theuser->email;
                 $school->password = $newuser['password'];
                 $mailsubject = get_string('poodllwelcomemailsubject', constants::M_COMP);
-                $mailcontent = $OUTPUT->render_from_template('block_poodllclassroom/poodllwelcomemail', $school);
+                $mailcontenttext = $OUTPUT->render_from_template('block_poodllclassroom/poodllwelcomemail', $school);
+                $mailcontenthtml = $OUTPUT->render_from_template('block_poodllclassroom/poodllwelcomemailhtml', $school);
                 $supportuser = \core_user::get_support_user();
 
-                email_to_user($theuser, $supportuser, $mailsubject, $mailcontent);
+                email_to_user($theuser, $supportuser, $mailsubject, $mailcontent,$mailcontenthtml);
 
             }
 
