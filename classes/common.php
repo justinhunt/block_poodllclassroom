@@ -1401,7 +1401,7 @@ class common
     }
 
     public static function create_school_from_upstreamid($upstreamownerid, $startsiteurl=false){
-        global $CFG, $DB;
+        global $CFG, $DB, $OUTPUT;
         $ret=[];
         $ret['id']=$upstreamownerid;
         $ret['success']=true;

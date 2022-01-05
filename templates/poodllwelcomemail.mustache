@@ -1,21 +1,28 @@
 Hi {{first_name}},
 
-Thank you for signing up with Poodll. Your account information is below. Please reply to this email if you have questions.
+Thank you for signing up with Poodll. In this email you will find instructions and your account information. If your Moodle site
+URL is not listed below, then please visit the Poodll Member Dashboard and register it.
 
-On your Moodle site
--------------------
-{{#startsiteurl}}
-Your Moodle Site URL: {{#startsiteurl}}
-{{/startsiteurl}}
+On your Moodle site.
+Set your API user and secret in the settings page of each Poodll plugin that you install.
+
+Registered Moodle Site: {{#startsiteurl}} {{{startsiteurl}}} {{/startsiteurl}}{{^startsiteurl}} [ Please register your site ]{{/startsiteurl}}
+
 Your API user: {{apiuser}}
 Your API secret: {{apisecret}}
 
-On the Poodll Member Dashboard
-----------------
-Login with username or email
-Your username: {{username}}
-Your email: {{email}}
-Your password: {{password}}
+On the Poodll Member Dashboard.
+On the Poodll Member Dashboard you can register site URLs, upgrade your subscription, manage invoices and check your Poodll usage
+report. Login with either your username or email, and your password.
+
+Dashboard URL: https://member.poodll.com/my/
+
+Username: {{username}}
+Registered email: {{email}}
+Password: {{password}}
+
+If you have any questions please send them to: support@poodll.freshdesk.com
+
 
 Justin Hunt
 The Poodll Guy
