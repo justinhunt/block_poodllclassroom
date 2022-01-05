@@ -1550,12 +1550,17 @@ class common
                 if($startsiteurl) {
                     $school->startsiteurl = $startsiteurl;
                 }
+                $theuser = $DB->get_record('user',array('id'=>$school->ownerid ));
                 $school->first_name = $upstream_user->customer->first_name;
                 $school->last_name = $upstream_user->customer->last_name;
+                $school->username = $theuser->username;
+                $school->email = $theuser->email;
+                $school->password = $newuser['password'];
                 $mailsubject = get_string('poodllwelcomemailsubject', constants::M_COMP);
                 $mailcontent = $OUTPUT->render_from_template('block_poodllclassroom/poodllwelcomemail', $school);
                 $supportuser = \core_user::get_support_user();
-                email_to_user($user, $supportuser, $mailsubject, $mailcontent);
+
+                email_to_user($theuser, $supportuser, $mailsubject, $mailcontent);
 
             }
 
