@@ -1561,7 +1561,7 @@ class common
                 $mailcontenthtml = $OUTPUT->render_from_template('block_poodllclassroom/poodllwelcomemailhtml', $school);
                 $supportuser = \core_user::get_support_user();
 
-                email_to_user($theuser, $supportuser, $mailsubject, $mailcontent,$mailcontenthtml);
+                email_to_user($theuser, $supportuser, $mailsubject, $mailcontenttext,$mailcontenthtml);
 
             }
 
