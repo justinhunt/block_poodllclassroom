@@ -1098,7 +1098,12 @@ class common
                         $templatedata->last_name = $theuser->lastname;
                         $templatedata->username = $theuser->username;
                         $templatedata->email = $theuser->email;
-                        $templatedata->ltidetails= $ret->ltidetails;
+                        if(is_array($ret->ltidetails)){
+                            $templatedata->ltidetails= $ret->ltidetails[0];
+                        }else{
+                            $templatedata->ltidetails= $ret->ltidetails;
+                        }
+
                         $supportuser = \core_user::get_support_user();
                         $mailsubject = get_string('platformswelcomemailsubject', constants::M_COMP);
                         $mailcontenttext = $OUTPUT->render_from_template('block_poodllclassroom/platformswelcomemail',$templatedata);
@@ -1574,12 +1579,13 @@ class common
                 $school->username = $theuser->username;
                 $school->email = $theuser->email;
                 $school->password = $newuser['password'];
+                $supportuser = \core_user::get_support_user();
                 $mailsubject = get_string('poodllwelcomemailsubject', constants::M_COMP);
                 $mailcontenttext = $OUTPUT->render_from_template('block_poodllclassroom/poodllwelcomemail', $school);
-                $mailcontenthtml = $OUTPUT->render_from_template('block_poodllclassroom/poodllwelcomemailhtml', $school);
-                $supportuser = \core_user::get_support_user();
-
-                email_to_user($theuser, $supportuser, $mailsubject, $mailcontenttext,$mailcontenthtml);
+                email_to_user($theuser, $supportuser, $mailsubject, $mailcontenttext);
+                //in the interests of staying out of the promotions tab we do not send html mail here
+               // $mailcontenthtml = $OUTPUT->render_from_template('block_poodllclassroom/poodllwelcomemailhtml', $school);
+               // email_to_user($theuser, $supportuser, $mailsubject, $mailcontenttext,$mailcontenthtml);
 
             }
 
