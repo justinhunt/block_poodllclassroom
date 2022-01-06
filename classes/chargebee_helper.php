@@ -341,6 +341,7 @@ class chargebee_helper
                             !empty($theevent->content->subscription->cf_startsiteurl)){
                             $startsiteurl=$theevent->content->subscription->cf_startsiteurl;
                         }
+                        //we send emails when we create a school, this assumes a Moodle sub TO DO: reconcile this
                         $ret = common::create_school_from_upstreamid($theevent->content->subscription->customer_id, $startsiteurl);
                         if($trace && $ret){
                             $trace->output("cbsync:: create school from upstreamid: " . $ret['message']);
@@ -350,6 +351,7 @@ class chargebee_helper
                         $currency_code = $subscription->currency_code;
                         $amount_paid = $subscription->subscription_items[0]->amount;
 
+                        //we send an email when we create an LTI sub from here, and probably will send a classroom one too..
                         $subid = common::create_poodll_sub($subscription,$currency_code,$amount_paid,$theevent->content->subscription->customer_id );
                         if($trace){
                             if($subid) {

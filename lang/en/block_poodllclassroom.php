@@ -419,6 +419,7 @@ $string['ltitutsintro'] = 'Setting up Poodll for Platforms';
 $string['read'] = 'Read';
 $string['nextexpiry'] = 'Next Expiry/Renewal';
 $string['poodllwelcomemailsubject'] = 'Let\'s get started with Poodll';
+$string['platformswelcomemailsubject'] = 'Your Poodll for Platforms LTI credentials';
 
 
 

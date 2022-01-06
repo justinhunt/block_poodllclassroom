@@ -1067,7 +1067,7 @@ class common
     }
 
     public static function process_new_sub($school, $plan,$subscription){
-        global $DB;
+        global $DB, $OUTPUT;
 
         $obj = new \stdClass();
         $obj->due_invoices_count = $subscription->due_invoices_count;
@@ -1091,6 +1091,20 @@ class common
                     $ret = lti_helper::update_lti_sub($school->name, $subscription->customer_id, $subscription->id,$plan->upstreamplan,$expiretime);
                     if($ret && isset($ret->error) && !$ret->error){
                         $obj->ltidetails=$ret->ltidetails;
+                        //send LTI email
+                        $templatedata = new \stdClass();
+                        $theuser = $DB->get_record('user',array('id'=>$school->ownerid ));
+                        $templatedata->first_name = $theuser->firstname;
+                        $templatedata->last_name = $theuser->lastname;
+                        $templatedata->username = $theuser->username;
+                        $templatedata->email = $theuser->email;
+                        $templatedata->ltidetails= $ret->ltidetails;
+                        $supportuser = \core_user::get_support_user();
+                        $mailsubject = get_string('platformswelcomemailsubject', constants::M_COMP);
+                        $mailcontenttext = $OUTPUT->render_from_template('block_poodllclassroom/platformswelcomemail',$templatedata);
+                        //$mailcontenthtml = $OUTPUT->render_from_template('block_poodllclassroom/platformswelcomemailhtml',$templatedata);
+                        //email_to_user($theuser, $supportuser, $mailsubject, $mailcontenttext,$mailcontenthtml);
+                        email_to_user($theuser, $supportuser, $mailsubject, $mailcontenttext);
                     }
                     break;
 
