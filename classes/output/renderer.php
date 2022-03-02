@@ -122,7 +122,22 @@ class renderer extends \plugin_renderer_base {
                     if(!$me_reseller) {
                         $checkouturl = new \moodle_url(constants::M_URL . '/subs/checkout.php',
                             array('schoolid' => $school->id, 'platform' => constants::M_PLATFORM_MOODLE, 'planfamily' => 'all'));
-                        redirect($checkouturl);
+                        if(!$this->page->headerprinted){
+                            redirect($checkouturl,get_string('accountisready', constants::M_COMP),3);
+
+                            //in this case we can not safely redirect because the header has been printed
+                            //wo we issue a js redirect
+                            /*
+                            $redirectdata = new \stdClass();
+                            $redirectdata->label = get_string('getfirstsubscription', constants::M_COMP);
+                            $redirectdata->url = $checkouturl->out();
+                            $content = $this->render_from_template('block_poodllclassroom/jsredirect',$redirectdata);
+                            return $content;
+                            */
+                        }else{
+                            redirect($checkouturl,get_string('redirecting', constants::M_COMP),3);
+                        }
+
                     }
 
                     // free trial button ??

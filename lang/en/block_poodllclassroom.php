@@ -420,6 +420,7 @@ $string['read'] = 'Read';
 $string['nextexpiry'] = 'Next Expiry/Renewal';
 $string['poodllwelcomemailsubject'] = 'Let\'s get started with Poodll';
 $string['platformswelcomemailsubject'] = 'Your Poodll for Platforms LTI credentials';
+$string['accountisready'] = 'Your new Poodll account is ready.';
 
 
 
