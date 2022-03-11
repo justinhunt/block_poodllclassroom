@@ -456,3 +456,4 @@ $string['ltiplansintro'] = 'Lorem Ipsum is simply dummy text of the printing.';
 $string['footnotemoodle'] = 'Unique Poodll users are <b>calculated monthly</b> not yearly.';
 $string['footnotelti'] = 'No more than the maximum number of users can be active in the Poodll LMS';
 $string['needmoreusers'] = '<b>Need more users?</b> <a href="{$a}" target="_blank">Contact us</a> for an estimate';
+$string['pricesandplans'] = "Prices and Plans";

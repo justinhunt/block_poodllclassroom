@@ -4,9 +4,11 @@
     <div class="sub_checkoutbutton">{{> block_poodllclassroom/checkoutpagebutton}}</div>
     <!--<div class="subs_desciption">
         {{#hassubs}}{{#str}}moodlesubs_intro, block_poodllclassroom{{/str}} {{> block_poodllclassroom/watchthevideo}}<br>{{/hassubs}}
-        {{^hassubs}}{{#str}}moodlesubs_none, block_poodllclassroom{{/str}}<br>{{/hassubs}}
     </div>-->
-    {{> block_poodllclassroom/subscriptioninfo }}
+
+    {{#hassubs}}{{> block_poodllclassroom/subscriptioninfo }}{{/hassubs}}
+    {{^hassubs}} <div class="subs_desciption">{{#str}}moodlesubs_none, block_poodllclassroom{{/str}}<br></div>{{/hassubs}}
+
     {{#hassubs}}
         <div class="school_name"><span>School Name:</span> {{school.name}}</div>
         <div class="url">

@@ -181,7 +181,7 @@ table.generaltable.block_poodllclassroom_subslist_table {
 }
 .block_poodllclassroom .introblock .block_poodllclassroom_userheader {
     width: fit-content;
-    background-color: #F4EDFF;
+ /*   background-color: #F4EDFF; */
     color: #9051FF;
     border-radius: 34px;
     padding: 5px 15px;
@@ -299,7 +299,7 @@ table.generaltable.block_poodllclassroom_subslist_table {
 .block_poodllclassroom .block_poodllclassroom_subslist_title {
 
     color: #2F699D;
-    background-color: #2f699d29;
+   /* background-color: #2f699d29; */
     padding: 5px 15px;
     width: fit-content;
     border-radius: 34px;
@@ -309,7 +309,7 @@ table.generaltable.block_poodllclassroom_subslist_table {
 }
 .block_poodllclassroom .block_poodllclassroom_moodlesubslist_cont .block_poodllclassroom_subslist_title {
     width: fit-content;
-    background-color: #0080001f;
+  /*  background-color: #0080001f; */
     padding: 5px 20px;
     border-radius: 30px;
     color: green;
@@ -402,7 +402,7 @@ table.generaltable.block_poodllclassroom_subslist_table {
 .block_poodllclassroom .block_poodllclassroom_subslist_cont .block_poodllclassroom_allschoolsubs {
     width: fit-content;
     float: left;
-    background-color: rgba(254,190,0,.15);
+  /*  background-color: rgba(254,190,0,.15); */
     color: #febe00;
     border-radius: 34px;
     padding: 5px 15px;
