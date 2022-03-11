@@ -1,41 +1,55 @@
 
-<div id="block_poodllclassroom_moodlesubslist_cont" class="block_poodllclassroom_moodlesubslist_cont" style="display: {{display}};">
-        <h4 class="block_poodllclassroom_subslist_title">{{#str}}moodlesubs, block_poodllclassroom{{/str}}</h4>
+<div id="block_poodllclassroom_moodlesubslist_cont" class="block_poodllclassroom_moodlesubslist_cont poodleclassblock" style="display: {{display}};">
+    <h4 class="block_poodllclassroom_subslist_title">{{#str}}moodlesubs, block_poodllclassroom{{/str}}</h4>
+    <div class="sub_checkoutbutton">{{> block_poodllclassroom/checkoutpagebutton}}</div>
+    <!--<div class="subs_desciption">
         {{#hassubs}}{{#str}}moodlesubs_intro, block_poodllclassroom{{/str}} {{> block_poodllclassroom/watchthevideo}}<br>{{/hassubs}}
         {{^hassubs}}{{#str}}moodlesubs_none, block_poodllclassroom{{/str}}<br>{{/hassubs}}
-        {{> block_poodllclassroom/checkoutpagebutton}}<br>
+    </div>-->
+    {{> block_poodllclassroom/subscriptioninfo }}
     {{#hassubs}}
-        <div>School Name: {{school.name}}</div>
-        {{#school.siteurls}}
-        <div class="bpc_moodlesubsrow">
-            <div class="bpc_col-1">{{#str}}siteurl, block_poodllclassroom{{/str}}</div> <div class="bpc_col-2">{{.}}</div>
-        </div>
-        {{/school.siteurls}}
-        <div class="bpc_moodlesubsrow">
-                <div class="bpc_col-1 ">{{#str}}apiuser, block_poodllclassroom{{/str}}</div>
-                <div class="bpc_col-2 " id="apiuser_{{school.id}}" data-clipboard-text="{{school.apiuser}}">{{school.apiuser}}</div>
-                <div class="bpc_col-3 "><a class="btn btn-info poodllclassroom_clipboardbutton" data-clipboard-action="copy"
-                                           data-clipboard-target="#apiuser_{{school.id}}">{{#str}}copy, block_poodllclassroom{{/str}}</a></div>
-                <div class="bpc_col-4 bpc_copied" style="display: none">{{#str}}copied, block_poodllclassroom{{/str}}</div>
-        </div>
-        <div class="bpc_moodlesubsrow">
-                <div class="bpc_col-1  schoollabel">{{#str}}apisecret, block_poodllclassroom{{/str}}</div>
-                <div class="bpc_col-2 " id="apisecret_{{school.id}}" data-clipboard-text="{{school.apisecret}}">{{school.apisecret}}</div>
-                <div class="bpc_col-3 "><a class="btn btn-info poodllclassroom_clipboardbutton" data-clipboard-action="copy"
-                                           data-clipboard-target="#apisecret_{{school.id}}">{{#str}}copy, block_poodllclassroom{{/str}}</a></div>
-                <div class="bpc_col-4 bpc_copied" style="display: none">{{#str}}copied, block_poodllclassroom{{/str}}</div>
-          </div>
-        {{^school.siteurls}}
-            <div class="bpc_moodlesubsrow">
-                <div class="bpc_col-nourls">
-                    {{#str}}nositeurls, block_poodllclassroom{{/str}}
+        <div class="school_name"><span>School Name:</span> {{school.name}}</div>
+        <div class="url">
+            <div class="site_url">
+                {{#school.siteurls}}
+                    <div class="bpc_moodlesubsrow">
+                        <div class="bpc_col-1">{{#str}}siteurl, block_poodllclassroom{{/str}}:</div>
+                        <div class="bpc_col-2">{{.}}</div>
+                    </div>
+                {{/school.siteurls}}
+
+                {{^school.siteurls}}
+                    <div class="bpc_moodlesubsrow">
+                        <div class="bpc_col-nourls">
+                            {{#str}}nositeurls, block_poodllclassroom{{/str}}:
+                        </div>
+                    </div>
+                {{/school.siteurls}}
+            </div>
+            <div class="api_user">
+                <div class="bpc_moodlesubsrow">
+                    <div class="bpc_col-1 ">{{#str}}apiuser, block_poodllclassroom{{/str}}:</div>
+                    <div class="bpc_col-2 " id="apiuser_{{school.id}}" data-clipboard-text="{{school.apiuser}}">{{school.apiuser}}</div>
+                    <div class="bpc_col-3 ">
+                        <a class="btn btn-info poodllclassroom_clipboardbutton" data-clipboard-action="copy" data-clipboard-target="#apiuser_{{school.id}}">{{#pix}} copy, block_poodllclassroom {{/pix}}</a>
+                    </div>
+                    <div class="bpc_col-4 bpc_copied" style="display: none">{{#str}}copied, block_poodllclassroom{{/str}}</div>
+                </div>
+                <div class="bpc_moodlesubsrow">
+                    <div class="bpc_col-1  schoollabel">{{#str}}apisecret, block_poodllclassroom{{/str}}:</div>
+                    <div class="bpc_col-2 " id="apisecret_{{school.id}}" data-clipboard-text="{{school.apisecret}}">{{school.apisecret}}</div>
+                    <div class="bpc_col-3 "><a class="btn btn-info poodllclassroom_clipboardbutton" data-clipboard-action="copy"
+                                               data-clipboard-target="#apisecret_{{school.id}}">
+                        {{#pix}} copy, block_poodllclassroom {{/pix}}
+                    </a></div>
+                    <div class="bpc_col-4 bpc_copied" style="display: none">{{#str}}copied, block_poodllclassroom{{/str}}</div>
                 </div>
             </div>
-        {{/school.siteurls}}
-
-        <hr>
-        <a class="btn btn-primary" href="{{{editschoolurl}}}">{{#str}}editsitedetails, block_poodllclassroom{{/str}}</a>
-        <br>
-        {{{usagereport}}}
+        </div>
+        <div class="edit_site_details">
+            <a class="btn edit-btn" href="{{{editschoolurl}}}">{{#str}}editsitedetails, block_poodllclassroom{{/str}}</a>
+            <br>
+            <span>{{{usagereport}}}</span>
+        </div>
     {{/hassubs}}
 </div>

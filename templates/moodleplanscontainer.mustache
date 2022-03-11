@@ -1,49 +1,72 @@
 <!-- div class="block_poodllclassroom_billingheader {{billinginterval}} {{display}}"><h3>{{billingintervallabel}}</h3></div -->
-<h4>{{#str}}mediaplans, block_poodllclassroom{{/str}}</h4>
-<span class="block_poodllclassroom_plansintro">{{#str}}mediaplansintro, block_poodllclassroom{{/str}}</span>
-<div id="block_poodllclassroom_mediaplans_cont" class="block_poodllclassroom_moodleplans_cont center block_poodllclassroom_flexbox {{billinginterval}} {{display}}">
-    {{#mediaplans}}
-        {{#checkoutexisting}}
-            {{> block_poodllclassroom/upgradetile}}
-        {{/checkoutexisting}}
-        {{^checkoutexisting}}
-            {{> block_poodllclassroom/newplantile}}
-        {{/checkoutexisting}}
-    {{/mediaplans}}
-</div>
-<h4>{{#str}}langplans, block_poodllclassroom{{/str}}</h4>
-<span class="block_poodllclassroom_plansintro">{{#str}}languagesplansintro, block_poodllclassroom{{/str}}</span>
-<div id="block_poodllclassroom_langplans_cont" class="block_poodllclassroom_moodleplans_cont center block_poodllclassroom_flexbox {{billinginterval}} {{display}}">
-    {{#langplans}}
-        {{#checkoutexisting}}
-            {{> block_poodllclassroom/upgradetile}}
-        {{/checkoutexisting}}
-        {{^checkoutexisting}}
-            {{> block_poodllclassroom/newplantile}}
-        {{/checkoutexisting}}
-    {{/langplans}}
-</div>
-<h4>{{#str}}essentialsplans, block_poodllclassroom{{/str}}</h4>
-<span class="block_poodllclassroom_plansintro">{{#str}}essentialsplansintro, block_poodllclassroom{{/str}}</span>
-<div id="block_poodllclassroom_essentialsplans_cont" class="block_poodllclassroom_moodleplans_cont center block_poodllclassroom_flexbox {{billinginterval}} {{display}}">
-    {{#essentialsplans}}
-        {{#checkoutexisting}}
-            {{> block_poodllclassroom/upgradetile}}
-        {{/checkoutexisting}}
-        {{^checkoutexisting}}
-            {{> block_poodllclassroom/newplantile}}
-        {{/checkoutexisting}}
-    {{/essentialsplans}}
-</div>
-<h4>{{#str}}englishcentralplans, block_poodllclassroom{{/str}}</h4>
-<span class="block_poodllclassroom_plansintro">{{#str}}englishcentralplansintro, block_poodllclassroom{{/str}}</span>
-<div id="block_poodllclassroom_englishcentralplans_cont" class="block_poodllclassroom_moodleplans_cont center block_poodllclassroom_flexbox {{billinginterval}} {{display}}">
-    {{#englishcentralplans}}
-        {{#checkoutexisting}}
-            {{> block_poodllclassroom/upgradetile}}
-        {{/checkoutexisting}}
-        {{^checkoutexisting}}
-            {{> block_poodllclassroom/newplantile}}
-        {{/checkoutexisting}}
-    {{/englishcentralplans}}
+<div class="priceplan_header">Price and Plans</div>
+<div class="main-pack">
+    <div class="plan-pack mediaplans">
+        <div class="plan-pack-inner">
+            <h4>{{#str}}mediaplans, block_poodllclassroom{{/str}}</h4>
+            <span class="block_poodllclassroom_plansintro">{{#str}}mediaplansintro, block_poodllclassroom{{/str}}</span>
+            <a href="https://poodll.com/poodll-media/" target="_blank">{{#str}}readmore, block_poodllclassroom{{/str}}</a>
+        </div>
+        <div id="block_poodllclassroom_mediaplans_cont" class="block_poodllclassroom_moodleplans_cont center block_poodllclassroom_flexbox {{billinginterval}} {{display}}">
+            {{#mediaplans}}
+                {{#checkoutexisting}}
+                    {{> block_poodllclassroom/upgradetile}}
+                {{/checkoutexisting}}
+                {{^checkoutexisting}}
+                    {{> block_poodllclassroom/newplantile}}
+                {{/checkoutexisting}}
+            {{/mediaplans}}
+        </div>
+    </div>
+    <div class="plan-pack langplans">
+        <div class="plan-pack-inner">
+            <h4>{{#str}}langplans, block_poodllclassroom{{/str}}</h4>
+            <span class="block_poodllclassroom_plansintro">{{#str}}languagesplansintro, block_poodllclassroom{{/str}}</span>
+            <a href="https://poodll.com/poodll-languages/" target="_blank">{{#str}}readmore, block_poodllclassroom{{/str}}</a>
+        </div>
+        <div id="block_poodllclassroom_langplans_cont" class="block_poodllclassroom_moodleplans_cont center block_poodllclassroom_flexbox {{billinginterval}} {{display}}">
+            {{#langplans}}
+                {{#checkoutexisting}}
+                    {{> block_poodllclassroom/upgradetile}}
+                {{/checkoutexisting}}
+                {{^checkoutexisting}}
+                    {{> block_poodllclassroom/newplantile}}
+                {{/checkoutexisting}}
+            {{/langplans}}
+        </div>
+    </div>
+    <div class="plan-pack essentialsplans">
+        <div class="plan-pack-inner">
+            <h4>{{#str}}essentialsplans, block_poodllclassroom{{/str}}</h4>
+            <span class="block_poodllclassroom_plansintro">{{#str}}essentialsplansintro, block_poodllclassroom{{/str}}</span>
+            <a href="https://poodll.com/package-poodll-essentials/" target="_blank">{{#str}}readmore, block_poodllclassroom{{/str}}</a>
+        </div>
+        <div id="block_poodllclassroom_essentialsplans_cont" class="block_poodllclassroom_moodleplans_cont center block_poodllclassroom_flexbox {{billinginterval}} {{display}}">
+            {{#essentialsplans}}
+                {{#checkoutexisting}}
+                    {{> block_poodllclassroom/upgradetile}}
+                {{/checkoutexisting}}
+                {{^checkoutexisting}}
+                    {{> block_poodllclassroom/newplantile}}
+                {{/checkoutexisting}}
+            {{/essentialsplans}}
+        </div>
+    </div>
+    <div class="plan-pack englishcentralplans">
+        <div class="plan-pack-inner">
+            <h4>{{#str}}englishcentralplans, block_poodllclassroom{{/str}}</h4>
+            <span class="block_poodllclassroom_plansintro">{{#str}}englishcentralplansintro, block_poodllclassroom{{/str}}</span>
+            <a href="https://poodll.com/plugin-poodll-englishcentral/" target="_blank">{{#str}}readmore, block_poodllclassroom{{/str}}</a>
+        </div>
+        <div id="block_poodllclassroom_englishcentralplans_cont" class="block_poodllclassroom_moodleplans_cont center block_poodllclassroom_flexbox {{billinginterval}} {{display}}">
+            {{#englishcentralplans}}
+                {{#checkoutexisting}}
+                    {{> block_poodllclassroom/upgradetile}}
+                {{/checkoutexisting}}
+                {{^checkoutexisting}}
+                    {{> block_poodllclassroom/newplantile}}
+                {{/checkoutexisting}}
+            {{/englishcentralplans}}
+        </div>
+    </div>
 </div>

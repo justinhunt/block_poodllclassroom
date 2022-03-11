@@ -64,7 +64,25 @@ if(!$school){
 
 }
 
+if (method_exists($PAGE->theme->settings, 'headerinfo')) {
+    /* @var $headerinfo \theme_poodll\local\headerinfo */
+    $headerinfo = $PAGE->theme->settings->headerinfo();
+    $headerinfo->title(get_string('changeplan', constants::M_COMP));
+
+    $platformmoodlebtn = new action_link(new moodle_url($PAGE->url, ['platform' => constants::M_PLATFORM_MOODLE]), get_string('poodllmoodle', constants::M_COMP));
+    $platformltibtn = new action_link(new moodle_url($PAGE->url, ['platform' => constants::M_PLATFORM_LTI]), get_string('poodlllms', constants::M_COMP));
+    foreach ([$platformmoodlebtn,$platformltibtn] as $platformbtn) {
+        if ($platformbtn->url->compare($PAGE->url)) {
+            $platformbtn->add_class('btn-primary');
+        } else {
+            $platformbtn->add_class('btn-secondary');
+        }
+    }
+    $headerinfo->buttons($platformmoodlebtn, $platformltibtn);
+}
+
 echo $renderer->header();
 echo $renderer->fetch_checkout_toppart($school, $platform, $planfamily);
 echo $renderer->fetch_checkout_buttons($school, $platform, $planfamily);
+echo $renderer->footer_note($platform);
 echo $renderer->footer();

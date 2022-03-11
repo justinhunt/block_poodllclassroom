@@ -22,26 +22,31 @@
     Example context (json):
     {}
 }}
-<div class="dropdown block_poodllclassroom_options">
-    {{> block_poodllclassroom/paymentmethodbutton}}
-    <button type="button" class="btn btn-outline-secondary dropdown-toggle icon-no-margin" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-            aria-label="{{#str}} poodllclassroomoptions, block_poodllclassroom {{/str}}" aria-controls="poodllclassroomoptions">
-        {{#str}} poodllclassroomoptions, block_poodllclassroom {{/str}}
-        <!-- {{#pix}} i/settings {{/pix}} -->
-    </button>
-    <div id="poodllclassroomoptions" role="menu" class="dropdown-menu">
-        {{#options}}
-        <a
-            class="dropdown-item"
-            href="{{{url}}}"
-            aria-label="{{label}}"
-            data-upstreamownerid="{{upstreamownerid}}"
-            data-type="{{type}}"
-            data-cbaction="{{cbaction}}"
-            role="menuitem"
-        >
-            {{label}}
-        </a>
-        {{/options}}
+<div class="introblock poodleclassblock">
+    <h2 class="block_poodllclassroom_userheader">Admin User school</h2> <!-- static name added -->
+
+    <div class="dropdown block_poodllclassroom_options">
+        {{> block_poodllclassroom/paymentmethodbutton}}
+        <button type="button" class="btn btn-outline-secondary dropdown-toggle icon-no-margin" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                aria-label="{{#str}} poodllclassroomoptions, block_poodllclassroom {{/str}}" aria-controls="poodllclassroomoptions">
+            {{#str}} poodllclassroomoptions, block_poodllclassroom {{/str}}
+            <!-- {{#pix}} i/settings {{/pix}} -->
+        </button>
+        <div id="poodllclassroomoptions" role="menu" class="dropdown-menu">
+            {{#options}}
+            <a
+                class="dropdown-item"
+                href="{{{url}}}"
+                aria-label="{{label}}"
+                data-upstreamownerid="{{upstreamownerid}}"
+                data-type="{{type}}"
+                data-cbaction="{{cbaction}}"
+                role="menuitem"
+            >
+                {{label}}
+            </a>
+            {{/options}}
+        </div>
     </div>
+    {{> block_poodllclassroom/introdescription}}
 </div>

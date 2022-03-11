@@ -1,9 +1,11 @@
 
-<div id="block_poodllclassroom_ltisubslist_cont" class="block_poodllclassroom_ltisubslist_cont" style="display: {{display}};">
+<div id="block_poodllclassroom_ltisubslist_cont" class="block_poodllclassroom_ltisubslist_cont poodleclassblock" style="display: {{display}};">
     <h4 class="block_poodllclassroom_subslist_title">{{#str}}ltisubs, block_poodllclassroom{{/str}}</h4>
-    {{#hassubs}}{{#str}}ltisubs_intro, block_poodllclassroom{{/str}}<br>{{/hassubs}}
-    {{^hassubs}}{{#str}}ltisubs_none, block_poodllclassroom{{/str}}<br>{{/hassubs}}
-    {{> block_poodllclassroom/checkoutpagebutton}} <br>
+    <div class="sub_checkoutbutton">{{> block_poodllclassroom/checkoutpagebutton}} </div>
+    <div class="subs_desciption">
+        {{#hassubs}}{{#str}}ltisubs_intro, block_poodllclassroom{{/str}}<br>{{/hassubs}}
+        {{^hassubs}}{{#str}}ltisubs_none, block_poodllclassroom{{/str}}<br>{{/hassubs}}
+    </div>
     {{#hassubs}}
         {{#subs}}
             <div class="bpc_moodlesubsrow">

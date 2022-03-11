@@ -284,8 +284,9 @@ class renderer extends \plugin_renderer_base {
     function fetch_checkout_toppart($school, $platform, $planfamily) {
         global $CFG;
 
-        $ret = $this->output->heading(get_string('checkouttitle', constants::M_COMP),3);
-        $ret .= \html_writer::div(get_string('checkoutinstructions',constants::M_COMP),constants::M_COMP . '_checkoutinstructions');
+        $ret = '';
+        //$ret = $this->output->heading(get_string('checkouttitle', constants::M_COMP),3);
+        //$ret .= \html_writer::div(get_string('checkoutinstructions',constants::M_COMP),constants::M_COMP . '_checkoutinstructions');
 
         $tabsdata = [];
         $checkouturl = new \moodle_url(constants::M_URL . '/subs/checkout.php',array('schoolid'=>$school->id ,'planfamily'=>$planfamily));
@@ -308,6 +309,7 @@ class renderer extends \plugin_renderer_base {
 
         //get plans
         $billingintervals = common::fetch_billingintervals();
+        $billingintervals[constants::M_BILLING_YEARLY] = get_string('year',constants::M_COMP);
         $onlyvisibleplans = true;
         $plans = common::fetch_plans_by_platform($platform, $planfamily,$onlyvisibleplans);
 
@@ -375,6 +377,8 @@ class renderer extends \plugin_renderer_base {
         $mdata['billinginterval']='Monthly';
         $mdata['currency']='USD';
         $mdata['billingintervallabel']=get_string('freetrial',constants::M_COMP);
+        $mdata['platform_'.constants::M_PLATFORM_MOODLE] = strtoupper($platform) == constants::M_PLATFORM_MOODLE;
+        $mdata['platform_'.constants::M_PLATFORM_LTI] = strtoupper($platform) == constants::M_PLATFORM_LTI;
         if($checkoutexisting) {
             $freely = '';
         }else{
@@ -1202,6 +1206,13 @@ class renderer extends \plugin_renderer_base {
 
     public function fetch_schooldetailsform_instructions(){
         return $this->output->render_from_template('block_poodllclassroom/schooldetailsinstructions', []);
+    }
+
+    public function footer_note($platform) {
+        $templateContext = ['supportlink' => new \moodle_url('https://poodll.com/contact/')];
+        $templateContext['platform_'.constants::M_PLATFORM_MOODLE] = strtoupper($platform) == constants::M_PLATFORM_MOODLE;
+        $templateContext['platform_'.constants::M_PLATFORM_LTI] = strtoupper($platform) == constants::M_PLATFORM_LTI;
+        return $this->render_from_template('block_poodllclassroom/footer_note', $templateContext);
     }
 
 }

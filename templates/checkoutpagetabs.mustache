@@ -1,8 +1,30 @@
-<ul class="nav nav-tabs">
-    <li class="nav-item">
-        <a class="nav-link {{#platform_MOODLE}} active {{/platform_MOODLE}}" href="{{{checkouturl}}}&platform=MOODLE">{{#str}}poodllformoodle, block_poodllclassroom{{/str}}</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link {{#platform_LTI}} active {{/platform_LTI}}" href="{{{checkouturl}}}&platform=LTI">{{#str}}poodllforplatforms, block_poodllclassroom{{/str}}</a>
-    </li>
-</ul>
+{{#platform_MOODLE}}
+    <div class="border checkout_header_moodle">
+        <div class="part1">
+            {{#pix}} hero_moodle, block_poodllclassroom {{/pix}}
+        </div>
+        <div class="part2">
+            <h4>{{#str}} aboutmoodle, block_poodllclassroom {{/str}}</h4>
+            <p>{{#str}} aboutmoodleline, block_poodllclassroom {{/str}}</p>
+        </div>
+        <div class="part3">
+            <h4>{{#str}} featuresmoodle, block_poodllclassroom {{/str}}</h4>
+            <p>{{#str}} featuresmoodleline, block_poodllclassroom {{/str}}</p>
+        </div>
+    </div>
+{{/platform_MOODLE}}
+{{#platform_LTI}}
+    <div class="border checkout_header_lti">
+        <div class="part1">
+            {{#pix}} hero_lti, block_poodllclassroom {{/pix}}
+        </div>
+        <div class="part2">
+            <h4>{{#str}} aboutlti, block_poodllclassroom {{/str}}</h4>
+            <p>{{#str}} aboutltiline, block_poodllclassroom {{/str}}</p>
+        </div>
+        <div class="part3">
+            <h4>{{#str}} pluginslti, block_poodllclassroom {{/str}}</h4>
+            <p>{{#str}} pluginsltiline, block_poodllclassroom {{/str}}</p>
+        </div>
+    </div>
+{{/platform_LTI}}

@@ -258,7 +258,7 @@ $string['upstreamuserid']='Upstream User ID';
 $string['nosubs']='No subscriptions to display';
 $string['back']='Back';
 $string['addnew']='Add new';
-$string['addnewsubscription']='Add new subscription';
+$string['addnewsubscription']='<i class="fas fa-plus-circle"></i> Add new subscription';
 
 $string['checkout'] = 'Checkout.' ; // unused
 $string['checkouttitle'] = 'Choose a Subscription' ;
@@ -305,7 +305,7 @@ $string['cpapitoken'] = 'CPAPI token';
 $string['cpapitoken_desc'] = 'The CPAPI web services token';
 $string['subrenewtime'] = 'Renews';
 $string['subrenewexpiretime'] = 'Renews/Expires';
-$string['editsitedetails'] = ' - Edit site details -';
+$string['editsitedetails'] = '<i class="fas fa-pen"></i> Edit site details';
 $string['essentialsplans'] = 'Poodll Essentials (Poodll Media + Poodll Languages)';
 $string['englishcentralplans'] = 'Poodll EnglishCentral';
 $string['mediaplans'] = 'Poodll Media';
@@ -384,7 +384,7 @@ $string['unabletoverifysub'] = 'Unable to verify the created subscription.';
 $string['createdsub'] = 'Successfully created new subscription. Thanks!';
 $string['unknowncbstatus'] = 'Received unknown status: {$a}';
 
-$string['entercreditcard']="Update Credit Card Details";
+$string['entercreditcard']="Update Credit Card";
 $string['eventrunner']="Event Runner";
 $string['eventrunnerpage']="Event Runner";
 $string['eventrunnerheading']="Event Runner";
@@ -403,7 +403,7 @@ $string['mediaplansintro']="Poodll Media adds Poodll's audio and video recording
 $string['languagesplansintro']="Poodll Languages gives access to Poodll ReadAloud, Poodll Solo, Poodll MiniLessons and Poodll Wordcards.";
 $string['essentialsplansintro']="Poodll Essentials gives access to both Poodll Media and Poodll Languages for a low price.";
 $string['englishcentralplansintro']="Poodll EnglishCentral allows your students to use the full range of EnglishCentral video learning activities from within Moodle.";
-$string['freeplansintro']="The Poodll free trial gives full 30 day access.. You can upgrade to a full plan at any time.";
+$string['freeplansintro']="The Poodll free trial gives full 30 day access. </br> You can upgrade to a full plan at any time.";
 $string['cartridgeurl'] = 'Cartridge URL';
 $string['consumerkey'] = 'Consumer Key';
 $string['consumersecret'] = 'Secret';
@@ -422,5 +422,37 @@ $string['poodllwelcomemailsubject'] = 'Let\'s get started with Poodll';
 $string['platformswelcomemailsubject'] = 'Your Poodll for Platforms LTI credentials';
 $string['accountisready'] = 'Your new Poodll account is ready.';
 
+$string['introreview'] = '<h3>Review</h3> On this page you can review the subscriptions for the school, register site URLs and manage billing.';
+$string['intromanage'] = '<h3>Manage</h3> Use the "manage subscription" link to update payment details or cancel the subscription.';
+$string['introaccount'] = '<h3>Account</h3> Use the "account options" dropdown to access your billing history.';
+$string['introsubscription'] = '<h3>Subscriptions</h3> Add new subscriptions to your account using the "Add new" button.';
 
+$string['subschool'] = '<h3>School</h3> Your school details are below. These are used by your Poodll for Moodle subscription(s)';
+$string['subedit'] = '<h3>Edit</h3> Click the \'edit site details\' button to change school name and to add/edit your Moodle site URL(s).';
+$string['subsupport'] = '<h3>Support</h3> Need help? Click the orange button below to contact Poodll support.';
+$string['subtutorial'] = '<h3>Tutorial</h3> Just getting started?';
 
+//
+$string['changeplan'] = 'Change Plan';
+$string['poodllmoodle'] = 'Poodll for Moodle';
+$string['poodlllms'] = 'Poodll LMS';
+$string['aboutmoodle'] = 'About';
+$string['aboutmoodleline'] = 'Poodll for a Moodle is a collection of native Moodle plugins.';
+$string['featuresmoodle'] = 'Features';
+$string['featuresmoodleline'] = 'These can be installed on your Moodle site to add audio and video recording, auto graded speaking activities and more.';
+$string['aboutlti'] = 'About';
+$string['aboutltiline'] = 'Poodll LMS is a complete hosted LMS ready to go with the Puglins Poodll';
+$string['pluginslti'] = 'Plugins';
+$string['pluginsltiline'] = 'H5P, Gap Fill, etc... and integrations and features language teachers need.';
+
+$string['readmore'] = 'Read More';
+$string['year'] = 'Year';
+$string['starttrial'] = 'Start Free Trial';
+
+//LTI
+$string['ltiplans'] = 'Lite';
+$string['ltiplansintro'] = 'Lorem Ipsum is simply dummy text of the printing.';
+
+$string['footnotemoodle'] = 'Unique Poodll users are <b>calculated monthly</b> not yearly.';
+$string['footnotelti'] = 'No more than the maximum number of users can be active in the Poodll LMS';
+$string['needmoreusers'] = '<b>Need more users?</b> <a href="{$a}" target="_blank">Contact us</a> for an estimate';

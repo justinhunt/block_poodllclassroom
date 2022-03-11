@@ -1,19 +1,24 @@
 .block_poodllclassroom {
    /* color: #00cc00; */
 }
+a:hover{
+    box-shadow: none;
+}
+a:focus{
+    box-shadow: none;
+}
+
 .block_poodllclassroom_triggerbutton {
     color: #002f8f;
     margin: 10px;
     padding: 10px;
 }
-
 .block_poodllclassroom_formtitle {
     font-weight: bold;
 }
 .block_poodllclassroom_forminstructions {
     /*something*/
 }
-
 .block_poodllclassroom_settingstile .btn {
     min-width: 150px;
     margin-top: 10px;
@@ -29,7 +34,6 @@
 .block_poodllclassroom_opencheckout {
     margin: 5px;
 }
-
 .block_poodllclassroom_nousers_cont {
    /* text-align: center; */
     margin-top: 10px;
@@ -37,7 +41,7 @@
 .block_poodllclassroom_changeplan_cont,
 .block_poodllclassroom_newplan_cont,
 .block_poodllclassroom_freeplan_cont {
-    margin: 10px;
+    margin: 0px 10px;
     text-align: center;
 }
 .block_poodllclassroom_planname {
@@ -48,14 +52,10 @@ a.block_poodllclassroom_changeplan.block_poodllclassroom_gocbcheckout,
 a.block_poodllclassroom_freeplan.block_poodllclassroom_gocbcheckout {
     margin-top: 20px;
 }
-
 .block_poodllclassroom_billingheader{
     margin-top: 10px;
 }
 
-.block_poodllclassroom_flexbox {
-    display: flex;
-}
 .block_poodllclassroom_hidden {
     display: none;
 }
@@ -111,7 +111,7 @@ a.block_poodllclassroom_freeplan.block_poodllclassroom_gocbcheckout {
     padding: 7px;
 }
 .block_poodllclassroom_options {
-    margin-top: 10px;
+    margin-bottom: 10px;
 }
 span.block_poodllclassroom_paymentdue {
     color: red;
@@ -125,13 +125,17 @@ span.block_poodllclassroom_paymentdue {
 }
 table.generaltable.block_poodllclassroom_subslist_table {
     margin-top: 20px;
+    width: 100%;
+    min-width: 1000px;
 }
-
+.table-over {
+    width: 100%;
+    overflow: auto;
+}
 .bpc_login-form {
     padding: 20px 15px;
     max-width: 400px;
 }
-
 #bpc_email,
 #bpc_password {
     border: 1px solid rgba(0, 0, 0, .15);
@@ -139,7 +143,6 @@ table.generaltable.block_poodllclassroom_subslist_table {
     margin: 5px;
     max-width: 400px;
 }
-
 .bpc_loginbtn {
     padding: 0.5rem;
     margin: 5px;
@@ -159,14 +162,1211 @@ table.generaltable.block_poodllclassroom_subslist_table {
     max-width: 640px;
     margin: 20px;
 }
-
-.bpc_moodlesubsrow .bpc_col-2 {
-    background-color: #f5f5f5;
-}
 .block_poodllclassroom_ltituts_cont .card {
     margin: 10px;
     padding: 15px;
 }
 .block_poodllclassroom_ltitutsintro {
     font-weight: bold;
+}
+/* New Design */
+.block_poodllclassroom .poodleclassblock {
+    border: 1px solid #A7A9B6;
+    border-radius: 10px;
+    padding: 30px;
+    margin: 20px 0;
+}
+.block_poodllclassroom[data-block="poodllclassroom"] {
+    background-color: transparent;
+}
+.block_poodllclassroom .introblock .block_poodllclassroom_userheader {
+    width: fit-content;
+    background-color: #F4EDFF;
+    color: #9051FF;
+    border-radius: 34px;
+    padding: 5px 15px;
+    font-size: 1.5rem !important;
+}
+.introblock.poodleclassblock {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.block_poodllclassroom_ltisubslist_cont .block_poodllclassroom_opencheckout {
+    background: #2f699d;
+    color: #fff;
+    border-radius: 34px;
+    padding: 7px 15px 7px 10px;
+    font-size: 1rem;
+    box-shadow: none;
+    margin: 0;
+}
+.block_poodllclassroom .block_poodllclassroom_opencheckout:hover {
+    background: #373b63;
+    color: white;
+    box-shadow: none;
+    padding: 7px 15px 7px 10px;
+    line-height: 1.8;
+}
+.edit_site_details .edit-btn i {
+    background-color: white;
+    color: #279d6a;
+    padding: 4px;
+    border-radius: 50%;
+}
+.block_poodllclassroom_moodlesubslist_cont .block_poodllclassroom_opencheckout {
+    background: #279d6a;
+    color: #fff;
+    border-radius: 34px;
+    padding: 7px 15px 7px 10px;
+    font-size: 1rem;
+    margin: 0;
+}
+.block_poodllclassroom .block_poodllclassroom_subslist_title .block_poodllclassroom_opencheckout {
+    background: #2F699D;
+    color: white;
+    border-radius: 34px;
+    padding: 3px 15px;
+    font-size: 1rem;
+}
+.block_poodllclassroom .block_poodllclassroom_options .up-btn img:last-child {
+    display: none;
+}
+.block_poodllclassroom .block_poodllclassroom_options .up-btn:hover img:last-child {
+    display: inline;
+}
+.block_poodllclassroom .block_poodllclassroom_options .up-btn:hover img {
+    display: none;
+}
+.block_poodllclassroom .dropdown-toggle {
+    position: relative;
+    background-color: #9051ff;
+    padding: 7px 15px;
+    border-radius: 34px;
+    font-size: 1rem;
+    font-weight: 400;
+    color: #ffffff;
+    border: none;
+}
+.block_poodllclassroom .show .dropdown-toggle {
+    background-color: #373b63;
+    color: white;
+}
+.block_poodllclassroom .block_poodllclassroom_options .up-btn {
+    background-color: transparent;
+    padding: 6px 15px !important;
+    border-radius: 34px;
+    font-size: 1rem;
+    font-weight: 400;
+    color: #373b63;
+    border: 1px solid #252849;
+}
+.block_poodllclassroom .up-btn:hover {
+    color: white;
+    background-color: #373b63;
+}
+.block_poodllclassroom .introblock .text-poodll {
+    width: 20%;
+    color: #707070;
+    font-size: 14px;
+    border: 1px solid #a7a9b6;
+    border-radius: 18px;
+    padding: 15px;
+}
+.block_poodllclassroom .block_poodllclassroom_subslist_title {
+    color: #2F699D;
+    background-color: #2f699d29;
+    padding: 2px 15px;
+    width: fit-content;
+    border-radius: 34px;
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+.block_poodllclassroom .dropdown-toggle:focus {
+    box-shadow: none;
+}
+.block_poodllclassroom .dropdown-toggle:after {
+    content: "";
+    font-size: 16px;
+    opacity: 1;
+    top: 25%;
+}
+.block_poodllclassroom .show .dropdown-toggle:after {
+    content: '\f106';
+    font-size: 16px;
+}
+.block_poodllclassroom .block_poodllclassroom_subslist_title {
+
+    color: #2F699D;
+    background-color: #2f699d29;
+    padding: 5px 15px;
+    width: fit-content;
+    border-radius: 34px;
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin: 0;
+}
+.block_poodllclassroom .block_poodllclassroom_moodlesubslist_cont .block_poodllclassroom_subslist_title {
+    width: fit-content;
+    background-color: #0080001f;
+    padding: 5px 20px;
+    border-radius: 30px;
+    color: green;
+    font-size: 1.5rem;
+    margin: 0 !important;
+}
+.block_poodllclassroom .intro_description {
+    clear: both;
+    width: 20%;
+    height: 160px;
+    overflow: hidden;
+    color: #707070;
+    font-size: 14px;
+    border: 1px solid #a7a9b6;
+    border-radius: 18px;
+    padding: 15px;
+}
+.intro_description a {
+    color: #279d6a;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    line-height: 2;
+    margin-top: 10px;
+}
+.intro_description a:hover {
+    text-decoration: none;
+    color: #373b63;
+    box-shadow: none;
+}
+.intro_description h3 {
+    font-size: 20px !important;
+    font-weight: 500;
+    color: #252849;
+    margin-bottom: 8px;
+}
+.intro_description a i {
+    border-radius: 50%;
+    background: #279d6a;
+    padding: 9px;
+    color: #fff;
+    font-size: 10px;
+    margin-right: 2px;
+}
+.intro_description a:hover i {
+    background-color: #373b63;
+    box-shadow: none;
+}
+.introblock .intro_description_hader {
+    width: 100%;
+    display: flex;
+    clear: both;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 20px;
+}
+.block_poodllclassroom_moodlesubslist_cont .intro_description_hader {
+    width: 100%;
+    display: flex;
+    clear: both;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 20px;
+}
+.intro_description_img {
+    width: 10%;
+    height: 160px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.intro_description_img img.icon {
+    width: auto;
+}
+.dropdown-menu .dropdown-item {
+    display: block;
+    color: #373b62 !important;
+    text-align: left;
+    font-size: 14px !important;
+    white-space: normal;
+}
+.dropdown-menu .dropdown-item:hover{
+    background-color: #373b62 !important;
+    border-radius: 5px;
+}
+.dropdown-menu.show {
+    display: block;
+    background-color: white;
+}
+.block_poodllclassroom .block_poodllclassroom_subslist_cont .block_poodllclassroom_allschoolsubs {
+    width: fit-content;
+    float: left;
+    background-color: rgba(254,190,0,.15);
+    color: #febe00;
+    border-radius: 34px;
+    padding: 5px 15px;
+    font-size: 1.5rem!important;
+    margin: 0.5rem 0 !important;
+    margin-bottom:20px !important;
+}
+.block_poodllclassroom .subs_desciption {
+    background-color: #a7a9b626;
+    padding: 21px 23px;
+    border-radius: 18px;
+    width: 100%;
+    margin-top: 20px;
+}
+.block_poodllclassroom_moodlesubslist_cont {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    clear: both;
+    width: 100%;
+}
+.block_poodllclassroom_ltisubslist_cont {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    clear: both;
+    width: 100%;
+}
+.bpc_moodlesubsrow .bpc_col-2 {
+    background-color: transparent;
+    border: none;
+    padding: 0 10px;
+    width: 100%;
+    min-width: auto;
+    max-width: inherit;
+}
+.bpc_moodlesubsrow .bpc_col-1 {
+    padding: 0;
+    border: none;
+    min-width: fit-content;
+    font-weight: 500;
+}
+.bpc_moodlesubsrow .bpc_col-3 {
+    padding: 0;
+    border: none;
+}
+.bpc_moodlesubsrow .bpc_col-3 .btn {
+    padding: 0;
+}
+.bpc_moodlesubsrow .bpc_col-4 {
+    padding: 0px 4px;
+    color: #484242;
+    background: white;
+}
+.bpc_moodlesubsrow .bpc_col-3 .poodllclassroom_clipboardbutton svg {
+    width: 22px;
+}
+.api_user .bpc_moodlesubsrow, .bpc_ltisubsrow, .bpc_classroomsubsrow {
+    display: flex;
+    border: 1px solid #a7a9b6;
+    border-radius: 18px;
+    padding: 15px 10px;
+    width: 100%;
+    margin-top: 15px;
+    justify-content: space-between;
+    font-size: 14px;
+    line-height: 28px;
+}
+.site_url .bpc_moodlesubsrow, .bpc_ltisubsrow, .bpc_classroomsubsrow {
+    display: flex;
+    border: 1px solid #a7a9b6;
+    border-radius: 15px;
+    padding: 15px 10px;
+    width: 100%;
+    margin-top: 15px;
+    justify-content: start;
+    font-size: 14px;
+    line-height: 28px;
+}
+.school_name {
+    background-color: #a7a9b652;
+    width: 100%;
+    padding: 20px 10px;
+    border-radius: 18px;
+    font-size: 18px;
+    margin-top: 20px;
+}
+.school_name span {
+    font-weight: 500;
+}
+.url {
+    width: 100%;
+    clear: both;
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+}
+.url .site_url {
+    width: 49%;
+}
+.url .api_user {
+    width: 49%;
+}
+.edit_site_details {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+}
+.edit_site_details .edit-btn {
+    background: #279d6a;
+    border: none;
+    color: #fff;
+    border-radius: 34px;
+    padding: 7px 15px 7px 10px;
+    font-size: 1rem;
+    transition: all 350ms ease;
+    line-height: 1.9;
+}
+.edit_site_details .edit-btn:hover {
+    background-color: #373b63;
+    color: white;
+}
+.edit_site_details .edit-btn:hover i {
+    color: #373b63;
+}
+.itemedit.cell.c7 .block_poodllclassroom_subseditlink {
+    border: none;
+    box-shadow: none;
+    color: white;
+    background-color: #febe00;
+    border-radius: 34px;
+    padding: 0.5rem 1rem;
+}
+.itemedit.cell.c7 .block_poodllclassroom_subseditlink:hover {
+    background-color: #373b63;
+}
+.edit_site_details span {
+    margin-left: 10px;
+    font-size: 18px;
+    opacity: .6;
+    font-weight: 200;
+}
+.table-over {
+    width: 100%;
+    overflow: auto;
+}
+@media only screen and  (max-width: 984px) {
+    .introblock .intro_description_hader{
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+    .block_poodllclassroom .intro_description{
+        width: 40%;
+        margin-top: 15px;
+    }
+    .intro_description_img{
+        width: 15%;
+    }
+    .block_poodllclassroom_moodlesubslist_cont .intro_description_hader{
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+    .block_poodllclassroom_moodlesubslist_cont .intro_description_hader .intro_description{
+        width: 40%;
+        margin-top: 15px;
+    }
+    .intro_description_img{
+        width: 15%;
+    }
+    .block_poodllclassroom_ltisubslist_cont .block_poodllclassroom_opencheckout{
+        margin-top: 10px;
+    }
+    .block_poodllclassroom_moodlesubslist_cont .block_poodllclassroom_opencheckout{
+        margin-top: 10px;
+    }
+    .url{
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .url .site_url{
+        width: 80%;
+    }
+    .url .api_user{
+        width: 80%;
+    }
+    .edit_site_details{
+        justify-content: center;
+        width: 100%;
+    }
+    .block_poodllclassroom .block_poodllclassroom_subslist_cont .block_poodllclassroom_allschoolsubs{
+        width: 100%;
+        text-align: center;
+    }
+    .block_poodllclassroom_moodlesubslist_cont{
+        justify-content: center;
+    }
+    .block_poodllclassroom .block_poodllclassroom_moodlesubslist_cont .block_poodllclassroom_subslist_title{
+        width: 100%;
+        text-align: center;
+    }
+    .block_poodllclassroom .introblock .block_poodllclassroom_userheader{
+        width: 100%;
+        text-align: center;
+    }
+    .introblock.poodleclassblock{
+        justify-content: center;
+    }
+    .block_poodllclassroom_ltisubslist_cont{
+        justify-content: center;
+    }
+    .block_poodllclassroom .block_poodllclassroom_subslist_title{
+        width: 100%;
+        text-align: center;
+    }
+}
+
+@media only screen and  (max-width: 726px) {
+    .block_poodllclassroom .introblock .block_poodllclassroom_userheader{
+        font-size: 1rem !important;
+    }
+    .block_poodllclassroom .block_poodllclassroom_options .up-btn{
+        font-size: 0.8rem;
+    }
+    .block_poodllclassroom .dropdown-toggle{
+        font-size: 0.8rem;
+    }
+    .block_poodllclassroom .block_poodllclassroom_subslist_cont .block_poodllclassroom_allschoolsubs{
+        font-size: 1rem !important;
+    }
+    .block_poodllclassroom .block_poodllclassroom_moodlesubslist_cont .block_poodllclassroom_subslist_title{
+        font-size: 1rem;
+    }
+    .block_poodllclassroom_moodlesubslist_cont .block_poodllclassroom_opencheckout{
+        font-size: 0.8rem;
+    }
+    .edit_site_details .edit-btn{
+        font-size: 0.8rem;
+    }
+    .edit_site_details span{
+        font-size: 0.8rem;
+    }
+    .block_poodllclassroom .block_poodllclassroom_subslist_title{
+        font-size: 1rem;
+    }
+    .block_poodllclassroom_ltisubslist_cont .block_poodllclassroom_opencheckout{
+        font-size: 0.8rem;
+    }
+    .intro_description h3{
+        font-size: 18px !important;
+    }
+    .block_poodllclassroom .intro_description{
+        font-size: 12px;
+    }
+    .school_name{
+        font-size: 16px;
+        text-align: center;
+    }
+    .site_url .bpc_moodlesubsrow, .bpc_ltisubsrow, .bpc_classroomsubsrow{
+        padding: 10px 10px;
+    }
+    .api_user .bpc_moodlesubsrow, .bpc_ltisubsrow, .bpc_classroomsubsrow{
+        padding: 10px 10px;
+    }
+}
+@media only screen and  (max-width: 564px) {
+    .intro_description_img {
+        width: 100%;
+        height: auto;
+    }
+    .intro_description_img img.icon {
+        width: 20%;
+    }
+    .block_poodllclassroom .intro_description {
+        width: 49%;
+    }
+    .block_poodllclassroom_moodlesubslist_cont .intro_description_hader .intro_description {
+        width: 49%;
+    }
+    .url .site_url {
+        width: 100%;
+    }
+    .url .api_user {
+        width: 100%;
+    }
+}
+@media only screen and  (max-width: 480px) {
+    .block_poodllclassroom .poodleclassblock{
+        padding: 15px;
+    }
+}
+@media only screen and  (max-width: 440px) {
+    .card-body {
+        padding: 0.25rem;
+    }
+    .block_poodllclassroom .poodleclassblock{
+        padding: 10px;
+    }
+}
+@media only screen and  (max-width: 400px) {
+    .block_poodllclassroom .block_poodllclassroom_subslist_title{
+        padding: 5px 10px;
+    }
+    .block_poodllclassroom .block_poodllclassroom_moodlesubslist_cont .block_poodllclassroom_subslist_title{
+        padding: 5px 10px;
+    }
+    .block_poodllclassroom .block_poodllclassroom_subslist_cont .block_poodllclassroom_allschoolsubs{
+        padding: 5px 10px;
+    }
+    .block_poodllclassroom .introblock .block_poodllclassroom_userheader{
+        padding: 5px 10px;
+    }
+    .dropdown.block_poodllclassroom_options{
+        text-align: center;
+    }
+    .block_poodllclassroom .block_poodllclassroom_options .up-btn{
+        width: 90%;
+        margin-bottom: 10px;
+    }
+    .block_poodllclassroom .dropdown-toggle{
+        width: 90%;
+    }
+    .sub_checkoutbutton {
+        width: 100%;
+        text-align: center;
+    }
+    .block_poodllclassroom_moodlesubslist_cont .block_poodllclassroom_opencheckout{
+        width: 90%;
+    }
+    .edit_site_details{
+        flex-wrap: wrap;
+    }
+    .edit_site_details .edit-btn{
+        width: 90%;
+        margin-bottom: 10px;
+    }
+    .block_poodllclassroom .intro_description{
+        width: 100%;
+        height: auto;
+    }
+    .block_poodllclassroom_moodlesubslist_cont .intro_description_hader .intro_description{
+        width: 100%;
+        height: auto;
+    }
+}
+[data-block="poodllclassroom"] > .card-body > .card-title {
+    display: none;
+}
+#page-blocks-poodllclassroom-subs-checkout .checkout_header_moodle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 30px 20px;
+    border-radius: 18px;
+}
+#page-blocks-poodllclassroom-subs-checkout .checkout_header_moodle .part1 {
+    width: 10%;
+    display: flex;
+    align-items: center;
+}
+#page-blocks-poodllclassroom-subs-checkout .checkout_header_moodle .part2 {
+    width: 35%;
+    border: 1px solid #e8e8e8;
+    padding: 15px 20px;
+    border-radius: 18px;
+}
+#page-blocks-poodllclassroom-subs-checkout .checkout_header_moodle .part2 p {
+    font-size: 16px;
+    font-weight: 400;
+}
+#page-blocks-poodllclassroom-subs-checkout .checkout_header_moodle .part2 h4 {
+    font-size: 20px;
+    font-weight: 500;
+}
+#page-blocks-poodllclassroom-subs-checkout .checkout_header_moodle .part3 {
+    width: 50%;
+    border: 1px solid #e8e8e8;
+    padding: 15px 20px;
+    border-radius: 18px;
+}
+#page-blocks-poodllclassroom-subs-checkout .checkout_header_moodle .part3 p {
+    font-size: 16px;
+    font-weight: 400;
+}
+#page-blocks-poodllclassroom-subs-checkout .checkout_header_moodle .part3 h4 {
+    font-size: 20px;
+    font-weight: 500;
+}
+#page-blocks-poodllclassroom-subs-checkout .checkout_header_moodle .part1 .icon {
+    width: 70%;
+    height: auto;
+    margin: 0 auto;
+}
+.checkout_header_lti {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 30px 20px;
+    border-radius: 18px;
+}
+.checkout_header_lti .part1 {
+    width: 10%;
+    display: flex;
+    align-items: center;
+}
+.checkout_header_lti .part2 {
+    width: 35%;
+    border: 1px solid #e8e8e8;
+    padding: 15px 20px;
+    border-radius: 18px;
+}
+.checkout_header_lti .part2 p {
+    font-size: 16px;
+    font-weight: 400;
+}
+.checkout_header_lti .part2 h4 {
+    font-size: 20px;
+    font-weight: 500;
+}
+.checkout_header_lti .part3 {
+    width: 50%;
+    border: 1px solid #e8e8e8;
+    padding: 15px 20px;
+    border-radius: 18px;
+}
+.checkout_header_lti .part3 p {
+    font-size: 16px;
+    font-weight: 400;
+}
+.checkout_header_lti .part3 h4 {
+    font-size: 20px;
+    font-weight: 500;
+}
+.checkout_header_lti .part1 .icon {
+    width: 70%;
+    height: auto;
+    margin: 0 auto;
+}
+.main-pack {
+    display: flex;
+    justify-content: space-around;
+    align-items: stretch;
+    flex-wrap: wrap;
+}
+.plan-pack {
+    width: 30%;
+    text-align: center;
+    border-radius: 28px;
+    border: 1px solid #e8e8e8;
+    overflow: hidden;
+    margin: 0 auto;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+.plan-pack .plan-pack-inner {
+    padding: 30px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.plan-pack h4 {
+    font-size: 30px;
+    font-weight: 500;
+    color: white;
+}
+.plan-pack span {
+    font-size: 14px;
+    color: white;
+}
+.plan-pack .mediaplans .block_poodllclassroom_flexbox {
+    display: flex;
+    padding: 30px;
+    margin-bottom: 0;
+}
+.mediaplans .plan-pack-inner {
+    background-color: #FEBE00;
+}
+.langplans .plan-pack-inner {
+    background-color: #00B9F7;
+}
+.essentialsplans .plan-pack-inner {
+    background-color: #9CC269;
+}
+.englishcentralplans .plan-pack-inner {
+    background-color: #1b5018;
+}
+.block_poodllclassroom_moodleplans_cont {
+    display: block;
+    width: 100%;
+    margin-bottom: 0;
+    padding: 30px;
+}
+.block_poodllclassroom_newplan_cont {
+    width: 100% !important;
+    margin: 0;
+    padding: 30px;
+    border: none !important;
+}
+.mediaplans .block_poodllclassroom_moodleplans_cont .block_poodllclassroom_newplan_cont a{
+    background-color: #febe00;
+}
+.langplans .block_poodllclassroom_moodleplans_cont .block_poodllclassroom_newplan_cont a{
+    background-color: #00b9f7;
+}
+.essentialsplans .block_poodllclassroom_moodleplans_cont .block_poodllclassroom_newplan_cont a{
+    background-color: #9cc269;
+}
+.englishcentralplans .block_poodllclassroom_moodleplans_cont .block_poodllclassroom_newplan_cont a{
+    background-color: #1b5018;
+}
+.block_poodllclassroom_moodleplans_cont .block_poodllclassroom_newplan_cont a {
+    width: 80%;
+    color: white;
+    border-radius: 28px;
+    box-shadow: none;
+    border: none;
+    padding: 10px;
+    text-transform: uppercase;
+}
+.plan-pack .block_poodllclassroom_moodleplans_cont .block_poodllclassroom_newplan_cont:last-child {
+    background-color: #F2F2F4;
+    border-radius: 22px;
+    margin-top: 15px;
+}
+.block_poodllclassroom_moodleplans_cont .block_poodllclassroom_newplan_cont a:hover {
+    background-color: #373b63;
+    box-shadow: none;
+}
+@media only screen and  (max-width: 1100px){
+    #page-blocks-poodllclassroom-subs-checkout .checkout_header_moodle{
+        justify-content: space-evenly;
+    }
+    #page-blocks-poodllclassroom-subs-checkout .checkout_header_moodle .part3{
+        width: 100%;
+        margin-top: 20px;
+    }
+    #page-blocks-poodllclassroom-subs-checkout .checkout_header_moodle .part2{
+        width: 60%;
+    }
+    .checkout_header_lti{
+        justify-content: space-evenly;
+    }
+    .checkout_header_lti .part3{
+        width: 100%;
+        margin-top: 20px;
+    }
+    .checkout_header_lti .part2{
+        width: 60%;
+    }
+}
+@media only screen and  (max-width: 910px){
+    .main-pack{
+        align-items: start;
+    }
+    .plan-pack{
+        width: 48%;
+    }
+    #page-blocks-poodllclassroom-subs-checkout .checkout_header_moodle .part2{
+        width: 55%;
+    }
+    .checkout_header_lti .part2{
+        width: 55%;
+    }
+}
+@media only screen and  (max-width: 650px){
+    #page-blocks-poodllclassroom-subs-checkout .checkout_header_moodle{
+        justify-content: space-between;
+    }
+    #page-blocks-poodllclassroom-subs-checkout .checkout_header_moodle .part1 .icon{
+        width: 100%;
+    }
+    #page-blocks-poodllclassroom-subs-checkout .checkout_header_moodle .part2{
+        width: 80%;
+    }
+    #page-blocks-poodllclassroom-subs-checkout .checkout_header_moodle .part3{
+        width: 100%;
+    }
+    .checkout_header_lti{
+        justify-content: space-between;
+    }
+    .checkout_header_lti .part1 .icon{
+        width: 100%;
+    }
+    .checkout_header_lti .part2{
+        width: 80%;
+    }
+    .checkout_header_lti .part3{
+        width: 100%;
+    }
+    .plan-pack .plan-pack-inner {
+        padding: 15px;
+    }
+    .block_poodllclassroom_moodleplans_cont{
+        padding: 15px;
+    }
+}
+@media only screen and  (max-width: 500px){
+    #page-blocks-poodllclassroom-subs-checkout .checkout_header_moodle{
+        padding: 20px 10px;
+    }
+    #page-blocks-poodllclassroom-subs-checkout .checkout_header_moodle .part1{
+        width: 18%;
+    }
+    #page-blocks-poodllclassroom-subs-checkout .checkout_header_moodle .part2{
+        padding: 5px 10px;
+    }
+    #page-blocks-poodllclassroom-subs-checkout .checkout_header_moodle .part2 h4{
+        font-size: 18px;
+    }
+    #page-blocks-poodllclassroom-subs-checkout .checkout_header_moodle .part2 p{
+        font-size: 14px;
+    }
+    #page-blocks-poodllclassroom-subs-checkout .checkout_header_moodle .part3{
+        padding: 5px 10px;
+    }
+    #page-blocks-poodllclassroom-subs-checkout .checkout_header_moodle .part3 h4{
+        font-size: 18px;
+    }
+    #page-blocks-poodllclassroom-subs-checkout .checkout_header_moodle .part3 p{
+        font-size: 14px;
+    }
+    .checkout_header_lti{
+        padding: 20px 10px;
+    }
+    .checkout_header_lti .part1{
+        width: 18%;
+    }
+    .checkout_header_lti .part2{
+        padding: 5px 10px;
+    }
+    .checkout_header_lti .part2 h4{
+        font-size: 18px;
+    }
+    .checkout_header_lti .part2 p{
+        font-size: 14px;
+    }
+    .checkout_header_lti .part3{
+        padding: 5px 10px;
+    }
+    .checkout_header_lti .part3 h4{
+        font-size: 18px;
+    }
+    .checkout_header_lti .part3 p{
+        font-size: 14px;
+    }
+    .plan-pack{
+        width: 80%;
+    }
+}
+@media only screen and  (max-width: 400px){
+    #page-blocks-poodllclassroom-subs-checkout .checkout_header_moodle{
+        justify-content: center;
+    }
+    #page-blocks-poodllclassroom-subs-checkout .checkout_header_moodle .part2{
+        width: 100%;
+        margin-top: 20px;
+    }
+    .checkout_header_lti{
+        justify-content: center;
+    }
+    .checkout_header_lti .part2{
+        width: 100%;
+        margin-top: 20px;
+    }
+    .plan-pack{
+        width: 100%;
+    }
+}
+.block_poodllclassroom_price .interval {
+    color: #707070;
+    font-size: 18px;
+    font-weight: 300;
+}
+.block_poodllclassroom_price {
+    font-size: 30px;
+    font-weight: 400;
+}
+.poodllclassroom_flexbox_inner {
+    width: 100%;
+    height: 100%;
+}
+.poodllclassroom_flexbox_inner .icon {
+    width: 100%;
+    height: auto;
+}
+.checkout_header_moodle ~ .block_poodllclassroom_freeplans_cont {
+    display: block;
+    position: relative;
+    overflow: hidden;
+}
+.checkout_header_lti ~ .block_poodllclassroom_freeplans_cont {
+    display: block;
+    position: relative;
+    overflow: hidden;
+}
+.block_poodllclassroom_flexbox_inner {
+    position: absolute;
+    top: calc(50% - 100px);
+    width: 40%;
+    text-align: center;
+    left: 10%;
+}
+.checkout_header_lti ~ .block_poodllclassroom_freeplans_cont .block_poodllclassroom_flexbox_inner {
+    position: absolute;
+    top: calc(50% - 140px);
+    width: 40%;
+    text-align: center;
+    right: 10%;
+    left: auto;
+}
+.block_poodllclassroom_flexbox_inner .block_poodllclassroom_freeplan_cont a {
+    padding: 6px 20px;
+    border-radius: 34px;
+    width: 40%;
+    font-size: 16px;
+    background-color: #252849;
+    color: white;
+    border: none;
+}
+.block_poodllclassroom_flexbox_inner .block_poodllclassroom_plansintro {
+    color: #252849;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.poodllclassroom_flexbox_img {
+    width: 20%;
+    margin: 0 auto;
+    height: auto;
+}
+
+.poodllclassroom_flexbox_img .icon {
+    width: 100%;
+    margin: 0 auto;
+    height: auto;
+}
+@media only screen and  (max-width: 1050px){
+    .block_poodllclassroom_flexbox_inner{
+        width: 50%;
+        left: 5%;
+    }
+    .checkout_header_lti ~ .block_poodllclassroom_freeplans_cont .block_poodllclassroom_flexbox_inner{
+        width: 50%;
+        right: 5%;
+        left: auto;
+        top: calc(50% - 100px);
+    }
+}
+@media only screen and  (max-width: 860px){
+    .block_poodllclassroom_flexbox_inner{
+        width: 50%;
+        left: 0%;
+    }
+    .checkout_header_lti ~ .block_poodllclassroom_freeplans_cont .block_poodllclassroom_flexbox_inner{
+        width: 50%;
+        right: 0%;
+        left: auto;
+    }
+}
+@media only screen and  (max-width: 855px){
+    .poodllclassroom_flexbox_inner .icon {
+        display: none;
+    }
+    .checkout_header_moodle ~ .block_poodllclassroom_freeplans_cont {
+        background-image: url([[pix:block_poodllclassroom|freebgmoodle]]);
+        background-position: -10px top;
+        background-size: cover;
+        background-repeat: no-repeat;
+        height: 300px;
+        position: relative;
+    }
+    .checkout_header_lti ~ .block_poodllclassroom_freeplans_cont{
+        background-image: url([[pix:block_poodllclassroom|freebglti]]);
+        background-position: -110px top;
+        background-size: cover;
+        background-repeat: no-repeat;
+        height: 300px;
+        position: relative;
+    }
+    .block_poodllclassroom_flexbox_inner{
+        width: 60%;
+        left: 0%;
+    }
+    .checkout_header_lti ~ .block_poodllclassroom_freeplans_cont .block_poodllclassroom_flexbox_inner{
+        width: 60%;
+        right: 0%;
+        top: 10%;
+        left: auto;
+    }
+}
+@media only screen and  (max-width: 710px){
+    .block_poodllclassroom_flexbox_inner{
+        width: 80%;
+        left: 0%;
+        top: calc(40% - 100px);
+    }
+    .checkout_header_lti ~ .block_poodllclassroom_freeplans_cont .block_poodllclassroom_flexbox_inner{
+        width: 85%;
+        left: auto;
+        top: calc(40% - 100px);
+        right: 0%;
+        left: auto;
+    }
+    .block_poodllclassroom_flexbox_inner .block_poodllclassroom_freeplan_cont a{
+        width: fit-content;
+    }
+    .checkout_header_lti ~ .block_poodllclassroom_freeplans_cont{
+        background-position: -260px top;
+    }
+    .checkout_header_moodle ~ .block_poodllclassroom_freeplans_cont{
+        background-position: -10px top;
+    }
+}
+@media only screen and  (max-width: 560px){
+    .block_poodllclassroom_flexbox_inner{
+        width: 100%;
+        left: 0%;
+        top: 10%;
+    }
+    .checkout_header_lti ~ .block_poodllclassroom_freeplans_cont .block_poodllclassroom_flexbox_inner{
+        width: 100%;
+        right: 0%;
+        top: auto;
+        bottom: 1%;
+        left: auto;
+    }
+    .checkout_header_moodle ~ .block_poodllclassroom_freeplans_cont{
+        background-position: -10px center;
+        background-size: auto;
+        border-radius: 18px;
+        margin-top: 20px;
+    }
+    .checkout_header_lti ~ .block_poodllclassroom_freeplans_cont{
+        background-position: -1010px center;
+        background-size: auto;
+        border-radius: 18px;
+        margin-top: 20px;
+    }
+}
+@media only screen and  (max-width: 450px){
+    .block_poodllclassroom_flexbox_inner{
+        top: 1%;
+    }
+}
+.plan-pack-inner a {
+    display: block;
+    border: 1px solid white;
+    border-radius: 34px;
+    width: fit-content;
+    margin: 0 auto;
+    padding: 5px 15px;
+    color: white;
+    margin-top: 10px;
+    transition: all 0.6s;
+}
+a{
+    transition: all 0.6s !important;
+}
+.plan-pack-inner a:hover {
+    text-decoration: none;
+    color: #00b9f7;
+    background: white;
+    border: 1px solid #fff;
+}
+.block_poodllclassroom_moodleplans_cont .block_poodllclassroom_newplan_cont a {
+    position: relative;
+}
+.block_poodllclassroom_moodleplans_cont .block_poodllclassroom_newplan_cont a i {
+    position: absolute;
+    right: 5%;
+    top: calc(50% - 8px);
+}
+.priceplan_header {
+    font-size: 38px;
+    font-weight: 500;
+    text-align: center;
+    line-height: 32px;
+    margin: 80px 0 30px 0;
+}
+#page-blocks-poodllclassroom-subs-checkout #topBarContainer {
+    border-bottom: 0;
+}
+.plan-pack-inner.ltiplans {
+    background-color: #FEBE00;
+}
+
+.block_poodllclassroom_newplans_cont .block_poodllclassroom_newplan_cont a {
+    width: 80%;
+    color: #fff;
+    border-radius: 28px;
+    box-shadow: none;
+    border: none;
+    padding: 10px;
+    text-transform: uppercase;
+    position: relative;
+}
+.ltiplans_main .block_poodllclassroom_newplans_cont .block_poodllclassroom_newplan_cont a {
+    background-color: #febe00;
+}
+.ltiplans_main .block_poodllclassroom_newplans_cont .block_poodllclassroom_newplan_cont a:hover{
+    background-color: #373b63;
+}
+.ltiplans_main .block_poodllclassroom_newplans_cont {
+    padding: 30px;
+}
+.block_poodllclassroom_newplans_cont .block_poodllclassroom_newplan_cont a i {
+    position: absolute;
+    right: 5%;
+    top: calc(50% - 8px);
+}
+.footer_note .separator {
+    margin: 0 10px;
+}
+
+.footer_note p {
+    margin-bottom: 0;
+    font-size: 16px;
+    word-spacing: 2px;
+}
+.footer_note {
+    border: 1px solid #f2f2f4;
+    border-radius: 22px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0;
+}
+.footer_note p a {
+    text-decoration: underline;
+    color: black;
+}
+.footer_note p a:hover {
+    text-decoration: none;
+    color: black;
+}
+@media only screen and  (max-width: 930px) {
+    .footer_note {
+        display: block;
+        text-align: center;
+    }
+    .footer_note .separator {
+        margin: 0 10px;
+        display: none;
+    }
+    .footer_note .supportlink {
+        border-top: 1px solid #f2f2f4;
+        margin: 10px 10px 0;
+        padding-top: 10px;
+    }
+}
+.plan-pack .block_poodllclassroom_newplans_cont div:last-child {
+    background-color: #f2f2f4;
+    border-radius: 22px;
+    margin-top: 15px;
+}
+@media only screen and (max-width: 320px){
+    .checkout_header_lti~.block_poodllclassroom_freeplans_cont .block_poodllclassroom_flexbox_inner {
+        width: 100%;
+        right: 0%;
+        top: 2%;
+    }
 }
