@@ -401,7 +401,7 @@ $string['hasfreetrial']="Has free trial";
 $string['downstreamschoolid']="Downstream School ID";
 $string['resellerintro']="This is the Poodll reseller's dashboard. From here you can add new schools and administer existing schools. You can administer the subscriptions and URLs for each school, and see usage stats, from it's page linked below. The reseller discount will be applied to any subscriptions purchased from the school page. Use the account options button to review invoices and account settings. Set a credit card using the 'Update Credit Card' details button.";
 $string['mediaplansintro']="Poodll Media adds Poodll's audio and video recording features to Moodle's assignment, quiz and html editors.";
-$string['languagesplansintro']="Poodll Languages gives access to Poodll ReadAloud, Poodll Solo, Poodll MiniLessons and Poodll Wordcards.";
+$string['languagesplansintro']="Poodll Languages gives access to Poodll ReadAloud, Poodll Solo, Poodll MiniLesson and Poodll Wordcards.";
 $string['essentialsplansintro']="Poodll Essentials gives access to both Poodll Media and Poodll Languages for a low price.";
 $string['englishcentralplansintro']="Poodll EnglishCentral allows your students to use the full range of EnglishCentral video learning activities from within Moodle.";
 $string['freeplansintro']="The Poodll free trial gives full 30 day access. </br> You can upgrade to a full plan at any time.";
@@ -423,10 +423,9 @@ $string['poodllwelcomemailsubject'] = 'Let\'s get started with Poodll';
 $string['platformswelcomemailsubject'] = 'Your Poodll for Platforms LTI credentials';
 $string['accountisready'] = 'Your new Poodll account is ready.';
 
-$string['introreview'] = '<h3>Review</h3> On this page you can review the subscriptions for the school, register site URLs and manage billing.';
-$string['intromanage'] = '<h3>Manage</h3> Use the "manage subscription" link to update payment details or cancel the subscription.';
-$string['introaccount'] = '<h3>Account</h3> Use the "account options" dropdown to access your billing history.';
-$string['introsubscription'] = '<h3>Subscriptions</h3> Add new subscriptions to your account using the "Add new" button.';
+$string['intromanage'] = '<h3>Manage</h3> Manage billing address and other details as they appear on your invoices.';
+$string['introbilling'] = '<h3>Billing History</h3> Use the "account options" dropdown to access your billing history.';
+$string['intropayments'] = '<h3>Payment Methods</h3>Manage credit card and other payment methods.';
 
 $string['subschool'] = '<h3>School</h3> Your school details are below. These are used by your Poodll for Moodle subscription(s)';
 $string['subedit'] = '<h3>Edit</h3> Click the \'edit site details\' button to change school name and to add/edit your Moodle site URL(s).';

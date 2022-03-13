@@ -23,19 +23,16 @@
     {}
 }}
 <div class="intro_description_hader">
-    <div class="intro_description_img">
-        {{#pix}} moodlesubscription, block_poodllclassroom {{/pix}}
-    </div>
-    <div class="intro_description">
-        {{#str}}introreview, block_poodllclassroom{{/str}}
-    </div>
     <div class="intro_description">
         {{#str}}intromanage, block_poodllclassroom{{/str}}
+        {{> block_poodllclassroom/paymentmethodbutton}}
     </div>
     <div class="intro_description">
-        {{#str}}introaccount, block_poodllclassroom{{/str}}
+        {{#str}}introbilling, block_poodllclassroom{{/str}}
+        {{> block_poodllclassroom/paymentmethodbutton}}
     </div>
     <div class="intro_description">
-        {{#str}}introsubscription, block_poodllclassroom{{/str}}
+        {{#str}}intropayments, block_poodllclassroom{{/str}}
+        {{> block_poodllclassroom/paymentmethodbutton}}
     </div>
 </div>

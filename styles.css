@@ -318,14 +318,14 @@ table.generaltable.block_poodllclassroom_subslist_table {
 }
 .block_poodllclassroom .intro_description {
     clear: both;
-    width: 20%;
-    height: 160px;
-    overflow: hidden;
+    width: 33%;
+    min-height: 160px;
     color: #707070;
     font-size: 14px;
     border: 1px solid #a7a9b6;
     border-radius: 18px;
     padding: 15px;
+    margin-right: 8px
 }
 .intro_description a {
     color: #279d6a;
