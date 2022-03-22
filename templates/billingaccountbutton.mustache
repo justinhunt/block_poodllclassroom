@@ -22,17 +22,12 @@
     Example context (json):
     {}
 }}
-<div class="intro_description_hader">
-    <div class="intro_description">
-        {{#str}}intromanage, block_poodllclassroom{{/str}}
-        {{> block_poodllclassroom/billingaccountbutton}}
-    </div>
-    <div class="intro_description">
-        {{#str}}introbilling, block_poodllclassroom{{/str}}
-        {{> block_poodllclassroom/billinghistorybutton}}
-    </div>
-    <div class="intro_description">
-        {{#str}}intropayments, block_poodllclassroom{{/str}}
-        {{> block_poodllclassroom/paymentmethodbutton}}
-    </div>
-</div>
+
+    <div><button type="button" class="btn btn-secondary up-btn"  data-upstreamownerid="{{billingaccount.upstreamownerid}}"
+            data-type="{{billingaccount.type}}"
+            data-cbaction="{{billingaccount.cbaction}}">
+        <i class="fa fa-id-card" aria-hidden="true"></i>
+        <i class="fa fa-id-card-o" aria-hidden="true"></i>
+        {{billingaccount.label}}
+    </button></div>
+

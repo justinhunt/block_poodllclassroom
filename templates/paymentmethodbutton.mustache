@@ -23,11 +23,11 @@
     {}
 }}
 
-    <button type="button" class="btn btn-outline-secondary up-btn"  data-upstreamownerid="{{paymentsources.upstreamownerid}}"
+    <div><button type="button" class="btn btn-secondary up-btn"  data-upstreamownerid="{{paymentsources.upstreamownerid}}"
             data-type="{{paymentsources.type}}"
             data-cbaction="{{paymentsources.cbaction}}">
-        {{#pix}} card, block_poodllclassroom {{/pix}}
-        {{#pix}} card-hover, block_poodllclassroom {{/pix}}
+        <i class="fa fa-credit-card-alt" aria-hidden="true"></i>
+        <i class="fa fa-credit-card" aria-hidden="true"></i>
         {{#str}} entercreditcard, block_poodllclassroom {{/str}}
-    </button>
+    </button></div>
 

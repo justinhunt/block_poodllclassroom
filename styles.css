@@ -230,13 +230,17 @@ table.generaltable.block_poodllclassroom_subslist_table {
     padding: 3px 15px;
     font-size: 1rem;
 }
-.block_poodllclassroom .block_poodllclassroom_options .up-btn img:last-child {
+
+.block_poodllclassroom .intro_description_hader .up-btn i.fa {
+    margin-right: 5px;
+}
+.block_poodllclassroom .intro_description_hader .up-btn i:last-child {
     display: none;
 }
-.block_poodllclassroom .block_poodllclassroom_options .up-btn:hover img:last-child {
+.block_poodllclassroom .intro_description_hader .up-btn:hover i:last-child {
     display: inline;
 }
-.block_poodllclassroom .block_poodllclassroom_options .up-btn:hover img {
+.block_poodllclassroom .intro_description_hader .up-btn:hover i {
     display: none;
 }
 .block_poodllclassroom .dropdown-toggle {

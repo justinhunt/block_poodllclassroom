@@ -424,7 +424,7 @@ $string['platformswelcomemailsubject'] = 'Your Poodll for Platforms LTI credenti
 $string['accountisready'] = 'Your new Poodll account is ready.';
 
 $string['intromanage'] = '<h3>Manage</h3> Manage billing address and other details as they appear on your invoices.';
-$string['introbilling'] = '<h3>Billing History</h3> Use the "account options" dropdown to access your billing history.';
+$string['introbilling'] = '<h3>Billing History</h3> Access past and current invoices.';
 $string['intropayments'] = '<h3>Payment Methods</h3>Manage credit card and other payment methods.';
 
 $string['subschool'] = '<h3>School</h3> Your school details are below. These are used by your Poodll for Moodle subscription(s)';
