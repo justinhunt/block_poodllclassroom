@@ -427,10 +427,10 @@ $string['intromanage'] = '<h3>Manage</h3> Manage billing address and other detai
 $string['introbilling'] = '<h3>Billing History</h3> Access past and current invoices.';
 $string['intropayments'] = '<h3>Payment Methods</h3>Manage credit card and other payment methods.';
 
-$string['subschool'] = '<h3>School</h3> Your school details are below. These are used by your Poodll for Moodle subscription(s)';
-$string['subedit'] = '<h3>Edit</h3> Click the \'edit site details\' button to change school name and to add/edit your Moodle site URL(s).';
-$string['subsupport'] = '<h3>Support</h3> Need help? Click the orange button below to contact Poodll support.';
-$string['subtutorial'] = '<h3>Tutorial</h3> Just getting started?';
+$string['subschool'] = 'Your school details are below.';
+$string['subedit'] = ' Click the \'edit site details\' button to change school name and to add/edit your Moodle site URL(s).';
+$string['subsupport'] = ' Click the orange button below to contact Poodll support.';
+$string['subtutorial'] = '<h3>Just getting started?</h3>';
 
 //
 $string['changeplan'] = 'Change Plan';

@@ -320,6 +320,18 @@ table.generaltable.block_poodllclassroom_subslist_table {
     font-size: 1.5rem;
     margin: 0 !important;
 }
+
+.block_poodllclassroom .moodle_subs_intro,
+.block_poodllclassroom_moodlesubslist_cont .moodle_subs_intro {
+    clear: both;
+    width: 80%;
+    min-height: 160px;
+    color: #707070;
+    font-size: 14px;
+    padding: 15px;
+    margin-right: 8px
+}
+
 .block_poodllclassroom .intro_description {
     clear: both;
     width: 33%;
@@ -331,7 +343,8 @@ table.generaltable.block_poodllclassroom_subslist_table {
     padding: 15px;
     margin-right: 8px
 }
-.intro_description a {
+.intro_description a,
+.moodle_subs_intro a {
     color: #279d6a;
     display: flex;
     align-items: center;
@@ -339,7 +352,8 @@ table.generaltable.block_poodllclassroom_subslist_table {
     line-height: 2;
     margin-top: 10px;
 }
-.intro_description a:hover {
+.intro_description a:hover,
+.moodle_subs_intro a:hover {
     text-decoration: none;
     color: #373b63;
     box-shadow: none;
@@ -350,7 +364,8 @@ table.generaltable.block_poodllclassroom_subslist_table {
     color: #252849;
     margin-bottom: 8px;
 }
-.intro_description a i {
+.intro_description a i,
+.moodle_subs_intro a i{
     border-radius: 50%;
     background: #279d6a;
     padding: 9px;
@@ -358,7 +373,8 @@ table.generaltable.block_poodllclassroom_subslist_table {
     font-size: 10px;
     margin-right: 2px;
 }
-.intro_description a:hover i {
+.intro_description a:hover i,
+.moodle_subs_intro a:hover i{
     background-color: #373b63;
     box-shadow: none;
 }
@@ -833,25 +849,31 @@ table.generaltable.block_poodllclassroom_subslist_table {
     margin-bottom: 0;
     padding: 30px;
 }
-.block_poodllclassroom_newplan_cont {
+.block_poodllclassroom_newplan_cont,
+.block_poodllclassroom_changeplan_cont {
     width: 100% !important;
     margin: 0;
     padding: 30px;
     border: none !important;
 }
-.mediaplans .block_poodllclassroom_moodleplans_cont .block_poodllclassroom_newplan_cont a{
+.mediaplans .block_poodllclassroom_moodleplans_cont .block_poodllclassroom_newplan_cont a,
+.mediaplans .block_poodllclassroom_moodleplans_cont .block_poodllclassroom_changeplan_cont {
     background-color: #febe00;
 }
-.langplans .block_poodllclassroom_moodleplans_cont .block_poodllclassroom_newplan_cont a{
+.langplans .block_poodllclassroom_moodleplans_cont .block_poodllclassroom_newplan_cont a,
+.langplans .block_poodllclassroom_moodleplans_cont .block_poodllclassroom_changeplan_cont a{
     background-color: #00b9f7;
 }
-.essentialsplans .block_poodllclassroom_moodleplans_cont .block_poodllclassroom_newplan_cont a{
+.essentialsplans .block_poodllclassroom_moodleplans_cont .block_poodllclassroom_newplan_cont a,
+.essentialsplans .block_poodllclassroom_moodleplans_cont .block_poodllclassroom_changeplan_cont a{
     background-color: #9cc269;
 }
-.englishcentralplans .block_poodllclassroom_moodleplans_cont .block_poodllclassroom_newplan_cont a{
+.englishcentralplans .block_poodllclassroom_moodleplans_cont .block_poodllclassroom_newplan_cont a,
+.englishcentralplans .block_poodllclassroom_moodleplans_cont .block_poodllclassroom_changeplan_cont a{
     background-color: #1b5018;
 }
-.block_poodllclassroom_moodleplans_cont .block_poodllclassroom_newplan_cont a {
+.block_poodllclassroom_moodleplans_cont .block_poodllclassroom_newplan_cont a ,
+.block_poodllclassroom_moodleplans_cont .block_poodllclassroom_changeplan_cont a {
     width: 80%;
     color: white;
     border-radius: 28px;
@@ -860,12 +882,14 @@ table.generaltable.block_poodllclassroom_subslist_table {
     padding: 10px;
     text-transform: uppercase;
 }
-.plan-pack .block_poodllclassroom_moodleplans_cont .block_poodllclassroom_newplan_cont:last-child {
+.plan-pack .block_poodllclassroom_moodleplans_cont .block_poodllclassroom_newplan_cont:last-child ,
+.plan-pack .block_poodllclassroom_moodleplans_cont .block_poodllclassroom_changeplan_cont:last-child {
     background-color: #F2F2F4;
     border-radius: 22px;
     margin-top: 15px;
 }
-.block_poodllclassroom_moodleplans_cont .block_poodllclassroom_newplan_cont a:hover {
+.block_poodllclassroom_moodleplans_cont .block_poodllclassroom_newplan_cont a:hover ,
+.block_poodllclassroom_moodleplans_cont .block_poodllclassroom_changeplan_cont a:hover {
     background-color: #373b63;
     box-shadow: none;
 }
@@ -1129,10 +1153,12 @@ a{
     background: white;
     border: 1px solid #fff;
 }
-.block_poodllclassroom_moodleplans_cont .block_poodllclassroom_newplan_cont a {
+.block_poodllclassroom_moodleplans_cont .block_poodllclassroom_newplan_cont a,
+.block_poodllclassroom_moodleplans_cont .block_poodllclassroom_changeplan_cont a {
     position: relative;
 }
-.block_poodllclassroom_moodleplans_cont .block_poodllclassroom_newplan_cont a i {
+.block_poodllclassroom_moodleplans_cont .block_poodllclassroom_newplan_cont a i,
+.block_poodllclassroom_moodleplans_cont .block_poodllclassroom_changeplan_cont a i {
     position: absolute;
     right: 5%;
     top: calc(50% - 8px);
