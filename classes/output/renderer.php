@@ -106,13 +106,16 @@ class renderer extends \plugin_renderer_base {
                 */
                 $subs = common::fetch_subs_by_school($school->id);
                 if($subs) {
-                    $options[] = array('url' => '#', 'cbaction' => 'ssp', 'upstreamownerid' => $school->upstreamownerid, 'type' => 'billingaccount', 'label' => get_string('billingaccount', constants::M_COMP));
-                    $options[] = array('url' => '#', 'cbaction' => 'ssp', 'upstreamownerid' => $school->upstreamownerid, 'type' => 'billinghistory', 'label' => get_string('billinghistory', constants::M_COMP));
-
-                    //we need to highlight, initially, the need to set a credit card. To bring that up a new button level we create a handle for our mustache button as well as set it in theopptions dropdown
+                    //We have account management buttons ($optionsdata) as well as the dropdown options ($options). Users dont see dropdowns. So year
+                    $billingaccount= array('url' => '#', 'cbaction' => 'ssp', 'upstreamownerid' => $school->upstreamownerid, 'type' => 'billingaccount', 'label' => get_string('billingaccount', constants::M_COMP));
+                    $billinghistory = array('url' => '#', 'cbaction' => 'ssp', 'upstreamownerid' => $school->upstreamownerid, 'type' => 'billinghistory', 'label' => get_string('billinghistory', constants::M_COMP));
                     $paymentsources = array('url' => '#', 'cbaction' => 'ssp', 'upstreamownerid' => $school->upstreamownerid, 'type' => 'paymentsources', 'label' => get_string('paymentsources', constants::M_COMP));
+                    $optionsdata['billingaccount']=$billingaccount;
+                    $optionsdata['billinghistory']=$billinghistory;
                     $optionsdata['paymentsources']=$paymentsources;
 
+                    $options[] = $billingaccount;
+                    $options[] = $billinghistory;
                     $options[] = $paymentsources;
                 }else{
 
