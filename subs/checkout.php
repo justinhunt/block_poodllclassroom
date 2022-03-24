@@ -78,7 +78,12 @@ if (method_exists($PAGE->theme->settings, 'headerinfo')) {
             $platformbtn->add_class('btn-secondary');
         }
     }
-    $headerinfo->buttons($platformmoodlebtn, $platformltibtn);
+    $enablelti = get_config(constants::M_COMP,'enablelti');
+    if($enablelti) {
+        $headerinfo->buttons($platformmoodlebtn, $platformltibtn);
+    }else{
+        $headerinfo->buttons($platformmoodlebtn);
+    }
 }
 
 echo $renderer->header();

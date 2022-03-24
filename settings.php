@@ -75,6 +75,14 @@ if ($ADMIN->fulltree) {
             get_string('ltitoken_desc', constants::M_COMP),
             '-ltitoken--', PARAM_TEXT));
 
+    $settings->add(new admin_setting_configcheckbox(constants::M_COMP . '/enablelti',
+        get_string('enablelti', constants::M_COMP),
+        get_string('enablelti_desc', constants::M_COMP),'1'));
+
+    $settings->add(new admin_setting_configcheckbox(constants::M_COMP . '/enableclassroom',
+        get_string('enableclassroom', constants::M_COMP),
+        get_string('enableclassroom_desc', constants::M_COMP),'1'));
+
     $settings->add(new admin_setting_configcheckbox(constants::M_COMP . '/enablecpapievents',
         get_string('enablecpapievents', constants::M_COMP),
         get_string('enablecpapievents_desc', constants::M_COMP),'1'));

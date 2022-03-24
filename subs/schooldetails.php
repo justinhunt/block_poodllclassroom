@@ -150,48 +150,54 @@ if(true) {
 
 
     //Platform LTI Section
-    $ltidata=['school'=>$school,'subs'=>$ltisubs,
-        'planfamily'=>'all',
-        'platform'=>constants::M_PLATFORM_LTI,
-        'checkouturl'=>$checkouturl->out()];
-    if(count($ltisubs)>0){
-        $ltidata['hassubs']=true;
-        //schoolname
-        $ltidata['school']=$ltisubs[0]->school;
+    $enablelti = get_config(constants::M_COMP,'enablelti');
+    if($enablelti) {
+        $ltidata = ['school' => $school, 'subs' => $ltisubs,
+            'planfamily' => 'all',
+            'platform' => constants::M_PLATFORM_LTI,
+            'checkouturl' => $checkouturl->out()];
+        if (count($ltisubs) > 0) {
+            $ltidata['hassubs'] = true;
+            //schoolname
+            $ltidata['school'] = $ltisubs[0]->school;
+        }
+
+        //lti tutorials
+        $ltitutdata = [];
+        $ltitutdata['ltitut'] = [];
+        //Moodle
+        $ltitutdata['ltitut'][] = ['title' => 'Moodle', 'logourl' => $CFG->wwwroot . constants::M_URL . '/pix/moodle_logo_small.svg',
+            'instructions' => get_string('ltimoodleinstructions', constants::M_COMP),
+            'tuturl' => 'https://support.poodll.com/en/support/solutions/articles/19000125439-setting-up-poodll-lti-on-your-moodle-site',
+            'videoid' => '532567654', 'videobutton' => true];
+        //canvas
+        $ltitutdata['ltitut'][] = ['title' => 'Canvas', 'logourl' => $CFG->wwwroot . constants::M_URL . '/pix/canvas-transparent.png',
+            'instructions' => get_string('lticanvasinstructions', constants::M_COMP),
+            'tuturl' => 'https://support.poodll.com/en/support/solutions/articles/19000125450-setting-up-poodll-lti-on-canvas-lms'];
+        $ltidata['ltituts'] = $ltitutdata;
+
+        $content .= $renderer->render_from_template('block_poodllclassroom/ltisubs',
+            $ltidata);
     }
-
-    //lti tutorials
-    $ltitutdata=[];
-    $ltitutdata['ltitut']=[];
-    //Moodle
-    $ltitutdata['ltitut'][]=['title'=>'Moodle','logourl'=>$CFG->wwwroot . constants::M_URL . '/pix/moodle_logo_small.svg',
-        'instructions'=>get_string('ltimoodleinstructions', constants::M_COMP),
-        'tuturl'=>'https://support.poodll.com/en/support/solutions/articles/19000125439-setting-up-poodll-lti-on-your-moodle-site',
-        'videoid'=>'532567654','videobutton'=>true];
-    //canvas
-    $ltitutdata['ltitut'][]=['title'=>'Canvas','logourl'=>$CFG->wwwroot . constants::M_URL . '/pix/canvas-transparent.png',
-        'instructions'=>get_string('lticanvasinstructions', constants::M_COMP),
-        'tuturl'=>'https://support.poodll.com/en/support/solutions/articles/19000125450-setting-up-poodll-lti-on-canvas-lms'];
-    $ltidata['ltituts']=$ltitutdata;
-
-    $content .= $renderer->render_from_template('block_poodllclassroom/ltisubs',
-        $ltidata);
 
 
 
     //Platform Classroom Section
-    if(count($classroomsubs)>0){
-        $classroomdata= ['school'=>$school,'subs'=>$classroomsubs,
-            'planfamily'=>'all',
-            'platform'=>constants::M_PLATFORM_CLASSROOM,
-            'checkouturl'=>$checkouturl->out()];
-        if(count($classroomsubs)>0){
-            $classroomdata['hassubs']=true;
-            //schoolname
-            $classroomdata['school']=$classroomsubs[0]->school;
+    $enableclassroom = get_config(constants::M_COMP,'enableclassroom');
+    if($enableclassroom) {
+        if (count($classroomsubs) > 0) {
+            $classroomdata = ['school' => $school, 'subs' => $classroomsubs,
+                'planfamily' => 'all',
+                'platform' => constants::M_PLATFORM_CLASSROOM,
+                'checkouturl' => $checkouturl->out()];
+            if (count($classroomsubs) > 0) {
+                $classroomdata['hassubs'] = true;
+                //schoolname
+                $classroomdata['school'] = $classroomsubs[0]->school;
+            }
+            $content .= $renderer->render_from_template('block_poodllclassroom/classroomsubs',
+                $classroomdata);
         }
-        $content .= $renderer->render_from_template('block_poodllclassroom/classroomsubs',
-           $classroomdata);
     }
 
     //return button
