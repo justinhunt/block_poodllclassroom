@@ -459,4 +459,6 @@ $string['needmoreusers'] = '<b>Need more users?</b> <a href="{$a}" target="_blan
 $string['pricesandplans'] = "Prices and Plans";
 $string['maxmonth'] = "Highest Month";
 $string['enablelti'] = "Enable LTI";
+$string['enablelti_desc'] = "";
 $string['enableclassroom'] = "Enable Classroom";
+$string['enableclassroom_desc'] = "";
