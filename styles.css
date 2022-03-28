@@ -857,7 +857,7 @@ table.generaltable.block_poodllclassroom_subslist_table {
     border: none !important;
 }
 .mediaplans .block_poodllclassroom_moodleplans_cont .block_poodllclassroom_newplan_cont a,
-.mediaplans .block_poodllclassroom_moodleplans_cont .block_poodllclassroom_changeplan_cont {
+.mediaplans .block_poodllclassroom_moodleplans_cont .block_poodllclassroom_changeplan_cont a{
     background-color: #febe00;
 }
 .langplans .block_poodllclassroom_moodleplans_cont .block_poodllclassroom_newplan_cont a,

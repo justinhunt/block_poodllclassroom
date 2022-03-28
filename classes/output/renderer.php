@@ -79,6 +79,9 @@ class renderer extends \plugin_renderer_base {
             // $portalurl= chargebee::get_portalurl_by_upstreamid($me_reseller->upstreamuserid);
             //$options[] = array('url' => $portalurl, 'label' => get_string('managesubscriptions', constants::M_COMP));
 
+            //set account name
+            $optionsdata['useraccountname']=$me_reseller->name;
+
             //Build options widget
             $optionsdata['options']=$options;
             $optionsdropdown = $this->render_from_template('block_poodllclassroom/optionsdropdown', $optionsdata);
@@ -111,6 +114,10 @@ class renderer extends \plugin_renderer_base {
                 $options[] = array('url' => $CFG->wwwroot . '/blocks/poodllclassroom/subs/editmyschool.php?id=' . $school->id,
                     'label' => get_string('editmyschool', constants::M_COMP));
                 */
+
+                //set the accountname to the school name
+                $optionsdata['useraccountname']=$school->name;
+
                 $subs = common::fetch_subs_by_school($school->id);
                 if($subs) {
                     //We have account management buttons ($optionsdata) as well as the dropdown options ($options). Users dont see dropdowns. So year
