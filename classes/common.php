@@ -376,6 +376,8 @@ class common
                 $ret[$school->id]=$school->name;
             }
         }
+        //sort alphabetically and return
+        asort($ret);
         return $ret;
     }
 
@@ -998,8 +1000,26 @@ class common
             $school=$DB->get_record(constants::M_TABLE_SCHOOLS,array('id'=>$downstreamschoolid));
         }elseif($upstreamownerid){
             $schools = self::get_schools_by_upstreamownerid($upstreamownerid);
-            if( $schools && count($schools)==1){
-                $school = array_shift($schools);
+            if( $schools) {
+                //most owners have one school, so we just choose that
+                if (count($schools) == 0) {
+                    $school = array_shift($schools);
+
+                    //resellers have more then one school - this is usually dealt with not here, but in the hosted page welcome back
+                    //if it does get added from chargebee interface we just add it to the one whose name matches the cf_schoolid field
+                } elseif(count($schools)>1) {
+                    foreach($schools as $theschool){
+                        if($subscription->cf_schoolid==trim($theschool->name)){
+                            $school=$theschool;
+                            break;
+                        }
+                    }
+                    //if there is no match on the cf_schoolid we probably forgot to set it, we take a punt and add it to the first school
+                    //but it will need to be moved at that edit sub screen and then fixed up at chargebee so its a mess
+                    if(!$school) {
+                        $school = array_shift($schools);
+                    }
+                }
             }
         }
         if(!$school){
