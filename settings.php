@@ -39,11 +39,6 @@ if ($ADMIN->fulltree) {
             get_string('chargebeesiteprefix_desc', constants::M_COMP),
             'poodll', PARAM_TEXT));
 
-    $settings->add(new admin_setting_configtext(constants::M_COMP . '/chargebeesiteprefix',
-            get_string('chargebeesiteprefix', constants::M_COMP),
-            get_string('chargebeesiteprefix_desc', constants::M_COMP),
-            'poodll', PARAM_TEXT));
-
     $settings->add(new admin_setting_configtext(constants::M_COMP . '/resellercoupon',
         get_string('resellercoupon', constants::M_COMP),
         get_string('resellercoupon_desc', constants::M_COMP),
