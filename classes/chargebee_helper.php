@@ -296,6 +296,32 @@ class chargebee_helper
             } else {
                 $principal = 'other';
             }
+
+            //Lets check this is a sub that we handle, if not, lets quit
+            //---------------------
+            if($principal=='subscription'){
+                $plan = false;
+                $upstreamsub=$theevent->content->subscription;
+                if(isset($upstreamsub->cf_planid)) {
+                    $plan = common::get_plan($upstreamsub->cf_planid);
+                }else{
+                    if(isset($upstreamsub->plan_id)){
+                        $plan_id = $upstreamsub->plan_id;
+                    }else{
+                        $plan_id = common::fetch_upstreamplanid_from_upstreamsub($upstreamsub);
+                    }
+                    $plan = common::fetch_poodllplan_from_upstreamplan($plan_id);
+                }
+                if(!$plan){
+                    if($trace) {
+                        $trace->output("cbsync:: processing a sub event: " . $theevent->id . ": quitting because it is not a Poodll NET sub");
+                    }
+                    return false;
+                }
+            }
+            //---------------------
+
+
             switch ($principal) {
                 case "subscription":
                     $pevent->typeid = $theevent->content->subscription->id;
