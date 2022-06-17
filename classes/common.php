@@ -1002,7 +1002,7 @@ class common
             $schools = self::get_schools_by_upstreamownerid($upstreamownerid);
             if( $schools) {
                 //most owners have one school, so we just choose that
-                if (count($schools) == 0) {
+                if (count($schools) == 1) {
                     $school = array_shift($schools);
 
                     //resellers have more then one school - this is usually dealt with not here, but in the hosted page welcome back
