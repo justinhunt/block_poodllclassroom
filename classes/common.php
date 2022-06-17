@@ -979,12 +979,14 @@ class common
 
 
 
-    //if we have a sale we need to keep the data and deal with any fallout if the plan had no matching pclassroom equiv.
+    //
     public static function fetch_poodllplan_from_upstreamplan($upstreamplanid){
         global $DB;
         $plan = $DB->get_record(constants::M_TABLE_PLANS, array('upstreamplan'=>$upstreamplanid));
         if(!$plan){
-           $plan = self::create_blankplan($upstreamplanid);
+            //This was kind of rubbishy, so we turned it off
+            //if there is no plan its probably a Poodll NET or a LTI or something
+           //$plan = self::create_blankplan($upstreamplanid);
         }
         return $plan;
     }
