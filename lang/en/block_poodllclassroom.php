@@ -462,6 +462,7 @@ $string['enablelti'] = "Enable LTI";
 $string['enablelti_desc'] = "";
 $string['enableclassroom'] = "Enable Classroom";
 $string['enableclassroom_desc'] = "";
+$string['notpaid'] = "Not Paid Yet";
 $string['paynow'] = "Pay Now";
 $string['renewsub'] = "Renew Now";
 $string['alreadyrenewed'] = "Subscription has been renewed in advance.";

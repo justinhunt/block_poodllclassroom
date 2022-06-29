@@ -897,6 +897,28 @@ class chargebee_helper
         }
     }
 
+    public static function get_unpaidinvoice_for_sub($upstreamsubid){
+        global $CFG;
+
+        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
+        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
+
+        $url = "https://$siteprefix.chargebee.com/api/v2/invoices";
+        $postdata=[];
+        $postdata['status[in]']="['payment_due','posted','not_paid']";
+        $postdata['limit'] = 1;
+        $postdata['subscription_id[is]'] = $upstreamsubid;
+
+        $forceget = true;
+        $curlresult = common::curl_fetch($url,$postdata,$apikey,$forceget);
+        $jsonresult = common::make_object_from_json($curlresult);
+        if($jsonresult && $jsonresult->list && count($jsonresult->list)>0) {
+            return $jsonresult->list[0]->invoice;
+        }else{
+            return false;
+        }
+    }
+
     public static function bill_next_renewal_of_sub($upstreamsubid){
         global $CFG;
 

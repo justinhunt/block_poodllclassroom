@@ -865,6 +865,7 @@ class common
                     $sub->status_display='-';
             }
 
+            //if our sub has an invoice use
             if(isset($sub->due_invoices_count) && $sub->due_invoices_count>0){
                 $sub->status_display .= '<br><span class="block_poodllclassroom_paymentdue">' . get_string('paymentdue',constants::M_COMP) .'</span>';
                 //Pay now button
@@ -873,7 +874,21 @@ class common
                     . get_string('paynow',constants::M_COMP)
                     .'</a>';
 
+            }else{
+                //get invoice
+                $invoice = chargebee_helper::get_unpaidinvoice_for_sub($sub->upstreamsubid);
+                if($invoice){
+                    $sub->status_display .= '<br><span class="block_poodllclassroom_paymentdue">' . get_string('notpaid',constants::M_COMP) .'</span>';
+
+                    //Pay now button
+                    $sub->status_display .= '<br><a href="javascript: void(0)" class="block_poodllclassroom_paynow"'.
+                        'data-cbaction="pay_outstanding" data-upstreamownerid="'. $sub->school->upstreamownerid .'">'
+                        . get_string('paynow',constants::M_COMP)
+                        .'</a>';
+                }
             }
+
+
 
             if(isset($sub->cancelled_at) && $sub->status != constants::M_STATUS_CANCELLED && $sub->cancelled_at > time() ){
                 $sub->status_display .= '<br><span class="block_poodllclassroom_willcancel">' . get_string('willcancel',constants::M_COMP) .'</span>';
