@@ -584,6 +584,7 @@ class renderer extends \plugin_renderer_base {
         $columns[3]=array('orderable'=>false);
         $columns[4]=array('orderable'=>false);
         $tableprops['columns']=$columns;
+        $tableprops['deferRender']=true;
 
         //default ordering
         $order = array();

@@ -16,6 +16,15 @@ $functions = array(
         'ajax'        => true,
     ),
 
+    'block_poodllclassroom_get_pay_outstanding' => array(
+        'classname'   => 'block_poodllclassroom_external',
+        'methodname'  => 'get_pay_outstanding',
+        'description' => 'get_pay_outstanding',
+        'capabilities'=> 'block/poodllclassroom:usepoodllclassroom',
+        'type'        => 'write',
+        'ajax'        => true,
+    ),
+
     'block_poodllclassroom_get_checkout_existing' => array(
                 'classname'   => 'block_poodllclassroom_external',
                 'methodname'  => 'get_checkout_existing',

@@ -627,6 +627,8 @@ class block_poodllclassroom_external extends external_api {
         return $result;
     }
 
+
+
     public static function get_checkout_new_returns() {
 
         // return new external_value(PARAM_RAW);
@@ -687,4 +689,63 @@ class block_poodllclassroom_external extends external_api {
             'customer_id' => new external_value(PARAM_TEXT, 'customer id')
         ]);
     }
+
+    //------------ get_pay_outstanding ---------------//
+    public static function get_pay_outstanding_parameters() {
+        return new external_function_parameters(
+            array(
+                'upstreamownerid' => new external_value(PARAM_TEXT, 'The upstream owner id')
+            )
+        );
+    }
+
+    public static function get_pay_outstanding($upstreamownerid) {
+
+        // Get/check context/capability
+        $context = \context_system::instance();
+        self::validate_context($context);
+        require_capability('block/poodllclassroom:usepoodllclassroom', $context);
+
+        // We always must pass webservice params through validate_parameters.
+        $params = self::validate_parameters(self::get_pay_outstanding_parameters(),
+            ['upstreamownerid'=>$upstreamownerid]);
+
+        $ret = chargebee_helper::get_pay_outstanding($params['upstreamownerid']);
+        if(!$ret){return "Failed to get hosted page for unknown reason.";}
+
+        if( $ret['success']) {
+            $hosted_page = $ret['payload'];
+            if ($hosted_page) {
+                $result = $hosted_page->hosted_page;
+            } else {
+                $result = 'hosted page was not correct';
+            }
+        }else{
+            //in this case there should be some information about what went wrong
+            $result =  $ret['payload'];
+        }
+        return $result;
+    }
+
+
+
+    public static function get_pay_outstanding_returns() {
+
+        // return new external_value(PARAM_RAW);
+        return new external_single_structure([
+            'created_at' => new external_value(PARAM_INT, 'created at'),
+            'embed' => new external_value(PARAM_BOOL, 'embed' ),
+            'expires_at' => new external_value(PARAM_INT, 'expires at'),
+            'id' => new external_value(PARAM_TEXT, 'id'),
+            'object' => new external_value(PARAM_TEXT, 'object'),
+            'resource_version' => new external_value(PARAM_INT, 'resource version'),
+            'state' => new external_value(PARAM_TEXT, 'state'),
+            'type' => new external_value(PARAM_TEXT, 'type'),
+            'updated_at' => new external_value(PARAM_INT, 'updated at'),
+            'url' => new external_value(PARAM_TEXT, 'url'),
+        ]);
+    }
+
+
+
 }

@@ -791,7 +791,8 @@ class common
     }
 
     public static function get_display_sub_data($subs){
-        global $CFG;
+        global $CFG, $OUTPUT;
+
         foreach($subs as $sub){
             //display period
             switch($sub->plan->billinginterval){
@@ -866,6 +867,12 @@ class common
 
             if(isset($sub->due_invoices_count) && $sub->due_invoices_count>0){
                 $sub->status_display .= '<br><span class="block_poodllclassroom_paymentdue">' . get_string('paymentdue',constants::M_COMP) .'</span>';
+                //Pay now button
+                $sub->status_display .= '<br><a href="javascript: void(0)" class="block_poodllclassroom_paynow"'.
+                    'data-cbaction="pay_outstanding" data-upstreamownerid="'. $sub->school->upstreamownerid .'">'
+                    . get_string('paynow',constants::M_COMP)
+                    .'</a>';
+
             }
 
             if(isset($sub->cancelled_at) && $sub->status != constants::M_STATUS_CANCELLED && $sub->cancelled_at > time() ){
@@ -906,6 +913,26 @@ class common
 
             //expiry date
             $sub->expiretime_display =date("Y-m-d", $sub->expiretime);
+
+            //if it is already renewed thats good!
+            // We just use 3 months arbitrarily, it could be 1 day I guess
+            $already_renewed = strtotime('+3 months',$sub->expiretime) < $sub->next_billing_at;
+            if($already_renewed) {
+                $sub->expiretime_display .= '<br>' . get_string('alreadyrenewed', constants::M_COMP);
+
+            //Show Renew Now button if its less than 6 months, not cancelled , is active  (mutually exclusive, but anyway ..)
+            }elseif($sub->expiretime < strtotime('+6 months')
+               && !isset($sub->cancelled_at)
+               && $sub->status != constants::M_STATUS_CANCELLED
+               && $sub->status == constants::M_STATUS_ACTIVE){
+                $url = new \moodle_url(constants::M_URL . '/subs/renewsub.php',
+                    array('subid' => $sub->id));
+                $btn = new \single_button($url, get_string('renewsub', constants::M_COMP), 'post',
+                    false,array('class'=>'block_poodllclassroom_renewbutton'));
+                $btn->add_confirm_action(get_string('renewsubconfirm', constants::M_COMP));
+                $sub->expiretime_display .= '<br>' . $OUTPUT->render($btn);
+            }
+
 
             //time created
             $sub->timecreated_display =date("Y-m-d H:i:s", $sub->timecreated);

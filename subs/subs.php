@@ -64,6 +64,8 @@ if($ok) {
     echo $planstable;
     //set up datatables
     $planstableprops = new \stdClass();
+    $planstableprops->deferRender=true;
+
     $p_opts = Array();
     $p_opts['tableid'] = constants::M_ID_PLANSTABLE;
     $p_opts['tableprops'] = $planstableprops;
@@ -74,6 +76,8 @@ if($ok) {
     echo $resellerstable;
     //set up datatables
     $rtableprops = new \stdClass();
+    $rtableprops->deferRender=true;
+
     $r_opts = Array();
     $r_opts['tableid'] = constants::M_ID_RESELLERTABLE;
     $r_opts['tableprops'] = $planstableprops;
@@ -87,6 +91,8 @@ if($ok) {
 
     //set up datatables
     $schoolstableprops = new \stdClass();
+    $schoolstableprops->deferRender=true;
+
     $s_opts = Array();
     $s_opts['tableid'] = constants::M_ID_SCHOOLSTABLE;
     $s_opts['tableprops'] = $schoolstableprops;

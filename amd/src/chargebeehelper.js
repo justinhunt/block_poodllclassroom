@@ -188,6 +188,56 @@ define(['jquery','core/log','core/ajax'], function($, log, ajax) {
 
                 });//on manage subscription click
 
+                //pay outstanding page pop open
+                $("[data-cbaction='pay_outstanding']").on("click", function() {
+                    event.preventDefault();
+                    var clickedthis = this;
+                    var upstreamownerid = $(this).data('upstreamownerid');
+                    var method = 'get_pay_outstanding';
+                    var methodargs = {upstreamownerid: upstreamownerid};
+                    var promises = ajax.call([{
+                        methodname: 'block_poodllclassroom_' + method,
+                        args: methodargs
+                    }]);
+                    promises[0].then(function(hostedpage){
+                        //sends them off to the checkout
+                        window.location.href=hostedpage.url;
+                    });
+                    /*
+                    chargebee.openCheckout({
+                        hostedPage: function() {
+                            // Hit the end point that returns hosted page object as response
+                            // serverside we generate a hosted page object , and that auth's and provides deets for CB
+                            // https://apidocs.chargebee.com/docs/api/hosted_pages#checkout_new_subscription
+                            var promises = ajax.call([{
+                                methodname: 'block_poodllclassroom_' + method,
+                                args: methodargs
+                            }]);
+                            return promises[0];
+                        },
+                        loaded: function() {
+                            console.log("pay outstanding opened");
+                        },
+                        error: function() {
+                        },
+                        close: function() {
+                            console.log("pay outstanding closed");
+                        },
+                        success: function(hostedPageId) {
+                            console.log(hostedPageId);
+                            // Hosted page id will be unique token for the checkout that happened
+                            // You can pass this hosted page id to your backend
+                            // and then call our retrieve hosted page api to get subscription details
+                            // https://apidocs.chargebee.com/docs/api/hosted_pages#retrieve_a_hosted_page
+                        },
+                        step: function(value) {
+                            // value -> which step in checkout
+                            console.log(value);
+                        }
+                    });
+                    */
+                });//on checkout click
+
             });//end of get script
 
         }//end of reg events

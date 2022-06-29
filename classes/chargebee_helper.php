@@ -896,4 +896,64 @@ class chargebee_helper
             return false;
         }
     }
+
+    public static function bill_next_renewal_of_sub($upstreamsubid){
+        global $CFG;
+
+        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
+        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
+
+        $url = "https://$siteprefix.chargebee.com/api/v2/subscriptions/";
+        $url .= $upstreamsubid;
+        $url .= '/charge_future_renewals';
+
+        $postdata=[];
+        $postdata['terms_to_charge'] = 1;
+
+        $curlresult = common::curl_fetch($url,$postdata,$apikey);
+        $jsonresult = common::make_object_from_json($curlresult);
+        if($jsonresult) {
+            return $jsonresult;
+        }else{
+            return false;
+        }
+    }
+
+    public static function get_pay_outstanding($customerid, $redirecturl=""){
+        global $CFG;
+
+        $ret = [];
+        $ret['success']=true;
+        $ret['payload']='';
+
+        if(empty($redirecturl)){
+            $redirecturl = $CFG->wwwroot .'/my';
+        }
+
+        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
+        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
+
+        if($customerid && !empty($apikey) && !empty($siteprefix)){
+            $url = "https://$siteprefix.chargebee.com/api/v2/hosted_pages/collect_now";
+            $postdata=[];
+            $postdata['redirect_url'] = $redirecturl;
+            $postdata['customer']['id'] =$customerid;
+
+            $curlresult = common::curl_fetch($url,$postdata,$apikey);
+            $jsonresult = common::make_object_from_json($curlresult);
+            if($jsonresult && isset($jsonresult->hosted_page)){
+                $ret['success']=true;
+                $ret['payload']=$jsonresult ;
+                return  $ret;
+            }else{
+                $ret['success']=false;
+                $ret['payload']=$curlresult;
+                return  $ret;
+            }
+        }
+        $ret['success']=false;
+        $ret['payload']='api, site prefix or customer id not set';
+        return false;
+    }
+
 }

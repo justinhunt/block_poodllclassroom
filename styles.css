@@ -1257,3 +1257,8 @@ a{
 .block_poodllclassroom_usagereport {
     width: 100%;
 }
+
+.block_poodllclassroom_renewbutton {
+    color: blue;
+    width: auto;
+}

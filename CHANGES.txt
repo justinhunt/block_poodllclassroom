@@ -1,2 +1,5 @@
+Version 1.0.51(Build 2022062900)
+- Added a pay now button
+
 Version 1.1.0(Build 2018041000)
 -Implemented new Moodle Privacy API
