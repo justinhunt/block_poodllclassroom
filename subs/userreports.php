@@ -113,7 +113,7 @@ if($ok) {
                     if($sub) {
                         $school = common::get_school_by_sub($sub);
                         if ($school) {
-                            $school->nextexpiry = $sub->next_billing_at;
+                            $school->nextexpiry = $one_item->subscription->next_billing_at;
                             $allschools[$school->id] = $school;
                         }
                     }
