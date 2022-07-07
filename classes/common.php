@@ -1804,7 +1804,7 @@ class common
    * Takes data from webservice about usage and renders it on page
    */
 
-    public static function compile_report_data($rawusagedata){
+    public static function compile_report_data($usagedata){
         $reportdata=[];
 
         $mysubscriptions = array();
