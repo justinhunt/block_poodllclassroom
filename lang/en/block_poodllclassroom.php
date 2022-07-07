@@ -470,3 +470,11 @@ $string['renewsubconfirm'] = "Are you sure that you wish to renew?";
 $string['unabletorenew'] = "We were unable to renew your subscription. Please contact Poodll Support.";
 $string['renewed_but_no_paynow'] = "Your subscription has been renewed. You should receive an invoice shortly.";
 $string['renewedsuccessfully_forwarding'] = "Your subscription has been renewed. .. redirecting to payments page.";
+$string['fetchrenewingform'] = "Fetch Renewing Schools";
+$string['renewingfrom'] = "Renewing From";
+$string['renewingto'] = "Renewing to";
+$string['totalrecordings'] = "Total recs";
+$string['totalmins'] = "Total mins";
+$string['maxmonthusers'] = "Max User Month";
+$string['renewerreport'] = "Renewer Report";
+

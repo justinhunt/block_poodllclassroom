@@ -8,10 +8,12 @@ require_once("../../../config.php");
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('usagereport', 'block_poodllclassroom'), 3);
 
-$usagedata = cpapi_helper::fetch_usage_data($USER->username);
-if($usagedata) {
+$rawusagedata = cpapi_helper::fetch_usage_data($USER->username);
+
+if($rawusagedata) {
+    $reportdata = \block_poodllclassroom\common::compile_report_data($rawusagedata);
     $renderer = $PAGE->get_renderer('block_poodllclassroom');
-    $renderer->display_usage_report($usagedata);
+    $renderer->display_usage_report($reportdata, $rawusagedata);
 }else{
     echo 'no user data';
 }

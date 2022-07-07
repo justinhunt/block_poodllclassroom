@@ -41,6 +41,8 @@ class renderer extends \plugin_renderer_base {
         if(has_capability('block/poodllclassroom:manageintegration', $context)){
             $options[]=array('url'=>$CFG->wwwroot . '/blocks/poodllclassroom/subs/subs.php',
                     'label'=>get_string('superadminarea',constants::M_COMP));
+            $options[]=array('url'=>$CFG->wwwroot . '/blocks/poodllclassroom/subs/userreports.php',
+                'label'=>get_string('renewerreport',constants::M_COMP));
         }
 
         //set up js for dropdown options
@@ -242,9 +244,10 @@ class renderer extends \plugin_renderer_base {
         if(count($moodlesubs)>0){
             $moodledata['hassubs']=true;
             $moodledata['school']=$moodlesubs[0]->school;
-            $schoolusagedata = cpapi_helper::fetch_usage_data($moodlesubs[0]->school->apiuser);
-            if ($schoolusagedata) {
-                $moodledata['usagereport'] = $this->display_usage_report($schoolusagedata);
+            $rawusagedata = cpapi_helper::fetch_usage_data($moodlesubs[0]->school->apiuser);
+            if ($rawusagedata) {
+                $reportdata = \block_poodllclassroom\common::compile_report_data($rawusagedata);
+                $moodledata['usagereport'] = $this->display_usage_report($reportdata, $rawusagedata);
             } else {
                 $moodledata['usagereport'] = get_string('nousagedata', constants::M_COMP);
             }
@@ -957,6 +960,80 @@ class renderer extends \plugin_renderer_base {
 
     }
 
+    //Fetch renewers table
+    function fetch_renewers_table($schools,$returnurl){
+        global $DB;
+
+        $config = get_config(constants::M_COMP);
+
+
+        $data = array();
+        foreach($schools as $school) {
+            $urlparams = array('id' => $school->id,'type'=>'school','returnurl' => $returnurl->out_as_local_url());
+            $schooldetailsurl = new \moodle_url(constants::M_URL . '/subs/schooldetails.php', $urlparams);
+
+            $fields = array();
+            $fields[] = $school->id;
+            $fields[] = \html_writer::link($schooldetailsurl,
+                $school->name,
+                array('title' => get_string('view')));
+
+            $fields[] = $school->ownerfirstname . ' ' . $school->ownerlastname . "($school->ownerid)";
+            $fields[] = $school->owneremail;
+            $cburl = "https://" . $config->chargebeesiteprefix . "chargebee.com/d/customers/" . $school->upstreamownerid;
+            $fields[] = \html_writer::link($cburl, $school->upstreamownerid);
+
+            $fields[] = $school->totalrecordings;
+            $fields[] = $school->totalmins;
+            $fields[] = $school->maxmonthusers;
+
+
+            //get next expiry
+            if(isset($school->nextexpiry) && !empty($school->nextexpiry)) {
+                $fields[] = date("Y-m-d", $school->nextexpiry);//strftime('%d %b %Y', $school->timemodified);
+            }else{
+                $fields[] = '-';
+            }
+            $fields[] = date("Y-m-d", $school->timemodified);//strftime('%d %b %Y', $school->timemodified);
+
+            $buttons = array();
+            //view school subs and other details
+            $buttons[] = \html_writer::link($schooldetailsurl,
+                $this->output->pix_icon('t/preview', get_string('view')),
+                array('title' => get_string('view')));
+
+
+            $fields[] = implode(' ', $buttons);
+
+            $data[] = $row = new \html_table_row($fields);
+        }
+
+        $table = new \html_table();
+        $table->head  = array();
+
+        $table->head[] = get_string('id', constants::M_COMP);
+        $table->head[] = get_string('school', constants::M_COMP);
+        $table->head[] = get_string('owner', constants::M_COMP);
+        $table->head[] = get_string('owneremail', constants::M_COMP);
+        $table->head[] = get_string('upstreamownerid', constants::M_COMP);
+        $table->head[] = get_string('totalrecordings', constants::M_COMP);
+        $table->head[] = get_string('totalmins', constants::M_COMP);
+        $table->head[] = get_string('maxmonthusers', constants::M_COMP);
+        $table->head[] = get_string('nextexpiry', constants::M_COMP);
+        $table->head[] = get_string('lastchange', constants::M_COMP);
+        $table->head[] = get_string('action');
+        $table->colclasses = array('leftalign name', 'leftalign size','centeralign action');
+
+        $table->id = constants::M_ID_SCHOOLSTABLE;
+        $table->attributes['class'] = 'admintable generaltable';
+        $table->data  = $data;
+
+        //return add button and table
+        $heading = $this->output->heading('Upcoming Renewals',3);
+        return   $heading  . \html_writer::table($table);
+
+    }
+
     //Fetch resellers table
     function fetch_resellers_table($resellers){
         global $DB;
@@ -1055,182 +1132,12 @@ class renderer extends \plugin_renderer_base {
      * Takes data from webservice about usage and renders it on page
      */
 
-    public function display_usage_report($usagedata){
-        $reportdata=[];
-
-        $mysubscriptions = array();
-        $mysubscription_name_txt = array();
-        $mysubscriptions_names = array();
-
-        if($usagedata->usersubs) {
-            foreach ($usagedata->usersubs as $subdata) {
-                $subscription_name = ($subdata->subscriptionname == ' ') ? "na" : strtolower(trim($subdata->subscriptionname));
-                $mysubscription_name_txt[] = $subscription_name;
-                $mysubscriptions_names[] = $subscription_name;
-                $mysubscriptions[] = array('name' => $subscription_name,
-                        'start_date' => date("m-d-Y", $subdata->timemodified),
-                        'end_date' => date("m-d-Y", $subdata->expiredate));
-            }
-        }//end of if user subs
-
-        $reportdata['subscription_check'] = false;
-        if(count($mysubscriptions)>0){
-            $reportdata['subscription_check']= true;
-        } else {
-            $reportdata['subscription_check']= false;
-        }
-
-        $reportdata['subscriptions']=$mysubscriptions;
-        $reportdata['pusers']=array();
-        $reportdata['record']=array();
-        $reportdata['recordmin']=array();
-        $reportdata['recordtype']=array();
-
-        $threesixtyfive_recordtype_video = 0;
-        $oneeighty_recordtype_video = 0;
-        $ninety_recordtype_video = 0;
-        $thirty_recordtype_video = 0;
-
-        $threesixtyfive_recordtype_audio = 0;
-        $oneeighty_recordtype_audio = 0;
-        $ninety_recordtype_audio = 0;
-        $thirty_recordtype_audio = 0;
-
-        $threesixtyfive_recordmin = 0;
-        $oneeighty_recordmin = 0;
-        $ninety_recordmin = 0;
-        $thirty_recordmin = 0;
-
-        $threesixtyfive_record = 0;
-        $oneeighty_record = 0;
-        $ninety_record = 0;
-        $thirty_record = 0;
-
-        $threesixtyfive_puser = 0;
-        $oneeighty_puser = 0;
-        $ninety_puser = 0;
-        $thirty_puser = 0;
-
-        ///monthlymax
-        $monthusertotals=[0,0,0,0,0,0,0,0,0,0,0,0];
-        $monthpusers=['','','','','','','','','','','',''];
-        $monthminutetotals=[0,0,0,0,0,0,0,0,0,0,0,0];
-        $monthrecordtotals=[0,0,0,0,0,0,0,0,0,0,0,0];
-        $monthaudiototals=[0,0,0,0,0,0,0,0,0,0,0,0];
-        $monthvideototals=[0,0,0,0,0,0,0,0,0,0,0,0];
-
-        $plugin_types_arr = "[";
-
-        if($usagedata->usersubs_details) {
-            foreach ($usagedata->usersubs_details as $subdatadetails) {
-
-                $timecreated = $subdatadetails->timecreated;
-
-                for($x=0;$x<12;$x++){
-                    $upperdays=-1 * $x * 30 . ' days';
-                    $lowerdays=-1 * ($x+1) * 30 . ' days';
-                    if (($timecreated <= strtotime($upperdays)) && ($timecreated > strtotime($lowerdays) )) {
-                        $monthminutetotals[$x] = $monthminutetotals[$x] + ($subdatadetails->audio_min + $subdatadetails->video_min);
-                        $monthaudiototals[$x] = $monthaudiototals[$x] + $subdatadetails->audio_file_count;
-                        $monthvideototals[$x] = $monthvideototals[$x] + $subdatadetails->video_file_count;
-                        $monthrecordtotals[$x] = $monthrecordtotals[$x] + $subdatadetails->video_file_count + $subdatadetails->audio_file_count;
-                        $monthvideototals[$x] = $monthvideototals[$x] + $subdatadetails->video_min;
-                        $monthpusers[$x] = $monthpusers[$x] .= $subdatadetails->pusers;
-
-                    }
-                }
-
-                //if(($timecreated > strtotime('-180 days'))&&($timecreated <= strtotime('-365 days'))) {
-                if (($timecreated >= strtotime('-365 days'))) {
-                    $threesixtyfive_recordtype_video += $subdatadetails->video_file_count;
-                    $threesixtyfive_recordtype_audio += $subdatadetails->audio_file_count;
-                    $threesixtyfive_recordmin += ($subdatadetails->audio_min + $subdatadetails->video_min);
-                    $threesixtyfive_record += ($subdatadetails->video_file_count + $subdatadetails->audio_file_count);
-                    $threesixtyfive_puser .= $subdatadetails->pusers;
-                }
-
-                //if(($timecreated > strtotime('-90 days'))&&($timecreated <= strtotime('-180 days'))){
-                if (($timecreated >= strtotime('-180 days'))) {
-                    $oneeighty_recordtype_video += $subdatadetails->video_file_count;
-                    $oneeighty_recordtype_audio += $subdatadetails->audio_file_count;
-                    $oneeighty_recordmin += ($subdatadetails->audio_min + $subdatadetails->video_min);
-                    $oneeighty_record += ($subdatadetails->video_file_count + $subdatadetails->audio_file_count);
-                    $oneeighty_puser .= $subdatadetails->pusers;
-                }
-
-                //if(($timecreated > strtotime('-30 days'))&&($timecreated <= strtotime('-90 days'))){
-                if (($timecreated >= strtotime('-90 days'))) {
-                    $ninety_recordtype_video += $subdatadetails->video_file_count;
-                    $ninety_recordtype_audio += $subdatadetails->audio_file_count;
-                    $ninety_recordmin += ($subdatadetails->audio_min + $subdatadetails->video_min);
-                    $ninety_record += ($subdatadetails->video_file_count + $subdatadetails->audio_file_count);
-                    $ninety_puser .= $subdatadetails->pusers;
-                }
-
-                if ($timecreated >= strtotime('-30 days')) {
-                    $thirty_recordtype_video += $subdatadetails->video_file_count;
-                    $thirty_recordtype_audio += $subdatadetails->audio_file_count;
-                    $thirty_recordmin += ($subdatadetails->audio_min + $subdatadetails->video_min);
-                    $thirty_record += ($subdatadetails->video_file_count + $subdatadetails->audio_file_count);
-                    $thirty_puser .= $subdatadetails->pusers;
-                }
-
-            }//end of for loop
-        }//end of if usagedata
-
-        //calc max month totals
-        $maxmonth_pusers = 0;
-        $maxmonth_minutes = 0;
-        $maxmonth_audio = 0;
-        $maxmonth_video = 0;
-        $maxmonth_recordings = 0;
-        for($x=0;$x<12;$x++){
-            $monthusertotals[$x]=$this->count_pusers($monthpusers[$x]);
-            if($maxmonth_pusers<$monthusertotals[$x]){$maxmonth_pusers=$monthusertotals[$x];}
-            if($maxmonth_minutes<$monthminutetotals[$x]){$maxmonth_minutes=$monthminutetotals[$x];}
-            if($maxmonth_audio<$monthaudiototals[$x]){$maxmonth_audio=$monthaudiototals[$x];}
-            if($maxmonth_video<$monthvideototals[$x]){$maxmonth_video=$monthvideototals[$x];}
-            if($maxmonth_recordings<$monthrecordtotals[$x]){$maxmonth_recordings=$monthrecordtotals[$x];}
-        }
-
-
-        //calculate report summaries
-        $reportdata['pusers']=array_values(array(
-                array('name'=>'30','value'=>$this->count_pusers($thirty_puser)),
-                array('name'=>'90','value'=>$this->count_pusers($ninety_puser)),
-                array('name'=>'180','value'=>$this->count_pusers($oneeighty_puser)),
-                array('name'=>'365','value'=>$this->count_pusers($threesixtyfive_puser)),
-            array('name'=>'maxmonth','value'=>$maxmonth_pusers)
-        ));
-
-        $reportdata['record']=array_values(array(
-                array('name'=>'30','value'=>$thirty_record),
-                array('name'=>'90','value'=>$ninety_record),
-                array('name'=>'180','value'=>$oneeighty_record),
-                array('name'=>'365','value'=>$threesixtyfive_record),
-            array('name'=>'maxmonth','value'=>$maxmonth_recordings)
-        ));
-
-        $reportdata['recordmin']=array_values(array(
-                array('name'=>'30','value'=>$thirty_recordmin),
-                array('name'=>'90','value'=>$ninety_recordmin),
-                array('name'=>'180','value'=>$oneeighty_recordmin),
-                array('name'=>'365','value'=>$threesixtyfive_recordmin),
-            array('name'=>'maxmonth','value'=>$maxmonth_minutes)
-        ));
-
-        $reportdata['recordtype']=array_values(array(
-                array('name'=>'30','video'=>$thirty_recordtype_video,'audio'=>$thirty_recordtype_audio),
-                array('name'=>'90','video'=>$ninety_recordtype_video,'audio'=>$ninety_recordtype_audio),
-                array('name'=>'180','video'=>$oneeighty_recordtype_video,'audio'=>$oneeighty_recordtype_audio),
-                array('name'=>'365','video'=>$threesixtyfive_recordtype_video,'audio'=>$threesixtyfive_recordtype_audio),
-            array('name'=>'maxmonth','video'=>$maxmonth_video,'audio'=>$maxmonth_audio),
-        ));
+    public function display_usage_report($reportdata, $rawusagedata){
 
         $plugin_types_arr = [];
 
-        if($usagedata->usersubs_details) {
-            foreach ($usagedata->usersubs_details as $subdatadetails) {
+        if($rawusagedata->usersubs_details) {
+            foreach ($rawusagedata->usersubs_details as $subdatadetails) {
                 $json_arr = json_decode($subdatadetails->file_by_app, true);
                 foreach ($json_arr as $key => $val) {
                     $label = $key;
@@ -1242,7 +1149,7 @@ class renderer extends \plugin_renderer_base {
                     }
                 }
             }
-        }//end of if usersubs details
+        }
 
         //build html to return
         $ret = $this->output->render_from_template('block_poodllclassroom/usagereport', $reportdata);
@@ -1259,10 +1166,10 @@ class renderer extends \plugin_renderer_base {
         return $ret;
     }
 
-    /*
-  * Count the unique users from CSV list of users. Used by Display usage repor
-  *
-  */
+     /*
+      * Count the unique users from CSV list of users. Used by Display usage report
+      *
+      */
     public function count_pusers($pusers){
         $pusers=trim($pusers);
         return count(array_unique(explode(',',$pusers)));

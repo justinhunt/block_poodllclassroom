@@ -919,6 +919,31 @@ class chargebee_helper
         }
     }
 
+    public static function list_subs_for_renewal($fromdate, $todate,$offset=0){
+        global $CFG;
+
+        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
+        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
+
+        $url = "https://$siteprefix.chargebee.com/api/v2/subscriptions";
+        $postdata=[];
+        $postdata['status[in]']="['active']";
+        //$postdata['status[in]']="['active','paused']";
+        $postdata['next_billing_at[between]']="[$fromdate,$todate]";
+        $postdata['item_id[is_not]']="['Poodll-NET-Standard']";
+        if($offset>0){$postdata['offset']="$offset";}
+        $postdata['limit'] = 20;
+
+        $forceget = true;
+        $curlresult = common::curl_fetch($url,$postdata,$apikey,$forceget);
+        $jsonresult = common::make_object_from_json($curlresult);
+        if($jsonresult && isset($jsonresult->list) && count($jsonresult->list)>0) {
+            return $jsonresult;
+        }else{
+            return false;
+        }
+    }
+
     public static function bill_next_renewal_of_sub($upstreamsubid){
         global $CFG;
 

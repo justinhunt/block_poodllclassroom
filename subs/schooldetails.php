@@ -138,9 +138,10 @@ if(true) {
         $moodledata['editschoolurl'] = $theurl->out();
 
         //usage data
-        $schoolusagedata = cpapi_helper::fetch_usage_data($moodlesubs[0]->school->apiuser);
-        if ($schoolusagedata) {
-            $moodledata['usagereport'] = $renderer->display_usage_report($schoolusagedata);
+        $rawusagedata = cpapi_helper::fetch_usage_data($moodlesubs[0]->school->apiuser);
+        if ($rawusagedata) {
+            $reportdata = \block_poodllclassroom\common::compile_report_data($rawusagedata);
+            $moodledata['usagereport'] = $renderer->display_usage_report($reportdata, $rawusagedata);
         } else {
             $moodledata['usagereport'] = get_string('nousagedata', constants::M_COMP);
         }
