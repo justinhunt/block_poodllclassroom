@@ -980,7 +980,7 @@ class renderer extends \plugin_renderer_base {
 
             $fields[] = $school->ownerfirstname . ' ' . $school->ownerlastname . "($school->ownerid)";
             $fields[] = $school->owneremail;
-            $cburl = "https://" . $config->chargebeesiteprefix . "chargebee.com/d/customers/" . $school->upstreamownerid;
+            $cburl = "https://" . $config->chargebeesiteprefix . ".chargebee.com/d/customers/" . $school->upstreamownerid;
             $fields[] = \html_writer::link($cburl, $school->upstreamownerid);
 
             $fields[] = $school->totalrecordings;

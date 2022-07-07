@@ -127,9 +127,8 @@ if($ok) {
                     $rawusagedata = \block_poodllclassroom\cpapi_helper::fetch_usage_data($one_school->apiuser);
                     $reportdata = \block_poodllclassroom\common::compile_report_data($rawusagedata);
                     $one_school->totalrecordings=$reportdata['record'][$yearcol]['value'];
-                    $one_school->totalmins=$reportdata['recordmins'][$yearcol]['value'];
-                    $one_school->maxmonthusers=$reportdata['puser'][$maxmonthcol]['value'];
-                    $one_school->nextexpiry=$reportdata['puser'][$maxmonthcol]['value'];
+                    $one_school->totalmins=$reportdata['recordmin'][$yearcol]['value'];
+                    $one_school->maxmonthusers=$reportdata['pusers'][$maxmonthcol]['value'];
                 }
 
                 //display in datatables
