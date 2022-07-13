@@ -1000,10 +1000,10 @@ table.generaltable.block_poodllclassroom_subslist_table {
     left: auto;
 }
 .block_poodllclassroom_flexbox_inner .block_poodllclassroom_freeplan_cont a {
-    padding: 6px 20px;
+    padding: 16px 20px;
     border-radius: 34px;
-    width: 40%;
-    font-size: 16px;
+    width: 80%;
+    font-size: 22px;
     background-color: #252849;
     color: white;
     border: none;
