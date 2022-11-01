@@ -414,7 +414,8 @@ class renderer extends \plugin_renderer_base {
         //monthly plans
         $mdata =array();
         $mdata['plans']=$monthlyplans;
-        $mdata['display']=($showfirst==constants::M_BILLING_MONTHLY) ? '' : 'block_poodllclassroom_hidden';
+      //  $mdata['display']=($showfirst==constants::M_BILLING_MONTHLY) ? '' : 'block_poodllclassroom_hidden';
+        $mdata['display']= 'block_poodllclassroom_hidden';
         $mdata['billinginterval']='Monthly';
         $mdata['currency']='USD';
         $mdata['billingintervallabel']=get_string('monthly',constants::M_COMP);
@@ -426,7 +427,8 @@ class renderer extends \plugin_renderer_base {
 
         //yearly plans
         $ydata =array();
-        $ydata['display']=($showfirst==constants::M_BILLING_YEARLY) ? '' : 'block_poodllclassroom_hidden';
+       // $ydata['display']=($showfirst==constants::M_BILLING_YEARLY) ? '' : 'block_poodllclassroom_hidden';
+        $ydata['display']='';
         $ydata['billinginterval']='Yearly';
         $ydata['currency']='USD';
         $ydata['billingintervallabel']=get_string('yearly',constants::M_COMP);
@@ -442,15 +444,19 @@ class renderer extends \plugin_renderer_base {
             foreach($yearlyplans as $theplan){
                 switch($theplan->planfamily){
                     case constants::M_FAMILY_LANG:
+                        $theplan->display=$theplan->upstreamplan == 'Poodll-Languages-Lite' ? '' : 'block_poodllclassroom_hidden';
                         $langplans[]=$theplan;
                         break;
                     case constants::M_FAMILY_MEDIA:
+                        $theplan->display=$theplan->upstreamplan == 'Poodll-Media-Lite' ? '' : 'block_poodllclassroom_hidden';
                         $mediaplans[]=$theplan;
                         break;
                     case constants::M_FAMILY_ESSENTIALS:
+                        $theplan->display=$theplan->upstreamplan == 'Poodll-Essentials-Basic' ? '' : 'block_poodllclassroom_hidden';
                         $essentialsplans[]=$theplan;
                         break;
                     case constants::M_FAMILY_EC:
+                        $theplan->display='';
                         $englishcentralplans[]=$theplan;
                         break;
                 }
