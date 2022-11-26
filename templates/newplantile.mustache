@@ -1,6 +1,6 @@
-<div id="block_poodllclassroom_newplanitem_{{id}}" class="block_poodllclassroom_newplan_cont" style="border: 1px solid black; width: 250px; padding: 15px;">
+<div id="block_poodllclassroom_newplanitem_{{id}}" class="block_poodllclassroom_newplan_cont">
     <!--<div class="block_poodllclassroom_planname">{{name}}</div>-->
-    <div class="block_poodllclassroom_price">US${{price}}<span class="interval">/{{billingintervalname}}</span></div>
+    <!--div class="block_poodllclassroom_price">US${{price}}<span class="interval">/{{billingintervalname}}</span></div>
     {{#platform_MOODLE}}
         <div class="block_poodllclassroom_maxusers">{{maxusers}} {{#str}}users, block_poodllclassroom{{/str}}</div>
     {{/platform_MOODLE}}
@@ -11,10 +11,9 @@
       <div class="block_poodllclassroom_maxusers">{{maxusers}} {{#str}}users, block_poodllclassroom{{/str}}</div>
       <div class="block_poodllclassroom_maxcourses">{{maxcourses}} {{#str}}courses, block_poodllclassroom{{/str}} </div>
     {{/platform_CLASSROOM}}
-    <div class="block_poodllclassroom_description">{{description}}</div>
-   <a href="#" class="btn btn-secondary block_poodllclassroom_newplan block_poodllclassroom_gocbcheckout block_poodllclassroom_flexbox {{#disabled}}disabled{{/disabled}}" {{#selected}}tabindex="-1"{{/selected}}
+    <div class="block_poodllclassroom_description">{{description}}</div-->
+   <a href="#" class="btn btn-primary block_poodllclassroom_newplan block_poodllclassroom_gocbcheckout block_poodllclassroom_flexbox {{#disabled}}disabled{{/disabled}}" {{#selected}}tabindex="-1"{{/selected}}
       data-method="get_checkout_new" data-schoolid="{{schoolid}}" data-planid="{{id}}" data-currency="{{currency}}" data-billinginterval="{{billinginterval}}">{{#str}}chooseplan, block_poodllclassroom{{/str}}
-       <i class="fa-arrow-right fas icon fa-fw"></i>
    </a>
     <div class="block_poodllclassroom_currentplan">{{#selected}}{{#str}}yourcurrentplan, block_poodllclassroom{{/str}}{{/selected}}</div>
     {{#platform_CLASSROOM}}

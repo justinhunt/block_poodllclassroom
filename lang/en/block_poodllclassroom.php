@@ -242,7 +242,7 @@ $string['ltisubs_intro']='Your LTI subscription credentials are below. See the t
 $string['ltisubs_none']='You do not have any current Poodll for Platforms(LTI) subscriptions. Click the Add new subscription button to add one.';
 $string['classroomsubs']='Poodll Classroom Subscription Details';
 $string['classroomsubs_none']='You do not have any current Poodll Classroom subscriptions. Click the Add new subscription button to add one.';
-$string['allschoolsubs']='All Poodll Subscriptions';
+$string['allschoolsubs']='Subscription details';
 $string['reseller']='Reseller';
 $string['resellername']='Reseller Name';
 $string['resellertype']='Reseller Type';
@@ -258,11 +258,11 @@ $string['upstreamuserid']='Upstream User ID';
 $string['nosubs']='No subscriptions to display';
 $string['back']='Back';
 $string['addnew']='Add new';
-$string['addnewsubscription']='<i class="fas fa-plus-circle"></i> Add new subscription';
+$string['addnewsubscription']='Add subscription';
 
 $string['checkout'] = 'Checkout.' ; // unused
 $string['checkouttitle'] = 'Choose a Subscription' ;
-$string['chooseplan'] = 'Choose' ;
+$string['chooseplan'] = 'Subscribe' ;
 $string['checkoutinstructions'] = 'Choose a subscription plan from the options below. If you have your own Moodle site and can install plugins, then choose from Poodll for Moodle subscriptions. If you have a non moodle LMS or cannot install plugins (eg MoodleCloud) then try Poodll for Platforms. ' ;
 $string['youhavenoschool']='You have no school';
 $string['subexpiretime'] = 'Expiry';
@@ -326,7 +326,16 @@ $string['upstreamschoolid'] = 'Upstream School ID';
 $string['syncallschools'] = 'Sync All Schools';
 $string['syncsubform'] = 'Sync Single Sub';
 $string['syncallsubs'] = 'Sync All Subs';
-
+$string['featuresTitle'] = 'Features';
+$string['featureOne'] = 'Record Audio & Video Anywhere';
+$string['featureTwo'] = 'Native Moodle Recording Assignments';
+$string['featureThree'] = 'Record in Quizzes';
+$string['featureFour'] = 'Auto Transcription';
+$string['featureFive'] = 'Players and Recorders for Education';
+$string['featureSix'] = 'Poodll WordCards';
+$string['featureSeven'] = 'Poodll ReadAloud';
+$string['featureEight'] = 'Poodll MiniLesson';
+$string['featureNine'] = 'Poodll Solo';
 
 //My subscription page
 $string['usagereport'] = 'Usage Report';
@@ -456,7 +465,7 @@ $string['ltiplansintro'] = 'Lorem Ipsum is simply dummy text of the printing.';
 $string['footnotemoodle'] = 'Unique Poodll users are <b>calculated monthly</b> not yearly.';
 $string['footnotelti'] = 'No more than the maximum number of users can be active in the Poodll LMS';
 $string['needmoreusers'] = '<b>Need more users?</b> <a href="{$a}" target="_blank">Contact us</a> for an estimate';
-$string['pricesandplans'] = "Prices and Plans";
+$string['pricesandplans'] = "Poodll Packs";
 $string['maxmonth'] = "Highest Month";
 $string['enablelti'] = "Enable LTI";
 $string['enablelti_desc'] = "";

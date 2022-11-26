@@ -22,31 +22,39 @@
     Example context (json):
     {}
 }}
-<div class="introblock poodleclassblock">
-    <h2 class="block_poodllclassroom_userheader">{{useraccountname}}</h2>
+<section class="main_page_sections">
+    <section class="poodllclassroom_payment_methods">
+    <!--div class="introblock poodleclassblock">
+        <h2 class="block_poodllclassroom_userheader">{{useraccountname}}</h2>
 
-    <div class="dropdown block_poodllclassroom_options">
+        <div class="dropdown block_poodllclassroom_options">
 
-        <button type="button" class="btn btn-outline-secondary dropdown-toggle icon-no-margin" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                aria-label="{{#str}} poodllclassroomoptions, block_poodllclassroom {{/str}}" aria-controls="poodllclassroomoptions">
-            {{#str}} poodllclassroomoptions, block_poodllclassroom {{/str}}
-            <!-- {{#pix}} i/settings {{/pix}} -->
-        </button>
-        <div id="poodllclassroomoptions" role="menu" class="dropdown-menu">
-            {{#options}}
-            <a
-                class="dropdown-item"
-                href="{{{url}}}"
-                aria-label="{{label}}"
-                data-upstreamownerid="{{upstreamownerid}}"
-                data-type="{{type}}"
-                data-cbaction="{{cbaction}}"
-                role="menuitem"
-            >
-                {{label}}
-            </a>
-            {{/options}}
+            <button type="button" class="btn btn-outline-secondary dropdown-toggle icon-no-margin" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                    aria-label="{{#str}} poodllclassroomoptions, block_poodllclassroom {{/str}}" aria-controls="poodllclassroomoptions">
+                {{#str}} poodllclassroomoptions, block_poodllclassroom {{/str}}
+                <!-- {{#pix}} i/settings {{/pix}} -->
+            <!--/button>
+            <div id="poodllclassroomoptions" role="menu" class="dropdown-menu">
+                {{#options}}
+                <a
+                    class="dropdown-item"
+                    href="{{{url}}}"
+                    aria-label="{{label}}"
+                    data-upstreamownerid="{{upstreamownerid}}"
+                    data-type="{{type}}"
+                    data-cbaction="{{cbaction}}"
+                    role="menuitem"
+                >
+                    {{label}}
+                </a>
+                {{/options}}
+            </div>
+        </div-->
+        
+        <div class="poodll_dashboard_heading_block">
+            <h3>Payment Methods</h3>
         </div>
-    </div>
-    {{> block_poodllclassroom/introdescription}}
-</div>
+        <p>Manage credit card and other payment methods.</p>
+        {{> block_poodllclassroom/introdescription}} 
+    <!--/div-->
+    </section>

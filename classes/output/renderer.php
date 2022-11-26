@@ -180,8 +180,10 @@ class renderer extends \plugin_renderer_base {
 
             //Build options widget
             $optionsdata['options']=$options;
+             
             $optionsdropdown = $this->render_from_template('block_poodllclassroom/optionsdropdown', $optionsdata);
             $content .=  $optionsdropdown;
+            
         }
 
 

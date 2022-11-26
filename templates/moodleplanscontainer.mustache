@@ -1,16 +1,201 @@
 <!-- div class="block_poodllclassroom_billingheader {{billinginterval}} {{display}}"><h3>{{billingintervallabel}}</h3></div -->
-<div class="block_poodllclassroom_togglediv"><a href="#" class="btn btn-secondary togglelink">300 <---> 600</a></div>
+<div class="block_poodllclassroom_togglediv">
+    <div class="btn-group" role="group" aria-label="Basic example">
+        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <label class="btn btn-primary active togglelink toggle-left-button">
+                <input type="radio" name="options" id="option1" autocomplete="off" checked> 300 Users
+            </label>
+            <label class="btn btn-secondary togglelink toggle-right-button">
+                <input type="radio" name="options" id="option3" autocomplete="off"> 600 Users
+            </label>
+            </div>
+        </div>
+    </div>
 
-<div class="main-pack">
+<div class="main-pack desktop">
+    <table class="table poodllclassroom_pricing">
+    <thead>
+    <tr>
+        <th scope="col" class="title_features">Features</th>
+        <th scope="col">
+            <div class="poodllclassroom_pricing_column_heading">
+                <h4>{{#str}}mediaplans, block_poodllclassroom{{/str}}</h4>
+                {{#mediaplans}}
+                    <h6 class="block_poodllclassroom_prices {{display}}"><span class="block_poodllclassroom_prices_currency">US$</span>{{price}}<span class="block_poodllclassroom_prices_period">/Year</span></h6>
+                {{/mediaplans}}
+            </div>
+        </th>
+        <th scope="col">
+            <div class="poodllclassroom_pricing_column_heading">
+                <h4>{{#str}}langplans, block_poodllclassroom{{/str}}</h4>
+                {{#langplans}}
+                    <h6 class="block_poodllclassroom_prices {{display}}"><span class="block_poodllclassroom_prices_currency">US$</span>{{price}}<span class="block_poodllclassroom_prices_period">/Year</span></h6>
+                {{/langplans}}
+            </div>
+        </th>
+        <th scope="col">
+            <div class="poodllclassroom_pricing_column_heading">
+                <h4>{{#str}}essentialsplans, block_poodllclassroom{{/str}}</h4>
+                {{#essentialsplans}}
+                    <h6 class="block_poodllclassroom_prices {{display}}"><span class="block_poodllclassroom_prices_currency">US$</span>{{price}}<span class="block_poodllclassroom_prices_period">/Year</span></h6>
+                {{/essentialsplans}}
+            </div>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+        <tr>
+        <th scope="row">{{#str}}featureOne, block_poodllclassroom{{/str}}</th>
+        <td class="feature_available"></td>
+        <td class="feature_unavailable"></td>
+        <td class="feature_available"></td>
+        </tr>
+        <tr>
+        <th scope="row">{{#str}}featureTwo, block_poodllclassroom{{/str}}</th>
+        <td class="feature_available"></td>
+        <td class="feature_unavailable"></td>
+        <td class="feature_available"></td>
+        </tr>
+        <tr>
+        <th scope="row">{{#str}}featureThree, block_poodllclassroom{{/str}}</th>
+        <td class="feature_available"></td>
+        <td class="feature_unavailable"></td>
+        <td class="feature_available"></td>
+        </tr>
+        <tr>
+        <th scope="row">{{#str}}featureFour, block_poodllclassroom{{/str}}</th>
+        <td class="feature_available"></td>
+        <td class="feature_unavailable"></td>
+        <td class="feature_available"></td>
+        </tr>
+        <tr>
+        <th scope="row">{{#str}}featureFive, block_poodllclassroom{{/str}}</th>
+        <td class="feature_available"></td>
+        <td class="feature_unavailable"></td>
+        <td class="feature_available"></td>
+        </tr>
+        <tr>
+        <th scope="row">{{#str}}featureSix, block_poodllclassroom{{/str}}</th>
+        <td class="feature_available"></td>
+        <td class="feature_available"></td>
+        <td class="feature_unavailable"></td>
+        </tr>
+        <tr>
+        <th scope="row">{{#str}}featureSeven, block_poodllclassroom{{/str}}</th>
+        <td class="feature_available"></td>
+        <td class="feature_available"></td>
+        <td class="feature_unavailable"></td>
+        </tr>
+        <tr>
+        <th scope="row">{{#str}}featureEight, block_poodllclassroom{{/str}}</th>
+        <td class="feature_available"></td>
+        <td class="feature_available"></td>
+        <td class="feature_unavailable"></td>
+        </tr>
+        <tr>
+        <th scope="row">{{#str}}featureNine, block_poodllclassroom{{/str}}</th>
+        <td class="feature_available"></td>
+        <td class="feature_available"></td>
+        <td class="feature_unavailable"></td>
+        </tr>
+        <tr>
+        <th scope="row"></th>
+        <td>
+            <div class="poodllclassroom_pricing_column_buttons media">
+            {{#mediaplans}}
+                <div class="block_poodllclassroom_cbbuttons {{display}}">
+                    {{#checkoutexisting}}
+                        {{> block_poodllclassroom/upgradetile}}
+                    {{/checkoutexisting}}
+                    {{^checkoutexisting}}
+                        {{> block_poodllclassroom/newplantile}}
+                    {{/checkoutexisting}}
+                </div>
+            {{/mediaplans}}
+            </div>
+        </td>
+        <td>
+            <div class="poodllclassroom_pricing_column_buttons lang">
+            {{#langplans}}
+                 <div class="block_poodllclassroom_cbbuttons {{display}}">
+                    {{#checkoutexisting}}
+                        {{> block_poodllclassroom/upgradetile}}
+                    {{/checkoutexisting}}
+                    {{^checkoutexisting}}
+                        {{> block_poodllclassroom/newplantile}}
+                    {{/checkoutexisting}}
+                 </div>
+            {{/langplans}}
+            </div>
+        </td>
+        <td>
+            <div class="poodllclassroom_pricing_column_buttons essentials">
+            {{>block_poodllclassroom/freeplantile}}
+            {{#essentialsplans}}
+                <div class="block_poodllclassroom_cbbuttons {{display}}">
+                    {{#checkoutexisting}}
+                        {{> block_poodllclassroom/upgradetile}}
+                    {{/checkoutexisting}}
+                    {{^checkoutexisting}}
+                        {{> block_poodllclassroom/newplantile}}
+                    {{/checkoutexisting}}
+                </div>
+            {{/essentialsplans}}
+            </div>
+        </td>
+        </tr>
+    </tbody>
+    </table>
+</div>
+
+<div class="main-pack mobile">
+
+    <div class="plan-pack features">
+        <div class="plan-pack-inner">
+            <h4>Features</h4>
+        </div>
+        <div id="block_poodllclassroom_mediaplans_cont" class="block_poodllclassroom_moodleplans_cont center block_poodllclassroom_flexbox">
+            <div class="plan_features_container">
+                <h5>{{#str}}featuresTitle, block_poodllclassroom{{/str}}</h5>
+                <ul class="plan_features_list">
+                    <li class="feature_available">{{#str}}featureOne, block_poodllclassroom{{/str}}</li>
+                    <li class="feature_available">{{#str}}featureTwo, block_poodllclassroom{{/str}}</li>
+                    <li class="feature_available">{{#str}}featureThree, block_poodllclassroom{{/str}}</li>
+                    <li class="feature_available">{{#str}}featureFour, block_poodllclassroom{{/str}}</li>
+                    <li class="feature_available">{{#str}}featureFive, block_poodllclassroom{{/str}}</li>
+                    <li class="feature_unavailable">{{#str}}featureSix, block_poodllclassroom{{/str}}</li>
+                    <li class="feature_unavailable">{{#str}}featureSeven, block_poodllclassroom{{/str}}</li>
+                    <li class="feature_unavailable">{{#str}}featureEight, block_poodllclassroom{{/str}}</li>
+                    <li class="feature_unavailable">{{#str}}featureNine, block_poodllclassroom{{/str}}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
     <div class="plan-pack mediaplans">
         <div class="plan-pack-inner">
             <h4>{{#str}}mediaplans, block_poodllclassroom{{/str}}</h4>
             {{#mediaplans}}
-                <h6 class="block_poodllclassroom_prices {{display}}">US${{price}}</h6>
+                <h6 class="block_poodllclassroom_prices {{display}}"><span class="block_poodllclassroom_prices_currency">US$</span>{{price}}<span class="block_poodllclassroom_prices_period">/Year</span></h6>
             {{/mediaplans}}
 
         </div>
         <div id="block_poodllclassroom_mediaplans_cont" class="block_poodllclassroom_moodleplans_cont center block_poodllclassroom_flexbox">
+            <div class="plan_features_container">
+                <h5>{{#str}}featuresTitle, block_poodllclassroom{{/str}}</h5>
+                <ul class="plan_features_list">
+                    <li class="feature_available">✓</li>
+                    <li class="feature_available">✓</li>
+                    <li class="feature_available">✓</li>
+                    <li class="feature_available">✓</li>
+                    <li class="feature_available">✓</li>
+                    <li class="feature_unavailable">✗</li>
+                    <li class="feature_unavailable">✗</li>
+                    <li class="feature_unavailable">✗</li>
+                    <li class="feature_unavailable">✗</li>
+                </ul>
+            </div>
             {{#mediaplans}}
                 <div class="block_poodllclassroom_cbbuttons {{display}}">
                     {{#checkoutexisting}}
@@ -27,11 +212,26 @@
         <div class="plan-pack-inner">
             <h4>{{#str}}langplans, block_poodllclassroom{{/str}}</h4>
             {{#langplans}}
-                <h6 class="block_poodllclassroom_prices {{display}}">US${{price}}</h6>
+                <h6 class="block_poodllclassroom_prices {{display}}"><span class="block_poodllclassroom_prices_currency">US$</span>{{price}}<span class="block_poodllclassroom_prices_period">/Year</span></h6>
             {{/langplans}}
 
         </div>
         <div id="block_poodllclassroom_langplans_cont" class="block_poodllclassroom_moodleplans_cont center block_poodllclassroom_flexbox">
+            <div class="plan_features_container">
+                <h5>{{#str}}featuresTitle, block_poodllclassroom{{/str}}</h5>
+                <ul class="plan_features_list">
+                    <li class="feature_unavailable">✗</li>
+                    <li class="feature_unavailable">✗</li>
+                    <li class="feature_unavailable">✗</li>
+                    <li class="feature_unavailable">✗</li>
+                    <li class="feature_unavailable">✗</li>
+                    <li class="feature_available">✓</li>
+                    <li class="feature_available">✓</li>
+                    <li class="feature_available">✓</li>
+                    <li class="feature_available">✓</li>
+
+                </ul>
+            </div>
             {{#langplans}}
                  <div class="block_poodllclassroom_cbbuttons {{display}}">
                     {{#checkoutexisting}}
@@ -48,11 +248,26 @@
         <div class="plan-pack-inner">
             <h4>{{#str}}essentialsplans, block_poodllclassroom{{/str}}</h4>
             {{#essentialsplans}}
-                <h6 class="block_poodllclassroom_prices {{display}}">US${{price}}</h6>
+                <h6 class="block_poodllclassroom_prices {{display}}"><span class="block_poodllclassroom_prices_currency">US$</span>{{price}}<span class="block_poodllclassroom_prices_period">/Year</span></h6>
             {{/essentialsplans}}
 
         </div>
         <div id="block_poodllclassroom_essentialsplans_cont" class="block_poodllclassroom_moodleplans_cont center block_poodllclassroom_flexbox">
+            <div class="plan_features_container">
+                <h5>{{#str}}featuresTitle, block_poodllclassroom{{/str}}</h5>
+                <ul class="plan_features_list">
+                    <li class="feature_available">✓</li>
+                    <li class="feature_available">✓</li>
+                    <li class="feature_available">✓</li>
+                    <li class="feature_available">✓</li>
+                    <li class="feature_available">✓</li>
+                    <li class="feature_available">✓</li>
+                    <li class="feature_available">✓</li>
+                    <li class="feature_available">✓</li>
+                    <li class="feature_available">✓</li>
+                </ul>
+            </div>
+            {{>block_poodllclassroom/freeplantile}}
             {{#essentialsplans}}
                 <div class="block_poodllclassroom_cbbuttons {{display}}">
                     {{#checkoutexisting}}
@@ -74,11 +289,54 @@
             var togglebutton = $('.block_poodllclassroom_togglediv .togglelink');
             var prices = $('.block_poodllclassroom_prices');
             var cbbuttons = $('.block_poodllclassroom_cbbuttons');
+            var toggleleftbutton = $('.toggle-left-button'); 
+            var togglerightbutton = $('.toggle-right-button'); 
+            /*
             togglebutton.on('click',function(){
-                 event.preventDefault();
-                prices.toggleClass('block_poodllclassroom_hidden');
-                cbbuttons.toggleClass('block_poodllclassroom_hidden');
+                event.preventDefault();
+
             });
+*/
+            togglerightbutton.on('click',function(){
+                if (toggleleftbutton.hasClass('btn-primary')) {
+                    toggleleftbutton.removeClass('btn-primary').addClass('btn-secondary');
+                    togglerightbutton.removeClass('btn-secondary').addClass('btn-primary');
+                    prices.toggleClass('block_poodllclassroom_hidden');
+                    cbbuttons.toggleClass('block_poodllclassroom_hidden');
+                } 
+            });
+
+            toggleleftbutton.on('click',function(){
+                 if (togglerightbutton.hasClass('btn-primary')) {
+                    togglerightbutton.removeClass('btn-primary').addClass('btn-secondary');
+                    toggleleftbutton.removeClass('btn-secondary').addClass('btn-primary');
+                    prices.toggleClass('block_poodllclassroom_hidden');
+                    cbbuttons.toggleClass('block_poodllclassroom_hidden');
+                } 
+
+            });
+
+/*
+            togglebutton.on('click', clickToggleButtonType);
+
+            function clickToggleButtonType(e) {
+                $(e.target).on('click',function(){
+                    if (togglebutton.hasClass('btn-secondary')) {
+                        togglebutton.removeClass('btn-secondary').addClass('btn-primary');
+                        togglebutton.siblings().removeClass('btn-primary').addClass('btn-secondary');
+                    };
+                });
+                
+                if (togglebutton.hasClass('btn-primary')) {
+                    togglebutton.removeClass('btn-primary').addClass('btn-secondary');
+                    togglebutton.siblings().removeClass('btn-secondary').addClass('btn-primary');
+                    
+                } else {
+                    togglebutton.removeClass('btn-secondary').addClass('btn-primary');
+                    togglebutton.siblings().removeClass('btn-primary').addClass('btn-secondary');
+                };
+                */
+       
         });
 
     {{/js}}
