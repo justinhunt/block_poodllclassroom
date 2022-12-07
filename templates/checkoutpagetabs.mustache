@@ -1,20 +1,31 @@
 {{#platform_MOODLE}}
-    <h2 class="add_subscription_title">Add Subscription</h2>
-    <div class="poodll_dashboard_heading_block">
-        <h3>{{#str}} pricesandplans, block_poodllclassroom {{/str}}</h3>
-        
-    </div>
-    <div class="checkout_header_moodle">
-        <div class="priceplan_header"></div>
-    </div>
+    <section id="add_subscription_section">
+        <section class="dashboard-account-menu">
+            {{> block_poodllclassroom/dashboardbackwardsnavigation}}
+        </section>
+        <section class="main_page_sections">
+            {{> block_poodllclassroom/dashboardbackwardsnavigation}}
+            <h2 class="add_subscription_title">Add Subscription</h2>
+            <div class="poodll_dashboard_heading_block">
+                <h3>{{#str}} pricesandplans, block_poodllclassroom {{/str}}</h3>
+                
+            </div>
+            <div class="checkout_header_moodle">
+                <div class="priceplan_header"></div>
+            </div>
 {{/platform_MOODLE}}
 {{#platform_LTI}}
-    <h2 class="add_subscription_title" >Add Subscription</h2>
-    <div class="poodll_dashboard_heading_block">
-        <h3>{{#str}} pricesandplans, block_poodllclassroom {{/str}}</h3>
+        <section id="add_subscription_section">
+            <section class="dashboard-account-menu">
+                {{> block_poodllclassroom/dashboardbackwardsnavigation}}
+            </section>
+            <section class="main_page_sections">
+            <h2 class="add_subscription_title" >Add Subscription</h2>
+            <div class="poodll_dashboard_heading_block">
+                <h3>{{#str}} pricesandplans, block_poodllclassroom {{/str}}</h3>
 
-    </div>
-    <div class="checkout_header_lti">
-        <div class="priceplan_header">{{#str}} pricesandplans, block_poodllclassroom {{/str}}</div>
-    </div>
+            </div>
+            <div class="checkout_header_lti">
+                <div class="priceplan_header">{{#str}} pricesandplans, block_poodllclassroom {{/str}}</div>
+            </div>
 {{/platform_LTI}}

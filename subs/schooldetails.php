@@ -82,7 +82,7 @@ $subssectiondata['checkoutbutton']=$checkoutbutton ;
 //return the page header
 echo $renderer->header();
 
-
+ 
 if(true) {
 
     //here we set up any info we need to pass into javascript

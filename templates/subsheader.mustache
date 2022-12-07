@@ -7,52 +7,48 @@
         </div>
         <div id="block_poodllclassroom_subslist_cont" class="block_poodllclassroom_subslist_cont poodleclassblock" style="display: {{display}};">
             <div class="block_poodllclassroom_subscription_details">
-                <h4 class="block_poodllclassroom_allschoolsubs">{{#str}}allschoolsubs, block_poodllclassroom{{/str}}</h4>
-
-                <p>
-                    <a class="btn btn-link" data-toggle="collapse" href="#collapseDetails" role="button" aria-expanded="false" aria-controls="collapseDetails">
-                        view
-                    </a>
-                </p>
-            </div>
-            <div class="collapse" id="collapseDetails">
-                <div class="card card-body">
-                    <div class="table-over">
-                        <table class="generaltable block_poodllclassroom_subslist_table" id="{{tableid}}">
-                            <thead>
-                            <tr>
-                                <th class="header c0 subname" style="" scope="col">{{#str}}subname, block_poodllclassroom{{/str}}</th>
-                                <th class="header c1 subperiod" style="" scope="col">{{#str}}subperiod, block_poodllclassroom{{/str}}</th>
-                                {{#show_payment}} <th class="header c3" style="" scope="col">{{#str}}subcurrency, block_poodllclassroom{{/str}}</th>{{/show_payment}}
-                                {{#show_payment}} <th class="header c4" style="" scope="col">{{#str}}subpayment, block_poodllclassroom{{/str}}</th>{{/show_payment}}
-                                {{#show_status}} <th class="header c5" style="" scope="col">{{#str}}status, block_poodllclassroom{{/str}}</th>{{/show_status}}
-                                <th class="header c6 date" style="" scope="col">{{#str}}timecreated, block_poodllclassroom{{/str}}</th>
-                                {{#show_expiretime}} <th class="header c2" style="" scope="col">{{#str}}subrenewexpiretime, block_poodllclassroom{{/str}}</th>{{/show_expiretime}}
-                                <th class="header c7 edit" style="" scope="col">{{#str}}action, block_poodllclassroom{{/str}}</th>
-                                <th class="header c8 lastcol renew" style="" scope="col"></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {{#subs}}
-                                {{> block_poodllclassroom/subslistrow}}
-                            {{/subs}}
-                            {{#nosubs}}
-                                {{#show_expiretime}}
-                                    {{#show_payment}}
-                                        <tr><td colspan="8">{{#str}}nosubs, block_poodllclassroom{{/str}}</td></tr>
-                                    {{/show_payment}}
-                                    {{^show_payment}}
-                                        <tr><td colspan="6">{{#str}}nosubs, block_poodllclassroom{{/str}}</td></tr>
-                                    {{/show_payment}}
-                                {{/show_expiretime}}
-                                {{^show_expiretime}}
-                                    <tr><td colspan="5">{{#str}}nosubs, block_poodllclassroom{{/str}}</td></tr>
-                                {{/show_expiretime}}
-                            {{/nosubs}}
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="poodll_dashboard_heading_block">
+                    <h3 class="block_poodllclassroom_allschoolsubs" id="subscription-details">{{#str}}allschoolsubs, block_poodllclassroom{{/str}}</h4>
                 </div>
             </div>
+
+            <div class="card card-body">
+                <div>
+                    <table class="generaltable block_poodllclassroom_subslist_table" id="{{tableid}}">
+                        <thead>
+                        <tr>
+                            <th class="header c0 subname" style="" scope="col">{{#str}}subname, block_poodllclassroom{{/str}}</th>
+                            <th class="header c1 subperiod" style="" scope="col">{{#str}}subperiod, block_poodllclassroom{{/str}}</th>
+                            {{#show_payment}} <th class="header c3" style="" scope="col">{{#str}}subcurrency, block_poodllclassroom{{/str}}</th>{{/show_payment}}
+                            {{#show_payment}} <th class="header c4" style="" scope="col">{{#str}}subpayment, block_poodllclassroom{{/str}}</th>{{/show_payment}}
+                            {{#show_status}} <th class="header c5" style="" scope="col">{{#str}}status, block_poodllclassroom{{/str}}</th>{{/show_status}}
+                            <th class="header c6 date" style="" scope="col">{{#str}}timecreated, block_poodllclassroom{{/str}}</th>
+                            {{#show_expiretime}} <th class="header c2" style="" scope="col">{{#str}}subrenewexpiretime, block_poodllclassroom{{/str}}</th>{{/show_expiretime}}
+                            <th class="header c7 edit" style="" scope="col">{{#str}}action, block_poodllclassroom{{/str}}</th>
+                            <th class="header c8 lastcol renew" style="" scope="col"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {{#subs}}
+                            {{> block_poodllclassroom/subslistrow}}
+                        {{/subs}}
+                        {{#nosubs}}
+                            {{#show_expiretime}}
+                                {{#show_payment}}
+                                    <tr><td colspan="8">{{#str}}nosubs, block_poodllclassroom{{/str}}</td></tr>
+                                {{/show_payment}}
+                                {{^show_payment}}
+                                    <tr><td colspan="6">{{#str}}nosubs, block_poodllclassroom{{/str}}</td></tr>
+                                {{/show_payment}}
+                            {{/show_expiretime}}
+                            {{^show_expiretime}}
+                                <tr><td colspan="5">{{#str}}nosubs, block_poodllclassroom{{/str}}</td></tr>
+                            {{/show_expiretime}}
+                        {{/nosubs}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+           
         </div>
     </section>
