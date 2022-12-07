@@ -317,6 +317,12 @@ class renderer extends \plugin_renderer_base {
         //$ret .= \html_writer::div(get_string('checkoutinstructions',constants::M_COMP),constants::M_COMP . '_checkoutinstructions');
 
         $tabsdata = [];
+        if($school && isset($school->resold)){
+            $returnurl =  new \moodle_url(constants::M_URL . '/subs/schooldetails.php',array('id'=>$school->id ,'type'=>'school','resellerid'=>$school->resellerid));
+        }else{
+            $returnurl =  new \moodle_url($CFG->wwwroot . '/my/');
+        }
+        $tabsdata['returnurl']=$returnurl->out();
         $checkouturl = new \moodle_url(constants::M_URL . '/subs/checkout.php',array('schoolid'=>$school->id ,'planfamily'=>$planfamily));
         $tabsdata['checkouturl']=$checkouturl->out();
         $tabsdata['platform_' . strtoupper($platform)]=1;

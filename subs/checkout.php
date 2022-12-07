@@ -50,6 +50,12 @@ $PAGE->navbar->add(get_string('pluginname', constants::M_COMP));
 //Set the companyid
 $companyname = $SITE->fullname;
 $school = common::get_resold_or_my_school($schoolid);
+//reseller
+$school->reseller = $DB->get_record(constants::M_TABLE_RESELLERS,array('id'=>$school->resellerid));
+if($school->reseller->resellertype==constants::M_RESELLER_THIRDPARTY){
+    $school->resold=true;
+}
+
 //get our renderer
 $renderer = $PAGE->get_renderer(constants::M_COMP);
 
