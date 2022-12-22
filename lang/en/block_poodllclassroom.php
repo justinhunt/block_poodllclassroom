@@ -305,7 +305,7 @@ $string['cpapitoken'] = 'CPAPI token';
 $string['cpapitoken_desc'] = 'The CPAPI web services token';
 $string['subrenewtime'] = 'Renews';
 $string['subrenewexpiretime'] = 'Renews/Expires';
-$string['editsitedetails'] = '<i class="fas fa-pen"></i> Edit site details';
+$string['editsitedetails'] = 'Add';
 $string['essentialsplans'] = 'Poodll Essentials';
 $string['essentialsplanscontents'] = '(Poodll Media + Poodll Languages)';
 $string['englishcentralplans'] = 'Poodll EnglishCentral';
@@ -422,7 +422,7 @@ $string['signupthanks'] = 'Thanks! A password has been sent to your email addres
 $string['thanks'] = 'Thank you';
 $string['loginform_instructions'] = "Your password has been sent to the email address that you registered with. Please <strong>check your email</strong>, and enter your password below to login. You need to login to get the information that you need to set Poodll up on your site.";
 $string['schooldetails_instructions'] = 'Enter the school or organisation name and Moodle site URL(s) below. The school name will be shown on Poodll invoices. Each site URL should begin with \'https://\'. It is not necessary to add sub directories. You can use a wildcard in place of a subdomain if you have several subdomains. NB Unless you are a reseller, Poodll is only licensed for one school.';
-$string['watchthevideo'] = 'Watch the video';
+$string['watchthevideo'] = 'See how';
 $string['ltimoodleinstructions'] = 'Follow the tutorial to learn how to set up Poodll LTI courses to work on your Moodle site.';
 $string['lticanvasinstructions'] = 'Follow the tutorial to learn how to set up Poodll LTI courses to work on your Canvas site.';
 $string['ltitutsintro'] = 'Setting up Poodll for Platforms';

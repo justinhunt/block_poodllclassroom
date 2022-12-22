@@ -52,9 +52,32 @@
         </div-->
         
         <div class="poodll_dashboard_heading_block">
-            <h3 id="payment-methods">Payment Methods</h3>
+            <h3 id="billing">Billing</h3>
         </div>
-        <p>Manage credit card and other payment methods.</p>
-        {{> block_poodllclassroom/introdescription}} 
+        <div class="subsection-element subsection-billing-details">
+            <div class="subsection-element-icon"></div>
+            <div class="subsection-element-content">
+                <h5>Billing Details</h5>
+                <p>Manage billing address and other details as they appear on your invoices.</p>
+                {{> block_poodllclassroom/billingaccountbutton}}
+            </div>
+        </div>
+        <div class="subsection-element subsection-billing-history">
+            <div class="subsection-element-icon"></div>
+            <div class="subsection-element-content">
+                <h5>Billing History</h5>
+                <p>Access past and current invoices.</p>
+                {{> block_poodllclassroom/billinghistorybutton}}
+            </div>
+        </div>
+        <div class="subsection-element subsection-payment-methods">
+            <div class="subsection-element-icon"></div>
+            <div class="subsection-element-content">
+                <h5>Payment Methods</h5>
+                <p>Manage credit card and other payment methods.</p>
+                {{> block_poodllclassroom/paymentmethodbutton}}
+            </div>
+        </div>                
+        
     <!--/div-->
     </section>

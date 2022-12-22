@@ -1194,6 +1194,12 @@ class renderer extends \plugin_renderer_base {
         return $this->output->render_from_template('block_poodllclassroom/schooldetailsinstructions', []);
     }
 
+    /* RS - Added to close layout tag structure */
+
+    public function fetch_schooldetails_close_tags(){
+        return "</section></section>";
+    }
+
     public function footer_note($platform) {
         $templateContext = ['supportlink' => new \moodle_url('https://poodll.com/contact/')];
         $templateContext['platform_'.constants::M_PLATFORM_MOODLE] = strtoupper($platform) == constants::M_PLATFORM_MOODLE;

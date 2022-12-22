@@ -1,8 +1,7 @@
-<span class="block_poodllclassroom_watchthevideo">
-    <a {{#videobutton}}class="btn btn-primary"{{/videobutton}} data-fancybox="video-gallery" data-src="https://vimeo.com/{{videoid}}" href="#">
-        <i class="fas fa-play"></i>{{#str}}watchthevideo, block_poodllclassroom{{/str}}
+
+    <a {{#videobutton}}class="btn btn-primary"{{/videobutton}} data-fancybox="video-gallery" data-src="https://vimeo.com/{{videoid}}" href="#" class="help_tooltip_button">
+        {{#str}}watchthevideo, block_poodllclassroom{{/str}}
     </a>
-</span>
 {{^element.frozen}}
     {{#js}}
         require(['jquery', 'https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js'],
