@@ -943,7 +943,7 @@ class common
                 $url = new \moodle_url(constants::M_URL . '/subs/renewsub.php',
                     array('subid' => $sub->id));
                 $btn = new \single_button($url, get_string('renewsub', constants::M_COMP), 'post',
-                    false,array('class'=>'block_poodllclassroom_renewbutton'));
+                    false,array('class'=>'subscription-action-button block_poodllclassroom_renewbutton'));
                 $btn->add_confirm_action(get_string('renewsubconfirm', constants::M_COMP));
                 $sub->expiretime_display .= '<br>' . $OUTPUT->render($btn);
             }

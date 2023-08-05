@@ -189,7 +189,8 @@ class renderer extends \plugin_renderer_base {
 
 
         //get checkout url
-        $checkouturl  = new \moodle_url(constants::M_URL . '/subs/checkout.php',array());
+        $checkouturl = new \moodle_url(constants::M_URL . '/subs/checkout.php',
+            array('schoolid' => $school->id, 'platform' => constants::M_PLATFORM_MOODLE, 'planfamily' => 'all'));
 
         //Gather subs info
         $subs =  common::fetch_subs_by_user($USER->id);  //common::get_poodllsubs_by_currentuser();
@@ -199,7 +200,7 @@ class renderer extends \plugin_renderer_base {
 
 
         //subs section
-        $subssectiondata = array('subs'=>array_values($display_subs));
+        $subssectiondata = array('subs'=>array_values($display_subs),'checkouturl'=>$checkouturl->out());
         if(count($subssectiondata['subs'])<1){
             $subssectiondata['nosubs']=true;
         }
@@ -340,6 +341,7 @@ class renderer extends \plugin_renderer_base {
         }
         $platform = strtoupper($platform);
         $planfamily = strtoupper($planfamily);
+        $freeplanavailable = true;
 
         //get plans
         $billingintervals = common::fetch_billingintervals();
@@ -403,6 +405,7 @@ class renderer extends \plugin_renderer_base {
             foreach($subs as $sub){
                 if($freeplan->id == $sub->planid){
                     $freeplan->alreadytaken=true;
+                    $freeplanavailable=false;
                 }
             }
         }
@@ -413,7 +416,7 @@ class renderer extends \plugin_renderer_base {
         $mdata['billingintervallabel']=get_string('freetrial',constants::M_COMP);
         $mdata['platform_'.constants::M_PLATFORM_MOODLE] = strtoupper($platform) == constants::M_PLATFORM_MOODLE;
         $mdata['platform_'.constants::M_PLATFORM_LTI] = strtoupper($platform) == constants::M_PLATFORM_LTI;
-        if($checkoutexisting) {
+        if($checkoutexisting || !$freeplanavailable) {
             $freely = '';
         }else{
             $freely = $this->render_from_template('block_poodllclassroom/freeplancontainer', $mdata);
@@ -473,6 +476,7 @@ class renderer extends \plugin_renderer_base {
             if(count($langplans)>0){$ydata['langplans']=$langplans;}
             if(count($essentialsplans)>0){$ydata['essentialsplans']=$essentialsplans;}
             if(count($englishcentralplans)>0){$ydata['englishcentralplans']=$englishcentralplans;}
+            $ydata['freeplanavailable']=$freeplanavailable;
             $yearly = $this->render_from_template('block_poodllclassroom/moodleplanscontainer', $ydata);
         }else {
             $ydata['plans']=$yearlyplans;
@@ -480,6 +484,7 @@ class renderer extends \plugin_renderer_base {
                 $ydata['checkoutexisting']=$checkoutexisting;
                 $ydata['currentsubid']=$existingsubid;
             }
+            $ydata['freeplanavailable']=$freeplanavailable;
             $yearly = $this->render_from_template('block_poodllclassroom/newplancontainer', $ydata);
         }
 

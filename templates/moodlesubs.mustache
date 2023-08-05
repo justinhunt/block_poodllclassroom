@@ -1,9 +1,9 @@
 
     <section class="poodllclassroom_current_subscription"> 
-        <h2>My Poodll Account</h2>
+        <h2>{{#str}}mypoodllaccount, block_poodllclassroom{{/str}}</h2>
             {{> block_poodllclassroom/dashboardsidenavigation}}
         <div class="poodll_dashboard_heading_block">
-            <h3 id="my-school-details">My School Details</h3>
+            <h3 id="my-school-details">{{#str}}myschooldetails, block_poodllclassroom{{/str}}</h3>
             <!--
             {{#hassubs}}
             <div class="sub_checkoutbutton poodll-change-circle-icon">{{> block_poodllclassroom/changeplanlinkbutton}}</div>
@@ -19,9 +19,6 @@
 
     <section class="poodllclassroom_subscription_details"> 
         <div id="block_poodllclassroom_moodlesubslist_cont"  class="block_poodllclassroom block_poodllclassroom_moodlesubslist_cont poodleclassblock" style="display: {{display}};">
-
-    
-        {{#hassubs}}{{/hassubs}}
         {{^hassubs}} <div class="subs_desciption">{{#str}}moodlesubs_none, block_poodllclassroom{{/str}}<br></div>{{/hassubs}} 
 
         {{#hassubs}}
@@ -30,10 +27,10 @@
                     <div class="school_name_normal_state_container">
                         <div class="school_name_icon"></div>
                         <div class="school_name_info">
-                            <div class="current_subscription_label">School Name</div>
+                            <div class="current_subscription_label">{{#str}}schoolname, block_poodllclassroom{{/str}}</div>
                             <div class="current_subscription_text">{{school.name}}</div>
                         </div>
-                        <div class="school_name_edit_button" id="school_name_edit">Edit</div>
+                        <div class="school_name_edit_button" id="school_name_edit">{{#str}}edit, block_poodllclassroom{{/str}}</div>
                     </div>
                 </div>
                 <div class="school_name_editing_state hidden">
@@ -41,7 +38,7 @@
                         <div class="school_name_icon"></div>
                         <form class="school_name_form_container">
                             <div class="school_name_form">
-                                <label for="school_name" class="current_subscription_label">School Name</div>
+                                <label for="school_name" class="current_subscription_label">{{#str}}schoolname, block_poodllclassroom{{/str}}</label>
                                 <input id="school_name" class="school_name_input" placeholder="{{school.name}}">
                             </div>
                             <input type="submit" id="school_name_save" class="btn btn-primary" value="Save" />
@@ -54,7 +51,7 @@
                 <div class="school_urls_content">
                     <div class="school_urls_icon"></div>
                     <div class="school_name_info">
-                        <div class="current_subscription_label">School URLs</div>
+                        <div class="current_subscription_label">{{#str}}schoolurls, block_poodllclassroom{{/str}}</div>
                         {{#school.siteurls }}
                             <div class="current_subscription_text">{{.}}</div>
                         {{/school.siteurls}}
@@ -65,20 +62,20 @@
                 <div class="help_tooltip">
                     <div class="help_tooltip_arrow"></div>
                     <div class="help_tooltip_body">
-                        <p>The adress/es of your Moodle campus. You can have up to 5 different urls.</p>
+                        <p>{{#str}}siteurl_explainer, block_poodllclassroom{{/str}}</p>
                     </div>
                 </div>
             </div>   
 
             <div class="poodll_dashboard_heading_block">
-                <h3 id="my-api-and-secret-key">My API and Secret Key</h3>
+                <h3 id="my-api-and-secret-key">{{#str}}apiusernameandsecretkey, block_poodllclassroom{{/str}}</h3>
             </div>
             <div class="school_api_and_secret_container">
                 <div class="school_api_and_secret_wrapper">
                     <div class="school_api">
                         <div class="school_api_icon"></div>
                         <div class="school_api_info">
-                            <div class="current_subscription_label">User API</div>
+                            <div class="current_subscription_label">{{#str}}userapi, block_poodllclassroom{{/str}}</div>
                             <div class="current_subscription_text" id="apiuser_{{school.id}}" data-clipboard-text="{{school.apiuser}}">{{school.apiuser}}</div>
                         </div>
                         <div class="school_api_copy_button">
@@ -89,7 +86,7 @@
                     <div class="school_secret">
                         <div class="school_secret_icon"></div>
                         <div class="school_secret_info">
-                            <div class="current_subscription_label">Secret Key</div>
+                            <div class="current_subscription_label">{{#str}}secretkey, block_poodllclassroom{{/str}}</div>
                             <div class="current_subscription_text" id="apisecret_{{school.id}}" data-clipboard-text="{{school.apisecret}}">{{school.apisecret}}</div>
                         </div>
                         <div class="school_secret_copy_button">
@@ -101,7 +98,7 @@
                 <div class="help_tooltip">
                     <div class="help_tooltip_arrow"></div>
                     <div class="help_tooltip_body">
-                        <p>Copy and paste those on your Moodle campus to connect your Poodll account.</p>
+                        <p>{{#str}}copypastetoconnect, block_poodllclassroom{{/str}}</p>
                         {{> block_poodllclassroom/subscriptioninfo }}
                     </div>
                 </div>  
@@ -114,24 +111,23 @@
             <div class="sub_checkoutbutton poodll-change-icon">{{> block_poodllclassroom/checkoutpagebutton}}</div>
         {{/hassubs}} 
         -->
- 
-   
- 
 
+
+
+        </div>
     </section>
 
     {{#hassubs}}
         <section class="poodllclassroom_usage_report">
             <div class="poodll_dashboard_heading_block">
-                <h3 id="usage-report">Usage Report</h3>
-            </div> 
+                <h3 id="usage-report">{{#str}}usagereport, block_poodllclassroom{{/str}}</h3>
+            </div>
             <div class="block_poodllclassroom_usagereport">
                 {{{usagereport}}}
             </div>
         </section>
     {{/hassubs}}
-    
-</section>
+
     {{#js}}
         $(document).ready(function() {
             $("#school_name_edit").click(function() {

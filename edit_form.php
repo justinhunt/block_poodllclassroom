@@ -16,7 +16,6 @@ class block_poodllclassroom_edit_form extends block_edit_form {
         //we need to prefix all our settings with config_ for the block to do its magic of saving and fetching them
         //for us
         $mform->addElement('text', 'config_sometext', get_string('blockstring', constants::M_COMP));
-        $mform->setDefault('config_sometext', $config->sometext);
         $mform->setType('config_sometext', PARAM_TEXT);
 
     }

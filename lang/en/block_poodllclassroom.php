@@ -187,7 +187,6 @@ $string['monthlyyearly'] = 'Monthly <--> Yearly';
 $string['yourcurrentplan'] = '* current plan *';
 $string['upgradeplan'] = 'Upgrade Plan';
 
-$string['changeplan'] ='Change Plan';
 $string['changeplaninstructions'] = 'Choose a subscription plan from the options below. The prices shown are all in US dollars. The new plan will begin immediately. If you wish to schedule your new plan to begin at next renewal, please contact Poodll Support. ' ;
 $string['youhavenosubscription'] = 'You do not have a subscription, so we can not change your plan.';
 $string['poodllclassroomoptions'] = 'Account Options';
@@ -242,7 +241,7 @@ $string['ltisubs_intro']='Your LTI subscription credentials are below. See the t
 $string['ltisubs_none']='You do not have any current Poodll for Platforms(LTI) subscriptions. Click the Add new subscription button to add one.';
 $string['classroomsubs']='Poodll Classroom Subscription Details';
 $string['classroomsubs_none']='You do not have any current Poodll Classroom subscriptions. Click the Add new subscription button to add one.';
-$string['allschoolsubs']='Subscription details';
+$string['allschoolsubs']='Subscription Details';
 $string['reseller']='Reseller';
 $string['resellername']='Reseller Name';
 $string['resellertype']='Reseller Type';
@@ -278,7 +277,12 @@ $string['resellercoupon'] = 'Reseller Coupon';
 $string['resellercoupon_desc'] = 'Reseller Coupon';
 $string['billingaccount'] = 'Manage Poodll Account';
 $string['billinghistory'] = 'Billing History';
+$string['billinghistory_desc'] = 'Access past and current invoices.';
+$string['billingdetails'] = 'Billing Details';
+$string['billingdetails_desc'] = 'Manage billing address and other details as they appear on your invoices.';
 $string['paymentsources'] = 'Payment Methods';
+$string['paymentmethods'] = 'Payment Methods';
+$string['paymentmethods_desc'] = 'Manage credit card and other payment methods.';
 $string['freetrial'] = 'Free Trial';
 $string['alreadytaken'] = 'Already Subscribed';
 
@@ -462,7 +466,7 @@ $string['starttrial'] = 'Start Free Trial';
 $string['ltiplans'] = 'Lite';
 $string['ltiplansintro'] = 'Lorem Ipsum is simply dummy text of the printing.';
 
-$string['footnotemoodle'] = 'Unique Poodll users are <b>calculated monthly</b> not yearly.';
+$string['footnotemoodle'] = 'Unique Poodll users are <b>calculated monthly</b>.';
 $string['footnotelti'] = 'No more than the maximum number of users can be active in the Poodll LMS';
 $string['needmoreusers'] = '<b>Need more users?</b> <a href="{$a}" target="_blank">Contact us</a> for an estimate';
 $string['pricesandplans'] = "Poodll Packs";
@@ -473,7 +477,7 @@ $string['enableclassroom'] = "Enable Classroom";
 $string['enableclassroom_desc'] = "";
 $string['notpaid'] = "Not Paid Yet";
 $string['paynow'] = "Pay Now";
-$string['renewsub'] = "Renew Now";
+$string['renewsub'] = "Renew";
 $string['alreadyrenewed'] = "Subscription has been renewed in advance.";
 $string['renewsubconfirm'] = "Are you sure that you wish to renew?";
 $string['unabletorenew'] = "We were unable to renew your subscription. Please contact Poodll Support.";
@@ -486,4 +490,16 @@ $string['totalrecordings'] = "Total recs";
 $string['totalmins'] = "Total mins";
 $string['maxmonthusers'] = "Max User Month";
 $string['renewerreport'] = "Renewer Report";
+
+$string['siteurl_explainer'] = "Your Moodle site URL(s). You can have up to 5 different urls.";
+$string['schoolurls'] = "School URLs";
+$string['apiusernameandsecretkey'] = "API Username and Secret Key";
+$string['userapi'] = "API Username";
+$string['secretkey'] = "Secret Key";
+$string['copypastetoconnect'] = "Copy and paste API username and secret key to your Moodle site to connect your Poodll account.";
+$string['myschooldetails'] = "My School Details";
+$string['mypoodllaccount'] = "My Poodll Account";
+$string['apicredentials'] = "API Credentials";
+$string['edit'] = "Edit";
+
 

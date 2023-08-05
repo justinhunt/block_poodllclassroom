@@ -3,7 +3,7 @@
     <div class="btn-group" role="group" aria-label="Basic example">
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
             <label class="btn btn-primary active togglelink toggle-left-button">
-                <input type="radio" name="options" id="option1" autocomplete="off" checked> 300 Users
+                <input type="radio" name="options" id="option1" autocomplete="off" checked> 350 Users
             </label>
             <label class="btn btn-secondary togglelink toggle-right-button">
                 <input type="radio" name="options" id="option3" autocomplete="off"> 600 Users
@@ -130,7 +130,6 @@
         </td>
         <td>
             <div class="poodllclassroom_pricing_column_buttons essentials">
-            {{>block_poodllclassroom/freeplantile}}
             {{#essentialsplans}}
                 <div class="block_poodllclassroom_cbbuttons {{display}}">
                     {{#checkoutexisting}}
@@ -138,6 +137,9 @@
                     {{/checkoutexisting}}
                     {{^checkoutexisting}}
                         {{> block_poodllclassroom/newplantile}}
+                        {{#freeplanavailable}}
+                            {{>block_poodllclassroom/freeplantile}}
+                        {{/freeplanavailable}}
                     {{/checkoutexisting}}
                 </div>
             {{/essentialsplans}}
@@ -267,7 +269,6 @@
                     <li class="feature_available">✓</li>
                 </ul>
             </div>
-            {{>block_poodllclassroom/freeplantile}}
             {{#essentialsplans}}
                 <div class="block_poodllclassroom_cbbuttons {{display}}">
                     {{#checkoutexisting}}
@@ -275,6 +276,9 @@
                     {{/checkoutexisting}}
                     {{^checkoutexisting}}
                         {{> block_poodllclassroom/newplantile}}
+                        {{#freeplanavailable}}
+                            {{>block_poodllclassroom/freeplantile}}
+                        {{/freeplanavailable}}
                     {{/checkoutexisting}}
                 </div>
             {{/essentialsplans}}

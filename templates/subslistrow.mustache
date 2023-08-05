@@ -1,5 +1,5 @@
 <tr id="block_poodllclassroom_subs_row_{{id}}" class="block_poodllclassroom_subs_row" data-id="{{id}}">
-    <td class="itemid cell c0" style="">{{plan.name}} <div class="sub_checkoutbutton poodll-change-icon">{{> block_poodllclassroom/changeplanpagebutton}}</div></td>
+    <td class="itemid cell c0" style="">{{plan.name}}</td>
     <td class="itemname cell c1" style="">{{plan.period_display}}</td>
     {{#paymentcurr}} <td class="itemcurrency cell c3" style="">{{paymentcurr}}</td>{{/paymentcurr}}
     {{#payment_display}} <td class="itempayment cell c4" style="">{{payment_display}}</td>{{/payment_display}}
@@ -11,9 +11,12 @@
         <a class="block_poodllclassroom_subseditlink btn btn-success" data-cbaction='none' data-id="{{id}}" data-type="change" href="{{{changeurl}}}">{{#str}}upgradeplan, block_poodllclassroom{{/str}}</a>
     {{/intrial}}
     {{^intrial}}
+        <div class="sub_checkoutbutton poodll-change-icon">{{> block_poodllclassroom/changeplanpagebutton}}</div>
+    {{/intrial}}
+    {{#can_be_removed}}
         <a class="action-details-change-plan" data-cbaction='ssp' data-id="{{id}}" data-upstreamsubid="{{upstreamsubid}}" data-upstreamownerid="{{school.upstreamownerid}}" data-type="subdetails" href="#">Upgrade</a>
         <!-- a class="block_poodllclassroom_subseditlink btn btn-secondary" data-cbaction='none' data-id="{{id}}" data-type="change" href="{{{changeurl}}}">{{#str}}changeplan, block_poodllclassroom{{/str}}</a -->
-    {{/intrial}}
+    {{/can_be_removed}}
         {{#editsuburl}}
             <!-- admins will see a little icon here .. to change upstream sub id mainly -->
             {{{editsuburl}}}
