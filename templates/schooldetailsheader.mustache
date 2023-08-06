@@ -1,3 +1,4 @@
+<section class="dashboard-account-menu">
   <nav id="dashboard-side-navigation">
     <ul class="nav">
       <li class="nav-item">
@@ -10,18 +11,14 @@
         <a class="nav-link subscription-details-link" href="#subscription-details">{{#str}}allschoolsubs, block_poodllclassroom{{/str}}</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link billing-link" href="#billing">{{#str}}billing, block_poodllclassroom{{/str}}</a>
-      </li>
-      <li class="nav-item">
         <a class="nav-link usage-report-link" href="#usage-report">{{#str}}usagereport, block_poodllclassroom{{/str}}</a>
       </li>
     </ul>
-
-      <ul class="nav">
-          {{#options}}
-          <li class="nav-item">
-              <a class="nav-link my-school-details-link" href="{{{url}}}">{{label}}</a>
-          </li>
-          {{/options}}
-      </ul>
+    <br>
+    {{> block_poodllclassroom/dashboardbackwardsnavigation}}
   </nav>
+
+</section>
+<section class="main_page_sections" data-spy="scroll" data-target="#dashboard-side-navigation" data-offset="0">
+
+

@@ -89,6 +89,10 @@ class renderer extends \plugin_renderer_base {
             $optionsdropdown = $this->render_from_template('block_poodllclassroom/optionsdropdown', $optionsdata);
             $content .=  $optionsdropdown;
 
+            //display header
+            $content .=  $this->render_from_template('block_poodllclassroom/resellerheading', $me_reseller);
+
+
             //display schools
             $resold_schools = common::fetch_schools_by_reseller($me_reseller->id);
             $resold_schools = common::add_expiring_sub_to_schools($resold_schools);
@@ -98,6 +102,7 @@ class renderer extends \plugin_renderer_base {
             $content .=  $schoolstable;
 
             return $content;
+
 
         //not reseller
         }else{
@@ -976,7 +981,7 @@ class renderer extends \plugin_renderer_base {
         $table->data  = $data;
 
         //return add button and table
-        $heading = $this->output->heading('Schools',3);
+        $heading = $this->output->heading(get_string('myschools',constants::M_COMP),3,null,'myschools');
         return   $heading  . $addnewbutton . \html_writer::table($table);
 
     }

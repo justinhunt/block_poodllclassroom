@@ -74,10 +74,11 @@ $subssectiondata['show_expiretime']=true;
 $subssectiondata['show_payment']=true;
 $subssectiondata['show_status']=true;
 
-$checkouturl  = new \moodle_url(constants::M_URL . '/subs/checkout.php',array());
-$checkoutbuttondata = ['school'=>$school,'subtype'=>'all', 'checkouturl'=>$checkouturl->out()];
+
+$checkouturl  = new \moodle_url(constants::M_URL . '/subs/checkout.php', ['schoolid'=>$school->id,'platform' => constants::M_PLATFORM_MOODLE,'planfamily'=>'all']);
+$checkoutbuttondata = ['checkouturl'=>$checkouturl->out()];
 $checkoutbutton = $renderer->render_from_template('block_poodllclassroom/checkoutpagebutton', $checkoutbuttondata);
-$subssectiondata['checkoutbutton']=$checkoutbutton ;
+$subssectiondata['checkouturl']=$checkouturl->out() ;
 
 //return the page header
 echo $renderer->header();
@@ -95,8 +96,10 @@ if(true) {
     //clipboard copy thingy
     $clipboardopts = array();
     $PAGE->requires->js_call_amd(constants::M_COMP . "/clipboardhelper", 'init', array($clipboardopts));
+    $content = $renderer->render_from_template('block_poodllclassroom/schooldetailstop',$school);
 
-    $content = $renderer->render_from_template('block_poodllclassroom/schoolheader',$school);
+    $headeropts = array('school'=>$school,'returnurl'=>$CFG->wwwroot . $returnurl);
+    $content .= $renderer->render_from_template('block_poodllclassroom/schooldetailsheader',$headeropts);
     $content .='<br>';
     $content .= $renderer->render_from_template('block_poodllclassroom/subsheader',$subssectiondata);
 
@@ -200,12 +203,6 @@ if(true) {
                 $classroomdata);
         }
     }
-
-    //return button
-    $thebutton = new \single_button(
-        new \moodle_url($CFG->wwwroot . $returnurl,array()),
-        get_string('back', constants::M_COMP), 'get');
-    $content .= $renderer->render($thebutton);
 
     echo $content;
 
