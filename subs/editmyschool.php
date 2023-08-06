@@ -246,7 +246,7 @@ $PAGE->navbar->add($strheading);
 
 echo $renderer->header();
 echo $renderer->heading($strheading);
-echo $renderer->fetch_schooldetailsform_instructions();
+echo $renderer->fetch_schooldetailsform_instructions($returnurl);
 $editform->display();
 /* RS Added to enclose layout */
 echo $renderer->fetch_schooldetails_close_tags();

@@ -365,12 +365,20 @@ class renderer extends \plugin_renderer_base {
         $freeplans = [];
         $showfirst = constants::M_BILLING_YEARLY;
 
+        if($existingsubid){
+            $thesub = common::fetch_extended_sub($existingsubid);
+            $theplanid = $thesub->planid;
+        }else{
+            $theplanid = false;
+        }
+
         foreach ($plans as $plan) {
             $plan->billingintervalname = $billingintervals[$plan->billinginterval];
             $plan->schoolid=$school->id;
+            if($theplanid && $plan->id==$theplanid){
+                $plan->selected = true;
+            }
             //if the users current plan, and its not free/monthly, then set the active display to yes if($plan->id==$myschool->planid){
-
-
             switch ($plan->billinginterval) {
                 case constants::M_BILLING_MONTHLY:
                     $monthlyplans[] = $plan;
@@ -500,9 +508,25 @@ class renderer extends \plugin_renderer_base {
 
     }
 
-    function fetch_changeplan_toppart() {
-        $ret = $this->output->heading(get_string('changeplan', constants::M_COMP),3);
-        $ret .= \html_writer::div(get_string('changeplaninstructions',constants::M_COMP),constants::M_COMP . '_changeplaninstructions');
+    function fetch_changeplan_toppart($school, $platform=constants::M_PLATFORM_MOODLE, $planfamily=constants::M_FAMILY_ALL) {
+        global $CFG;
+
+
+        $tabsdata = [];
+        if($school && isset($school->resold)){
+            $returnurl =  new \moodle_url(constants::M_URL . '/subs/schooldetails.php',array('id'=>$school->id ,'type'=>'school','resellerid'=>$school->resellerid));
+        }else{
+            $returnurl =  new \moodle_url($CFG->wwwroot . '/my/');
+        }
+        $tabsdata['returnurl']=$returnurl->out();
+        $checkouturl = new \moodle_url(constants::M_URL . '/subs/changesubscription.php',array('schoolid'=>$school->id ,'planfamily'=>$planfamily));
+        $tabsdata['checkouturl']=$checkouturl->out();
+        $tabsdata['platform_' . strtoupper($platform)]=1;
+        //$tabsdata['school']=$school;
+        // $tabsdata['planfamily']=$planfamily;
+        $ret = $this->render_from_template('block_poodllclassroom/changepagetabs', $tabsdata);
+
+
         return $ret;
 
     }
@@ -1202,8 +1226,8 @@ class renderer extends \plugin_renderer_base {
 
     }
 
-    public function fetch_schooldetailsform_instructions(){
-        return $this->output->render_from_template('block_poodllclassroom/schooldetailsinstructions', []);
+    public function fetch_schooldetailsform_instructions($returnurl=''){
+        return $this->output->render_from_template('block_poodllclassroom/schooldetailsinstructions', ['returnurl' => $returnurl]);
     }
 
     /* RS - Added to close layout tag structure */

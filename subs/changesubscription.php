@@ -69,6 +69,8 @@ if(!$ok){
 }
 
 echo $renderer->header();
-echo $renderer->fetch_changeplan_toppart();
+echo $renderer->fetch_changeplan_toppart($extended_sub->school,$extended_sub->plan->platform);
+//echo $renderer->fetch_checkout_buttons($extended_sub->school,$extended_sub->plan->platform,constants::M_FAMILY_ALL);
 echo $renderer->fetch_changeplan_buttons($extended_sub);
+echo $renderer->footer_note($extended_sub->plan->platform);
 echo $renderer->footer();
