@@ -110,6 +110,7 @@ class renderer extends \plugin_renderer_base {
 
             //if we do not have a school we can not show subs or school options
             if($school) {
+                $school->options=$options;
                 $content .=   $this->render_from_template('block_poodllclassroom/schoolheader', $school);
                 //if not reseller we just have one school, so we can edit it
                 /*
@@ -243,7 +244,8 @@ class renderer extends \plugin_renderer_base {
             'platform'=>constants::M_PLATFORM_MOODLE,
             'planfamily'=>'all',
             'checkouturl'=>$checkouturl->out(),
-            'videoid'=>'694802997'];
+            'videoid'=>'694802997',
+            'options'=>$options];
         if(count($moodlesubs)>0){
             $moodledata['hassubs']=true;
             $moodledata['school']=$moodlesubs[0]->school;
