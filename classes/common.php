@@ -833,13 +833,16 @@ class common
 
                 case constants::M_STATUS_ACTIVE:
                     $sub->status_display=get_string('active_status',constants::M_COMP);
+                    $sub->cancancel=true;
                     break;
                 case constants::M_STATUS_FUTURE:
                     $sub->status_display=get_string('future_status',constants::M_COMP);
+                    $sub->cancancel=true;
                     break;
                 case constants::M_STATUS_IN_TRIAL:
                     $sub->status_display=get_string('intrial_status',constants::M_COMP);
                     $sub->intrial=true;
+                    $sub->cancancel=true;
                     break;
                 case constants::M_STATUS_NONRENEWING:
                     $sub->status_display=get_string('nonrenewing_status',constants::M_COMP);
@@ -931,7 +934,8 @@ class common
 
             //if it is already renewed thats good!
             // We just use 3 months arbitrarily, it could be 1 day I guess
-            $already_renewed = strtotime('+3 months',$sub->expiretime) < $sub->next_billing_at;
+
+            $already_renewed = isset($sub->next_billing_at) && (strtotime('+3 months',$sub->expiretime) < $sub->next_billing_at);
             if($already_renewed) {
                 $sub->expiretime_display .= '<br>' . get_string('alreadyrenewed', constants::M_COMP);
 

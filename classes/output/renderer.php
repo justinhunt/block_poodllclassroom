@@ -348,7 +348,7 @@ class renderer extends \plugin_renderer_base {
         }
         $platform = strtoupper($platform);
         $planfamily = strtoupper($planfamily);
-        $freeplanavailable = true;
+
 
         //get plans
         $billingintervals = common::fetch_billingintervals();
@@ -357,7 +357,14 @@ class renderer extends \plugin_renderer_base {
         $plans = common::fetch_plans_by_platform($platform, $planfamily,$onlyvisibleplans);
 
         //get subs for the school
+        //if they have a sub already, they can no longer take the free tria;\l
         $subs = common::fetch_subs_by_school($school->id);
+        if($subs && count($subs)>0) {
+            $freeplanavailable=false;
+        }else{
+            //for now
+            $freeplanavailable = true;
+        }
 
         $monthlyplans = [];
         $yearlyplans = [];

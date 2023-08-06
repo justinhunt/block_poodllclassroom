@@ -186,6 +186,7 @@ $string['upgradeplanheader'] = 'Change Plan Options';
 $string['monthlyyearly'] = 'Monthly <--> Yearly';
 $string['yourcurrentplan'] = '* current plan *';
 $string['upgradeplan'] = 'Upgrade Plan';
+$string['upgrade'] = 'Upgrade';
 
 $string['changeplaninstructions'] = 'Choose a subscription plan from the options below. The prices shown are all in US dollars. The new plan will begin immediately. If you wish to schedule your new plan to begin at next renewal, please contact Poodll Support. ' ;
 $string['youhavenosubscription'] = 'You do not have a subscription, so we can not change your plan.';
@@ -220,7 +221,7 @@ $string['existingschoolsforreseller'] = 'You can not delete a reseller if school
 $string['timecreated'] = 'Time Created';
 $string['subname'] = 'Subscription';
 $string['subperiod'] = 'Period';
-$string['cancel'] = 'cancel';
+$string['cancel'] = 'Cancel';
 $string['renew'] = 'renew';
 $string['renewnow'] = 'Renew';
 $string['change'] = 'change';
@@ -259,6 +260,7 @@ $string['back']='Back';
 $string['addnew']='Add new';
 $string['addnewsubscription']='Add subscription';
 $string['changesubscription']='Change subscription';
+$string['changesub']='Change';
 
 
 $string['checkout'] = 'Checkout.' ; // unused
