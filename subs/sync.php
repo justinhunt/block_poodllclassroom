@@ -216,7 +216,7 @@ switch($type) {
             echo $renderer->header();
             echo $renderer->heading( get_string('removebogusschools', constants::M_COMP),2);
 
-            echo "<br>Push the doomsday button below to remove all bogus schools....<br>";
+            echo "<br>Push the doomsday button below to remove all bogus schools (well 10 at a time) ....<br>";
 
             //list schools
             $schools = common::fetch_no_subs_schools();
@@ -244,18 +244,23 @@ switch($type) {
         echo $renderer->heading( get_string('removeallbogusschools', constants::M_COMP),2);
 
         $schools = common::fetch_no_subs_schools();
+        $deleted = 0;
         if($schools) {
             foreach ($schools as $school) {
                $cbuser = \block_poodllclassroom\chargebee_helper::fetch_chargebee_user($school->upstreamownerid);
                 if($cbuser){
                     $failmessages[] = 'This school has a chargebee user - '  . $school->upstreamownerid . ' - '. $school->name;
                 }else{
-                    // $result=$DB->delete_records(constants::M_TABLE_SCHOOLS,array('id'=>$school->id));
-                    $result=$DB->get_record(constants::M_TABLE_SCHOOLS,array('id'=>$school->id));
+                     $result=$DB->delete_records(constants::M_TABLE_SCHOOLS,array('id'=>$school->id));
+                   // $result=$DB->get_record(constants::M_TABLE_SCHOOLS,array('id'=>$school->id));
                     if(!$result){
-                        $failmessages[]  = 'FAILED deleting ' . $school->name;
+                        $failmessages[]  = ' FAILED deleting ' . $school->name;
                     }else{
-                        $successmessages[] = 'would have deleted ' . $school->name;
+                        $successmessages[] = ' deleted ' . $school->name;
+                        $deleted++;
+                        if($deleted>10){
+                            break;
+                        }
                     }
                 }
             }

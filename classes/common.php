@@ -513,6 +513,8 @@ class common
         $sql .= ' FROM {'. constants::M_TABLE_SCHOOLS .'} school ';
         $sql .= ' LEFT JOIN {'. constants::M_TABLE_SUBS .'} sub ON  school.id = sub.schoolid';
         $sql .= ' WHERE sub.schoolid IS NULL';
+        $sql .= ' ORDER BY school.id DESC';
+
         $schools=$DB->get_records_sql($sql,[]);
         if($schools && count($schools)>0) {
             return $schools;
