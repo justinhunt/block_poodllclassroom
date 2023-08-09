@@ -245,11 +245,16 @@ switch($type) {
 
         $schools = common::fetch_no_subs_schools();
         $deleted = 0;
+        $failed = 0;
+        $firestop=10;
         if($schools) {
             foreach ($schools as $school) {
                $cbuser = \block_poodllclassroom\chargebee_helper::fetch_chargebee_user($school->upstreamownerid);
                 if($cbuser){
                     $failmessages[] = 'This school has a chargebee user - '  . $school->upstreamownerid . ' - '. $school->name;
+                    if($failed>$firestop){
+                        break;
+                    }
                 }else{
                      $result=$DB->delete_records(constants::M_TABLE_SCHOOLS,array('id'=>$school->id));
                    // $result=$DB->get_record(constants::M_TABLE_SCHOOLS,array('id'=>$school->id));
@@ -258,7 +263,7 @@ switch($type) {
                     }else{
                         $successmessages[] = ' deleted ' . $school->name;
                         $deleted++;
-                        if($deleted>10){
+                        if($deleted>$firestop){
                             break;
                         }
                     }
