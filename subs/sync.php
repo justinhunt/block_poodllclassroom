@@ -252,6 +252,7 @@ switch($type) {
                $cbuser = \block_poodllclassroom\chargebee_helper::fetch_chargebee_user($school->upstreamownerid);
                 if($cbuser){
                     $failmessages[] = 'This school has a chargebee user - '  . $school->upstreamownerid . ' - '. $school->name;
+                    $failed++;
                     if($failed>$firestop){
                         break;
                     }
