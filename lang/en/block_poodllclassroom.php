@@ -507,5 +507,7 @@ $string['mypoodllaccount'] = "Poodll Account";
 $string['apicredentials'] = "API Credentials";
 $string['edit'] = "Edit";
 $string['myschools'] = "My Schools";
+$string['removebogusschools'] = "Remove bogus schools";
+$string['removeallbogusschools']  = "Remove all bogus schools";
 
 
