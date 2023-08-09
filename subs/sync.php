@@ -245,7 +245,7 @@ switch($type) {
 
         $schools = common::fetch_schools();
         foreach($schools as $school){
-            if($school->upstreamownerid === 0){
+            if($school->upstreamownerid === '0'){
 
                 //cancel the deletion request if there exist subs using this plan
                 $subs = common::fetch_subs_by_school($school->id);
