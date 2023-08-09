@@ -219,12 +219,12 @@ switch($type) {
             echo "<br>Push the doomsday button below to remove all bogus schools....<br>";
 
             //list schools
-        $schools = common::fetch_schools();
-        foreach($schools as $school) {
-            if ($school->upstreamownerid === 0) {
-                echo $school->id . " " . $school->name . "<br>";
+            $schools = common::fetch_no_subs_schools();
+            if($schools) {
+                foreach ($schools as $school) {
+                    echo $school->id . " " . $school->name . "<br>";
+                }
             }
-        }
 
         //$allsync_buttons
         $removebogusschoolsbutton = new \single_button(
@@ -243,16 +243,14 @@ switch($type) {
         echo $renderer->header();
         echo $renderer->heading( get_string('removeallbogusschools', constants::M_COMP),2);
 
-        $schools = common::fetch_schools();
-        foreach($schools as $school){
-            if($school->upstreamownerid === '0'){
-
-                //cancel the deletion request if there exist subs using this plan
-                $subs = common::fetch_subs_by_school($school->id);
-                if($subs && count($subs)){
-                    $failmessages[] = get_string('existingsubsforschool',constants::M_COMP) . ' - ' . $school->name;
+        $schools = common::fetch_no_subs_schools();
+        if($schools) {
+            foreach ($schools as $school) {
+               $cbuser = \block_poodllclassroom\chargebee_helper::fetch_chargebee_user($school->upstreamownerid);
+                if($cbuser){
+                    $failmessages[] = 'This school has a chargebee user - '  . $school->upstreamownerid . ' - '. $school->name;
                 }else{
-                   // $result=$DB->delete_records(constants::M_TABLE_SCHOOLS,array('id'=>$school->id));
+                    // $result=$DB->delete_records(constants::M_TABLE_SCHOOLS,array('id'=>$school->id));
                     $result=$DB->get_record(constants::M_TABLE_SCHOOLS,array('id'=>$school->id));
                     if(!$result){
                         $failmessages[]  = 'FAILED deleting ' . $school->name;
@@ -260,12 +258,8 @@ switch($type) {
                         $successmessages[] = 'would have deleted ' . $school->name;
                     }
                 }
-
-
             }
-
         }
-
 
         echo "success=" . count($successmessages) . '<br>';
         echo "fail=" . count($failmessages) . '<br>';

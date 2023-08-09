@@ -506,6 +506,21 @@ class common
         }
     }
 
+    public static function  fetch_no_subs_schools(){
+        global $DB;
+
+        $sql = 'SELECT school.*';
+        $sql .= ' FROM {'. constants::M_TABLE_SCHOOLS .'} school ';
+        $sql .= ' LEFT JOIN {'. constants::M_TABLE_SUBS .'} sub ON  school.id = sub.schoolid';
+        $sql .= ' WHERE sub.schoolid IS NULL';
+        $schools=$DB->get_records_sql($sql,[]);
+        if($schools && count($schools)>0) {
+            return $schools;
+        }else{
+            return false;
+        }
+    }
+
     public static function fetch_subs_by_school($schoolid){
         global $DB;
 
