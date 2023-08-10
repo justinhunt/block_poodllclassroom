@@ -61,8 +61,35 @@ if(has_capability('block/poodllclassroom:manageintegration', $context)) {
         $content = '';
 
         //fetch reseller header
-        $resellerheader = $renderer->render_from_template('block_poodllclassroom/resellerheader', $the_reseller);
+        $resellerheader = $renderer->render_from_template('block_poodllclassroom/resellerheading', $the_reseller);
         $content .= $resellerheader;
+
+/*
+        $billingaccount= array('url' => '#', 'cbaction' => 'ssp', 'upstreamownerid' => $the_reseller ->upstreamuserid, 'type' => 'billingaccount', 'label' => get_string('billingaccount', constants::M_COMP));
+        $billinghistory = array('url' => '#', 'cbaction' => 'ssp', 'upstreamownerid' => $the_reseller ->upstreamuserid, 'type' => 'billinghistory', 'label' => get_string('billinghistory', constants::M_COMP));
+        $paymentsources = array('url' => '#', 'cbaction' => 'ssp', 'upstreamownerid' => $the_reseller ->upstreamuserid, 'type' => 'paymentsources', 'label' => get_string('paymentsources', constants::M_COMP));
+        $optionsdata['billingaccount']=$billingaccount;
+        $optionsdata['billinghistory']=$billinghistory;
+        $optionsdata['paymentsources']=$paymentsources;
+
+        $options[] = $billingaccount;
+        $options[] = $billinghistory;
+        $options[] = $paymentsources;
+
+        // $portalurl= chargebee::get_portalurl_by_upstreamid($me_reseller->upstreamuserid);
+        //$options[] = array('url' => $portalurl, 'label' => get_string('managesubscriptions', constants::M_COMP));
+
+        //set account name
+        $optionsdata['useraccountname']=$the_reseller->name;
+
+        //Build options widget
+        $optionsdata['options']=$options;
+        $optionsdropdown = $renderer->render_from_template('block_poodllclassroom/optionsdropdown', $optionsdata);
+        $content .=  $optionsdropdown;
+
+         //display header
+         $content .=  $renderer->render_from_template('block_poodllclassroom/resellerheading', $the_reseller);
+*/
 
         //display schools
         $resold_schools = common::fetch_schools_by_reseller($the_reseller->id);

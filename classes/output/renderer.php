@@ -485,7 +485,7 @@ class renderer extends \plugin_renderer_base {
                         $mediaplans[]=$theplan;
                         break;
                     case constants::M_FAMILY_ESSENTIALS:
-                        $theplan->display=$theplan->upstreamplan == 'Poodll-Essentials-Basic' ? '' : 'block_poodllclassroom_hidden';
+                        $theplan->display=$theplan->upstreamplan == 'Poodll-Essentials-Lite' ? '' : 'block_poodllclassroom_hidden';
                         $essentialsplans[]=$theplan;
                         break;
                     case constants::M_FAMILY_EC:
