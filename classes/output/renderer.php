@@ -1203,6 +1203,7 @@ class renderer extends \plugin_renderer_base {
                 foreach ($json_arr as $key => $val) {
                     $label = $key;
                     $val = $json_arr[$key]['audio'] + $json_arr[$key]['video'];
+                    if(isset($json_arr[$key]['none'])){$val += $json_arr[$key]['none'];}
                     if (isset($plugin_types_arr[$label])) {
                         $plugin_types_arr[$label] += $val;
                     } else {
