@@ -250,12 +250,19 @@ switch($type) {
         if($schools) {
             foreach ($schools as $school) {
                $cbuser = \block_poodllclassroom\chargebee_helper::fetch_chargebee_user($school->upstreamownerid);
-                if($cbuser){
-                    $failmessages[] = 'This school has a chargebee user - '  . $school->upstreamownerid . ' - '. $school->name;
+                //reseller
+                $reseller =$DB->get_record(constants::M_TABLE_RESELLERS,array('id'=>$school->resellerid));
+
+                if($cbuser) {
+                    $failmessages[] = 'This school has a chargebee user - ' . $school->upstreamownerid . ' - ' . $school->name;
                     $failed++;
-                    if($failed>$firestop){
+                    if ($failed > $firestop) {
                         break;
                     }
+                }else if($reseller->resellertype==constants::M_RESELLER_THIRDPARTY)    {
+                    $failmessages[] = 'FAILED deleting: This school is resold by - ' . $reseller->name;
+                    $failed++;
+                    continue;
                 }else{
                      $result=$DB->delete_records(constants::M_TABLE_SCHOOLS,array('id'=>$school->id));
                    // $result=$DB->get_record(constants::M_TABLE_SCHOOLS,array('id'=>$school->id));
