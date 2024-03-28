@@ -216,7 +216,7 @@ switch($type) {
             echo $renderer->header();
             echo $renderer->heading( get_string('removebogusschools', constants::M_COMP),2);
 
-            echo "<br>Push the doomsday button below to remove all bogus schools (well 10 at a time) ....<br>";
+            echo "<br>Push the doomsday button below to remove all bogus schools (well 50 at a time) ....<br>";
 
             //list schools
             $schools = common::fetch_no_subs_schools();
@@ -246,7 +246,7 @@ switch($type) {
         $schools = common::fetch_no_subs_schools();
         $deleted = 0;
         $failed = 0;
-        $firestop=10;
+        $firestop=50;
         if($schools) {
             foreach ($schools as $school) {
                $cbuser = \block_poodllclassroom\chargebee_helper::fetch_chargebee_user($school->upstreamownerid);
