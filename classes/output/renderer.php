@@ -865,7 +865,7 @@ class renderer extends \plugin_renderer_base {
             $fields[] = $sub->upstreamsubid;
             $fields[] = $sub->status;
             $fields[] = $sub->jsonfields;
-            $fields[] = strftime('%d %b %Y', $sub->timemodified);
+            $fields[] = date('Y-m-d', $sub->timemodified);
 
             $buttons = array();
 
@@ -949,11 +949,11 @@ class renderer extends \plugin_renderer_base {
             }
             //get next expiry
             if(isset($school->nextexpiry) && !empty($school->nextexpiry)) {
-                $fields[] = date("Y-m-d", $school->nextexpiry);//strftime('%d %b %Y', $school->timemodified);
+                $fields[] = date("Y-m-d", $school->nextexpiry);//date('Y-m-d', $school->timemodified);
             }else{
                 $fields[] = '-';
             }
-            $fields[] = date("Y-m-d", $school->timemodified);//strftime('%d %b %Y', $school->timemodified);
+            $fields[] = date("Y-m-d", $school->timemodified);//date('Y-m-d', $school->timemodified);
 
             $buttons = array();
             //view school subs and other details
@@ -1047,11 +1047,11 @@ class renderer extends \plugin_renderer_base {
 
             //get next expiry
             if(isset($school->nextexpiry) && !empty($school->nextexpiry)) {
-                $fields[] = date("Y-m-d", $school->nextexpiry);//strftime('%d %b %Y', $school->timemodified);
+                $fields[] = date("Y-m-d", $school->nextexpiry);//date('Y-m-d', $school->timemodified);
             }else{
                 $fields[] = '-';
             }
-            $fields[] = date("Y-m-d", $school->timemodified);//strftime('%d %b %Y', $school->timemodified);
+            $fields[] = date("Y-m-d", $school->timemodified);//date('Y-m-d', $school->timemodified);
 
             $buttons = array();
             //view school subs and other details
@@ -1109,7 +1109,7 @@ class renderer extends \plugin_renderer_base {
             $fields[] = $reseller->resellerfirstname . ' ' . $reseller->resellerlastname . "($reseller->userid)";
             $fields[] = $reseller->upstreamuserid;
             $fields[] = $reseller->jsonfields;
-            $fields[] = strftime('%d %b %Y', $reseller->timemodified);
+            $fields[] = date('Y-m-d', $reseller->timemodified);
 
             $buttons = array();
 
