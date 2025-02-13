@@ -1,0 +1,42 @@
+<div class="block_poodllclassroom_intervaldiv">
+    <div class="btn-group" role="group" aria-label="Monthly or Yearly">
+        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <label class="btn btn-secondary togglelink toggle-monthly-button">
+                <input type="radio" name="options" id="optionmonthly" autocomplete="off"> {{#str}}monthly, block_poodllclassroom{{/str}}
+            </label>
+            <label class="btn btn-primary active togglelink toggle-yearly-button">
+                <input type="radio" name="options" id="optionyearly" autocomplete="off" checked> {{#str}}yearly, block_poodllclassroom{{/str}}
+            </label>
+        </div>
+    </div>
+</div>
+{{^element.frozen}}
+{{#js}}
+require(['jquery'], function($) {
+    //set up toggle button
+    var togglemonthlybutton = $('.toggle-monthly-button');
+    var toggleyearlybutton = $('.toggle-yearly-button');
+    var monthlycontainer = $('.block_poodllclassroom_moodleplans_Monthly');
+    var yearlycontainer = $('.block_poodllclassroom_moodleplans_Yearly');
+
+    toggleyearlybutton.on('click',function(){
+        if (togglemonthlybutton.hasClass('btn-primary')) {
+            togglemonthlybutton.removeClass('btn-primary').addClass('btn-secondary');
+            toggleyearlybutton.removeClass('btn-secondary').addClass('btn-primary');
+            monthlycontainer.addClass('block_poodllclassroom_hidden');
+            yearlycontainer.removeClass('block_poodllclassroom_hidden');
+        }
+    });
+
+    togglemonthlybutton.on('click',function(){
+        if (toggleyearlybutton.hasClass('btn-primary')) {
+            toggleyearlybutton.removeClass('btn-primary').addClass('btn-secondary');
+            togglemonthlybutton.removeClass('btn-secondary').addClass('btn-primary');
+            yearlycontainer.addClass('block_poodllclassroom_hidden');
+            monthlycontainer.removeClass('block_poodllclassroom_hidden');
+        }
+    });
+});
+
+{{/js}}
+{{/element.frozen}}

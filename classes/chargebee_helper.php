@@ -310,7 +310,7 @@ class chargebee_helper
                     }else{
                         $plan_id = common::fetch_upstreamplanid_from_upstreamsub($upstreamsub);
                     }
-                    $plan = common::fetch_poodllplan_from_upstreamplan($plan_id);
+                    $plan = common::fetch_poodllplan_from_upstreamplan($plan_id,$upstreamsub);
                 }
                 if(!$plan){
                     if($trace) {

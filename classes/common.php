@@ -586,7 +586,7 @@ class common
             $upstreamsub->scheduled_sub->payment = $scheduled_sub->subscription_items[0]->amount;
             //get our plan
             $scheduledplanid = common::fetch_upstreamplanid_from_upstreamsub($scheduled_sub);
-            $poodllplan = self::fetch_poodllplan_from_upstreamplan($scheduledplanid );
+            $poodllplan = self::fetch_poodllplan_from_upstreamplan($scheduledplanid, $scheduled_sub);
             $upstreamsub->scheduled_sub->planname = $poodllplan->name;
             //get our billing unit
             $upstreamsub->scheduled_sub->billinginterval = $poodllplan->billinginterval;
@@ -1025,7 +1025,7 @@ class common
         global $DB;
         $ret = false;
         $upstreamplanid = common::fetch_upstreamplanid_from_upstreamsub($upstreamsub);
-        $plan = self::fetch_poodllplan_from_upstreamplan($upstreamplanid);
+        $plan = self::fetch_poodllplan_from_upstreamplan($upstreamplanid, $upstreamsub);
         if($plan && $poodllsub && $upstreamsub) {
 
             $poodllsub->planid = $plan->id;
@@ -1042,16 +1042,23 @@ class common
 
 
 
-    //
-    public static function fetch_poodllplan_from_upstreamplan($upstreamplanid){
+    //return the local plan for this subscription and billinginterval
+    public static function fetch_poodllplan_from_upstreamplan($upstreamplanid, $upstreamsub){
         global $DB;
-        $plan = $DB->get_record(constants::M_TABLE_PLANS, array('upstreamplan'=>$upstreamplanid));
-        if(!$plan){
-            //This was kind of rubbishy, so we turned it off
-            //if there is no plan its probably a Poodll NET or a LTI or something
-           //$plan = self::create_blankplan($upstreamplanid);
+        switch($upstreamsub->billing_period_unit){
+            case 'month':
+                $billinginterval = constants::M_BILLING_MONTHLY;
+                break;
+            case 'day':
+                $billinginterval = constants::M_BILLING_DAILY;
+                break;
+            case 'year':
+            default:
+                $billinginterval = constants::M_BILLING_YEARLY;
         }
+        $plan = $DB->get_record(constants::M_TABLE_PLANS, array('upstreamplan'=>$upstreamplanid, 'billinginterval'=>$billinginterval));
         return $plan;
+
     }
 
     public static function create_poodll_sub($subscription, $currency_code, $amount_paid, $upstreamownerid, $downstreamschoolid=false){
@@ -1107,7 +1114,7 @@ class common
             }else{
                 $plan_id = self::fetch_upstreamplanid_from_upstreamsub($subscription);
             }
-            $plan = self::fetch_poodllplan_from_upstreamplan($plan_id);
+            $plan = self::fetch_poodllplan_from_upstreamplan($plan_id, $subscription);
         }
         if(!$plan){
             return false;
@@ -1163,7 +1170,7 @@ class common
                     $username = strtolower($school->apiuser);
                     $accesskeyid='xxxxxx';
                     $accesskeysecret='yyyyyy';
-                    $subscriptionid = $plan->poodllplanid; //this is the numeric id .. of the old memberpress system which cloudpoodll still keys on
+                    $subscriptionid = $plan->poodllplanid; //this is the numeric id .. of the old memberpress system which cloud.poodll.com still keys on
                     $transactionid = 999;//$subscription->id would be the one, but its int only at this stage
                     $expiretime=self::extract_expire_time($subscription);
                     $theuser = $DB->get_record('user', array('id'=>$school->ownerid));
@@ -1230,7 +1237,7 @@ class common
                 $username = strtolower($school->apiuser);
                 $accesskeyid='xxxxxx';
                 $accesskeysecret='yyyyyy';
-                $subscriptionid = $plan->poodllplanid; //this is the numeric id .. of the old memberpress system which cloudpoodll still keys on
+                $subscriptionid = $plan->poodllplanid; //this is the numeric id .. of the old memberpress system which cloud.poodll.com still keys on
                 $transactionid = 999;//$subscription->id would be the one, but its int only at this stage
                 $expiretime=self::extract_expire_time($upstreamsub);
                 $theuser = $DB->get_record('user', array('id'=>$school->ownerid));
@@ -1256,6 +1263,8 @@ class common
         return json_encode($obj);
     }
 
+    //this strips the billing period and currency from the sub plan id to make it the plan id
+    //e.g POODLL-MEDIA-LITE-USD-Monthly -> POODLL-MEDIA-LITE
     public static function fetch_upstreamplanid_from_upstreamsub($subscription){
         $plan_id = $subscription->subscription_items[0]->item_price_id;
         $currency = $subscription->currency_code ? $subscription->currency_code : 'USD';

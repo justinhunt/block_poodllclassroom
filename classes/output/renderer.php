@@ -413,9 +413,12 @@ class renderer extends \plugin_renderer_base {
 
         //toggle monthly/yearly button
         if (count($monthlyplans) > 0){
+            /*
             $togglebutton = \html_writer::link('#', get_string('monthlyyearly', constants::M_COMP),
                 array('class' => 'btn btn-secondary monthlyyearly'));
             $togglediv = \html_writer::div($togglebutton, constants::M_COMP . '_monthlyyearly');
+            */
+            $togglediv = $this->render_from_template('block_poodllclassroom/checkoutbillingintervaltoggle', []);
         }else{
             $togglediv ='';
         }
@@ -446,9 +449,7 @@ class renderer extends \plugin_renderer_base {
 
         //monthly plans
         $mdata =array();
-        $mdata['plans']=$monthlyplans;
-      //  $mdata['display']=($showfirst==constants::M_BILLING_MONTHLY) ? '' : 'block_poodllclassroom_hidden';
-        $mdata['display']= 'block_poodllclassroom_hidden';
+        $mdata['display']='block_poodllclassroom_hidden';
         $mdata['billinginterval']='Monthly';
         $mdata['currency']='USD';
         $mdata['billingintervallabel']=get_string('monthly',constants::M_COMP);
@@ -456,11 +457,49 @@ class renderer extends \plugin_renderer_base {
             $mdata['checkoutexisting']=$checkoutexisting;
             $mdata['currentsubid']=$existingsubid;
         }
-        $monthly = $this->render_from_template('block_poodllclassroom/newplancontainer', $mdata);
+        if($platform==constants::M_PLATFORM_MOODLE && $planfamily=='ALL'){
+            $langplans=[];
+            $mediaplans=[];
+            $essentialsplans=[];
+            $englishcentralplans=[];
+            foreach($monthlyplans as $theplan){
+                switch($theplan->planfamily){
+                    case constants::M_FAMILY_LANG:
+                        $theplan->display=$theplan->upstreamplan == 'Poodll-Languages-Lite' ? '' : 'block_poodllclassroom_hidden';
+                        $langplans[]=$theplan;
+                        break;
+                    case constants::M_FAMILY_MEDIA:
+                        $theplan->display=$theplan->upstreamplan == 'Poodll-Media-Lite' ? '' : 'block_poodllclassroom_hidden';
+                        $mediaplans[]=$theplan;
+                        break;
+                    case constants::M_FAMILY_ESSENTIALS:
+                        $theplan->display=$theplan->upstreamplan == 'Poodll-Essentials-Lite' ? '' : 'block_poodllclassroom_hidden';
+                        $essentialsplans[]=$theplan;
+                        break;
+                    case constants::M_FAMILY_EC:
+                        $theplan->display='';
+                        $englishcentralplans[]=$theplan;
+                        break;
+                }
+            }
+            if(count($mediaplans)>0){$mdata['mediaplans']=$mediaplans;}
+            if(count($langplans)>0){$mdata['langplans']=$langplans;}
+            if(count($essentialsplans)>0){$mdata['essentialsplans']=$essentialsplans;}
+            if(count($englishcentralplans)>0){$mdata['englishcentralplans']=$englishcentralplans;}
+            $mdata['freeplanavailable']=$freeplanavailable;
+            $monthly = $this->render_from_template('block_poodllclassroom/moodleplanscontainer', $mdata);
+        }else {
+            $mdata['plans']=$monthlyplans;
+            if($checkoutexisting) {
+                $mdata['checkoutexisting']=$checkoutexisting;
+                $mdata['currentsubid']=$existingsubid;
+            }
+            $mdata['freeplanavailable']=$freeplanavailable;
+            $monthly = $this->render_from_template('block_poodllclassroom/newplancontainer', $mdata);
+        }
 
         //yearly plans
         $ydata =array();
-       // $ydata['display']=($showfirst==constants::M_BILLING_YEARLY) ? '' : 'block_poodllclassroom_hidden';
         $ydata['display']='';
         $ydata['billinginterval']='Yearly';
         $ydata['currency']='USD';
@@ -771,6 +810,11 @@ class renderer extends \plugin_renderer_base {
             $buttons[] = \html_writer::link(new \moodle_url(constants::M_URL . '/subs/edit.php', $urlparams),
                     $this->output->pix_icon('t/edit', get_string('edit')),
                     array('title' => get_string('edit')));
+
+            $buttons[] = \html_writer::link(new \moodle_url(constants::M_URL . '/subs/edit.php',
+                $urlparams + array('duplicate' => 1)),
+                $this->output->pix_icon('t/copy', get_string('copy')),
+                array('title' => get_string('copy')));
 
             $buttons[] = \html_writer::link(new \moodle_url(constants::M_URL . '/subs/edit.php',
                         $urlparams + array('delete' => 1)),

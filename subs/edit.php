@@ -32,6 +32,7 @@ use block_poodllclassroom\chargebee_helper;
 
 $id        = optional_param('id', 0, PARAM_INT);
 $delete    = optional_param('delete', 0, PARAM_BOOL);
+$duplicate    = optional_param('duplicate', 0, PARAM_BOOL);
 $confirm    = optional_param('confirm', 0, PARAM_BOOL);
 $type    = optional_param('type', 'plan', PARAM_TEXT);//plan/ sub school //myschool
 $returnurl = optional_param('returnurl', '', PARAM_LOCALURL);
@@ -60,6 +61,7 @@ $PAGE->set_context($context);
 $PAGE->set_pagelayout('course');
 $renderer = $PAGE->get_renderer(constants::M_COMP);
 
+//if we are deleting the item
 if ($delete && $id) {
     $PAGE->url->param('delete', 1);
     switch($type){
@@ -69,7 +71,7 @@ if ($delete && $id) {
                 redirect($returnurl);
             }
 
-            //cancel the deletion request if their exist subs using this plan
+            //cancel the deletion request if there exist subs using this plan
             $subs = common::fetch_subs_by_plan($id);
             if($subs && count($subs)){
                 redirect($returnurl,get_string('existingsubsforplan',constants::M_COMP),
@@ -172,6 +174,64 @@ if ($delete && $id) {
     }
 
 }
+
+//If we are duplicating the item
+if ($duplicate && $id) {
+    $PAGE->url->param('duplicate', 1);
+    switch ($type) {
+        case 'plan':
+            $plan = $DB->get_record(constants::M_TABLE_PLANS, array('id' => $id));
+            if ($plan) {
+                $newplan = clone $plan;
+                $newplan->id = null;
+                $newplan->name = $newplan->name . ' (copy)';
+                $newplan->timemodified = time();
+                $newplan->timecreated = time();
+                $result = $DB->insert_record(constants::M_TABLE_PLANS, $newplan);
+                redirect($returnurl);
+            }
+            break;
+            //'sub' never tested
+        case 'sub':
+            $sub = $DB->get_record(constants::M_TABLE_SUBS, array('id' => $id));
+            if ($sub) {
+                $newsub = clone $sub;
+                $newsub->id = null;
+                $newsub->name = $newsub->name . ' (copy)';
+                $newsub->timemodified = time();
+                $newsub->timecreated = time();
+                $result = $DB->insert_record(constants::M_TABLE_SUBS, $newsub);
+                redirect($returnurl);
+            }
+            break;
+            //'school' never tested
+        case 'school':
+            $school = $DB->get_record(constants::M_TABLE_SCHOOLS, array('id' => $id));
+            if ($school) {
+                $newschool = clone $school;
+                $newschool->id = null;
+                $newschool->name = $newschool->name . ' (copy)';
+                $newschool->timemodified = time();
+                $newschool->timecreated = time();
+                $result = $DB->insert_record(constants::M_TABLE_SCHOOLS, $newschool);
+                redirect($returnurl);
+            }
+            break;
+            //'reseller' never tested
+        case 'reseller':
+            $reseller = $DB->get_record(constants::M_TABLE_RESELLERS, array('id' => $id));
+            if ($reseller) {
+                $newreseller = clone $reseller;
+                $newreseller->id = null;
+                $newreseller->name = $newreseller->name . ' (copy)';
+                $newreseller->timemodified = time();
+                $newreseller->timecreated = time();
+                $result = $DB->insert_record(constants::M_TABLE_RESELLERS, $newreseller);
+                redirect($returnurl);
+            }
+            break;
+    }// End of what to duplicate switch
+}// End of if duplicate
 
 
 switch($type){
