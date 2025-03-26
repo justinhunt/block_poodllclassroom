@@ -436,7 +436,9 @@ class renderer extends \plugin_renderer_base {
         }
         //this is a little hack, because in the monthly/yearly it used the plan id of the current sub (bad)
         $freeplanid = $freeplan->id;
-        
+        $freeplanbillinginterval =  $freeplan->billinginterval;
+        $mdata['freeplanbillinginterval'] = $freeplanbillinginterval ;
+
         $mdata['plans']=$freeplans;
         $mdata['freeplanid'] = $freeplanid;
         $mdata['display']='';
@@ -492,6 +494,7 @@ class renderer extends \plugin_renderer_base {
             if(count($englishcentralplans)>0){$mdata['englishcentralplans']=$englishcentralplans;}
             $mdata['freeplanavailable']=$freeplanavailable;
             $mdata['freeplanid']=$freeplanid;
+            $mdata['freeplanbillinginterval'] = $freeplanbillinginterval;
             $monthly = $this->render_from_template('block_poodllclassroom/moodleplanscontainer', $mdata);
         }else {
             $mdata['plans']=$monthlyplans;
@@ -501,6 +504,7 @@ class renderer extends \plugin_renderer_base {
             }
             $mdata['freeplanavailable']=$freeplanavailable;
             $mdata['freeplanid']=$freeplanid;
+            $mdata['freeplanbillinginterval'] = $freeplanbillinginterval;
             $monthly = $this->render_from_template('block_poodllclassroom/newplancontainer', $mdata);
         }
 
@@ -545,6 +549,7 @@ class renderer extends \plugin_renderer_base {
             if(count($englishcentralplans)>0){$ydata['englishcentralplans']=$englishcentralplans;}
             $ydata['freeplanavailable']=$freeplanavailable;
             $ydata['freeplanid']=$freeplanid;
+            $ydata['freeplanbillinginterval'] = $freeplanbillinginterval;
             $yearly = $this->render_from_template('block_poodllclassroom/moodleplanscontainer', $ydata);
         }else {
             $ydata['plans']=$yearlyplans;
@@ -554,6 +559,7 @@ class renderer extends \plugin_renderer_base {
             }
             $ydata['freeplanavailable']=$freeplanavailable;
             $ydata['freeplanid'] = $freeplanid;
+            $ydata['freeplanbillinginterval'] = $freeplanbillinginterval;
             $yearly = $this->render_from_template('block_poodllclassroom/newplancontainer', $ydata);
         }
 
