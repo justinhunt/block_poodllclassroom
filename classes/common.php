@@ -1037,6 +1037,14 @@ class common
             $poodllsub->timemodified = time();
             $ret = $DB->update_record(constants::M_TABLE_SUBS, $poodllsub);
         }
+        if(!$ret){
+            //print to screen the contents of poodllsub and upstreamsub for debugging
+            debugging('Failed to update local subscription from upstream subscription. Local Sub ID: ' . $poodllsub->id .
+                ' Upstream plan ID: ' . $upstreamplanid .
+                ' Local Sub Data: ' . print_r($poodllsub, true) .
+                ' Upstream Sub Data: ' . print_r($upstreamsub, true)
+            );
+        }
         return $ret ? $poodllsub : false;
     }
 
