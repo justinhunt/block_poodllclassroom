@@ -1040,6 +1040,7 @@ class common
         if(!$ret){
             //print to screen the contents of poodllsub and upstreamsub for debugging
             debugging('Failed to update local subscription from upstream subscription. Local Sub ID: ' . $poodllsub->id .
+                ' local plan ID: ' . print_r($plan, true).
                 ' Upstream plan ID: ' . $upstreamplanid .
                 ' Local Sub Data: ' . print_r($poodllsub, true) .
                 ' Upstream Sub Data: ' . print_r($upstreamsub, true)
