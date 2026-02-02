@@ -42,9 +42,10 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-use \block_poodllclassroom\constants;
+use block_poodllclassroom\constants;
 
-function xmldb_block_poodllclassroom_upgrade($oldversion) {
+function xmldb_block_poodllclassroom_upgrade($oldversion)
+{
     global $DB;
 
     $dbman = $DB->get_manager(); // Loads ddl manager and xmldb classes.
@@ -59,44 +60,93 @@ function xmldb_block_poodllclassroom_upgrade($oldversion) {
         }
 
         // savepoint reached.
-        upgrade_plugin_savepoint(true, 2020090303, 'block',constants::M_NAME);
+        upgrade_plugin_savepoint(true, 2020090303, 'block', constants::M_NAME);
 
     }
 
     if ($oldversion < 2020091500) {
 
         $table = new xmldb_table(constants::M_TABLE_PLANS);
-        $fields=[];
-        $fields[] = new xmldb_field('billinginterval',
-                XMLDB_TYPE_INTEGER, '4', null, null, null, 0);
-        $fields[] = new xmldb_field('price',
-                XMLDB_TYPE_CHAR, '255', null, null, null, '0');
-        $fields[] = new xmldb_field('description',
-                XMLDB_TYPE_TEXT, null, null, null, null, null);
+        $fields = [];
+        $fields[] = new xmldb_field(
+            'billinginterval',
+            XMLDB_TYPE_INTEGER,
+            '4',
+            null,
+            null,
+            null,
+            0
+        );
+        $fields[] = new xmldb_field(
+            'price',
+            XMLDB_TYPE_CHAR,
+            '255',
+            null,
+            null,
+            null,
+            '0'
+        );
+        $fields[] = new xmldb_field(
+            'description',
+            XMLDB_TYPE_TEXT,
+            null,
+            null,
+            null,
+            null,
+            null
+        );
 
-        foreach($fields as $field) {
+        foreach ($fields as $field) {
             if (!$dbman->field_exists($table, $field)) {
                 $dbman->add_field($table, $field);
             }
         }
 
         // savepoint reached.
-        upgrade_plugin_savepoint(true, 2020091500, 'block',constants::M_NAME);
+        upgrade_plugin_savepoint(true, 2020091500, 'block', constants::M_NAME);
 
     }
 
     if ($oldversion < 2021102600) {
 
         $table = new xmldb_table(constants::M_TABLE_PLANS);
-        $field = new xmldb_field('hasfreetrial',
-            XMLDB_TYPE_INTEGER, '2', null, null, null, 0);
+        $field = new xmldb_field(
+            'hasfreetrial',
+            XMLDB_TYPE_INTEGER,
+            '2',
+            null,
+            null,
+            null,
+            0
+        );
 
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
 
         // savepoint reached.
-        upgrade_plugin_savepoint(true, 2021102600, 'block',constants::M_NAME);
+        upgrade_plugin_savepoint(true, 2021102600, 'block', constants::M_NAME);
+
+    }
+
+    if ($oldversion < 2026020200) {
+        $table = new xmldb_table(constants::M_TABLE_SUBS);
+        
+        // Add an index on schoolid field of subs table.
+        $schoolidindex = new xmldb_index('schoolid_idx', XMLDB_INDEX_NOTUNIQUE, ['schoolid']);
+        // Conditionally launch add index schoolid.
+        if (!$dbman->index_exists($table, $schoolidindex)) {
+            $dbman->add_index($table, $schoolidindex);
+        }
+
+        // Add an index on upstreamsubid field of subs table.
+        $upstreamsubidindex = new xmldb_index('upstreamsubid_idx', XMLDB_INDEX_NOTUNIQUE, ['upstreamsubid']);
+        // Conditionally launch add index upstreamsubid.
+        if (!$dbman->index_exists($table, $upstreamsubidindex)) {
+            $dbman->add_index($table, $upstreamsubidindex);
+        }
+        // Poodllclassroom savepoint reached.
+        upgrade_plugin_savepoint(true, 2026020200, 'block', constants::M_NAME);
 
     }
 

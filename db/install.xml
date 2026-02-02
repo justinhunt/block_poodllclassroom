@@ -80,7 +80,7 @@
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" />
         <FIELD NAME="schoolid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="The school id" />
-		<FIELD NAME="planid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="The poodllclassroom plan id" />
+		    <FIELD NAME="planid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="The poodllclassroom plan id" />
         <FIELD NAME="payment" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="the payment amount"/>
         <FIELD NAME="paymentcurr" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="the payment currency"/>
         <FIELD NAME="billinginterval" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="The billinginterval" />
@@ -92,6 +92,14 @@
         <FIELD NAME="hostedpage" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="the full hosted page received from chargebee."/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false"/>
       </FIELDS>
+      <INDEXES>
+        <INDEX NAME="idx_schoolid" UNIQUE="false">
+          <FIELD NAME="schoolid"/>
+        </INDEX>
+        <INDEX NAME="idx_upstreamsubid" UNIQUE="false">
+          <FIELD NAME="upstreamsubid"/>
+        </INDEX>
+      </INDEXES>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>

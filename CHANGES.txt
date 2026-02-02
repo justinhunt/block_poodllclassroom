@@ -1,3 +1,6 @@
+Version 1.0.52(Build 2026020200)
+- Added index on schoolid and upstreamsubid fields in subs table
+
 Version 1.0.51(Build 2022062900)
 - Added a pay now button
 
