@@ -92,13 +92,9 @@
         <FIELD NAME="hostedpage" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="the full hosted page received from chargebee."/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false"/>
       </FIELDS>
-      <INDEXES>
-        <INDEX NAME="idx_schoolid" UNIQUE="false">
-          <FIELD NAME="schoolid"/>
-        </INDEX>
-        <INDEX NAME="idx_upstreamsubid" UNIQUE="false">
-          <FIELD NAME="upstreamsubid"/>
-        </INDEX>
+      <INDEXES>    
+        <INDEX NAME="idx_schoolid" UNIQUE="false" FIELDS="schoolid"/>
+        <INDEX NAME="idx_upstreamsubid" UNIQUE="false" FIELDS="upstreamsubid"/>
       </INDEXES>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
