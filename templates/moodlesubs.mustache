@@ -128,8 +128,8 @@
     {{/hassubs}}
 
     {{#js}}
-        $(document).ready(function() {
-            $("#school_name_edit").click(function() {
+        require(['jquery'], function($) {
+           $("#school_name_edit").click(function() {
                 $(".school_name_normal_state").addClass("hidden");
                 $(".school_name_editing_state").removeClass("hidden");
             });
@@ -138,6 +138,5 @@
                 $(".school_name_editing_state").addClass("hidden");
                 $(".school_name_normal_state").removeClass("hidden");
             });
-            
         });
     {{/js}}

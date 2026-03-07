@@ -1,5 +1,18 @@
 <?php
-
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * External class.
@@ -8,26 +21,31 @@
  * @author  Justin Hunt - Poodll.com
  */
 
-use \block_poodllclassroom\common;
-use \block_poodllclassroom\constants;
-use \block_poodllclassroom\chargebee_helper;
-use \block_poodllclassroom\standardadaptor;
+use core_external\external_api;
+use core_external\external_function_parameters;
+use core_external\external_value;
+use core_external\external_single_structure;
+
+use block_poodllclassroom\common;
+use block_poodllclassroom\constants;
+use block_poodllclassroom\chargebee_helper;
+use block_poodllclassroom\standardadaptor;
 
 class block_poodllclassroom_external extends external_api {
 
-    //------------ CANCEL SUB ---------------//
+    // ------------ CANCEL SUB ---------------//
     public static function cancel_sub_parameters() {
         return new external_function_parameters(
-                array(
+                [
                         'upstreamplanid' => new external_value(PARAM_TEXT, 'upstreamplanid'),
                         'upstreamownerid' => new external_value(PARAM_TEXT, 'upstreamownerid'),
-                        'upstreamsubid' => new external_value(PARAM_TEXT, 'upstreamsubid')
+                        'upstreamsubid' => new external_value(PARAM_TEXT, 'upstreamsubid'),
 
-                )
+                ]
         );
     }
 
-    public static function cancel_sub( $upstreamplanid, $upstreamownerid,$upstreamsubid) {
+    public static function cancel_sub($upstreamplanid, $upstreamownerid, $upstreamsubid) {
         global $CFG, $SESSION, $DB, $USER;
 
         // Get/check context/capability
@@ -53,19 +71,19 @@ class block_poodllclassroom_external extends external_api {
     }
 
 
-    //------------ RESUME SUB ---------------//
+    // ------------ RESUME SUB ---------------//
     public static function resume_sub_parameters() {
         return new external_function_parameters(
-                array(
+                [
                         'upstreamplanid' => new external_value(PARAM_TEXT, 'upstreamplanid'),
                         'upstreamownerid' => new external_value(PARAM_TEXT, 'upstreamownerid'),
-                        'upstreamsubid' => new external_value(PARAM_TEXT, 'upstreamsubid')
+                        'upstreamsubid' => new external_value(PARAM_TEXT, 'upstreamsubid'),
 
-                )
+                ]
         );
     }
 
-    public static function resume_sub( $upstreamplanid, $upstreamownerid,$upstreamsubid) {
+    public static function resume_sub($upstreamplanid, $upstreamownerid, $upstreamsubid) {
 
         global $CFG, $SESSION, $DB, $USER;
 
@@ -92,19 +110,19 @@ class block_poodllclassroom_external extends external_api {
     }
 
 
-    //------------ PAUSE SUB ---------------//
+    // ------------ PAUSE SUB ---------------//
     public static function pause_sub_parameters() {
         return new external_function_parameters(
-                array(
+                [
                         'upstreamplanid' => new external_value(PARAM_TEXT, 'upstreamplanid'),
                         'upstreamownerid' => new external_value(PARAM_TEXT, 'upstreamownerid'),
-                        'upstreamsubid' => new external_value(PARAM_TEXT, 'upstreamsubid')
+                        'upstreamsubid' => new external_value(PARAM_TEXT, 'upstreamsubid'),
 
-                )
+                ]
         );
     }
 
-    public static function pause_sub( $upstreamplanid, $upstreamownerid,$upstreamsubid) {
+    public static function pause_sub($upstreamplanid, $upstreamownerid, $upstreamsubid) {
         global $CFG, $SESSION, $DB, $USER;
 
         // Get/check context/capability
@@ -129,19 +147,19 @@ class block_poodllclassroom_external extends external_api {
         ]);
     }
 
-    //------------ REACTIVATE SUB ---------------//
+    // ------------ REACTIVATE SUB ---------------//
     public static function reactivate_sub_parameters() {
         return new external_function_parameters(
-                array(
+                [
                         'upstreamplanid' => new external_value(PARAM_TEXT, 'upstreamplanid'),
                         'upstreamownerid' => new external_value(PARAM_TEXT, 'upstreamownerid'),
-                        'upstreamsubid' => new external_value(PARAM_TEXT, 'upstreamsubid')
+                        'upstreamsubid' => new external_value(PARAM_TEXT, 'upstreamsubid'),
 
-                )
+                ]
         );
     }
 
-    public static function reactivate_sub( $upstreamplanid, $upstreamownerid,$upstreamsubid) {
+    public static function reactivate_sub($upstreamplanid, $upstreamownerid, $upstreamsubid) {
         global $CFG, $SESSION, $DB, $USER;
 
         // Get/check context/capability
@@ -166,19 +184,19 @@ class block_poodllclassroom_external extends external_api {
         ]);
     }
 
-    //------------ ACTIVATE SUB ---------------//
+    // ------------ ACTIVATE SUB ---------------//
     public static function activate_sub_parameters() {
         return new external_function_parameters(
-                array(
+                [
                         'upstreamplanid' => new external_value(PARAM_TEXT, 'upstreamplanid'),
                         'upstreamownerid' => new external_value(PARAM_TEXT, 'upstreamownerid'),
-                        'upstreamsubid' => new external_value(PARAM_TEXT, 'upstreamsubid')
+                        'upstreamsubid' => new external_value(PARAM_TEXT, 'upstreamsubid'),
 
-                )
+                ]
         );
     }
 
-    public static function activate_sub( $upstreamplanid, $upstreamownerid,$upstreamsubid) {
+    public static function activate_sub($upstreamplanid, $upstreamownerid, $upstreamsubid) {
         global $CFG, $SESSION, $DB, $USER;
 
         // Get/check context/capability
@@ -203,19 +221,19 @@ class block_poodllclassroom_external extends external_api {
         ]);
     }
 
-    //------------ UPDATE SUB ---------------//
+    // ------------ UPDATE SUB ---------------//
     public static function update_sub_parameters() {
         return new external_function_parameters(
-                array(
+                [
                         'upstreamplanid' => new external_value(PARAM_TEXT, 'upstreamplanid'),
                         'upstreamownerid' => new external_value(PARAM_TEXT, 'upstreamownerid'),
-                        'upstreamsubid' => new external_value(PARAM_TEXT, 'upstreamsubid')
+                        'upstreamsubid' => new external_value(PARAM_TEXT, 'upstreamsubid'),
 
-                )
+                ]
         );
     }
 
-    public static function update_sub( $upstreamplanid, $upstreamownerid,$upstreamsubid) {
+    public static function update_sub($upstreamplanid, $upstreamownerid, $upstreamsubid) {
         global $CFG, $SESSION, $DB, $USER;
 
         // Get/check context/capability
@@ -240,10 +258,10 @@ class block_poodllclassroom_external extends external_api {
         ]);
     }
 
-    //------------ CREATE SUB ---------------//
+    // ------------ CREATE SUB ---------------//
     public static function create_sub_parameters() {
         return new external_function_parameters(
-            array(
+            [
                 'username' => new external_value(PARAM_TEXT, 'User name'),
                 'firstname' => new external_value(PARAM_TEXT, 'User first name'),
                 'lastname' => new external_value(PARAM_TEXT, 'User last name'),
@@ -251,17 +269,15 @@ class block_poodllclassroom_external extends external_api {
                 'schoolname' => new external_value(PARAM_TEXT, 'School name'),
                 'upstreamplanid' => new external_value(PARAM_TEXT, 'upstreamplanid'),
                 'upstreamownerid' => new external_value(PARAM_TEXT, 'upstreamownerid'),
-                'upstreamsubid' => new external_value(PARAM_TEXT, 'upstreamsubid')
+                'upstreamsubid' => new external_value(PARAM_TEXT, 'upstreamsubid'),
 
-            )
+            ]
         );
     }
 
-    public static function create_sub($username,$firstname, $lastname,$email,$schoolname,
-            $upstreamplanid, $upstreamownerid,$upstreamsubid)
-    {
-        global $CFG,$SESSION, $DB, $USER;
-
+    public static function create_sub($username, $firstname, $lastname, $email, $schoolname,
+            $upstreamplanid, $upstreamownerid, $upstreamsubid) {
+        global $CFG, $SESSION, $DB, $USER;
 
         // Get/check context/capability
         $context = \context_system::instance();
@@ -270,8 +286,8 @@ class block_poodllclassroom_external extends external_api {
 
         // We always must pass webservice params through validate_parameters.
         $params = self::validate_parameters(self::create_sub_parameters(),
-            ['username' => $username, 'firstname' => $firstname, 'lastname' => $lastname, 'email' => $email, 'schoolname'=>$schoolname,
-                    'upstreamplanid'=>$upstreamplanid,'upstreamownerid'=>$upstreamownerid,'upstreamsubid'=>$upstreamsubid]);
+            ['username' => $username, 'firstname' => $firstname, 'lastname' => $lastname, 'email' => $email, 'schoolname' => $schoolname,
+                    'upstreamplanid' => $upstreamplanid, 'upstreamownerid' => $upstreamownerid, 'upstreamsubid' => $upstreamsubid]);
 
         $ret = standardadaptor::create_sub($params);
 
@@ -279,8 +295,8 @@ class block_poodllclassroom_external extends external_api {
     }
 
     public static function create_sub_returns() {
-        //return new external_value(PARAM_RAW);
-        //return new external_value(PARAM_INT, 'group id');
+        // return new external_value(PARAM_RAW);
+        // return new external_value(PARAM_INT, 'group id');
         return new external_single_structure([
                 'schoolid' => new external_value(PARAM_INT, 'school id'),
                 'userid' => new external_value(PARAM_INT, 'user id' ),
@@ -290,21 +306,19 @@ class block_poodllclassroom_external extends external_api {
         ]);
     }
 
-    //------------ DELETE ITEM ---------------//
+    // ------------ DELETE ITEM ---------------//
     public static function delete_item_parameters() {
         return new external_function_parameters(
-            array(
+            [
                 'contextid' => new external_value(PARAM_INT, 'The context id for the course'),
                 'itemid' => new external_value(PARAM_INT, 'The itemid to delete'),
-                'formname' => new external_value(PARAM_TEXT, 'The formname')
-            )
+                'formname' => new external_value(PARAM_TEXT, 'The formname'),
+            ]
         );
     }
 
-    public static function delete_item($contextid,$itemid, $formname)
-    {
+    public static function delete_item($contextid, $itemid, $formname) {
         global $CFG, $DB, $USER;
-
 
         // We always must pass webservice params through validate_parameters.
         $params = self::validate_parameters(self::delete_item_parameters(),
@@ -317,46 +331,44 @@ class block_poodllclassroom_external extends external_api {
 
         switch($formname){
             case constants::FORM_DELETEUSER:
-               // $result =  common::remove_user_from_company($context,$company,$itemid);
+                // $result =  common::remove_user_from_company($context,$company,$itemid);
                 break;
 
             case constants::FORM_DELETECOURSE:
-              //$result =  common::remove_course_from_company($context,$companyid,$itemid);
-               // $result =  common::delete_course_from_company($companyid,$itemid);
+                // $result =  common::remove_course_from_company($context,$companyid,$itemid);
+                // $result =  common::delete_course_from_company($companyid,$itemid);
               break;
         }
 
         $ret = new \stdClass();
-        $ret->itemid=$itemid;
-        $ret->error=false;
+        $ret->itemid = $itemid;
+        $ret->error = false;
         return json_encode($ret);
     }
 
     public static function delete_item_returns() {
         return new external_value(PARAM_RAW);
-        //return new external_value(PARAM_INT, 'group id');
+        // return new external_value(PARAM_INT, 'group id');
     }
 
 
-    //------------ SUBMIT MFORM ---------------//
+    // ------------ SUBMIT MFORM ---------------//
     public static function submit_mform_parameters() {
         return new external_function_parameters(
-                array(
+                [
                         'contextid' => new external_value(PARAM_INT, 'The context id for the course'),
                         'jsonformdata' => new external_value(PARAM_RAW, 'The data from the create group form, encoded as a json array'),
-                        'formname' => new external_value(PARAM_TEXT, 'The formname')
-                )
+                        'formname' => new external_value(PARAM_TEXT, 'The formname'),
+                ]
         );
     }
 
-    public static function submit_mform($contextid,$jsonformdata, $formname) {
+    public static function submit_mform($contextid, $jsonformdata, $formname) {
         global $CFG, $DB, $USER;
-
-
 
         // We always must pass webservice params through validate_parameters.
         $params = self::validate_parameters(self::submit_mform_parameters(),
-                ['contextid' => $contextid, 'jsonformdata' => $jsonformdata, 'formname'=>$formname]);
+                ['contextid' => $contextid, 'jsonformdata' => $jsonformdata, 'formname' => $formname]);
 
         $context = context::instance_by_id($params['contextid'], MUST_EXIST);
 
@@ -366,7 +378,7 @@ class block_poodllclassroom_external extends external_api {
         list($ignored, $course) = get_context_info_array($context->id);
         $serialiseddata = json_decode($params['jsonformdata']);
 
-        $data = array();
+        $data = [];
         parse_str($serialiseddata, $data);
 
         switch($formname){
@@ -375,33 +387,31 @@ class block_poodllclassroom_external extends external_api {
                 require_once($CFG->dirroot . '/user/editlib.php');
                 $systemcontext = context_system::instance();
 
-
-
                 $usercontext = context_user::instance($USER->id);
-                $editoroptions = array(
+                $editoroptions = [
                     'maxfiles'   => EDITOR_UNLIMITED_FILES,
                     'maxbytes'   => $CFG->maxbytes,
                     'trusttext'  => false,
                     'forcehttps' => false,
-                    'context'    => $usercontext
-                );
+                    'context'    => $usercontext,
+                ];
 
                 $filemanagercontext = $editoroptions['context'];
-                $filemanageroptions = array('maxbytes'       => $CFG->maxbytes,
+                $filemanageroptions = ['maxbytes'       => $CFG->maxbytes,
                     'subdirs'        => 0,
                     'maxfiles'       => 1,
                     'accepted_types' => 'web_image',
-                    'context'=>$filemanagercontext);
-                $method='post';
-                $target='';
-                $attributes=null;
-                $editable=true;
-                $mform = new \block_poodllclassroom\local\form\edituserform(null, array('editoroptions'=>$editoroptions,'filenamanageroptions'=>$filemanageroptions),
-                    $method,$target,$attributes,$editable,$data);
+                    'context' => $filemanagercontext];
+                $method = 'post';
+                $target = '';
+                $attributes = null;
+                $editable = true;
+                $mform = new \block_poodllclassroom\local\form\edituserform(null, ['editoroptions' => $editoroptions, 'filenamanageroptions' => $filemanageroptions],
+                    $method, $target, $attributes, $editable, $data);
                 $usernew = $mform->get_data();
                 if ($usernew) {
 
-                   // $ret = common::update_company_user($companyid,$usernew,$user,$editoroptions);
+                    // $ret = common::update_company_user($companyid,$usernew,$user,$editoroptions);
                     return json_encode('{}');
                 }
                 break;
@@ -410,17 +420,16 @@ class block_poodllclassroom_external extends external_api {
 
                 require_once($CFG->dirroot . '/user/editlib.php');
 
-
                 $systemcontext = context_system::instance();
 
-/*
+                /*
                 $mform = new \block_poodllclassroom\local\form\createuserform($companyid,  $data);
                 $validateddata = $mform->get_data();
                 if ($validateddata) {
                     $ret = common::create_company_user($companyid,$validateddata);
                     return json_encode($ret);
                 }
-*/
+                */
                 return json_encode([]);
                 break;
 
@@ -428,28 +437,25 @@ class block_poodllclassroom_external extends external_api {
             case constants::FORM_EDITCOURSE:
                 require_once($CFG->dirroot . '/course/lib.php');
 
-
                 $systemcontext = context_system::instance();
 
-
-
                 /* next line copied from /course/edit.php */
-                $editoroptions = array('maxfiles' => EDITOR_UNLIMITED_FILES,
+                $editoroptions = ['maxfiles' => EDITOR_UNLIMITED_FILES,
                         'maxbytes' => $CFG->maxbytes,
                         'trusttext' => false,
-                        'noclean' => true);
+                        'noclean' => true];
 
-                $method='post';
-                $target='';
-                $attributes=null;
-                $editable=true;
-                $mform = new \block_poodllclassroom\local\form\createcourseform(null, array('schoolid'=>0,'editoroptions'=>$editoroptions),
-                        $method,$target,$attributes,$editable,$data);
+                $method = 'post';
+                $target = '';
+                $attributes = null;
+                $editable = true;
+                $mform = new \block_poodllclassroom\local\form\createcourseform(null, ['schoolid' => 0, 'editoroptions' => $editoroptions],
+                        $method, $target, $attributes, $editable, $data);
 
                 $validateddata = $mform->get_data();
                 if ($validateddata) {
-                    //error_log(print_r( $validateddata, true ));
-                   // $ret = common::upsert_company_course(0,$validateddata,$editoroptions, $formname);
+                    // error_log(print_r( $validateddata, true ));
+                    // $ret = common::upsert_company_course(0,$validateddata,$editoroptions, $formname);
                     return json_encode([]);
                 }
                 break;
@@ -461,73 +467,73 @@ class block_poodllclassroom_external extends external_api {
                 if ($validateddata) {
                     if (!empty($validateddata->importdata)) {
 
-                        //get delimiter
+                        // get delimiter
                         switch($validateddata->delimiter){
-                            case 'delim_comma': $delimiter = ',';break;
-                            case 'delim_pipe': $delimiter = '|';break;
+                            case 'delim_comma': $delimiter = ',';
+break;
+                            case 'delim_pipe': $delimiter = '|';
+break;
                             case 'delim_tab':
                             default:
-                                $delimiter ="\t";
+                                $delimiter = "\t";
                         }
 
-                        //get array of rows
-                        $rawdata =trim($validateddata->importdata);
+                        // get array of rows
+                        $rawdata = trim($validateddata->importdata);
                         $rows = explode(PHP_EOL, $rawdata);
 
-                        //prepare results fields
+                        // prepare results fields
                         $imported = 0;
-                        $failed = array();
+                        $failed = [];
 
                         foreach($rows as $row){
-                            $cols = explode($delimiter,$row);
-                            if(count($cols)>=3 && !empty($cols[0]) && !empty($cols[1])&& !empty($cols[2])){
+                            $cols = explode($delimiter, $row);
+                            if(count($cols) >= 3 && !empty($cols[0]) && !empty($cols[1])&& !empty($cols[2])){
                                 $userrow = new \stdClass();
-                                $userrow->schoolid=$schoolid;
-                                $userrow->user_email_as_username=false;
-                                $userrow->due=0; //needed for email of password, might need to be set more properly
-                                $userrow->firstname=$cols[0];
-                                $userrow->lastname=$cols[1];
-                                $userrow->email=$cols[2];
-                                if(count($cols)>3&&!empty($cols[3])){
-                                    $userrow->newpassword=$cols[3];
+                                $userrow->schoolid = $schoolid;
+                                $userrow->user_email_as_username = false;
+                                $userrow->due = 0; // needed for email of password, might need to be set more properly
+                                $userrow->firstname = $cols[0];
+                                $userrow->lastname = $cols[1];
+                                $userrow->email = $cols[2];
+                                if(count($cols) > 3&&!empty($cols[3])){
+                                    $userrow->newpassword = $cols[3];
                                 }
 
-                                $ret = true;//common::create_company_user($companyid,$userrow);
+                                $ret = true;// common::create_company_user($companyid,$userrow);
                                 if(!$ret || $ret->error){
-                                    $failed[]=$row;
+                                    $failed[] = $row;
                                 }else {
                                     $imported++;
                                 }
                             }else{
-                                $failed[]=$row;
+                                $failed[] = $row;
                             }//end of if cols ok
                         }//end of for each
 
-
                         // Uncomment when migrating to 3.1.
                         // redirect($PAGE->url, get_string('termadded', 'mod_wordcards', $data->term));
-                        $result=new stdClass();
-                        $result->imported=$imported;
-                        $result->failed=count($failed);
-                        $message=get_string('importresults',constants::M_COMP,$result);
+                        $result = new stdClass();
+                        $result->imported = $imported;
+                        $result->failed = count($failed);
+                        $message = get_string('importresults', constants::M_COMP, $result);
 
                         $ret = new \stdClass();
-                        $ret->schoolid=$schoolid;
-                        $ret->message='';
-                        $ret->error=false;
+                        $ret->schoolid = $schoolid;
+                        $ret->message = '';
+                        $ret->error = false;
 
-                        if(count($failed)>0){
-                            $leftoverrows = implode(PHP_EOL,$failed);
-                            $ret->delimiter=$validateddata->delimiter;
-                            $ret->importdata=$leftoverrows;
-                            $ret->message=$message . ' ' . get_string('returnedrows',constants::M_COMP); ;
-                            $ret->error=true;
+                        if(count($failed) > 0){
+                            $leftoverrows = implode(PHP_EOL, $failed);
+                            $ret->delimiter = $validateddata->delimiter;
+                            $ret->importdata = $leftoverrows;
+                            $ret->message = $message . ' ' . get_string('returnedrows', constants::M_COMP); ;
+                            $ret->error = true;
                         }
                         return json_encode($ret);
 
                     }
                 }
-
 
         }
     }
@@ -535,18 +541,18 @@ class block_poodllclassroom_external extends external_api {
 
     public static function submit_mform_returns() {
         return new external_value(PARAM_RAW);
-        //return new external_value(PARAM_INT, 'group id');
+        // return new external_value(PARAM_INT, 'group id');
     }
 
 
-    //------------ get_checkout_existing ---------------//
+    // ------------ get_checkout_existing ---------------//
     public static function get_checkout_existing_parameters() {
         return new external_function_parameters(
-                array(
+                [
                   'planid' => new external_value(PARAM_TEXT, 'The plan id '),
                   'schoolid' => new external_value(PARAM_TEXT, 'The school id '),
-                  'currentsubid' => new external_value(PARAM_INT, 'The current sub id ')
-                )
+                  'currentsubid' => new external_value(PARAM_INT, 'The current sub id '),
+                ]
         );
     }
 
@@ -561,18 +567,18 @@ class block_poodllclassroom_external extends external_api {
         $params = self::validate_parameters(self::get_checkout_existing_parameters(),
                 ['planid' => $planid, 'schoolid' => $schoolid, 'currentsubid' => $currentsubid]);
 
-        $hosted_page = chargebee_helper::get_checkout_existing($params['planid'],$params['schoolid'],$params['currentsubid']);
-        if($hosted_page){
-            $ret =$hosted_page->hosted_page;
+        $hostedpage = chargebee_helper::get_checkout_existing($params['planid'], $params['schoolid'], $params['currentsubid']);
+        if($hostedpage){
+            $ret = $hostedpage->hosted_page;
         }else{
-            $ret ='{}';
+            $ret = '{}';
         }
         return $ret;
     }
 
     public static function get_checkout_existing_returns() {
 
-       // return new external_value(PARAM_RAW);
+        // return new external_value(PARAM_RAW);
         return new external_single_structure([
                 'created_at' => new external_value(PARAM_INT, 'created at'),
                 'embed' => new external_value(PARAM_BOOL, 'embed' ),
@@ -587,19 +593,19 @@ class block_poodllclassroom_external extends external_api {
         ]);
     }
 
-    //------------ get_checkout_new ---------------//
+    // ------------ get_checkout_new ---------------//
     public static function get_checkout_new_parameters() {
         return new external_function_parameters(
-            array(
+            [
                 'planid' => new external_value(PARAM_INT, 'The plan id for this subscription'),
                 'currency' => new external_value(PARAM_TEXT, 'The currency for this subscription'),
                 'billinginterval' => new external_value(PARAM_INT, 'The billing interval for this subscription'),
-                'schoolid' => new external_value(PARAM_INT, 'The schoolid for this subscription')
-            )
+                'schoolid' => new external_value(PARAM_INT, 'The schoolid for this subscription'),
+            ]
         );
     }
 
-    public static function get_checkout_new($planid, $currency, $billinginterval,$schoolid) {
+    public static function get_checkout_new($planid, $currency, $billinginterval, $schoolid) {
 
         // Get/check context/capability
         $context = \context_system::instance();
@@ -608,21 +614,22 @@ class block_poodllclassroom_external extends external_api {
 
         // We always must pass webservice params through validate_parameters.
         $params = self::validate_parameters(self::get_checkout_new_parameters(),
-            ['planid' => $planid, 'currency'=>$currency, 'billinginterval'=>$billinginterval,'schoolid'=>$schoolid]);
+            ['planid' => $planid, 'currency' => $currency, 'billinginterval' => $billinginterval, 'schoolid' => $schoolid]);
 
-        $ret = chargebee_helper::get_checkout_new($params['planid'],$params['currency'],$params['billinginterval'], $params['schoolid']);
-        if(!$ret){return "Failed to get hosted page for unknown reason.";}
+        $ret = chargebee_helper::get_checkout_new($params['planid'], $params['currency'], $params['billinginterval'], $params['schoolid']);
+        if(!$ret){return "Failed to get hosted page for unknown reason.";
+        }
 
         if( $ret['success']) {
-            $hosted_page = $ret['payload'];
-            if ($hosted_page) {
-                $result = $hosted_page->hosted_page;
+            $hostedpage = $ret['payload'];
+            if ($hostedpage) {
+                $result = $hostedpage->hosted_page;
             } else {
                 $result = 'hosted page was not correct';
             }
         }else{
-            //in this case there should be some information about what went wrong
-            $result =  $ret['payload'];
+            // in this case there should be some information about what went wrong
+            $result = $ret['payload'];
         }
         return $result;
     }
@@ -646,12 +653,12 @@ class block_poodllclassroom_external extends external_api {
         ]);
     }
 
-    //------------ create_portal_session ---------------//
+    // ------------ create_portal_session ---------------//
     public static function create_portal_session_parameters() {
         return new external_function_parameters(
-            array(
+            [
                 'upstreamownerid' => new external_value(PARAM_TEXT, 'The upstreamownerid'),
-            )
+            ]
         );
     }
 
@@ -666,11 +673,11 @@ class block_poodllclassroom_external extends external_api {
         $params = self::validate_parameters(self::create_portal_session_parameters(),
             ['upstreamownerid' => $upstreamownerid]);
 
-        $portal_session = chargebee_helper::create_portal_session($params['upstreamownerid']);
-        if($portal_session){
-            $ret =$portal_session;
+        $portalsession = chargebee_helper::create_portal_session($params['upstreamownerid']);
+        if($portalsession){
+            $ret = $portalsession;
         }else{
-            $ret ='{}';
+            $ret = '{}';
         }
         return $ret;
     }
@@ -686,16 +693,16 @@ class block_poodllclassroom_external extends external_api {
             'created_at' => new external_value(PARAM_INT, 'created at'),
             'expires_at' => new external_value(PARAM_INT, 'expires at'),
             'object' => new external_value(PARAM_TEXT, 'object'),
-            'customer_id' => new external_value(PARAM_TEXT, 'customer id')
+            'customer_id' => new external_value(PARAM_TEXT, 'customer id'),
         ]);
     }
 
-    //------------ get_pay_outstanding ---------------//
+    // ------------ get_pay_outstanding ---------------//
     public static function get_pay_outstanding_parameters() {
         return new external_function_parameters(
-            array(
-                'upstreamownerid' => new external_value(PARAM_TEXT, 'The upstream owner id')
-            )
+            [
+                'upstreamownerid' => new external_value(PARAM_TEXT, 'The upstream owner id'),
+            ]
         );
     }
 
@@ -708,21 +715,22 @@ class block_poodllclassroom_external extends external_api {
 
         // We always must pass webservice params through validate_parameters.
         $params = self::validate_parameters(self::get_pay_outstanding_parameters(),
-            ['upstreamownerid'=>$upstreamownerid]);
+            ['upstreamownerid' => $upstreamownerid]);
 
         $ret = chargebee_helper::get_pay_outstanding($params['upstreamownerid']);
-        if(!$ret){return "Failed to get hosted page for unknown reason.";}
+        if(!$ret){return "Failed to get hosted page for unknown reason.";
+        }
 
         if( $ret['success']) {
-            $hosted_page = $ret['payload'];
-            if ($hosted_page) {
-                $result = $hosted_page->hosted_page;
+            $hostedpage = $ret['payload'];
+            if ($hostedpage) {
+                $result = $hostedpage->hosted_page;
             } else {
                 $result = 'hosted page was not correct';
             }
         }else{
-            //in this case there should be some information about what went wrong
-            $result =  $ret['payload'];
+            // in this case there should be some information about what went wrong
+            $result = $ret['payload'];
         }
         return $result;
     }
