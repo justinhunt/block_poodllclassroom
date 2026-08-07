@@ -399,7 +399,7 @@ class renderer extends \plugin_renderer_base {
                     break;
 
             }
-            if($plan->hasfreetrial){
+            if($plan->hasfreetrial && empty($freeplans)){
                 $freeplans[] = $plan;
             }
         }
