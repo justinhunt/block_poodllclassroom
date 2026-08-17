@@ -1,38 +1,39 @@
 Hi {{first_name}},
 
-Thank you for signing up with Poodll. In this email you will find instructions and your account information. If your Moodle site
-URL is not listed below, then please visit the Poodll Member Dashboard and register it.
+Thank you for signing up with Poodll! Below are your API credentials, setup instructions, and member dashboard account details.
 
+======================================================================
+1. ON YOUR MOODLE SITE
+======================================================================
+Enter your API user and secret in the settings page of each Poodll
+plugin that you install.
 
-On your Moodle site.
---------------------
-Set your API user and secret in the settings page of each Poodll plugin that you install.
+  • Registered Site : {{#startsiteurl}}{{{startsiteurl}}}{{/startsiteurl}}{{^startsiteurl}}[ Please register your site at the dashboard ]{{/startsiteurl}}
+  • API User        : {{apiuser}}
+  • API Secret      : {{apisecret}}
 
-Registered Moodle Site: {{#startsiteurl}} {{{startsiteurl}}} {{/startsiteurl}}{{^startsiteurl}} [ Please register your site ]{{/startsiteurl}}
+Useful Links:
+  • Poodll Plugins Set : https://marketplace.moodle.com/sets/13
+  • Getting Started    : https://support.poodll.com/en/support/solutions/articles/19000093860-getting-started-with-poodll
 
-Your API user: {{apiuser}}
-Your API secret: {{apisecret}}
+======================================================================
+2. POODLL MEMBER DASHBOARD
+======================================================================
+On the Poodll Member Dashboard you can register site URLs, upgrade
+your subscription, manage invoices, and check your Poodll usage report.
 
-Do you know which plugins you want to use? You can find them all at:
-https://moodle.org/plugins/index.php?q=poodll
+Login with either your username or registered email, and your password.
 
+  • Dashboard URL    : https://member.poodll.com/my/
+  • Username         : {{username}}
+  • Registered Email : {{email}}
+  • Password         : {{password}}
 
-See the Getting Started documentation here:
-https://support.poodll.com/en/support/solutions/articles/19000093860-getting-started-with-poodll
-
-On the Poodll Member Dashboard.
--------------------------------
-On the Poodll Member Dashboard you can register site URLs, upgrade your subscription, manage invoices and check your Poodll usage
-report. Login with either your username or email, and your password.
-
-Dashboard URL: https://member.poodll.com/my/
-
-Username: {{username}}
-Registered email: {{email}}
-Password: {{password}}
-
-If you have any questions please send them to: support@poodll.freshdesk.com
-
+======================================================================
+NEED HELP?
+======================================================================
+If you have any questions, feel free to contact:
+support@poodll.freshdesk.com
 
 Justin Hunt
 The Poodll Guy

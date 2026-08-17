@@ -1,37 +1,50 @@
 <?php
-
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace block_poodllclassroom;
 
 
-class chargebee_helper
-{
+class chargebee_helper {
 
-    public static function get_checkout_new($planid, $currency, $billinginterval, $schoolid=0, $startdate=0){
+
+    public static function get_checkout_new($planid, $currency, $billinginterval, $schoolid=0, $startdate=0) {
         global $USER, $CFG, $DB;
 
         $ret = [];
-        $ret['success']=true;
-        $ret['payload']='';
+        $ret['success'] = true;
+        $ret['payload'] = '';
 
         $plan = common::get_plan($planid);
         switch($billinginterval){
             case constants::M_BILLING_DAILY:
-                $billing='Daily';
+                $billing = 'Daily';
                 break;
             case constants::M_BILLING_MONTHLY:
-                $billing='Monthly';
+                $billing = 'Monthly';
                 break;
             case constants::M_BILLING_YEARLY:
             default:
-                $billing='Yearly';
+                $billing = 'Yearly';
                 break;
 
         }
 
         if(!$plan){
-            $ret['success']=false;
-            $ret['payload']='No plan of that id could be found:' . $planid;
+            $ret['success'] = false;
+            $ret['payload'] = 'No plan of that id could be found:' . $planid;
             return  $ret;
         }
 
@@ -39,130 +52,129 @@ class chargebee_helper
         $school = common::get_resold_or_my_school($schoolid);
         if($reseller){
             if(!$school){
-                    $ret['success']=false;
-                    $ret['payload']='Got reseller but could not get school of that id:' . $schoolid;
+                    $ret['success'] = false;
+                    $ret['payload'] = 'Got reseller but could not get school of that id:' . $schoolid;
                     return  $ret;
             }
             if($reseller->id === $school->resellerid) {
                 $upstreamuserid = $reseller->upstreamuserid;
             }else{
-                $truereseller = $DB->get_record(constants::M_TABLE_RESELLERS,array('id'=>$school->resellerid));
+                $truereseller = $DB->get_record(constants::M_TABLE_RESELLERS, ['id' => $school->resellerid]);
                 if($truereseller) {
                     $upstreamuserid = $truereseller->upstreamuserid;
                 }else{
-                        $ret['success']=false;
-                        $ret['payload']='Not a true reseller. ID: ' .$school->resellerid ;
+                        $ret['success'] = false;
+                        $ret['payload'] = 'Not a true reseller. ID: ' .$school->resellerid;
                         return  $ret;
                 }
             }
-        }elseif ($school){
-            $upstreamuserid=$school->upstreamownerid;
+        }else if ($school){
+            $upstreamuserid = $school->upstreamownerid;
         }else{
-            //in this case we dont gots no school nor gots us no upstreamuserid
-            //create a school and a random upstreamid
-            $school=common::get_poodllschool_by_currentuser();
+            // in this case we dont gots no school nor gots us no upstreamuserid
+            // create a school and a random upstreamid
+            $school = common::get_poodllschool_by_currentuser();
             if(!$school){
                 $school = common::create_blank_school();
             }
             if($school){
-                $upstreamuserid=$school->upstreamownerid;
+                $upstreamuserid = $school->upstreamownerid;
             }else{
-                $ret['success']=false;
-                $ret['payload']='We could not get a schools and we could not create a school. all over.' ;
+                $ret['success'] = false;
+                $ret['payload'] = 'We could not get a schools and we could not create a school. all over.';
                 return  $ret;
             }
         }
 
-        $schoolname=$school->name;
+        $schoolname = $school->name;
         $customerid = $upstreamuserid;
-        $schoolowner = $DB->get_record('user', array('id'=>$school->ownerid));
-        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
-        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
-        $resellercoupon = get_config(constants::M_COMP,'resellercoupon');
+        $schoolowner = $DB->get_record('user', ['id' => $school->ownerid]);
+        $apikey = get_config(constants::M_COMP, 'chargebeeapikey');
+        $siteprefix = get_config(constants::M_COMP, 'chargebeesiteprefix');
+        $resellercoupon = get_config(constants::M_COMP, 'resellercoupon');
 
         if($customerid && !empty($apikey) && !empty($siteprefix)){
-            //$url = "https://$siteprefix.chargebee.com/api/v2/hosted_pages/checkout_new";
+            // $url = "https://$siteprefix.chargebee.com/api/v2/hosted_pages/checkout_new";
             $url = "https://$siteprefix.chargebee.com/api/v2/hosted_pages/checkout_new_for_items";
 
-            $postdata=[];
+            $postdata = [];
             $postdata['redirect_url'] = $CFG->wwwroot . constants::M_URL . '/subs/welcomeback.php';
             $postdata['cancel_url'] = $CFG->wwwroot . '/my/';
-            $postdata['subscription_items']=[];
-            $postdata['subscription_items']['item_price_id']=[];
-            $postdata['subscription_items']['quantity']=[];
+            $postdata['subscription_items'] = [];
+            $postdata['subscription_items']['item_price_id'] = [];
+            $postdata['subscription_items']['quantity'] = [];
 
-            //I think that we no longer need this...
-            //hacky way to make sure free trials all use monthly plans (though they show in yearly)
-            //if(strpos(strtolower($plan->upstreamplan),'trial')>0){$billing='Daily';}
+            // I think that we no longer need this...
+            // hacky way to make sure free trials all use monthly plans (though they show in yearly)
+            // if(strpos(strtolower($plan->upstreamplan),'trial')>0){$billing='Daily';}
 
             $postdata['subscription_items']['item_price_id'][0] = $plan->upstreamplan . '-' .  $currency . '-'  . $billing;
-            $postdata['subscription_items']['quantity'][0]=1;
+            $postdata['subscription_items']['quantity'][0] = 1;
             /*
                         $postdata['subscription_items'][0]= array(
                             "plan_id" =>
                             "cf_school_name"=>$schoolname,
                         );
             */
-            $postdata['customer']= array(
+            $postdata['customer'] = [
                 "id" => $upstreamuserid,
                 "email" => $schoolowner->email,
                 "first_name" => $schoolowner->firstname,
                 "last_name" => $schoolowner->lastname,
-            );
+            ];
             if($reseller){
                 $postdata['company'] = $reseller->name;
             }else{
                 $postdata['company'] = $schoolname;
             }
 
-            //allow offline payment
+            // allow offline payment
             $postdata['allow_offline_payment_methods'] = 'true';
 
-            //if is reseller, apply coupon code
+            // if is reseller, apply coupon code
             if($reseller) {
                 $postdata['coupon_ids'] = [];
                 $postdata['coupon_ids'][] = $resellercoupon;
             }
 
-            //customfields
-            $postdata['subscription']=[];
-            $postdata['subscription']['cf_schoolid']=$school->name;
+            // customfields
+            $postdata['subscription'] = [];
+            $postdata['subscription']['cf_schoolid'] = $school->name;
 
-            //passthrough
+            // passthrough
             $passthrough = [];
-            $passthrough['schoolid']=$school->id;
-            $passthrough['planid']=$plan->id;
-            $passthrough['currency']=$currency;
-            $passthrough['billing']=$billing;
+            $passthrough['schoolid'] = $school->id;
+            $passthrough['planid'] = $plan->id;
+            $passthrough['currency'] = $currency;
+            $passthrough['billing'] = $billing;
             $postdata['pass_thru_content'] = json_encode($passthrough);
 
-
-            $curlresult = common::curl_fetch($url,$postdata,$apikey);
+            $curlresult = common::curl_fetch($url, $postdata, $apikey);
             $jsonresult = common::make_object_from_json($curlresult);
             if($jsonresult && isset($jsonresult->hosted_page)){
-                $ret['success']=true;
-                $ret['payload']=$jsonresult ;
+                $ret['success'] = true;
+                $ret['payload'] = $jsonresult;
                 return  $ret;
             }else{
-                $ret['success']=false;
-                $ret['payload']=$curlresult;
+                $ret['success'] = false;
+                $ret['payload'] = $curlresult;
                 return  $ret;
             }
         }
-        $ret['success']=false;
-        $ret['payload']='Customer ID, SitePrefix or API Key wrong';
+        $ret['success'] = false;
+        $ret['payload'] = 'Customer ID, SitePrefix or API Key wrong';
         return  $ret;
     }
 
-    public static function retrieve_hosted_page($id){
-        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
-        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
+    public static function retrieve_hosted_page($id) {
+        $apikey = get_config(constants::M_COMP, 'chargebeeapikey');
+        $siteprefix = get_config(constants::M_COMP, 'chargebeesiteprefix');
 
         $url = "https://$siteprefix.chargebee.com/api/v2/hosted_pages/";
         $url .= $id;
 
-        $postdata=false;
-        $curlresult = common::curl_fetch($url,$postdata,$apikey);
+        $postdata = false;
+        $curlresult = common::curl_fetch($url, $postdata, $apikey);
         $jsonresult = common::make_object_from_json($curlresult);
         if($jsonresult){
             return $jsonresult;
@@ -170,38 +182,37 @@ class chargebee_helper
         return false;
     }
 
-    public static function retrieve_process_recent_events($trace=false){
+    public static function retrieve_process_recent_events($trace=false) {
         global $DB;
 
-        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
-        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
+        $apikey = get_config(constants::M_COMP, 'chargebeeapikey');
+        $siteprefix = get_config(constants::M_COMP, 'chargebeesiteprefix');
 
         $url = "https://$siteprefix.chargebee.com/api/v2/events/";
 
-        $lastevents=$DB->get_records(constants::M_TABLE_EVENTS, null,'occurredat DESC','occurredat', 0,1);
+        $lastevents = $DB->get_records(constants::M_TABLE_EVENTS, null, 'occurredat DESC', 'occurredat', 0, 1);
         if($lastevents){
             $lastevent = array_shift($lastevents);
             $lastoccurredat = $lastevent->occurredat;
         }else{
-            //just so we dont get a universe of old test subs
+            // just so we dont get a universe of old test subs
             $lastoccurredat = 1627626055;
         }
         if($trace) {
             $trace->output("cbsync:: looking for new subscriptions since:" . $lastoccurredat);
         }
 
-        $postdata=[];
+        $postdata = [];
         $postdata['event_type[in]'] = '["subscription_created","subscription_changed","subscription_renewed",' .
             '"subscription_cancelled","subscription_reactivated","subscription_deleted","customer_changed"]';
         $postdata['occurred_at[after]'] = ''  . $lastoccurredat;
-        //this is a GET request
-        $qstring= http_build_query($postdata,"",'&');
-        $url=$url.='?' . $qstring;
-        $curlresult = common::curl_fetch($url,false,$apikey);
-
+        // this is a GET request
+        $qstring = http_build_query($postdata, "", '&');
+        $url = $url .= '?' . $qstring;
+        $curlresult = common::curl_fetch($url, false, $apikey);
 
         $eventslist = common::make_object_from_json($curlresult);
-        if(!$eventslist || !isset($eventslist->list) ||  count($eventslist->list) ==0){
+        if(!$eventslist || !isset($eventslist->list) ||  count($eventslist->list) == 0){
             if($trace) {
                 $trace->output("cbsync:: no new subs");
             }
@@ -211,25 +222,25 @@ class chargebee_helper
             $trace->output("cbsync:: " . count($eventslist->list) . " new or changed subs");
         }
         foreach($eventslist->list as $eventcontainer) {
-            $theevent=$eventcontainer->event;
+            $theevent = $eventcontainer->event;
             self::process_one_event($theevent, $trace);
 
         }//end of events list loop
         return $eventslist;
     }
 
-    public static function retrieve_process_one_event($eventid, $trace=false){
+    public static function retrieve_process_one_event($eventid, $trace=false) {
         global $DB;
 
-        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
-        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
+        $apikey = get_config(constants::M_COMP, 'chargebeeapikey');
+        $siteprefix = get_config(constants::M_COMP, 'chargebeesiteprefix');
 
         $url = "https://$siteprefix.chargebee.com/api/v2/events/";
         $url .= $eventid;
 
-        //this is a GET request
-        $forceget=true;
-        $curlresult = common::curl_fetch($url,false,$apikey,$forceget);
+        // this is a GET request
+        $forceget = true;
+        $curlresult = common::curl_fetch($url, false, $apikey, $forceget);
 
         $event = common::make_object_from_json($curlresult);
         if(!$event){
@@ -270,13 +281,13 @@ class chargebee_helper
                 }
         }
 
-        $theevent=$event->event;
+        $theevent = $event->event;
         self::process_one_event($theevent, $trace);
 
         return 'that possibly worked';
     }
 
-    public static function process_one_event($theevent, $trace=false){
+    public static function process_one_event($theevent, $trace=false) {
         global $DB;
         $responded = false;
 
@@ -297,20 +308,20 @@ class chargebee_helper
                 $principal = 'other';
             }
 
-            //Lets check this is a sub that we handle, if not, lets quit
-            //---------------------
-            if($principal=='subscription'){
+            // Lets check this is a sub that we handle, if not, lets quit
+            // ---------------------
+            if($principal == 'subscription'){
                 $plan = false;
-                $upstreamsub=$theevent->content->subscription;
+                $upstreamsub = $theevent->content->subscription;
                 if(isset($upstreamsub->cf_planid)) {
                     $plan = common::get_plan($upstreamsub->cf_planid);
                 }else{
                     if(isset($upstreamsub->plan_id)){
-                        $plan_id = $upstreamsub->plan_id;
+                        $planid = $upstreamsub->plan_id;
                     }else{
-                        $plan_id = common::fetch_upstreamplanid_from_upstreamsub($upstreamsub);
+                        $planid = common::fetch_upstreamplanid_from_upstreamsub($upstreamsub);
                     }
-                    $plan = common::fetch_poodllplan_from_upstreamplan($plan_id,$upstreamsub);
+                    $plan = common::fetch_poodllplan_from_upstreamplan($planid, $upstreamsub);
                 }
                 if(!$plan){
                     if($trace) {
@@ -319,8 +330,7 @@ class chargebee_helper
                     return false;
                 }
             }
-            //---------------------
-
+            // ---------------------
 
             switch ($principal) {
                 case "subscription":
@@ -331,11 +341,11 @@ class chargebee_helper
                     $pevent->typeid = 0;
             }
 
-            //we do not want to add old events on the events table again, because we use that to know which are the most recent events
-            //so if the event exists we are being asked to re- run it. Lets just do that
-            $event_already_processed = $DB->get_record(constants::M_TABLE_EVENTS,array('upstreamid'=>$theevent->id));
-            if($event_already_processed ){
-                $pevent->id = $event_already_processed->id;
+            // we do not want to add old events on the events table again, because we use that to know which are the most recent events
+            // so if the event exists we are being asked to re- run it. Lets just do that
+            $eventalreadyprocessed = $DB->get_record(constants::M_TABLE_EVENTS, ['upstreamid' => $theevent->id]);
+            if($eventalreadyprocessed ){
+                $pevent->id = $eventalreadyprocessed->id;
             }else{
                 $pevent->id = $DB->insert_record(constants::M_TABLE_EVENTS, $pevent);
             }
@@ -348,37 +358,37 @@ class chargebee_helper
                         $trace->output("cbsync:: processing ". $pevent->type . " event: " . $theevent->id);
                     }
 
-                    //Temporarily disable events from
+                    // Temporarily disable events from
                     /*
                     $resellers =['1692','464','2050','483','782','695','380','2802','1243'];
-                 if(in_array($theevent->content->subscription->customer_id, $resellers )){
+                    if(in_array($theevent->content->subscription->customer_id, $resellers )){
                      $trace->output("cbsync:: ignoring reseller: "  . $theevent->content->subscription->customer_id);
                      break;
-                 }
+                    }
                     */
 
-                    //create a sub
+                    // create a sub
                     $poodllsub = common::get_poodllsub_by_upstreamsubid($theevent->content->subscription->id);
                     if ($poodllsub == false) {
-                        //Lets create the school. If it already exists, nothing bad will happen
-                        //if we have a startsiteurl from a free trial link on a  moodle site, lets register that now too
-                        $startsiteurl=false;
+                        // Lets create the school. If it already exists, nothing bad will happen
+                        // if we have a startsiteurl from a free trial link on a  moodle site, lets register that now too
+                        $startsiteurl = false;
                         if(isset($theevent->content->subscription->cf_startsiteurl)&&
                             !empty($theevent->content->subscription->cf_startsiteurl)){
-                            $startsiteurl=$theevent->content->subscription->cf_startsiteurl;
+                            $startsiteurl = $theevent->content->subscription->cf_startsiteurl;
                         }
-                        //we send emails when we create a school, this assumes a Moodle sub TO DO: reconcile this
+                        // we send emails when we create a school, this assumes a Moodle sub TO DO: reconcile this
                         $ret = common::create_school_from_upstreamid($theevent->content->subscription->customer_id, $startsiteurl);
                         if($trace && $ret){
                             $trace->output("cbsync:: create school from upstreamid: " . $ret['message']);
                         }
 
                         $subscription = $theevent->content->subscription;
-                        $currency_code = $subscription->currency_code;
-                        $amount_paid = $subscription->subscription_items[0]->amount;
+                        $currencycode = $subscription->currency_code;
+                        $amountpaid = $subscription->subscription_items[0]->amount;
 
-                        //we send an email when we create an LTI sub from here, and probably will send a classroom one too..
-                        $subid = common::create_poodll_sub($subscription,$currency_code,$amount_paid,$theevent->content->subscription->customer_id );
+                        // we send an email when we create an LTI sub from here, and probably will send a classroom one too..
+                        $subid = common::create_poodll_sub($subscription, $currencycode, $amountpaid, $theevent->content->subscription->customer_id );
                         if($trace){
                             if($subid) {
                                 $trace->output("cbsync:: create sub: " . $subid);
@@ -387,10 +397,10 @@ class chargebee_helper
                             }
                         }
 
-                    //renew a sub
+                        // renew a sub
                     }else{
                         $upstreamsub = $theevent->content->subscription;
-                        $updatedsub = common::update_poodllsub_from_upstream($poodllsub,$upstreamsub);
+                        $updatedsub = common::update_poodllsub_from_upstream($poodllsub, $upstreamsub);
                         if($updatedsub) {
                             $responded = common::respond_to_updated_upstream_sub($updatedsub, $upstreamsub);
                         }
@@ -409,7 +419,7 @@ class chargebee_helper
                         $trace->output("cbsync:: processing sub cancelled event: " . $theevent->id);
                     }
 
-                    //dont create a subscription twice, that would be bad ...
+                    // dont create a subscription twice, that would be bad ...
                     $poodllsub = common::get_poodllsub_by_upstreamsubid($theevent->content->subscription->id);
                     if ($poodllsub == false) {
                         if($trace) {
@@ -417,16 +427,15 @@ class chargebee_helper
                         }
                     }else{
 
-
                         $upstreamsub = $theevent->content->subscription;
 
-                        //we set the expire date to today if the sub has not been paid
+                        // we set the expire date to today if the sub has not been paid
                         if((isset($upstreamsub->cancel_reason))){
-                            $upstreamsub->current_term_end=time();
+                            $upstreamsub->current_term_end = time();
                             $trace->output("cbsync:: appears to be a failure to pay, set expiry to today: " . $upstreamsub->cancel_reason);
                         }
 
-                        $updatedsub = common::update_poodllsub_from_upstream($poodllsub,$upstreamsub);
+                        $updatedsub = common::update_poodllsub_from_upstream($poodllsub, $upstreamsub);
                         if($updatedsub) {
                             $responded = common::respond_to_updated_upstream_sub($updatedsub, $upstreamsub);
                         }
@@ -446,7 +455,7 @@ class chargebee_helper
                         $trace->output("cbsync:: reactivating sub cevent: " . $theevent->id);
                     }
 
-                    //dont create a subscription twice, that would be bad ...
+                    // dont create a subscription twice, that would be bad ...
                     $poodllsub = common::get_poodllsub_by_upstreamsubid($theevent->content->subscription->id);
                     if ($poodllsub == false) {
                         if($trace) {
@@ -454,9 +463,8 @@ class chargebee_helper
                         }
                     }else{
 
-
                         $upstreamsub = $theevent->content->subscription;
-                        $updatedsub = common::update_poodllsub_from_upstream($poodllsub,$upstreamsub);
+                        $updatedsub = common::update_poodllsub_from_upstream($poodllsub, $upstreamsub);
                         if($updatedsub) {
                             $responded = common::respond_to_updated_upstream_sub($updatedsub, $upstreamsub);
                         }
@@ -475,7 +483,7 @@ class chargebee_helper
                         $trace->output("cbsync:: processing sub changed event: " . $theevent->id);
                     }
 
-                    //only change an existing subscription
+                    // only change an existing subscription
                     $poodllsub = common::get_poodllsub_by_upstreamsubid($theevent->content->subscription->id);
                     if ($poodllsub != false) {
                         if($trace){
@@ -483,7 +491,7 @@ class chargebee_helper
                         }
 
                         $upstreamsub = $theevent->content->subscription;
-                        $updatedsub = common::update_poodllsub_from_upstream($poodllsub,$upstreamsub);
+                        $updatedsub = common::update_poodllsub_from_upstream($poodllsub, $upstreamsub);
                         if($updatedsub) {
                             $responded = common::respond_to_updated_upstream_sub($updatedsub, $upstreamsub);
                         }
@@ -505,14 +513,14 @@ class chargebee_helper
                         $trace->output("cbsync:: processing sub deleted event: " . $theevent->id);
                     }
 
-                    //only change an existing subscription twice
+                    // only change an existing subscription twice
                     $poodllsub = common::get_poodllsub_by_upstreamsubid($theevent->content->subscription->id);
                     if ($poodllsub != false) {
                         if($trace){
                             $trace->output("cbsync:: deleting upstreamsub: " . $theevent->content->subscription->id);
                         }
 
-                        $ret = $DB->delete_records(constants::M_TABLE_SUBS,array('id'=>$poodllsub->id));
+                        $ret = $DB->delete_records(constants::M_TABLE_SUBS, ['id' => $poodllsub->id]);
 
                         if($trace){
                             if($ret) {
@@ -539,42 +547,42 @@ class chargebee_helper
                             $trace->output("cbsync:: changing customer details locally: " . $customer->id);
                         }
                         foreach($poodllschools as $poodllschool){
-                            if($poodllschool->resellerid == common::fetch_poodll_resellerid()){ //constants::M_RESELLER_POODLL){
-                                $poodlluser = $DB->get_record('user',array('id'=>$poodllschool->ownerid));
-                                $updateuser=false;
-                                $updateschool=false;
-                                //user name
+                            if($poodllschool->resellerid == common::fetch_poodll_resellerid()){ // constants::M_RESELLER_POODLL){
+                                $poodlluser = $DB->get_record('user', ['id' => $poodllschool->ownerid]);
+                                $updateuser = false;
+                                $updateschool = false;
+                                // user name
                                 if($customer->first_name != $poodlluser->firstname){
-                                    $updateuser=true;
-                                    $poodlluser->firstname=$customer->first_name;
+                                    $updateuser = true;
+                                    $poodlluser->firstname = $customer->first_name;
                                 }
-                                //last name
+                                // last name
                                 if($customer->last_name != $poodlluser->lastname){
-                                    $updateuser=true;
-                                    $poodlluser->lastname=$customer->last_name;
+                                    $updateuser = true;
+                                    $poodlluser->lastname = $customer->last_name;
                                 }
-                                //email
+                                // email
                                 if($customer->email != $poodlluser->email){
-                                    $updateuser=true;
-                                    $poodlluser->email=$customer->email;
+                                    $updateuser = true;
+                                    $poodlluser->email = $customer->email;
                                 }
 
-                                //update user if user info was changed
+                                // update user if user info was changed
                                 if($updateuser){
                                     $trace->output("cbsync:: changing customer updating poodll user");
-                                    $DB->update_record("user",$poodlluser);
+                                    $DB->update_record("user", $poodlluser);
                                     $trace->output("cbsync:: changing customer updating cpapi user");
-                                    cpapi_helper::update_cpapi_user($poodllschool->apiuser,$poodlluser->firstname,$poodlluser->lastname,$poodlluser->email);
+                                    cpapi_helper::update_cpapi_user($poodllschool->apiuser, $poodlluser->firstname, $poodlluser->lastname, $poodlluser->email);
                                 }
 
-                                //Update School if company name altered upstream
+                                // Update School if company name altered upstream
                                 if($customer->company != $poodllschool->name){
-                                    $updateschool=true;
-                                    $poodllschool->name=$customer->company;
+                                    $updateschool = true;
+                                    $poodllschool->name = $customer->company;
                                 }
                                 if($updateschool){
                                     $trace->output("cbsync:: changing customer updating poodllschool");
-                                    $DB->update_record(constants::M_TABLE_SCHOOLS,$poodllschool);
+                                    $DB->update_record(constants::M_TABLE_SCHOOLS, $poodllschool);
                                 }
                             }else{
                                 $trace->output("cbsync:: changing customer to change is a reseller. not touching school");
@@ -588,47 +596,48 @@ class chargebee_helper
                     }
                     break;
                 default:
-                    //do nothing
+                    // do nothing
             }//end of switch
         }//end of is valid event
     }
 
-    //update the subscription custom field with the school id
-    public static function update_chargebee_subscription_schoolname( $schoolname, $subs)
-    {
+    // update the subscription custom field with the school id
+    public static function update_chargebee_subscription_schoolname($schoolname, $subs) {
         global $USER, $CFG;
 
-        if(empty($schoolname)){return false;}
-        if(!$subs || count($subs)==0){return false;}
+        if(empty($schoolname)){return false;
+        }
+        if(!$subs || count($subs) == 0){return false;
+        }
 
-        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
-        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
+        $apikey = get_config(constants::M_COMP, 'chargebeeapikey');
+        $siteprefix = get_config(constants::M_COMP, 'chargebeesiteprefix');
         foreach ($subs as $sub){
             $url = "https://$siteprefix.chargebee.com/api/v2/subscriptions/" . $sub->upstreamsubid . '/update_for_items';
-            $postdata=[];
+            $postdata = [];
             $postdata['cf_schoolid'] = $schoolname;
-            $curlresult = common::curl_fetch($url,$postdata,$apikey);
+            $curlresult = common::curl_fetch($url, $postdata, $apikey);
             $jsonresult = common::make_object_from_json($curlresult);
         }
         return true;
 
     }
 
-    public static function update_chargebee_company($customerid, $companyname){
+    public static function update_chargebee_company($customerid, $companyname) {
         global $USER, $CFG;
 
-        if(empty($companyname)){return false;}
+        if(empty($companyname)){return false;
+        }
 
-        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
-        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
+        $apikey = get_config(constants::M_COMP, 'chargebeeapikey');
+        $siteprefix = get_config(constants::M_COMP, 'chargebeesiteprefix');
 
         if($customerid && !empty($apikey) && !empty($siteprefix)){
             $url = "https://$siteprefix.chargebee.com/api/v2/customers/" . $customerid;
-            $postdata=[];
+            $postdata = [];
             $postdata['company'] = $companyname;
 
-
-            $curlresult = common::curl_fetch($url,$postdata,$apikey);
+            $curlresult = common::curl_fetch($url, $postdata, $apikey);
             $jsonresult = common::make_object_from_json($curlresult);
             if($jsonresult){
                 return $jsonresult;
@@ -637,76 +646,75 @@ class chargebee_helper
         return false;
     }
 
-    public static function get_checkout_existing($planid, $schoolid, $currentsubid){
+    public static function get_checkout_existing($planid, $schoolid, $currentsubid) {
         global $USER, $CFG;
 
-        $current_sub = common::fetch_extended_sub($currentsubid);
-        $schoolname=$current_sub->school->name;
-        $customerid = $current_sub->school->upstreamownerid;
+        $currentsub = common::fetch_extended_sub($currentsubid);
+        $schoolname = $currentsub->school->name;
+        $customerid = $currentsub->school->upstreamownerid;
         $plan = common::get_plan($planid);
 
         switch($plan->billinginterval){
             case constants::M_BILLING_DAILY:
-                $billing='Daily';
+                $billing = 'Daily';
                 break;
             case constants::M_BILLING_MONTHLY:
-                $billing='Monthly';
+                $billing = 'Monthly';
                 break;
             case constants::M_BILLING_YEARLY:
             default:
-                $billing='Yearly';
+                $billing = 'Yearly';
                 break;
         }
 
-        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
-        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
-        $resellercoupon = get_config(constants::M_COMP,'resellercoupon');//POODLLSTANDARDRESELLER-98765
-        $reseller =common::fetch_me_reseller();
+        $apikey = get_config(constants::M_COMP, 'chargebeeapikey');
+        $siteprefix = get_config(constants::M_COMP, 'chargebeesiteprefix');
+        $resellercoupon = get_config(constants::M_COMP, 'resellercoupon');// POODLLSTANDARDRESELLER-98765
+        $reseller = common::fetch_me_reseller();
 
         if($customerid && !empty($apikey) && !empty($siteprefix)){
             $url = "https://$siteprefix.chargebee.com/api/v2/hosted_pages/checkout_existing_for_items";
-            $postdata=[];
+            $postdata = [];
 
-            //general
-            //allow offline payment
+            // general
+            // allow offline payment
             $postdata['allow_offline_payment_methods'] = 'true';
 
-            //if is reseller, apply coupon code
+            // if is reseller, apply coupon code
             if($reseller) {
                 $postdata['coupon_ids'] = [];
                 $postdata['coupon_ids'][] = $resellercoupon;
             }
 
-            //passthrough
+            // passthrough
             $passthrough = [];
-            $passthrough['schoolid']=$schoolid;
-            $passthrough['planid']=$planid;
-            //$passthrough['currency']=$currency;
-            //$passthrough['billing']=$billing;
+            $passthrough['schoolid'] = $schoolid;
+            $passthrough['planid'] = $planid;
+            // $passthrough['currency']=$currency;
+            // $passthrough['billing']=$billing;
             $postdata['pass_thru_content'] = json_encode($passthrough);
-
 
             $postdata['replace_items_list'] = 'true';
 
             $postdata['redirect_url'] = $CFG->wwwroot . constants::M_URL . '/subs/welcomeback.php';
             $postdata['cancel_url'] = $CFG->wwwroot . '/my/';
-            $postdata['subscription']=[];
-            $postdata['subscription']['id'] = $current_sub->upstreamsubid;
-            $postdata['subscription']['cf_schoolid']=$schoolname;
+            $postdata['subscription'] = [];
+            $postdata['subscription']['id'] = $currentsub->upstreamsubid;
+            $postdata['subscription']['cf_schoolid'] = $schoolname;
 
-            $postdata['subscription_items']=[];
-            $postdata['subscription_items']['plan_id']=[];
+            $postdata['subscription_items'] = [];
+            $postdata['subscription_items']['plan_id'] = [];
             $postdata['subscription_items']['plan_id'][0] = $plan->upstreamplan;
 
-            $postdata['subscription_items']['item_price_id'][0] = $plan->upstreamplan . '-' .  $current_sub->paymentcurr . '-'  . $billing;
-            $postdata['subscription_items']['quantity'][0]=1;
+            $postdata['subscription_items']['item_price_id'][0] = $plan->upstreamplan . '-' .  $currentsub->paymentcurr . '-'  . $billing;
+            $postdata['subscription_items']['quantity'][0] = 1;
 
-            //custom_fields
-          //  $postdata['subscription']=[];
-           // $postdata['subscription']['cf_schoolid']==$schoolid;
-           // $postdata['subscription']['cf_planid']=$plan->id;
+            // custom_fields
+            // $postdata['subscription']=[];
+            // $postdata['subscription']['cf_schoolid']==$schoolid;
+            // $postdata['subscription']['cf_planid']=$plan->id;
 
-            $curlresult = common::curl_fetch($url,$postdata,$apikey);
+            $curlresult = common::curl_fetch($url, $postdata, $apikey);
             $jsonresult = common::make_object_from_json($curlresult);
             if($jsonresult){
                 return $jsonresult;
@@ -715,15 +723,15 @@ class chargebee_helper
         return false;
     }
 
-    //NB an admin can not currently "manage" another users subscription via the portal. It will fail at get_poodllschool_by_currentuser
-    //admins should manage over at chargebee. But they can create subs and plans and schools here on moodle
-    public static function create_portal_session($upstreamownerid){
+    // NB an admin can not currently "manage" another users subscription via the portal. It will fail at get_poodllschool_by_currentuser
+    // admins should manage over at chargebee. But they can create subs and plans and schools here on moodle
+    public static function create_portal_session($upstreamownerid) {
         global $CFG, $USER;
 
-        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
-        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
+        $apikey = get_config(constants::M_COMP, 'chargebeeapikey');
+        $siteprefix = get_config(constants::M_COMP, 'chargebeesiteprefix');
 
-        //this should work because a reseller schools will have sae upstreamowner and a regular owner will have only one school
+        // this should work because a reseller schools will have sae upstreamowner and a regular owner will have only one school
         $school = common::get_poodllschool_by_currentuser();
 
         if($school && !empty($apikey) && !empty($siteprefix)){
@@ -734,16 +742,16 @@ class chargebee_helper
             }
 
             $url = "https://$siteprefix.chargebee.com/api/v2/portal_sessions";
-            $postdata=[];
+            $postdata = [];
             $postdata['redirect_url'] = $CFG->wwwroot . '/my/';
-            $postdata['customer']= array("id" => $upstreamownerid);
-            $curlresult = common::curl_fetch($url,$postdata,$apikey);
+            $postdata['customer'] = ["id" => $upstreamownerid];
+            $curlresult = common::curl_fetch($url, $postdata, $apikey);
             $jsonresult = common::make_object_from_json($curlresult);
             if($jsonresult){
                 if(isset($jsonresult->portal_session)) {
                         return $jsonresult->portal_session;
                 }else{
-                    //this causes infinite redirect ...
+                    // this causes infinite redirect ...
                     // redirect($postdata['redirect_url'],get_string('noaccessportal',constants::M_COMP));
                     return '';
                 }
@@ -752,18 +760,18 @@ class chargebee_helper
         return false;
     }
 
-    public static function get_portalurl_by_upstreamid($upstreamid){
+    public static function get_portalurl_by_upstreamid($upstreamid) {
         global $CFG;
 
-        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
-        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
+        $apikey = get_config(constants::M_COMP, 'chargebeeapikey');
+        $siteprefix = get_config(constants::M_COMP, 'chargebeesiteprefix');
 
         if($upstreamid && !empty($apikey) && !empty($siteprefix)){
             $url = "https://$siteprefix.chargebee.com/api/v2/portal_sessions";
-            $postdata=[];
+            $postdata = [];
             $postdata['redirect_url'] = $CFG->wwwroot . '/my/';
-            $postdata['customer']= array("id" => $upstreamid);
-            $curlresult = common::curl_fetch($url,$postdata,$apikey);
+            $postdata['customer'] = ["id" => $upstreamid];
+            $curlresult = common::curl_fetch($url, $postdata, $apikey);
             $jsonresult = common::make_object_from_json($curlresult);
             if($jsonresult){
                 if(isset($jsonresult->portal_session->access_url)) {
@@ -772,7 +780,7 @@ class chargebee_helper
                         return $portalurl;
                     }
                 }else{
-                    //this causes infinite redirect ...
+                    // this causes infinite redirect ...
                     // redirect($postdata['redirect_url'],get_string('noaccessportal',constants::M_COMP));
                     return '';
                 }
@@ -781,49 +789,49 @@ class chargebee_helper
         return false;
     }
 
-    public static function fetch_chargebee_user($upstreamuserid){
-        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
-        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
+    public static function fetch_chargebee_user($upstreamuserid) {
+        $apikey = get_config(constants::M_COMP, 'chargebeeapikey');
+        $siteprefix = get_config(constants::M_COMP, 'chargebeesiteprefix');
 
         $url = "https://$siteprefix.chargebee.com/api/v2/customers/";
         $url .= $upstreamuserid;
 
-        $postdata=false;
-        $curlresult = common::curl_fetch($url,$postdata,$apikey);
-        $upstream_user = common::make_object_from_json($curlresult);
-        if($upstream_user
-            && !(isset($upstream_user->http_status_code) && $upstream_user->http_status_code==404)
-            && isset($upstream_user->customer)) {
-            return $upstream_user;
+        $postdata = false;
+        $curlresult = common::curl_fetch($url, $postdata, $apikey);
+        $upstreamuser = common::make_object_from_json($curlresult);
+        if($upstreamuser
+            && !(isset($upstreamuser->http_status_code) && $upstreamuser->http_status_code == 404)
+            && isset($upstreamuser->customer)) {
+            return $upstreamuser;
         }else{
             return false;
         }
     }
 
-    public static function fetch_allchargebee_userids($offset=false){
-        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
-        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
-        $userids=[];
+    public static function fetch_allchargebee_userids($offset=false) {
+        $apikey = get_config(constants::M_COMP, 'chargebeeapikey');
+        $siteprefix = get_config(constants::M_COMP, 'chargebeesiteprefix');
+        $userids = [];
         $url = "https://$siteprefix.chargebee.com/api/v2/customers/";
 
-        $postdata=[];
-        $postdata['limit'] =100;
+        $postdata = [];
+        $postdata['limit'] = 100;
         if($offset){
-            $postdata['offset']= $offset;
+            $postdata['offset'] = $offset;
         }
 
-        $forceget=true;
-        $curlresult = common::curl_fetch($url,$postdata,$apikey, $forceget);
-        $upstream_users = common::make_object_from_json($curlresult);
-        if($upstream_users
-            && !(isset($upstream_users->http_status_code) && $upstream_users->http_status_code==404)
-            && isset($upstream_users->list)) {
+        $forceget = true;
+        $curlresult = common::curl_fetch($url, $postdata, $apikey, $forceget);
+        $upstreamusers = common::make_object_from_json($curlresult);
+        if($upstreamusers
+            && !(isset($upstreamusers->http_status_code) && $upstreamusers->http_status_code == 404)
+            && isset($upstreamusers->list)) {
 
-            foreach($upstream_users->list as $listitem){
-                $userids[]=$listitem->customer->id;
+            foreach($upstreamusers->list as $listitem){
+                $userids[] = $listitem->customer->id;
             }
-            if(isset($upstream_users->next_offset)){
-                $userids = array_merge($userids , self::fetch_allchargebee_userids($upstream_users->next_offset));
+            if(isset($upstreamusers->next_offset)){
+                $userids = array_merge($userids , self::fetch_allchargebee_userids($upstreamusers->next_offset));
             }
             return $userids;
         }else{
@@ -831,30 +839,30 @@ class chargebee_helper
         }
     }
 
-    public static function fetch_allchargebee_subids($offset=false){
-        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
-        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
-        $subids=[];
+    public static function fetch_allchargebee_subids($offset=false) {
+        $apikey = get_config(constants::M_COMP, 'chargebeeapikey');
+        $siteprefix = get_config(constants::M_COMP, 'chargebeesiteprefix');
+        $subids = [];
         $url = "https://$siteprefix.chargebee.com/api/v2/subscriptions/";
 
-        $postdata=[];
-        $postdata['limit'] =10;
+        $postdata = [];
+        $postdata['limit'] = 10;
         if($offset){
-            $postdata['offset']= $offset;
+            $postdata['offset'] = $offset;
         }
 
-        $forceget=true;
-        $curlresult = common::curl_fetch($url,$postdata,$apikey, $forceget);
-        $upstream_subs = common::make_object_from_json($curlresult);
-        if($upstream_subs
-            && !(isset($upstream_subs->http_status_code) && $upstream_subs->http_status_code==404)
-            && isset($upstream_subs->list)) {
+        $forceget = true;
+        $curlresult = common::curl_fetch($url, $postdata, $apikey, $forceget);
+        $upstreamsubs = common::make_object_from_json($curlresult);
+        if($upstreamsubs
+            && !(isset($upstreamsubs->http_status_code) && $upstreamsubs->http_status_code == 404)
+            && isset($upstreamsubs->list)) {
 
-            foreach($upstream_subs->list as $listitem){
-                $subids[]=$listitem->subscription->id;
+            foreach($upstreamsubs->list as $listitem){
+                $subids[] = $listitem->subscription->id;
             }
-            if(isset($upstream_subs->next_offset)){
-                $subids = array_merge($subids , self::fetch_allchargebee_subids($upstream_subs->next_offset));
+            if(isset($upstreamsubs->next_offset)){
+                $subids = array_merge($subids , self::fetch_allchargebee_subids($upstreamsubs->next_offset));
             }
             return $subids;
         }else{
@@ -862,15 +870,15 @@ class chargebee_helper
         }
     }
 
-    public static function fetch_chargebee_sub($upstreamsubid){
-        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
-        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
+    public static function fetch_chargebee_sub($upstreamsubid) {
+        $apikey = get_config(constants::M_COMP, 'chargebeeapikey');
+        $siteprefix = get_config(constants::M_COMP, 'chargebeesiteprefix');
 
         $url = "https://$siteprefix.chargebee.com/api/v2/subscriptions/";
         $url .= $upstreamsubid;
 
-        $postdata=false;
-        $curlresult = common::curl_fetch($url,$postdata,$apikey);
+        $postdata = false;
+        $curlresult = common::curl_fetch($url, $postdata, $apikey);
         $jsonresult = common::make_object_from_json($curlresult);
         if($jsonresult) {
             return $jsonresult;
@@ -879,16 +887,16 @@ class chargebee_helper
         }
     }
 
-    public static function fetch_scheduled_chargebee_sub($upstreamsubid){
-        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
-        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
+    public static function fetch_scheduled_chargebee_sub($upstreamsubid) {
+        $apikey = get_config(constants::M_COMP, 'chargebeeapikey');
+        $siteprefix = get_config(constants::M_COMP, 'chargebeesiteprefix');
 
         $url = "https://$siteprefix.chargebee.com/api/v2/subscriptions/";
         $url .= $upstreamsubid;
         $url .= '/retrieve_with_scheduled_changes';
 
-        $postdata=false;
-        $curlresult = common::curl_fetch($url,$postdata,$apikey);
+        $postdata = false;
+        $curlresult = common::curl_fetch($url, $postdata, $apikey);
         $jsonresult = common::make_object_from_json($curlresult);
         if($jsonresult) {
             return $jsonresult;
@@ -897,67 +905,69 @@ class chargebee_helper
         }
     }
 
-    public static function get_unpaidinvoice_for_sub($upstreamsubid){
+    public static function get_unpaidinvoice_for_sub($upstreamsubid) {
         global $CFG;
 
-        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
-        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
+        $apikey = get_config(constants::M_COMP, 'chargebeeapikey');
+        $siteprefix = get_config(constants::M_COMP, 'chargebeesiteprefix');
 
         $url = "https://$siteprefix.chargebee.com/api/v2/invoices";
-        $postdata=[];
-        $postdata['status[in]']="['payment_due','posted','not_paid']";
+        $postdata = [];
+        $postdata['status[in]'] = "['payment_due','posted','not_paid']";
         $postdata['limit'] = 1;
         $postdata['subscription_id[is]'] = $upstreamsubid;
 
         $forceget = true;
-        $curlresult = common::curl_fetch($url,$postdata,$apikey,$forceget);
+        $curlresult = common::curl_fetch($url, $postdata, $apikey, $forceget);
         $jsonresult = common::make_object_from_json($curlresult);
-        if($jsonresult && $jsonresult->list && count($jsonresult->list)>0) {
+        if($jsonresult && $jsonresult->list && count($jsonresult->list) > 0) {
             return $jsonresult->list[0]->invoice;
         }else{
             return false;
         }
     }
 
-    public static function list_subs_for_renewal($fromdate, $todate,$offset=0){
+    public static function list_subs_for_renewal($fromdate, $todate, $offset=0) {
         global $CFG;
 
-        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
-        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
+        $apikey = get_config(constants::M_COMP, 'chargebeeapikey');
+        $siteprefix = get_config(constants::M_COMP, 'chargebeesiteprefix');
 
         $url = "https://$siteprefix.chargebee.com/api/v2/subscriptions";
-        $postdata=[];
-        $postdata['status[in]']="['active']";
-        //$postdata['status[in]']="['active','paused']";
-        $postdata['next_billing_at[between]']="[$fromdate,$todate]";
-        $postdata['item_id[is_not]']="['Poodll-NET-Standard']";
-        if($offset>0){$postdata['offset']="$offset";}
+        $postdata = [];
+        $postdata['status[in]'] = "['active']";
+        // $postdata['status[in]']="['active','paused']";
+        $postdata['next_billing_at[between]'] = "[$fromdate,$todate]";
+        $postdata['item_id[not_in]'] = '["Poodll-NET-Standard", "Poodll-Classroom-Standard", "Poodll-Classroom-Trial"]';
+        if ($offset > 0) {
+            $postdata['offset'] = "$offset";
+        }
         $postdata['limit'] = 20;
 
         $forceget = true;
-        $curlresult = common::curl_fetch($url,$postdata,$apikey,$forceget);
+        $curlresult = common::curl_fetch($url, $postdata, $apikey, $forceget);
         $jsonresult = common::make_object_from_json($curlresult);
-        if($jsonresult && isset($jsonresult->list) && count($jsonresult->list)>0) {
+        if ($jsonresult && isset($jsonresult->list) && count($jsonresult->list) > 0) {
             return $jsonresult;
-        }else{
+        } else {
             return false;
         }
     }
 
-    public static function bill_next_renewal_of_sub($upstreamsubid){
+    public static function bill_next_renewal_of_sub($upstreamsubid) {
         global $CFG;
 
-        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
-        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
+        $apikey = get_config(constants::M_COMP, 'chargebeeapikey');
+        $siteprefix = get_config(constants::M_COMP, 'chargebeesiteprefix');
 
         $url = "https://$siteprefix.chargebee.com/api/v2/subscriptions/";
         $url .= $upstreamsubid;
         $url .= '/charge_future_renewals';
 
-        $postdata=[];
+        $postdata = [];
         $postdata['terms_to_charge'] = 1;
 
-        $curlresult = common::curl_fetch($url,$postdata,$apikey);
+        $curlresult = common::curl_fetch($url, $postdata, $apikey);
         $jsonresult = common::make_object_from_json($curlresult);
         if($jsonresult) {
             return $jsonresult;
@@ -966,40 +976,40 @@ class chargebee_helper
         }
     }
 
-    public static function get_pay_outstanding($customerid, $redirecturl=""){
+    public static function get_pay_outstanding($customerid, $redirecturl="") {
         global $CFG;
 
         $ret = [];
-        $ret['success']=true;
-        $ret['payload']='';
+        $ret['success'] = true;
+        $ret['payload'] = '';
 
         if(empty($redirecturl)){
             $redirecturl = $CFG->wwwroot .'/my';
         }
 
-        $apikey = get_config(constants::M_COMP,'chargebeeapikey');
-        $siteprefix = get_config(constants::M_COMP,'chargebeesiteprefix');
+        $apikey = get_config(constants::M_COMP, 'chargebeeapikey');
+        $siteprefix = get_config(constants::M_COMP, 'chargebeesiteprefix');
 
         if($customerid && !empty($apikey) && !empty($siteprefix)){
             $url = "https://$siteprefix.chargebee.com/api/v2/hosted_pages/collect_now";
-            $postdata=[];
+            $postdata = [];
             $postdata['redirect_url'] = $redirecturl;
-            $postdata['customer']['id'] =$customerid;
+            $postdata['customer']['id'] = $customerid;
 
-            $curlresult = common::curl_fetch($url,$postdata,$apikey);
+            $curlresult = common::curl_fetch($url, $postdata, $apikey);
             $jsonresult = common::make_object_from_json($curlresult);
             if($jsonresult && isset($jsonresult->hosted_page)){
-                $ret['success']=true;
-                $ret['payload']=$jsonresult ;
+                $ret['success'] = true;
+                $ret['payload'] = $jsonresult;
                 return  $ret;
             }else{
-                $ret['success']=false;
-                $ret['payload']=$curlresult;
+                $ret['success'] = false;
+                $ret['payload'] = $curlresult;
                 return  $ret;
             }
         }
-        $ret['success']=false;
-        $ret['payload']='api, site prefix or customer id not set';
+        $ret['success'] = false;
+        $ret['payload'] = 'api, site prefix or customer id not set';
         return false;
     }
 
